@@ -88,7 +88,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Пошук товарів..."
-          className="search-input"
+          className="search-input max-[468px]:w-20  min-[768px]:w-full"
           onFocus={() => setShowDropdown(results.length > 0)}
           autoComplete="off"
         />
@@ -106,7 +106,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
             </div>
           )}
           {!error && results.length === 0 && (
-            <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 w-full">
+            <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 w-full ">
               Нічого не знайдено
             </div>
           )}
@@ -114,7 +114,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
             <div
               key={product.id}
               onClick={() => handleSelect(product.handle)}
-              className="flex items-center justify-between px-4 py-2 gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+              className="flex items-center justify-between px-4 py-2 gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 text-sm "
             >
               <div className="flex-1">
                 <p className="text-gray-800 dark:text-white">

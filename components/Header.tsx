@@ -4,13 +4,14 @@ import { useState } from 'react';
 import { Search, Heart, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
+import Container from './Container';
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <header className="glass-header sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16 relative">
+      <Container>
         {/* Левая часть: логотип + поиск */}
         <div className="flex items-center flex-1 relative transition-all">
           {/* ЛОГОТИП — исчезает при isSearchOpen */}
@@ -18,10 +19,11 @@ export default function Header() {
             href="/"
             className={`text-lg font-bold text-gray-900 transition-all duration-300 ${
               isSearchOpen
-                ? 'max-[578px]:opacity-0 max-[578px]:w-0 overflow-hidden'
+                ? 'max-[614px]:opacity-0 max-[578px]:w-0 overflow-hidden'
                 : ''
             }`}
-          >
+          > 
+          {/* ОСТАНОВИЛСЯ ТУТ НА ИНПУТЕ АДАПТАЦИИ */}
             MobiStuff
           </Link>
         </div>
@@ -52,7 +54,7 @@ export default function Header() {
             <span className="menu-hamburger">Menu</span>
           </button>
         </div>
-      </div>
+      </Container>
     </header>
   );
 }
