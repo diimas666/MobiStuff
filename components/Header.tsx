@@ -3,22 +3,10 @@
 import { useState } from 'react';
 import { Search, Heart, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import SearchBar from './SearchBar';
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const router = useRouter();
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (search.trim()) {
-      router.push(`/search?query=${encodeURIComponent(search.trim())}`);
-      setSearch('');
-      setIsSearchOpen(false);
-    }
-  };
 
   return (
     <header className="glass-header sticky top-0 z-50">
@@ -36,14 +24,14 @@ export default function Header() {
           >
             MobiStuff
           </Link>
-
-          {/* Поиск — встроен, анимировано появляется */}
-          <SearchBar />
         </div>
 
         {/* Иконки */}
         <div className="flex items-center gap-3 ml-auto">
-          {/* Поиск — только на мобилке */}
+          {/* Поиск */}
+          <div>
+            {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} />}
+          </div>
           <button
             onClick={() => setIsSearchOpen(!isSearchOpen)}
             className="glass-icon"

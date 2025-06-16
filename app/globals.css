@@ -47,12 +47,8 @@ body {
     @apply flex items-center gap-2 px-4 py-2 w-full sm:w-64 bg-white/70 dark:bg-white/10 backdrop-blur-md rounded-xl shadow-sm transition focus-within:ring-2 focus-within:ring-blue-500;
   }
 
-  .search-icon {
-    @apply w-5 h-5 text-gray-500 dark:text-gray-300;
-  }
-
   .search-input {
-    @apply text-sm text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400;
+    @apply text-sm text-gray-800 dark:text-white placeholder-gray-800 dark:placeholder-gray-400;
   }
   .menu-hamburger {
     @apply text-sm uppercase font-semibold text-black px-4 py-2 rounded-full bg-white/70 dark:bg-white/10 backdrop-blur-sm shadow-md transition hover:scale-105;
