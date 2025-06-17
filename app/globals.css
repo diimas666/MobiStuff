@@ -25,8 +25,9 @@ body {
   font-family: var(--font-sans), sans-serif;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
+
 @layer components {
   .glass-header {
     @apply backdrop-blur-md bg-white/60 dark:bg-white/10 border-b border-white/20 sticky top-0 z-50;
