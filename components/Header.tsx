@@ -22,9 +22,9 @@ export default function Header() {
                 ? 'max-[614px]:opacity-0 max-[578px]:w-0 overflow-hidden'
                 : ''
             }`}
-          > 
-          {/* ОСТАНОВИЛСЯ ТУТ НА ИНПУТЕ АДАПТАЦИИ */}
-            MobiStuff
+          >
+            {/* ОСТАНОВИЛСЯ ТУТ НА ИНПУТЕ АДАПТАЦИИ */}
+            <p className="text-2xl">MobiStuff</p>
           </Link>
         </div>
 

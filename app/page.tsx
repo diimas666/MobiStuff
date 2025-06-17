@@ -1,5 +1,3 @@
-
-
 const categoryStructure = {
   Кабелі: ['Type-C', 'Lightning', 'MicroUSB', 'USB-A', 'Магнітні'],
   Повербанки: [
@@ -30,10 +28,5 @@ const categoryStructure = {
 };
 
 export default function HomePage() {
-  return (
-      <main className="border ">
-        
-      </main>
-    
-  );
+  return <main className="text-md">MAIN GENERAL</main>;
 }

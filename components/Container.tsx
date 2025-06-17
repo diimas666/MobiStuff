@@ -6,7 +6,7 @@ interface ContainerProps extends HTMLAttributes<HTMLElement> {
 
 const Container = ({ children, ...props }: ContainerProps) => {
   return (
-    <main {...props} className="max-w-7xl mx-auto flex items-center justify-between px-4 h-20 relative bg-gray-50">
+    <main {...props} className="max-w-9xl mx-auto flex items-center justify-between px-4 h-20 relative bg-gray-50">
       {children}
     </main>
   );

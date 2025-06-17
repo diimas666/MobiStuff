@@ -99,7 +99,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
       </form>
 
       {showDropdown && (
-        <div className="absolute z-50 mt-1 w-full bg-white dark:bg-black rounded-xl shadow-md backdrop-blur-sm border border-gray-200 dark:border-gray-700">
+        <div className="absolute z-50 mt-1 w-full bg-transparent dark:bg-black rounded-xl shadow-md backdrop-blur-sm">
           {error && (
             <div className="px-4 py-2 text-sm text-red-600 dark:text-red-400">
               {error}
@@ -114,10 +114,12 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
             <div
               key={product.id}
               onClick={() => handleSelect(product.handle)}
-              className="flex items-center justify-between px-4 py-2 gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 text-sm "
+              className="flex items-center justify-between px-4 py-2 gap-3 cursor-pointer 
+             hover:bg-gray-100 dark:hover:bg-gray-800 text-sm 
+             max-[490px]:relative max-[490px]:top-5 max-[490px]:w-[350px] bg-white rounded-2xl shadow-md mb-1 "
             >
-              <div className="flex-1">
-                <p className="text-gray-800 dark:text-white">
+              <div className="flex-1 ">
+                <p className="text-gray-800 dark:text-white ">
                   {highlightMatch(
                     product.title.length > 50
                       ? `${product.title.slice(0, 50)}…`
