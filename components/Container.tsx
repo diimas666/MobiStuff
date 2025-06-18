@@ -8,7 +8,7 @@ const Container = ({ children, className = '', ...props }: ContainerProps) => {
   return (
     <div
       {...props}
-      className={`max-w-screen-xl w-full mx-auto px-4 ${className}`}
+      className={`max-w-screen-2xl w-full mx-auto px-4 ${className}`}
     >
       {children}
     </div>

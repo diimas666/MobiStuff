@@ -1,4 +1,4 @@
-import { popularItems } from '@/data/CategoryData';
+import { popularItems } from '@/data/categoryData';
 import Link from 'next/link';
 interface Params {
   slug: string;
@@ -22,11 +22,17 @@ export default function CategoryPage({ params }: { params: Params }) {
   }
   return (
     <section className="p-6">
-      <div className='breadcrumbs'>
+      <div className="breadcrumbs">
         <nav className="text-sm mb-4 text-gray-500">
-        <Link href="/" className="hover:underline">Головна</Link> &nbsp;/&nbsp;
-        <Link href="/category" className="hover:underline">Категорії</Link> &nbsp;/&nbsp;
-        <span className="font-semibold text-gray-700">{category.title}</span>
+          <Link href="/" className="hover:underline">
+            Головна
+          </Link>{' '}
+          &nbsp;/&nbsp;
+          <Link href="/category" className="hover:underline">
+            Категорії
+          </Link>{' '}
+          &nbsp;/&nbsp;
+          <span className="font-semibold text-gray-700">{category.title}</span>
         </nav>
       </div>
 
