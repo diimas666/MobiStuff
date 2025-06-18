@@ -2,7 +2,7 @@ import { popularItems } from '@/data/CategoryData';
 import CategoryGrid from '@/components/CategoryGrid';
 export default function GeneralPage() {
   return (
-    <main className="text-md px-4">
+    <main className="text-md ">
       <section className="flex gap-5 max-[890px]:flex-col">
         <div className="basis-1/2 flex-1 bg-gray-100  border">
           <CategoryGrid title="Популярні категорії" items={popularItems} />

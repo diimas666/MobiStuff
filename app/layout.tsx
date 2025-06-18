@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={`${roboto.variable}  antialiased min-h-screen`}>
         <Header />
 
-        <main className="w-full border-none  ">{children}</main>
+        <Container>{children}</Container>
 
         <Footer />
       </body>

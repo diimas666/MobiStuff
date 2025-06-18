@@ -10,8 +10,8 @@ export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <header className="glass-header sticky top-0 z-50">
-      <Container>
+    <Container>
+      <header className="glass-header sticky top-0 z-50 flex py-4">
         {/* Левая часть: логотип + поиск */}
         <div className="flex items-center flex-1 relative transition-all">
           {/* ЛОГОТИП — исчезает при isSearchOpen */}
@@ -19,17 +19,16 @@ export default function Header() {
             href="/"
             className={`text-lg font-bold text-gray-900 transition-all duration-300 ${
               isSearchOpen
-                ? 'max-[614px]:opacity-0 max-[578px]:w-0 overflow-hidden'
+                ? 'max-[578px]:absolute max-[578px]:opacity-0 max-[578px]:pointer-events-none'
                 : ''
             }`}
           >
-            {/* ОСТАНОВИЛСЯ ТУТ НА ИНПУТЕ АДАПТАЦИИ */}
             <p className="text-2xl">MobiStuff</p>
           </Link>
         </div>
 
         {/* Иконки */}
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="flex items-center gap-2 ml-auto">
           {/* Поиск */}
           <div>
             {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} />}
@@ -54,7 +53,7 @@ export default function Header() {
             <span className="menu-hamburger">Menu</span>
           </button>
         </div>
-      </Container>
-    </header>
+      </header>
+    </Container>
   );
 }

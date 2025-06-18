@@ -4,11 +4,14 @@ interface ContainerProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode;
 }
 
-const Container = ({ children, ...props }: ContainerProps) => {
+const Container = ({ children, className = '', ...props }: ContainerProps) => {
   return (
-    <main {...props} className="max-w-9xl mx-auto flex items-center justify-between px-4 h-20 relative bg-gray-50">
+    <div
+      {...props}
+      className={`max-w-screen-xl w-full mx-auto px-4 ${className}`}
+    >
       {children}
-    </main>
+    </div>
   );
 };
 

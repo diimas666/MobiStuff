@@ -88,7 +88,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Пошук товарів..."
-          className="search-input max-[468px]:w-20  min-[768px]:w-full"
+          className="search-input max-[468px]:w-24  min-[768px]:w-full"
           onFocus={() => setShowDropdown(results.length > 0)}
           autoComplete="off"
         />
