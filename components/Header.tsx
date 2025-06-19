@@ -5,10 +5,10 @@ import { Search, Heart, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Container from './Container';
-
+import MobileSidebar from './MobileSidebar';
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
+  const [isMobileSideBarOpen, setIsMobileSideBarOpen] = useState(false);
   return (
     <Container>
       <header className="glass-header sticky top-0 z-50 flex py-4">
@@ -30,7 +30,7 @@ export default function Header() {
         {/* Иконки */}
         <div className="flex items-center gap-2 ml-auto">
           {/* Поиск  под вопросо не раотает  тут ПРОБЛЕМА*/}
-          <div> 
+          <div>
             {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} />}
           </div>
           <button
@@ -49,11 +49,18 @@ export default function Header() {
           </Link>
 
           {/* Menu */}
-          <button className="flex items-center gap-1 md:hidden">
+          <button
+            onClick={() => setIsMobileSideBarOpen(true)}
+            className="flex items-center gap-1 md:hidden"
+          >
             <span className="menu-hamburger">Menu</span>
           </button>
         </div>
       </header>
+      <MobileSidebar
+        open={isMobileSideBarOpen}
+        onClose={() => setIsMobileSideBarOpen(false)}
+      />
     </Container>
   );
 }

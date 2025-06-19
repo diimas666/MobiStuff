@@ -4,7 +4,7 @@ import CategoryList from '@/components/CategoryList';
 export default function GeneralPage() {
   return (
     <main className="text-md flex  gap-2">
-      <aside className="w-[300px] border px-2 shadow-sm relative ">
+      <aside className="w-[300px] border px-2 shadow-sm relative hidden md:block ">
         <h3 className="text-lg font-semibold mb-2 ">Каталог</h3>
         <CategoryList/>
       </aside>
