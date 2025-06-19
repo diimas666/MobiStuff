@@ -29,8 +29,8 @@ export default function Header() {
 
         {/* Иконки */}
         <div className="flex items-center gap-2 ml-auto">
-          {/* Поиск */}
-          <div>
+          {/* Поиск  под вопросо не раотает  тут ПРОБЛЕМА*/}
+          <div> 
             {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} />}
           </div>
           <button

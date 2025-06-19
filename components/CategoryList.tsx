@@ -46,7 +46,7 @@ export default function CategoryList() {
                 {category.subcategories.map((subcategory) => (
                   <li key={subcategory.slug}>
                     <Link
-                      href={`/category/${category.slug}${subcategory.slug}`}
+                      href={`/category/${category.slug}/${subcategory.slug}`}
                       className="text-md rounded-md  text-gray-700 group-hover:bg-gray-300 hover:underline block pb-1"
                     >
                       <span className="pl-4">{subcategory.title}</span>
