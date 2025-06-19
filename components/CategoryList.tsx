@@ -28,7 +28,7 @@ export default function CategoryList() {
             onMouseEnter={() => handleEnter(category.title)}
             onMouseLeave={handleLeave}
           >
-            <div className="flex items-start justify-between py-2 px-2 rounded cursor-pointer group-hover:bg-gray-100">
+            <div className="flex items-center justify-between py-2 px-2 rounded cursor-pointer group-hover:bg-gray-300">
               <div className="flex gap-3">
                 <category.icon className="w-5 h-5 text-gray-900" />
                 <h4 className="font-semibold text-sm text-gray-800 flex items-center gap-2">
@@ -44,12 +44,12 @@ export default function CategoryList() {
                 onMouseLeave={handleLeave}
               >
                 {category.subcategories.map((subcategory) => (
-                  <li key={subcategory}>
+                  <li key={subcategory.slug}>
                     <Link
-                      href={`/category/${subcategory}`}
-                      className="text-md text-gray-700 hover:underline block pb-1"
+                      href={`/category/${category.slug}${subcategory.slug}`}
+                      className="text-md rounded-md  text-gray-700 group-hover:bg-gray-300 hover:underline block pb-1"
                     >
-                      {subcategory}
+                      <span className="pl-4">{subcategory.title}</span>
                     </Link>
                   </li>
                 ))}

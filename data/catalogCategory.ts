@@ -41,7 +41,7 @@ export const catalogCategory = [
     subcategories: ['USB-C', 'Lightning', 'MicroUSB', 'Магнітні'],
   },
   {
-    title: 'Комп\'ютерна периферія',
+    title: "Комп'ютерна периферія",
     icon: MonitorSmartphone,
     subcategories: ['Мишки', 'Клавіатури', 'Хаби'],
   },
@@ -68,4 +68,8 @@ export const catalogCategory = [
 ].map((item) => ({
   ...item,
   slug: toSlug(item.title),
+  subcategories: item.subcategories.map((subcategory) => ({
+    title: subcategory,
+    slug: toSlug(subcategory),
+  })),
 }));
