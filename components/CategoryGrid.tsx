@@ -24,7 +24,7 @@ export default function CategoryGrid({ title, items }: CategoryGridProps) {
         gap-2
         grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
         max-[578px]:flex max-[578px]:flex-row max-[578px]:overflow-x-auto
-        max-[578px]:scrollbar-hide max-[578px]:-mx-4 max-[578px]:px-4
+        
       "
       >
         {items.map((item) => (

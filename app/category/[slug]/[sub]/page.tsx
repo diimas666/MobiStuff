@@ -7,7 +7,8 @@ export async function generateMetadata({
 }: {
   params: { slug: string; sub: string };
 }): Promise<Metadata> {
-  const { slug, sub } = params;
+  const slug = await params.slug;
+  const sub = await params.sub;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find(
@@ -22,7 +23,24 @@ export async function generateMetadata({
   };
 }
 
-export default function SubcategoryPage({
+/*
+Берёт все категории из catalogCategory
+Проходит по всем подкатегориям внутри каждой категории
+Возвращает массив объектов вида:
+Next.js использует этот список, чтобы создать HTML-страницы для каждого пути ещё при сборке, например:
+/category/avtomobilna-tematyka/trymachi
+/category/kabeli/type-c
+*/
+
+export async function generateStaticParams() {
+  return catalogCategory.flatMap((category) =>
+    category.subcategories.map((sub) => ({
+      slug: category.slug,
+      sub: sub.slug,
+    }))
+  );
+}
+export default async function SubcategoryPage({
   params,
 }: {
   params: { slug: string; sub: string };
@@ -34,12 +52,10 @@ export default function SubcategoryPage({
     (subcat) => subcat.slug === sub
   );
 
-  if (!category || !subcategory) {
-    notFound();
-  }
+  if (!category || !subcategory) return notFound();
 
   return (
-    <div className="p-4">
+    <div>
       <h1 className="text-2xl font-bold">Категорія: {category.title}</h1>
       <h2 className="text-xl text-gray-700">
         Підкатегорія: {subcategory.title}
