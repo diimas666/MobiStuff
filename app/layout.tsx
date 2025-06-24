@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { MobileSidebarProvider } from '@/context/MobileSidebarContext';
 
 import { Roboto } from 'next/font/google';
 
@@ -25,11 +26,13 @@ export default function RootLayout({
   return (
     <html lang="uk ">
       <body className={`${roboto.variable}  antialiased min-h-screen`}>
-        <Header />
+        <MobileSidebarProvider>
+          <Header />
 
-        <Container>{children}</Container>
+          <Container>{children}</Container>
 
-        <Footer />
+          <Footer />
+        </MobileSidebarProvider>
       </body>
     </html>
   );

@@ -1,21 +1,43 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { catalogCategory } from '@/data/catalogCategory';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronDown } from 'lucide-react';
 
-export default function CategoryList() {
+interface Props {
+  onClose?: () => void;
+}
+
+export default function CategoryList({ onClose }: Props) {
   const [active, setActive] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleEnter = (title: string) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setActive(title);
+    if (!isMobile) {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      setActive(title);
+    }
   };
 
   const handleLeave = () => {
-    timeoutRef.current = setTimeout(() => setActive(null), 200);
+    if (!isMobile) {
+      timeoutRef.current = setTimeout(() => setActive(null), 200);
+    }
+  };
+
+  const handleClick = (title: string) => {
+    if (isMobile) {
+      setActive((prev) => (prev === title ? null : title));
+    }
   };
 
   return (
@@ -28,28 +50,46 @@ export default function CategoryList() {
             onMouseEnter={() => handleEnter(category.title)}
             onMouseLeave={handleLeave}
           >
-            <div className="flex items-center justify-between py-2 px-2 rounded cursor-pointer group-hover:bg-gray-300">
+            <div
+              className="flex items-center justify-between py-2 px-2 rounded cursor-pointer group-hover:bg-gray-300"
+              onClick={() => handleClick(category.title)}
+            >
               <div className="flex gap-3">
                 <category.icon className="w-5 h-5 text-gray-900" />
                 <h4 className="font-semibold text-sm text-gray-800 flex items-center gap-2">
                   {category.title}
                 </h4>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-900" />
+              {isMobile ? (
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-900 transition-transform ${
+                    active === category.title ? 'rotate-180' : ''
+                  }`}
+                />
+              ) : (
+                <ChevronRight className="w-5 h-5 text-gray-900" />
+              )}
             </div>
+
             {active === category.title && (
               <ul
-                className="absolute top-0 left-full ml-2 bg-white border shadow-md rounded p-3 space-y-1 w-56 z-20"
-                onMouseEnter={() => handleEnter(category.title)}
-                onMouseLeave={handleLeave}
+                className={`${
+                  isMobile
+                    ? 'px-4 py-2 space-y-1'
+                    : 'absolute top-0 left-full ml-2 bg-white border shadow-md rounded p-3 space-y-1 w-56 z-20'
+                }`}
               >
                 {category.subcategories.map((subcategory) => (
                   <li key={subcategory.slug}>
                     <Link
                       href={`/category/${category.slug}/${subcategory.slug}`}
-                      className="text-md rounded-md  text-gray-700 group-hover:bg-gray-300 hover:underline block pb-1"
+                      className="text-md text-gray-700 block py-1 hover:underline"
+                      onClick={() => {
+                        // Закрываем меню только при клике по подкатегории
+                        if (onClose) onClose();
+                      }}
                     >
-                      <span className="pl-4">{subcategory.title}</span>
+                      {subcategory.title}
                     </Link>
                   </li>
                 ))}
