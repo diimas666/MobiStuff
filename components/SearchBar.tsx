@@ -75,14 +75,12 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
   return (
     <div className="relative w-full">
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (results.length > 0) {
-            handleSelect(results[0].handle);
-          }
-        }}
-        className="search-bar"
-      >
+  onSubmit={(e) => {
+    e.preventDefault();
+    if (results.length > 0) handleSelect(results[0].handle);
+  }}
+  className="search-bar w-full"
+>
         <input
           type="text"
           value={search}
