@@ -11,14 +11,14 @@ export default function GeneralPage() {
         <h3 className="text-lg font-semibold mb-2 ">Каталог</h3>
         <CategoryList />
       </aside>
-      <section className="flex w-full gap-5 max-[890px]:flex-col max-[658px]:gap-0">
+      <section className="flex w-full gap-5 max-[890px]:flex-col max-[658px]:gap-3">
 
         <div className="basis-1/2 flex-1 border">
           <CategoryGrid title="Популярні категорії" items={popularItems} />
         </div>
 
         <div className="basis-1/2 flex-1  border lg:h-[490px] md:h-[370px]">
-          <h3 className="text-xl font-semibold mb-4 ">Трендові товари</h3>
+          <h3 className="text-xl font-semibold mb-6 ">Трендові товари</h3>
           <TrendingSlider products={trendingProducts} />
         </div>
       </section>

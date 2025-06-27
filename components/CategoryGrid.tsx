@@ -17,7 +17,7 @@ interface CategoryGridProps {
 
 export default function CategoryGrid({ title, items }: CategoryGridProps) {
   return (
-    <section className="py-8 ">
+    <section>
       <h2 className="text-2xl font-bold mb-6">{title}</h2>
       <div
         className="

@@ -10,9 +10,9 @@ interface TrendingSliderProps {
 
 export default function TrendingSlider({ products }: TrendingSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+// 🔁 Автоматическое переключение каждые 5 секунды
   useEffect(() => {
-    const interval = setInterval(next, 4000);
+    const interval = setInterval(next, 5000);
     return () => clearInterval(interval);
   }, [products.length]);
 
@@ -28,10 +28,10 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
   if (!products || products.length === 0) return null;
   const currentProduct = products[currentIndex];
 
-  // 🔁 Автоматическое переключение каждые 4 секунды
+  
 
   return (
-    <div className="relative w-full h-[400px] overflow-hidden rounded-xl shadow-xl">
+    <div className="relative w-full h-[370px] overflow-hidden rounded-xl shadow-xl">
       <Link
         href={`/product/${currentProduct.handle}`}
         className="block w-full h-full"
