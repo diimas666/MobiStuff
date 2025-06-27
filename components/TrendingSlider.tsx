@@ -31,7 +31,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
   // 🔁 Автоматическое переключение каждые 4 секунды
 
   return (
-    <div className="relative w-full h-[380px] overflow-hidden rounded-xl shadow-md">
+    <div className="relative w-full h-[400px] overflow-hidden rounded-xl shadow-xl">
       <Link
         href={`/product/${currentProduct.handle}`}
         className="block w-full h-full"
