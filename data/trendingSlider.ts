@@ -7,14 +7,14 @@ export const trendingProducts: Product[] = [
     price: 999,
     handle: 'airpods-pro',
   },
-   {
+  {
     id: '2',
     title: 'AirPods Pro',
     image: '/images/headphones_mini,al.jpg',
     price: 9919,
     handle: 'airpods',
   },
-   {
+  {
     id: '3',
     title: 'AirPods Pro',
     image: '/images/besprovodnye-nausniki.jpg',

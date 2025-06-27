@@ -4,24 +4,41 @@ import CategoryList from '@/components/CategoryList';
 import TrendingSlider from '@/components/TrendingSlider';
 //  data
 import { trendingProducts } from '@/data/trendingSlider';
+import { actualProposition } from '@/data/actualProposition';
+import OffersSlider from '@/components/OffersSlider';
 export default function GeneralPage() {
   return (
-    <main className="text-md flex  gap-2">
-      <aside className="w-[300px] border px-2 shadow-sm relative hidden md:block ">
-        <h3 className="text-lg font-semibold mb-2 ">Каталог</h3>
-        <CategoryList />
-      </aside>
-      <section className="flex w-full gap-5 max-[890px]:flex-col max-[658px]:gap-3">
+    <>
+      <main className="text-md flex  gap-2 mb-2">
+        <aside className="w-[300px] border px-2 shadow-sm relative hidden md:block ">
+          <h3 className="text-lg font-semibold mb-2 ">Каталог</h3>
+          <CategoryList />
+        </aside>
+        <section className="flex w-full gap-5 max-[890px]:flex-col max-[658px]:gap-3">
+          <div className="basis-1/2 flex-1 border">
+            <CategoryGrid title="Популярні категорії" items={popularItems} />
+          </div>
 
-        <div className="basis-1/2 flex-1 border">
-          <CategoryGrid title="Популярні категорії" items={popularItems} />
-        </div>
+          <div className="basis-1/2 flex-1  border lg:h-[490px] md:h-[370px]">
+            <h3 className="text-xl font-semibold mb-6 ">Трендові товари</h3>
+            <TrendingSlider products={trendingProducts} />
+          </div>
+        </section>
+      </main>
+      <main>
+        <section>
+          <h3 className="text-xl font-semibold mb-4 px-4">
+            Актуальні пропозиції
+          </h3>
+          <div className="w-full overflow-hidden  pb-6">
+            <OffersSlider products={actualProposition} />
+          </div>
+        </section>
 
-        <div className="basis-1/2 flex-1  border lg:h-[490px] md:h-[370px]">
-          <h3 className="text-xl font-semibold mb-6 ">Трендові товари</h3>
-          <TrendingSlider products={trendingProducts} />
-        </div>
-      </section>
-    </main>
+        <section>
+          <h3 className="text-xl font-semibold mb-6 ">Популярні бренди</h3>
+        </section>
+      </main>
+    </>
   );
 }

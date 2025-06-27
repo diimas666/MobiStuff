@@ -7,7 +7,7 @@ export interface Product {
   price: number; // Актуальная цена
   oldPrice?: number; // Старая цена до скидки
   discountPercent?: number; // Скидка в %
-  inStock: boolean; // В наличии или нет
+  inStock?: boolean; // В наличии или нет
   isNew?: boolean; // Новый товар
   isFeatured?: boolean; // Показывать на главной
   handle: string; // URL-адрес
