@@ -8,8 +8,12 @@ import Image from 'next/image';
 import ProductCard from './ProductCard';
 interface OffersSliderProps {
   products: Product[];
+  mobileSlidesToShow: number;
 }
-export default function OffersSlider({ products }: OffersSliderProps) {
+export default function OffersSlider({
+  products,
+  mobileSlidesToShow,
+}: OffersSliderProps) {
   const settings = {
     dots: true, // точки под слайдером
     infinite: true, // бесконечная прокрутка
@@ -17,6 +21,7 @@ export default function OffersSlider({ products }: OffersSliderProps) {
     slidesToShow: 4, // сколько карточек видно
     slidesToScroll: 1, // сколько листается за раз
     autoplay: true,
+    // adaptiveHeight: true,
     autoplaySpeed: 4000, // автопрокрутка (мс)
     responsive: [
       {
@@ -34,7 +39,8 @@ export default function OffersSlider({ products }: OffersSliderProps) {
       {
         breakpoint: 480, // до 480px — 1 карточка
         settings: {
-          slidesToShow: 1,
+          slidesToShow: mobileSlidesToShow,
+          // adaptiveHeight: true,
         },
       },
     ],
@@ -42,7 +48,7 @@ export default function OffersSlider({ products }: OffersSliderProps) {
   return (
     <Slider {...settings} className="mb-1 ">
       {products.map((product) => (
-        <div key={product.id} className="px-1">
+        <div key={product.id} className="px-1 max-w-[480]:px-0">
           <ProductCard product={product} />
         </div>
       ))}

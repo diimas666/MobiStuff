@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300">
+    <div className="rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative">
       <Link href={`/product/${product.handle}`} className="block">
         <div className="relative w-full h-60 bg-gray-100 border ">
           <Image
@@ -32,7 +32,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
         {/* низ карточки цена. и тд   */}
-        <div className="p-4 bg-gray-800 text-white min-h-[120px] border border-white relative">
+        <div className="p-4 bg-gray-800 text-white min-h-[120px]  relative">
           {/* название заголовок  */}
           <h3 className="text-lg font-semibold line-clamp-1 mb-1 max-w-[270px]">
             {product.title}
@@ -64,6 +64,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
           {/* иноки корзина и сравнить  */}
+        </div>
+      </Link>
           <div className="border-white flex flex-col gap-2 absolute right-3 bottom-3">
             <button className="button-block-card">
               {''}
@@ -74,8 +76,6 @@ export default function ProductCard({ product }: ProductCardProps) {
               <ShoppingCart className="glass-icon-svg" />
             </button>
           </div>
-        </div>
-      </Link>
     </div>
   );
 }
