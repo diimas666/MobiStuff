@@ -13,7 +13,8 @@ export const brands: Brand[] = [
     image: '/images/brands/ridea.png',
     imageFull: '/images/brands/imagesFull/ridea.jpg',
     handle: 'ridea',
-    description: '',
+    description:
+      'В розробці своїй продукції компанія Ridea зробила головний фокус на якості збірки та інновативності технологій по доступній ціні, адже це виявляється найголовнішим у результаті для кінцевого споживача.Завдяки чесній ціні та відмінній якості Ridea з легкістю конкурує з популярними брендами.Мобільні аксесуари Ridea відрізняються відмінним технічним наповненням. Це той випадок, коли результат перевищує очікування найвибагливіших споживачів',
   },
   {
     id: 2,
@@ -32,7 +33,7 @@ export const brands: Brand[] = [
     description: '',
   },
   {
-    id: 3,
+    id: 4,
     title: 'Borofone',
     image: '/images/brands/borofone.jpg',
     imageFull: '/images/brands/imagesFull/xo.jpg',

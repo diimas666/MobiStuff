@@ -31,11 +31,11 @@ export default async function BrandPage({ params }: Props) {
           className="object-cover w-full"
         />
       </div>
-      <h1>Ви потрапили на сторінку бренду :{brand.title}</h1>
+      <h1 className="font-semibold text-2xl">{brand.title}</h1>
       {brand.description && (
         <p className="text-gray-600 mb-6">{brand.description}</p>
       )}
-      <div>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1">
         {filtered.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

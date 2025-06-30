@@ -1,6 +1,6 @@
 import { popularItems } from '@/data/categoryData';
 import CategoryGrid from '@/components/CategoryGrid';
-import CategoryList from '@/components/CategoryList';
+import CategoryList from '@/components/CategoryList';  
 import TrendingSlider from '@/components/TrendingSlider';
 //  data
 import { trendingProducts } from '@/data/trendingSlider';
