@@ -46,7 +46,7 @@ export default function OffersSlider({
     ],
   };
   return (
-    <Slider {...settings} className="mb-1 ">
+    <Slider {...settings} className="mb-1">
       {products.map((product) => (
         <div key={product.id} className="px-1 max-w-[480]:px-0">
           <ProductCard product={product} />

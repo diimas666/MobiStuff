@@ -18,7 +18,7 @@ export default function OffersSection() {
           onClick={toggleSliders}
           className="max-[490px]:block md:hidden  "
         >
-          {mobileSlidesToShow === 1 ? <Dice1 size={30} /> : <Columns2 size={30} />}
+          {mobileSlidesToShow === 1 ? <Columns2 size={30}/> : <Dice1 size={30} />  }
         </button>
       </div>
       <div className="w-full overflow-hidden pb-6">

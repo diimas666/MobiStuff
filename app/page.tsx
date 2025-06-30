@@ -26,7 +26,6 @@ export default function GeneralPage() {
       </main>
       <main>
         <section className="section-bottom">
-         
           <div className="w-full overflow-hidden  pb-6">
             <OffersSection />
           </div>

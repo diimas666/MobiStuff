@@ -46,9 +46,11 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             </div>
           )}
+          {/* бренди  */}
+          {product.brand && <div className="flex gap-1">{product.brand}</div>}
           {/* цена  */}
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-white">
+          <div className="flex items-center gap-2 min-h-[80px] max-[490px]:flex-col items-start">
+            <span className="text-xl font-bold text-white ">
               {product.price} грн
             </span>
             {product.oldPrice && (
@@ -66,16 +68,17 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* иноки корзина и сравнить  */}
         </div>
       </Link>
-          <div className="border-white flex flex-col gap-2 absolute right-3 bottom-3">
-            <button className="button-block-card">
-              {''}
-              <Heart className="glass-icon-svg" />
-            </button>
-            <button className="button-block-card">
-              {''}
-              <ShoppingCart className="glass-icon-svg" />
-            </button>
-          </div>
+      <div className="border-white flex flex-col gap-2 absolute right-3 bottom-3">
+        <button className="button-block-card">
+          {''}
+          <Heart className="glass-icon-svg" />
+        </button>
+        <button className="button-block-card">
+          {''}
+          <ShoppingCart className="glass-icon-svg" />
+        </button>
+      </div>
     </div>
   );
 }
+          
