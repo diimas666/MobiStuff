@@ -32,7 +32,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
         {/* низ карточки цена. и тд   */}
-        <div className="p-4 bg-gray-800 text-white min-h-[120px]  relative">
+        <div className="p-4 bg-gray-800 text-white min-h-[80px]  relative">
           {/* название заголовок  */}
           <h3 className="text-lg font-semibold line-clamp-1 mb-1 max-w-[270px]">
             {product.title}
@@ -49,7 +49,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* бренди  */}
           {product.brand && <div className="flex gap-1">{product.brand}</div>}
           {/* цена  */}
-          <div className="flex items-center gap-2 min-h-[80px] max-[490px]:flex-col items-start">
+          <div className="flex  gap-2 min-h-[80px] max-[490px]:flex-col items-start">
             <span className="text-xl font-bold text-white ">
               {product.price} грн
             </span>
@@ -81,4 +81,3 @@ export default function ProductCard({ product }: ProductCardProps) {
     </div>
   );
 }
-          

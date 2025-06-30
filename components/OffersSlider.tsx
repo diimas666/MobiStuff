@@ -9,10 +9,13 @@ import ProductCard from './ProductCard';
 interface OffersSliderProps {
   products: Product[];
   mobileSlidesToShow: number;
+  slidesToScroll:number;
+  
 }
 export default function OffersSlider({
   products,
   mobileSlidesToShow,
+  slidesToScroll
 }: OffersSliderProps) {
   const settings = {
     dots: true, // точки под слайдером
@@ -40,6 +43,7 @@ export default function OffersSlider({
         breakpoint: 480, // до 480px — 1 карточка
         settings: {
           slidesToShow: mobileSlidesToShow,
+          slidesToScroll:slidesToScroll
           // adaptiveHeight: true,
         },
       },

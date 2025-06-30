@@ -28,10 +28,6 @@ export default function CategoryPage({ params }: { params: Params }) {
             Головна
           </Link>{' '}
           &nbsp;/&nbsp;
-          <Link href="/category" className="hover:underline">
-            Категорії
-          </Link>{' '}
-          &nbsp;/&nbsp;
           <span className="font-semibold text-gray-700">{category.title}</span>
         </nav>
       </div>

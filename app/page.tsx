@@ -4,6 +4,8 @@ import CategoryList from '@/components/CategoryList';
 import TrendingSlider from '@/components/TrendingSlider';
 //  data
 import { trendingProducts } from '@/data/trendingSlider';
+import { actualProposition } from '@/data/actualProposition';
+
 import OffersSection from '@/components/OffersSection.client';
 export default function GeneralPage() {
   return (
@@ -27,7 +29,7 @@ export default function GeneralPage() {
       <main>
         <section className="section-bottom">
           <div className="w-full overflow-hidden  pb-6">
-            <OffersSection />
+            <OffersSection products={actualProposition} title={'Актуальні пропозиції'} />
           </div>
         </section>
 
