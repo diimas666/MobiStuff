@@ -21,13 +21,14 @@ export default async function BrandPage({ params }: Props) {
   );
   return (
     <div>
-      <div className="relative w-full h-[200px] block ">
+      <div className="relative w-full min-h-[90px] block ">
         <Image
           src={brand.imageFull}
           alt={brand.title}
-          fill
-          sizes="100wv"
-          className="object-contain"
+          width={1200}
+          height={300}
+          layout="responsive"
+          className="object-cover w-full"
         />
       </div>
       <h1>Ви потрапили на сторінку бренду :{brand.title}</h1>
