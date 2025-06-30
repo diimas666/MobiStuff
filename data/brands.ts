@@ -3,7 +3,7 @@ export interface Brand {
   title: string;
   image: string;
   handle: string;
-  description?: string;
+  description?: string[];
   imageFull: string;
 }
 export const brands: Brand[] = [
@@ -13,14 +13,17 @@ export const brands: Brand[] = [
     image: '/images/brands/ridea.png',
     imageFull: '/images/brands/imagesFull/ridea.jpg',
     handle: 'ridea',
-    description:
-      'В розробці своїй продукції компанія Ridea зробила головний фокус на якості збірки та інновативності технологій по доступній ціні, адже це виявляється найголовнішим у результаті для кінцевого споживача.Завдяки чесній ціні та відмінній якості Ridea з легкістю конкурує з популярними брендами.Мобільні аксесуари Ridea відрізняються відмінним технічним наповненням. Це той випадок, коли результат перевищує очікування найвибагливіших споживачів',
+    description: [
+      'В розробці своєї продукції компанія Ridea зробила головний фокус на якості збірки та інновативності технологій по доступній ціні, адже це виявляється найголовнішим у результаті для кінцевого споживача.',
+      'Завдяки чесній ціні та відмінній якості Ridea з легкістю конкурує з популярними брендами.',
+      'Мобільні аксесуари Ridea відрізняються відмінним технічним наповненням. Це той випадок, коли результат перевищує очікування найвибагливіших споживачів.',
+    ],
   },
   {
     id: 2,
     title: 'XO',
     image: '/images/brands/xo.jpg',
-    imageFull: '/images/brands/imagesFull/xo.jpg',
+    imageFull: '/images/brands/imagesFull/XO.jpg',
     handle: 'xo',
     description: '',
   },
