@@ -22,7 +22,7 @@ export default async function BrandPage({ params }: Props) {
   );
   return (
     <div>
-      <div className="relative w-full min-h-[90px] block mb-4 ">
+      <div className="relative w-full min-h-[90px] max-h-[400px] overflow-hidden  block mb-4 ">
         <Image
           src={brand.imageFull}
           alt={brand.title}
@@ -49,6 +49,13 @@ export default async function BrandPage({ params }: Props) {
                 {p}
               </p>
             ))}
+          {brand.products && (
+            <ul className="list-disc list-inside mt-4 space-y-1 mb-4">
+              {brand.products.map((item, i) => (
+                <li className="text-gray-600 ml-5" key={i}>{item}</li>
+              ))}
+            </ul>
+          )}
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1">
             {filtered.map((product) => (
               <ProductCard key={product.id} product={product} />
