@@ -80,7 +80,6 @@ export default async function BrandPage({ params, searchParams }: Props) {
           </div>
 
           {/* Пагинация */}
-          {/* Пагинация */}
           {totalPages > 1 && (
             <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
               {/* Кнопка "Назад" */}

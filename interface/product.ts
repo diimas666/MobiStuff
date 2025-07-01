@@ -12,6 +12,8 @@ export interface Product {
   isFeatured?: boolean; // Показывать на главной
   handle: string; // URL-адрес
   category?: string; // Категория
+  categorySlug?:string;
+  subcategorySlug?: string;
   brand?: string; // Бренд
   rating?: number; // Рейтинг 1–5
   reviewsCount?: number; // Количество отзывов
