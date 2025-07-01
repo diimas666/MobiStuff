@@ -1,70 +1,62 @@
 'use client';
-
 import { useState } from 'react';
 import { Search, Heart, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import SearchBar from './SearchBar';
+import Container from './Container';
+import { useMobileSidebar } from '@/context/MobileSidebarContext';
+import MobileSidebar from './MobileSidebar';
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const router = useRouter();
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (search.trim()) {
-      router.push(`/search?query=${encodeURIComponent(search.trim())}`);
-      setSearch('');
-      setIsSearchOpen(false);
-    }
-  };
+  const { open } = useMobileSidebar(); // 🟢 Функция, вызываем
 
   return (
-    <header className="glass-header sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 h-16 relative">
-        {/* Левая часть: логотип + поиск */}
-        <div className="flex items-center flex-1 relative transition-all">
-          {/* ЛОГОТИП — исчезает при isSearchOpen */}
-          <Link
-            href="/"
-            className={`text-lg font-bold text-gray-900 transition-all duration-300 ${
-              isSearchOpen
-                ? 'max-[578px]:opacity-0 max-[578px]:w-0 overflow-hidden'
-                : ''
-            }`}
-          >
-            MobiStuff
-          </Link>
+    <Container>
+      <header className="glass-header sticky top-0 z-50 flex py-4 items-center justify-between">
+        {/* Логотип показывается только если поиск не открыт или это десктоп */}
+        {(!isSearchOpen ||
+          (typeof window !== 'undefined' && window.innerWidth >= 768)) && (
+          <div className="flex items-center flex-1 md:flex-none">
+            <Link href="/" className="text-2xl font-bold">
+              MobiStuff
+            </Link>
+          </div>
+        )}
 
-          {/* Поиск — встроен, анимировано появляется */}
-          <SearchBar />
-        </div>
+        <div
+          className={`flex items-center gap-2 ${
+            isSearchOpen ? 'flex-1 justify-between md:justify-end' : ''
+          }`}
+        >
+          {/* Поисковая строка */}
+          {isSearchOpen && (
+            <div className="w-full max-w-[90vw] sm:max-w-[500px] md:max-w-[400px] lg:max-w-[600px] flex-1">
+              <SearchBar setIsSearchOpen={setIsSearchOpen} />
+            </div>
+          )}
 
-        {/* Иконки */}
-        <div className="flex items-center gap-3 ml-auto">
-          {/* Поиск — только на мобилке */}
+          {/* Иконки */}
           <button
             onClick={() => setIsSearchOpen(!isSearchOpen)}
             className="glass-icon"
           >
             {''}
-            <Search className="glass-icon-svg" />
+            <Search className="glass-icon-svg min-w-[40px]" />
           </button>
-
-          <Link href="/favorites" className="glass-icon">
+          <Link href="/favorites" className="glass-icon min-w-[40px]">
             <Heart className="glass-icon-svg" />
           </Link>
-          <Link href="/cart" className="glass-icon">
+          <Link href="/cart" className="glass-icon min-w-[40px]">
             <ShoppingCart className="glass-icon-svg" />
           </Link>
-
-          {/* Menu */}
-          <button className="flex items-center gap-1 md:hidden">
-            <span className="menu-hamburger">Menu</span>
+          <button onClick={open} className="md:hidden menu-hamburger">
+            Menu
           </button>
         </div>
-      </div>
-    </header>
+      </header>
+
+      <MobileSidebar />
+    </Container>
   );
 }
