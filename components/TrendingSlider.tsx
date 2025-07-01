@@ -41,8 +41,8 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
             src={currentProduct.image}
             alt={currentProduct.title}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover w-full h-full rounded-xl transition-all duration-900 ease-in-out"
+            sizes="(max-width: 768px) 90vw, 50vw"
+            className="object-cover w-full h-full rounded-xl transition-all duration-900 ease-in-out "
             priority
           />
         </div>

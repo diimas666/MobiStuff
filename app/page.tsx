@@ -1,6 +1,6 @@
 import { popularItems } from '@/data/categoryData';
 import CategoryGrid from '@/components/CategoryGrid';
-import CategoryList from '@/components/CategoryList';  
+import CategoryList from '@/components/CategoryList';
 import TrendingSlider from '@/components/TrendingSlider';
 //  data
 import { trendingProducts } from '@/data/trendingSlider';
@@ -46,7 +46,13 @@ export default function GeneralPage() {
         {/* Навушники */}
         <section className="section-bottom">
           <div className="w-full overflow-hidden  pb-6">
-            <OffersSection products={headphones} title={'Навушники'} />
+            <OffersSection products={headphones} title={'Навушники'} categorySlug="navushnyky" />
+          </div>
+        </section>
+
+        <section className="section-bottom">
+          <div className="w-full overflow-hidden  pb-6">
+            <OffersSection products={headphones} title={'Павербанки'} categorySlug="paverbanky" />
           </div>
         </section>
       </main>
