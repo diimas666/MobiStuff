@@ -9,17 +9,26 @@ interface Props {
   params: {
     handle: string;
   };
+  searchParams?: { page?: string };
 }
-
-export default async function BrandPage({ params }: Props) {
+export default async function BrandPage({ params, searchParams }: Props) {
   const { handle } = params;
+  const page = parseInt(searchParams?.page || '1', 10);
+  const perPage = 20;
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+
   const brand = brands.find(
     (b) => b.handle.toLowerCase() === handle.toLowerCase()
   );
   if (!brand) return notFound();
+
   const filtered = products.filter(
     (p) => p.brand?.toLowerCase() === brand.title.toLowerCase()
   );
+
+  const paginatedProducts = filtered.slice(start, end);
+  const totalPages = Math.ceil(filtered.length / perPage);
   return (
     <div>
       <div className="relative w-full min-h-[90px] max-h-[400px] overflow-hidden  block mb-4 ">
@@ -52,20 +61,76 @@ export default async function BrandPage({ params }: Props) {
           {brand.products && (
             <ul className="list-disc list-inside mt-4 space-y-1 mb-4">
               {brand.products.map((item, i) => (
-                <li className="text-gray-600 ml-5" key={i}>{item}</li>
+                <li className="text-gray-600 ml-5" key={i}>
+                  {item}
+                </li>
               ))}
             </ul>
           )}
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1">
-            {filtered.map((product) => (
+            {paginatedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
-            {filtered.length === 0 && (
+
+            {paginatedProducts.length === 0 && (
               <p className="col-span-full text-center text-gray-500">
                 Товари цього бренду не знайдено.
               </p>
             )}
           </div>
+
+          {/* Пагинация */}
+          {/* Пагинация */}
+          {totalPages > 1 && (
+            <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
+              {/* Кнопка "Назад" */}
+              {page > 1 && (
+                <a
+                  href={`/brand/${handle}?page=${page - 1}`}
+                  className="px-3 py-1 border rounded hover:bg-gray-100"
+                >
+                  ← Попередня
+                </a>
+              )}
+
+              {/* Номера страниц */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(
+                  (p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1
+                )
+                .map((p, i, arr) => {
+                  const prev = arr[i - 1];
+                  const showDots = prev && p - prev > 1;
+
+                  return [
+                    showDots && (
+                      <span key={`dots-${p}`} className="px-2">
+                        ...
+                      </span>
+                    ),
+                    <a
+                      key={`page-${p}`}
+                      href={`/brand/${handle}?page=${p}`}
+                      className={`px-3 py-1 border rounded hover:bg-gray-100 ${
+                        page === p ? 'bg-black text-white' : 'text-black'
+                      }`}
+                    >
+                      {p}
+                    </a>,
+                  ];
+                })}
+
+              {/* Кнопка "Вперёд" */}
+              {page < totalPages && (
+                <a
+                  href={`/brand/${handle}?page=${page + 1}`}
+                  className="px-3 py-1 border rounded hover:bg-gray-100"
+                >
+                  Наступна →
+                </a>
+              )}
+            </div>
+          )}
         </section>
       </div>
     </div>
