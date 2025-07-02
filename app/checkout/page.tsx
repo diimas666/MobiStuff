@@ -1,7 +1,5 @@
-app/checkout/page.tsx
-💳 Оформление заказа.
+const CheckoutPage = () => {
+  return <h1>CheckoutPage</h1>;
+};
 
-Адрес, имя, e-mail
-
-Кнопка "Оплатить"
-
+export default CheckoutPage;

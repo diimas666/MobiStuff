@@ -64,7 +64,7 @@ export const trendingItems = [
   },
 ];
 
-const categoryStructure = {
+export const categoryStructure = {
   Кабелі: ['Type-C', 'Lightning', 'MicroUSB', 'USB-A', 'Магнітні'],
   Повербанки: [
     'Для телефону',
