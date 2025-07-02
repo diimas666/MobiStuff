@@ -10,9 +10,12 @@ interface TrendingSliderProps {
 
 export default function TrendingSlider({ products }: TrendingSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-// 🔁 Автоматическое переключение каждые 5 секунды
+
   useEffect(() => {
-    const interval = setInterval(next, 5000);
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
+    }, 5000);
+
     return () => clearInterval(interval);
   }, [products.length]);
 
@@ -25,10 +28,10 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
       prevIndex === 0 ? products.length - 1 : prevIndex - 1
     );
   };
-  if (!products || products.length === 0) return null;
-  const currentProduct = products[currentIndex];
 
-  
+  if (!products || products.length === 0) return null;
+
+  const currentProduct = products[currentIndex];
 
   return (
     <div className="relative w-full h-[370px] overflow-hidden rounded-xl shadow-xl">
