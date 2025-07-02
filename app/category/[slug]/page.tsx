@@ -1,4 +1,4 @@
-import { popularItems } from '@/data/categoryData';
+import { popularItems } from '@/data/CategoryData';
 import { actualProposition } from '@/data/actualProposition.generated';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
@@ -47,9 +47,9 @@ export default function CategoryPage({
   const cols = searchParams?.cols === '2' ? 2 : 1;
 
   // Ссылка с переключением между ?cols=1 и ?cols=2
-  const toggleColsUrl = `/category/${params.slug}?page=${currentPage}&cols=${
-    cols === 1 ? 2 : 1
-  }`;
+  // const toggleColsUrl = `/category/${params.slug}?page=${currentPage}&cols=${
+  //   cols === 1 ? 2 : 1
+  // }`;
 
   return (
     <section>
