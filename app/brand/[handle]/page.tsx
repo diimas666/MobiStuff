@@ -1,19 +1,17 @@
-// app/brand/[handle]/page.tsx
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import Image from 'next/image';
-import { brands } from '@/data/brands'; // заменишь на свои данные
+import { brands } from '@/data/brands';
 import { actualProposition as products } from '@/data/actualProposition';
 import CategoryList from '@/components/CategoryList';
 
-type BrandPageProps = {
-  params: { handle: string };
-  searchParams?: { page?: string };
-};
 export default async function BrandPage({
   params,
   searchParams,
-}: BrandPageProps) {
+}: {
+  params: { handle: string };
+  searchParams?: { page?: string };
+}) {
   const { handle } = params;
   const page = parseInt(searchParams?.page || '1', 10);
   const perPage = 20;
@@ -23,6 +21,7 @@ export default async function BrandPage({
   const brand = brands.find(
     (b) => b.handle.toLowerCase() === handle.toLowerCase()
   );
+
   if (!brand) return notFound();
 
   const filtered = products.filter(
@@ -31,9 +30,10 @@ export default async function BrandPage({
 
   const paginatedProducts = filtered.slice(start, end);
   const totalPages = Math.ceil(filtered.length / perPage);
+
   return (
     <div>
-      <div className="relative w-full min-h-[90px] max-h-[400px] overflow-hidden  block mb-4 ">
+      <div className="relative w-full min-h-[90px] max-h-[400px] overflow-hidden block mb-4">
         <Image
           src={brand.imageFull}
           alt={brand.title}
@@ -45,21 +45,21 @@ export default async function BrandPage({
       </div>
 
       <div className="flex gap-4">
-        {/* Левая колонка */}
         <aside className="w-[250px] hidden md:block">
-          <h3 className="text-2xl font-semibold mb-2">Kaталог</h3>
+          <h3 className="text-2xl font-semibold mb-2">Каталог</h3>
           <CategoryList />
         </aside>
 
-        {/* Контент бренда */}
         <section className="flex-1">
           <h1 className="font-semibold text-2xl mb-2">{brand.title}</h1>
+
           {Array.isArray(brand.description) &&
             brand.description.map((p, i) => (
               <p className="mb-1 text-gray-700 leading-relaxed" key={i}>
                 {p}
               </p>
             ))}
+
           {brand.products && (
             <ul className="list-disc list-inside mt-4 space-y-1 mb-4">
               {brand.products.map((item, i) => (
@@ -69,6 +69,7 @@ export default async function BrandPage({
               ))}
             </ul>
           )}
+
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1">
             {paginatedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -84,7 +85,6 @@ export default async function BrandPage({
           {/* Пагинация */}
           {totalPages > 1 && (
             <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
-              {/* Кнопка "Назад" */}
               {page > 1 && (
                 <a
                   href={`/brand/${handle}?page=${page - 1}`}
@@ -94,7 +94,6 @@ export default async function BrandPage({
                 </a>
               )}
 
-              {/* Номера страниц */}
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(
                   (p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1
@@ -121,7 +120,6 @@ export default async function BrandPage({
                   ];
                 })}
 
-              {/* Кнопка "Вперёд" */}
               {page < totalPages && (
                 <a
                   href={`/brand/${handle}?page=${page + 1}`}
