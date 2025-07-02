@@ -11,15 +11,15 @@ export function generateStaticParams() {
   }));
 }
 
-export default async function BrandPage({
+const BrandPage = async ({
   params,
   searchParams,
 }: {
   params: { handle: string };
   searchParams: { page?: string };
-}) {
+}) => {
   const handle = params.handle;
-  const page = parseInt(searchParams.page || '1', 10);
+  const page = parseInt(searchParams?.page || '1', 10);
 
   const perPage = 20;
   const start = (page - 1) * perPage;
@@ -140,4 +140,6 @@ export default async function BrandPage({
       </div>
     </div>
   );
-}
+};
+
+export default BrandPage;
