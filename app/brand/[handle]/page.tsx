@@ -5,6 +5,12 @@ import { brands } from '@/data/brands';
 import { actualProposition as products } from '@/data/actualProposition';
 import CategoryList from '@/components/CategoryList';
 
+export function generateStaticParams() {
+  return brands.map((brand) => ({
+    handle: brand.handle,
+  }));
+}
+
 export default async function BrandPage({
   params,
   searchParams,
