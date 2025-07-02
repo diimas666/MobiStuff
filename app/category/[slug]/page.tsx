@@ -23,7 +23,11 @@ export async function generateMetadata({ params }: { params: Params }) {
     description: `Оберіть найкращі ${params.slug} з нашого каталогу.`,
   };
 }
-
+export async function generateStaticParams() {
+  return popularItems.map((item) => ({
+    slug: item.slug,
+  }));
+}
 export default function CategoryPage({
   params,
   searchParams,

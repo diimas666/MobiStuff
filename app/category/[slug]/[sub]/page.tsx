@@ -1,20 +1,29 @@
 import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
 import { actualProposition as allProducts } from '@/data/actualProposition.generated';
-
 import type { Metadata } from 'next';
 import ProductCard from '@/components/ProductCard';
+
+interface PageProps {
+  params: {
+    slug: string;
+    sub: string;
+  };
+  searchParams?: {
+    page?: string;
+  };
+}
+
+const PER_PAGE = 20;
+
+// ✅ SEO
 export async function generateMetadata({
   params,
-}: {
-  params: { slug: string; sub: string };
-}): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const { slug, sub } = params;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
-  const subcategory = category?.subcategories.find(
-    (subcat) => subcat.slug === sub
-  );
+  const subcategory = category?.subcategories.find((s) => s.slug === sub);
 
   if (!category || !subcategory) return {};
 
@@ -32,15 +41,7 @@ export async function generateMetadata({
   };
 }
 
-/*
-Берёт все категории из catalogCategory
-Проходит по всем подкатегориям внутри каждой категории
-Возвращает массив объектов вида:
-Next.js использует этот список, чтобы создать HTML-страницы для каждого пути ещё при сборке, например:
-/category/avtomobilna-tematyka/trymachi
-/category/kabeli/type-c
-*/
-
+// ✅ SSG генерация путей
 export async function generateStaticParams() {
   return catalogCategory.flatMap((category) =>
     category.subcategories.map((sub) => ({
@@ -50,24 +51,26 @@ export async function generateStaticParams() {
   );
 }
 
-// страница
-export default async function SubcategoryPage({ params, searchParams }) {
+// ✅ Основной компонент
+export default async function SubcategoryPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { slug, sub } = params;
   const page = parseInt(searchParams?.page || '1', 10);
-  const perPage = 20;
-  const start = (page - 1) * perPage;
+  const start = (page - 1) * PER_PAGE;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
-  const subcategory = category?.subcategories.find(
-    (subcat) => subcat.slug === sub
-  );
+  const subcategory = category?.subcategories.find((s) => s.slug === sub);
+
+  if (!category || !subcategory) return notFound();
 
   const filteredProducts = allProducts.filter(
     (p) => p.categorySlug === slug && p.subcategorySlug === sub
   );
-  const paginatedProducts = filteredProducts.slice(start, start + perPage);
-  const totalPages = Math.ceil(filteredProducts.length / perPage);
-  if (!category || !subcategory) return notFound();
+
+  const paginatedProducts = filteredProducts.slice(start, start + PER_PAGE);
+  const totalPages = Math.ceil(filteredProducts.length / PER_PAGE);
 
   return (
     <div>
@@ -87,6 +90,8 @@ export default async function SubcategoryPage({ params, searchParams }) {
           </p>
         )}
       </div>
+
+      {/* Пагинация */}
       {totalPages > 1 && (
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
           {page > 1 && (
