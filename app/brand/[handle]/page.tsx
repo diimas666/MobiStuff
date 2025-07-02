@@ -19,6 +19,8 @@ export default async function BrandPage({
   searchParams?: { page?: string };
 }) {
   const { handle } = params;
+  // ⬅️ типизируй тут (иначе "any")
+
   const page = parseInt(searchParams?.page || '1', 10);
   const perPage = 20;
   const start = (page - 1) * perPage;
