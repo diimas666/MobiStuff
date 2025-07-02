@@ -11,9 +11,19 @@ export function generateStaticParams() {
   }));
 }
 
-// 💥 Убираем строгую типизацию и делаем any — костыль, НО 100% работает
-export default async function BrandPage(props: any) {
-  const { params, searchParams } = props;
+interface BrandPageProps {
+  params: {
+    handle: string;
+  };
+  searchParams?: {
+    page?: string;
+  };
+}
+
+export default async function BrandPage({
+  params,
+  searchParams,
+}: BrandPageProps) {
   const handle = params.handle;
   const page = parseInt(searchParams?.page || '1', 10);
 
