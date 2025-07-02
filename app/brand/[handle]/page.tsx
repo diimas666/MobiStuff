@@ -12,12 +12,8 @@ export function generateStaticParams() {
 }
 
 interface BrandPageProps {
-  params: {
-    handle: string;
-  };
-  searchParams: {
-    page?: string;
-  };
+  params: { handle: string };
+  searchParams: { page?: string };
 }
 
 export default async function BrandPage({
@@ -25,7 +21,7 @@ export default async function BrandPage({
   searchParams,
 }: BrandPageProps) {
   const handle = params.handle;
-  const page = parseInt(searchParams?.page || '1', 10);
+  const page = parseInt(searchParams.page || '1', 10);
 
   const perPage = 20;
   const start = (page - 1) * perPage;
