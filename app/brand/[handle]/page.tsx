@@ -11,15 +11,13 @@ export function generateStaticParams() {
   }));
 }
 
-interface BrandPageProps {
-  params: { handle: string };
-  searchParams: { page?: string };
-}
-
 export default async function BrandPage({
   params,
   searchParams,
-}: BrandPageProps) {
+}: {
+  params: { handle: string };
+  searchParams: { page?: string };
+}) {
   const handle = params.handle;
   const page = parseInt(searchParams.page || '1', 10);
 
