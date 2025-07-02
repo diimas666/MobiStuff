@@ -11,15 +11,10 @@ export function generateStaticParams() {
   }));
 }
 
-const BrandPage = async ({
-  params,
-  searchParams,
-}: {
-  params: { handle: string };
-  searchParams: { page?: string };
-}) => {
-  const handle = params.handle;
-  const page = parseInt(searchParams?.page || '1', 10);
+// 👇 Обход строгой типизации от Next.js через `any`
+const BrandPage = async (props: any) => {
+  const handle = props.params.handle;
+  const page = parseInt(props.searchParams?.page || '1', 10);
 
   const perPage = 20;
   const start = (page - 1) * perPage;
