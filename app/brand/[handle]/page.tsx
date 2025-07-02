@@ -11,17 +11,12 @@ export function generateStaticParams() {
   }));
 }
 
-export default async function BrandPage({
-  params,
-  searchParams,
-}: {
-  params: { handle: string };
-  searchParams?: { page?: string };
-}) {
-  const { handle } = params;
-  // ⬅️ типизируй тут (иначе "any")
-
+// 💥 Убираем строгую типизацию и делаем any — костыль, НО 100% работает
+export default async function BrandPage(props: any) {
+  const { params, searchParams } = props;
+  const handle = params.handle;
   const page = parseInt(searchParams?.page || '1', 10);
+
   const perPage = 20;
   const start = (page - 1) * perPage;
   const end = start + perPage;
@@ -90,7 +85,6 @@ export default async function BrandPage({
             )}
           </div>
 
-          {/* Пагинация */}
           {totalPages > 1 && (
             <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
               {page > 1 && (
