@@ -5,13 +5,15 @@ import Image from 'next/image';
 import { brands } from '@/data/brands'; // заменишь на свои данные
 import { actualProposition as products } from '@/data/actualProposition';
 import CategoryList from '@/components/CategoryList';
-interface Props {
-  params: {
-    handle: string;
-  };
+
+type BrandPageProps = {
+  params: { handle: string };
   searchParams?: { page?: string };
-}
-export default async function BrandPage({ params, searchParams }: Props) {
+};
+export default async function BrandPage({
+  params,
+  searchParams,
+}: BrandPageProps) {
   const { handle } = params;
   const page = parseInt(searchParams?.page || '1', 10);
   const perPage = 20;
