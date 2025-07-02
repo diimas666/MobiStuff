@@ -1,25 +1,12 @@
 import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
 import { actualProposition as allProducts } from '@/data/actualProposition.generated';
-import type { Metadata } from 'next';
 import ProductCard from '@/components/ProductCard';
-
-interface PageProps {
-  params: {
-    slug: string;
-    sub: string;
-  };
-  searchParams?: {
-    page?: string;
-  };
-}
+import type { Metadata } from 'next';
 
 const PER_PAGE = 20;
 
-// ✅ SEO
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { slug, sub } = params;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
@@ -27,21 +14,16 @@ export async function generateMetadata({
 
   if (!category || !subcategory) return {};
 
-  const title =
-    subcategory.seoTitle ||
-    `${subcategory.title} – ${category.title} | MobiStuff`;
-
-  const description =
-    subcategory.seoDescription ||
-    `Перегляньте підкатегорію "${subcategory.title}" у категорії "${category.title}". Знайдіть найкращі товари на MobiStuff.`;
-
   return {
-    title,
-    description,
+    title:
+      subcategory.seoTitle ||
+      `${subcategory.title} – ${category.title} | MobiStuff`,
+    description:
+      subcategory.seoDescription ||
+      `Перегляньте підкатегорію "${subcategory.title}" у категорії "${category.title}". Знайдіть найкращі товари на MobiStuff.`,
   };
 }
 
-// ✅ SSG генерация путей
 export async function generateStaticParams() {
   return catalogCategory.flatMap((category) =>
     category.subcategories.map((sub) => ({
@@ -51,11 +33,7 @@ export async function generateStaticParams() {
   );
 }
 
-// ✅ Основной компонент
-export default async function SubcategoryPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default async function SubcategoryPage({ params, searchParams }: any) {
   const { slug, sub } = params;
   const page = parseInt(searchParams?.page || '1', 10);
   const start = (page - 1) * PER_PAGE;
@@ -83,7 +61,6 @@ export default async function SubcategoryPage({
         {paginatedProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-
         {paginatedProducts.length === 0 && (
           <p className="col-span-full text-center text-gray-500">
             Товари у цій підкатегорії не знайдено.
@@ -91,7 +68,6 @@ export default async function SubcategoryPage({
         )}
       </div>
 
-      {/* Пагинация */}
       {totalPages > 1 && (
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
           {page > 1 && (
@@ -102,30 +78,17 @@ export default async function SubcategoryPage({
               ← Попередня
             </a>
           )}
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter(
-              (p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1
-            )
-            .map((p, i, arr) => {
-              const prev = arr[i - 1];
-              const showDots = prev && p - prev > 1;
-
-              return (
-                <div key={`page-${p}`} className="flex items-center">
-                  {showDots && <span className="px-2">...</span>}
-                  <a
-                    href={`/category/${slug}/${sub}?page=${p}`}
-                    className={`px-3 py-1 border rounded hover:bg-gray-100 ${
-                      page === p ? 'bg-black text-white' : 'text-black'
-                    }`}
-                  >
-                    {p}
-                  </a>
-                </div>
-              );
-            })}
-
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <a
+              key={p}
+              href={`/category/${slug}/${sub}?page=${p}`}
+              className={`px-3 py-1 border rounded hover:bg-gray-100 ${
+                page === p ? 'bg-black text-white' : 'text-black'
+              }`}
+            >
+              {p}
+            </a>
+          ))}
           {page < totalPages && (
             <a
               href={`/category/${slug}/${sub}?page=${page + 1}`}
