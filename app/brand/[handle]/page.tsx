@@ -15,7 +15,7 @@ interface BrandPageProps {
   params: {
     handle: string;
   };
-  searchParams?: {
+  searchParams: {
     page?: string;
   };
 }
