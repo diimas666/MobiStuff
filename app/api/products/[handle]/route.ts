@@ -1,16 +1,20 @@
 // app/api/products/[handle]/route.ts
-import { NextResponse } from 'next/server';
+// app/api/products/[handle]/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { handle: string } }
-) {
+export async function GET(req: NextRequest) {
   await dbConnect();
 
+  const handle = req.nextUrl.pathname.split('/').pop(); // вытаскиваем handle из URL
+
+  if (!handle) {
+    return NextResponse.json({ error: 'Handle не указан' }, { status: 400 });
+  }
+
   try {
-    const product = await Product.findOne({ handle: params.handle });
+    const product = await Product.findOne({ handle });
     if (!product) {
       return NextResponse.json({ error: 'Товар не знайдено' }, { status: 404 });
     }
