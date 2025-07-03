@@ -1,9 +1,11 @@
 'use client';
+import { Product } from '@/interface/product'; // импортируй тип, если он есть
+
 import { useState } from 'react';
 
 export default function SearchInput() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<Product[]>([]);
 
   const handleSearch = async () => {
     const res = await fetch(`/api/search?query=${query}`);
