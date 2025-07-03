@@ -1,21 +1,18 @@
 import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
-import { actualProposition as allProducts } from '@/data/actualProposition.generated';
 import ProductCard from '@/components/ProductCard';
 import CategoryList from '@/components/CategoryList';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Grid, LayoutList } from 'lucide-react';
-
+// фетч
+import { fetchProducts } from '@/lib/api';
 const ITEMS_PER_PAGE = 20;
 
-export async function generateMetadata({
-  params,
-}: {
+export async function generateMetadata(props: {
   params: { slug: string; sub: string };
 }): Promise<Metadata> {
-  const { slug, sub } = params;
-
+  const { slug, sub } = props.params;
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
 
@@ -27,7 +24,7 @@ export async function generateMetadata({
       `${subcategory.title} – ${category.title} | MobiStuff`,
     description:
       subcategory.seoDescription ||
-      `Перегляньте підкатегорію "${subcategory.title}" у категорії "${category.title}". Знайдіть найкращі товари на MobiStuff.`,
+      `Перегляньте підкатегорію "${subcategory.title}" у категорії "${category.title}".`,
   };
 }
 
@@ -40,30 +37,29 @@ export async function generateStaticParams() {
   );
 }
 
-export default async function SubcategoryPage({
-  params,
-  searchParams,
-}: {
+export default async function SubcategoryPage(props: {
   params: { slug: string; sub: string };
-  searchParams?: { page?: string; cols?: string };
+  searchParams: { page?: string; cols?: string };
 }) {
-  const { slug, sub } = params;
+  const { slug, sub } = props.params;
+  const { page, cols } = props.searchParams;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
   if (!category || !subcategory) return notFound();
 
-  const currentPage = parseInt(searchParams?.page || '1', 10);
-  const cols = searchParams?.cols === '2' ? 2 : 1;
+  const currentPage = parseInt(page || '1', 10);
+  // const colCount = cols === '2' ? 2 : 1;
 
+  const allProducts = await fetchProducts(slug, sub);
+
+  const colVariant = cols === '2' ? '2' : '1'; // ✅ всегда строка '1' или '2'
+
+  // 🧮 Пагинация
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-
-  const filteredProducts = allProducts.filter(
-    (p) => p.categorySlug === slug && p.subcategorySlug === sub
-  );
-  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = allProducts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(allProducts.length / ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -86,7 +82,7 @@ export default async function SubcategoryPage({
         <Link
           href={`/category/${slug}/${sub}?page=${currentPage}&cols=1`}
           className={`flex items-center gap-1 px-3 py-1 border rounded shadow-sm text-sm ${
-            cols === 1 ? 'bg-black text-white' : 'hover:bg-gray-100'
+            colVariant === '1' ? 'bg-black text-white' : 'hover:bg-gray-100'
           }`}
         >
           <LayoutList size={16} />1 в ряд
@@ -94,7 +90,7 @@ export default async function SubcategoryPage({
         <Link
           href={`/category/${slug}/${sub}?page=${currentPage}&cols=2`}
           className={`flex items-center gap-1 px-3 py-1 border rounded shadow-sm text-sm ${
-            cols === 2 ? 'bg-black text-white' : 'hover:bg-gray-100'
+            colVariant === '2' ? 'bg-black text-white' : 'hover:bg-gray-100'
           }`}
         >
           <Grid size={16} />2 в ряд
@@ -112,12 +108,12 @@ export default async function SubcategoryPage({
         {/* Товары */}
         <div
           className={`grid gap-4 ${
-            cols === 1 ? 'grid-cols-1' : 'grid-cols-2'
+            colVariant === '1' ? 'grid-cols-1' : 'grid-cols-2'
           } sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]`}
         >
           {paginatedProducts.length > 0 ? (
             paginatedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id} product={product} />
             ))
           ) : (
             <p className="col-span-full text-center text-gray-500">
@@ -143,7 +139,7 @@ export default async function SubcategoryPage({
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <Link
               key={p}
-              href={`/category/${slug}/${sub}?page=${p}&cols=${cols}`}
+              href={`/category/${slug}/${sub}?page=${p}&cols=${colVariant}`}
               className={`px-3 py-1 border rounded hover:bg-gray-100 ${
                 p === currentPage ? 'bg-black text-white' : ''
               }`}
@@ -155,7 +151,7 @@ export default async function SubcategoryPage({
             <Link
               href={`/category/${slug}/${sub}?page=${
                 currentPage + 1
-              }&cols=${cols}`}
+              }&cols=${colVariant}`}
               className="px-3 py-1 border rounded hover:bg-gray-100"
             >
               Наступна →

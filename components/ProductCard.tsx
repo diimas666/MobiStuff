@@ -13,7 +13,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <Link href={`/product/${product.handle}`} className="block">
         <div className="relative w-full h-60 bg-gray-100 border ">
           <Image
-            src={product.image}
+            src={product.image.replace(/"/g, '')}
             alt={product.title}
             fill
             className="object-cover"
