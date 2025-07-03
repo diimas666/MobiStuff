@@ -1,13 +1,13 @@
-import { popularItems } from '@/data/CategoryData';
+import { popularItems } from '@/data/popularAndTrending';
 import CategoryGrid from '@/components/CategoryGrid';
 import CategoryList from '@/components/CategoryList';
 import TrendingSlider from '@/components/TrendingSlider';
 //  data
 import { trendingProducts } from '@/data/trendingSlider';
 import { actualProposition } from '@/data/actualProposition';
-import { headphones } from '@/data/headphones';
-import OffersSection from '@/components/OffersSection.client';
 import BrandList from '@/components/BrandList';
+import { featuredSections } from '@/data/featuredSections';
+import OffersSection from '@/components/OffersSection.client';
 export default function GeneralPage() {
   return (
     <>
@@ -43,28 +43,20 @@ export default function GeneralPage() {
           <h3 className="text-xl font-semibold mb-6 ">Популярні бренди</h3>
           <BrandList />
         </section>
-        {/* Навушники */}
-        <section className="section-bottom">
-          <div className="w-full overflow-hidden  pb-6">
-            <OffersSection
-              products={headphones}
-              title={'Навушники'}
-              categorySlug="navushnyky"
-            />
-          </div>
-        </section>
 
-        <section className="section-bottom">
-          <div className="w-full overflow-hidden  pb-6">
-            <OffersSection
-              products={headphones}
-              title={'Павербанки'}
-              categorySlug="paverbanky"
-            />
-          </div>
-        </section>
+        {featuredSections.map((section) => (
+          <section key={section.title} className="section-bottom">
+            <div className="w-full overflow-hidden pb-6">
+              <OffersSection
+                title={section.title}
+                products={section.products}
+                categorySlug={section.categorySlug}
+                subcategorySlug={section.subcategorySlug}
+              />
+            </div>
+          </section>
+        ))}
       </main>
     </>
   );
 }
-//rjv

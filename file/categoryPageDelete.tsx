@@ -1,4 +1,4 @@
-import { popularItems } from '@/data/CategoryData';
+import { popularItems } from '@/data/popularAndTrending';
 import { actualProposition } from '@/data/actualProposition.generated';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';

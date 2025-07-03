@@ -7,7 +7,8 @@ interface Item {
   title: string;
   image: string;
   bg: string;
-  slug: string;
+  categorySlug: string;
+  subcategorySlug: string;
 }
 
 interface CategoryGridProps {
@@ -33,7 +34,8 @@ export default function CategoryGrid({ title, items }: CategoryGridProps) {
             title={item.title}
             image={item.image}
             bg={item.bg}
-            slug={item.slug}
+            categorySlug={item.categorySlug}
+            subcategorySlug={item.subcategorySlug}
           />
         ))}
       </div>

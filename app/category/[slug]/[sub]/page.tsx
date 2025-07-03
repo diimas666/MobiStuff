@@ -2,11 +2,18 @@ import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
 import { actualProposition as allProducts } from '@/data/actualProposition.generated';
 import ProductCard from '@/components/ProductCard';
+import CategoryList from '@/components/CategoryList';
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Grid, LayoutList } from 'lucide-react';
 
-const PER_PAGE = 20;
+const ITEMS_PER_PAGE = 20;
 
-export async function generateMetadata({ params }: any): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string; sub: string };
+}): Promise<Metadata> {
   const { slug, sub } = params;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
@@ -33,69 +40,126 @@ export async function generateStaticParams() {
   );
 }
 
-export default async function SubcategoryPage({ params, searchParams }: any) {
+export default async function SubcategoryPage({
+  params,
+  searchParams,
+}: {
+  params: { slug: string; sub: string };
+  searchParams?: { page?: string; cols?: string };
+}) {
   const { slug, sub } = params;
-  const page = parseInt(searchParams?.page || '1', 10);
-  const start = (page - 1) * PER_PAGE;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
-
   if (!category || !subcategory) return notFound();
+
+  const currentPage = parseInt(searchParams?.page || '1', 10);
+  const cols = searchParams?.cols === '2' ? 2 : 1;
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
 
   const filteredProducts = allProducts.filter(
     (p) => p.categorySlug === slug && p.subcategorySlug === sub
   );
-
-  const paginatedProducts = filteredProducts.slice(start, start + PER_PAGE);
-  const totalPages = Math.ceil(filteredProducts.length / PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
 
   return (
     <div>
+      {/* Навигация */}
+      <div className="text-sm mb-4 text-gray-500">
+        <Link href="/" className="hover:underline">
+          Головна
+        </Link>{' '}
+        / <span className="font-semibold text-gray-700">{category.title}</span>
+      </div>
+
+      {/* Заголовки */}
       <h1 className="text-2xl font-bold">Категорія: {category.title}</h1>
-      <h2 className="text-xl text-gray-700">
+      <h2 className="text-xl text-gray-700 mb-6">
         Підкатегорія: {subcategory.title}
       </h2>
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1 mt-6">
-        {paginatedProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-        {paginatedProducts.length === 0 && (
-          <p className="col-span-full text-center text-gray-500">
-            Товари у цій підкатегорії не знайдено.
-          </p>
-        )}
+      {/* Переключение количества карточек */}
+      <div className="md:hidden mb-4 flex items-center gap-2">
+        <Link
+          href={`/category/${slug}/${sub}?page=${currentPage}&cols=1`}
+          className={`flex items-center gap-1 px-3 py-1 border rounded shadow-sm text-sm ${
+            cols === 1 ? 'bg-black text-white' : 'hover:bg-gray-100'
+          }`}
+        >
+          <LayoutList size={16} />1 в ряд
+        </Link>
+        <Link
+          href={`/category/${slug}/${sub}?page=${currentPage}&cols=2`}
+          className={`flex items-center gap-1 px-3 py-1 border rounded shadow-sm text-sm ${
+            cols === 2 ? 'bg-black text-white' : 'hover:bg-gray-100'
+          }`}
+        >
+          <Grid size={16} />2 в ряд
+        </Link>
       </div>
 
+      {/* Основная сетка */}
+      <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-4">
+        {/* Сайдбар */}
+        <aside className="hidden md:block border px-4 py-4 shadow-sm rounded bg-white h-fit sticky top-24 z-30">
+          <h3 className="text-lg font-semibold mb-4">Каталог</h3>
+          <CategoryList />
+        </aside>
+
+        {/* Товары */}
+        <div
+          className={`grid gap-4 ${
+            cols === 1 ? 'grid-cols-1' : 'grid-cols-2'
+          } sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]`}
+        >
+          {paginatedProducts.length > 0 ? (
+            paginatedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-500">
+              Товари у цій підкатегорії не знайдено.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Пагинация */}
       {totalPages > 1 && (
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
-          {page > 1 && (
-            <a
-              href={`/category/${slug}/${sub}?page=${page - 1}`}
+          {currentPage > 1 && (
+            <Link
+              href={`/category/${slug}/${sub}?page=${
+                currentPage - 1
+              }&cols=${cols}`}
               className="px-3 py-1 border rounded hover:bg-gray-100"
             >
               ← Попередня
-            </a>
+            </Link>
           )}
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <a
+            <Link
               key={p}
-              href={`/category/${slug}/${sub}?page=${p}`}
+              href={`/category/${slug}/${sub}?page=${p}&cols=${cols}`}
               className={`px-3 py-1 border rounded hover:bg-gray-100 ${
-                page === p ? 'bg-black text-white' : 'text-black'
+                p === currentPage ? 'bg-black text-white' : ''
               }`}
             >
               {p}
-            </a>
+            </Link>
           ))}
-          {page < totalPages && (
-            <a
-              href={`/category/${slug}/${sub}?page=${page + 1}`}
+          {currentPage < totalPages && (
+            <Link
+              href={`/category/${slug}/${sub}?page=${
+                currentPage + 1
+              }&cols=${cols}`}
               className="px-3 py-1 border rounded hover:bg-gray-100"
             >
               Наступна →
-            </a>
+            </Link>
           )}
         </div>
       )}

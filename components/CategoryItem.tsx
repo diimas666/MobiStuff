@@ -5,13 +5,20 @@ interface ItemProps {
   title: string;
   image: string;
   bg: string;
-  slug: string;
+  categorySlug: string;
+  subcategorySlug: string;
 }
 
-export default function CategoryItem({ title, image, bg, slug }: ItemProps) {
+export default function CategoryItem({
+  title,
+  image,
+  bg,
+  categorySlug,
+  subcategorySlug,
+}: ItemProps) {
   return (
     <Link
-      href={`/category/${slug}`}
+      href={`/category/${categorySlug}/${subcategorySlug}`}
       className={`
       relative aspect-square overflow-hidden 
       py-2 px-4 rounded-md shadow-md 
@@ -22,9 +29,7 @@ export default function CategoryItem({ title, image, bg, slug }: ItemProps) {
     >
       <Image src={image} alt={title} fill className="object-cover" />
       <div className="absolute inset-0 bg-black/30 flex items-end p-2">
-        <h3 className="text-md font-semibold text-white ">
-          {title}
-        </h3>
+        <h3 className="text-md font-semibold text-white ">{title}</h3>
       </div>
     </Link>
   );
