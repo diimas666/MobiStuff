@@ -22,9 +22,15 @@ export default function ImportPage() {
   return (
     <div className="max-w-xl mx-auto p-6 space-y-4">
       <h2 className="text-xl font-bold">Імпорт товарів</h2>
+      <label htmlFor="file" className="block text-sm font-medium text-gray-700">
+        Завантажити CSV файл:
+      </label>
       <input
         type="file"
+        name="file"
+        id="file"
         onChange={(e) => setFile(e.target.files?.[0] || null)}
+        className="block mt-1"
       />
       <button
         onClick={handleUpload}

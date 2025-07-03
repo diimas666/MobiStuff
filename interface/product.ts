@@ -1,4 +1,5 @@
 export interface Product {
+  _id: string;
   id: string;
   title: string;
   description?: string; // Описание товара
@@ -12,7 +13,7 @@ export interface Product {
   isFeatured?: boolean; // Показывать на главной
   handle: string; // URL-адрес
   category?: string; // Категория
-  categorySlug?:string;
+  categorySlug?: string;
   subcategorySlug?: string;
   brand?: string; // Бренд
   rating?: number; // Рейтинг 1–5
