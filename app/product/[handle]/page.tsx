@@ -1,15 +1,17 @@
-// app/product/[handle]/page.tsx
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({
-  params,
+  params: paramsPromise,
 }: {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
+  const params = await paramsPromise; // Асинхронно получаем params
+  const { handle } = params;
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${params.handle}`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${handle}`
   );
   const product = await res.json();
 
@@ -20,12 +22,15 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({
-  params,
+  params: paramsPromise,
 }: {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 }) {
+  const params = await paramsPromise; // Асинхронно получаем params
+  const { handle } = params;
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${params.handle}`
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${handle}`
   );
   if (!res.ok) return notFound();
 

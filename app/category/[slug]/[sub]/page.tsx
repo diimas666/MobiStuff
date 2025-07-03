@@ -9,10 +9,13 @@ import { Grid, LayoutList } from 'lucide-react';
 import { fetchProducts } from '@/lib/api';
 const ITEMS_PER_PAGE = 20;
 
-export async function generateMetadata(props: {
-  params: { slug: string; sub: string };
+export async function generateMetadata({
+  params: paramsPromise,
+}: {
+  params: Promise<{ slug: string; sub: string }>;
 }): Promise<Metadata> {
-  const { slug, sub } = props.params;
+  const params = await paramsPromise; // Асинхронно получаем params
+  const { slug, sub } = params;
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
 
@@ -37,20 +40,24 @@ export async function generateStaticParams() {
   );
 }
 
-export default async function SubcategoryPage(props: {
-  params: { slug: string; sub: string };
-  searchParams: { page?: string; cols?: string };
+export default async function SubcategoryPage({
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
+}: {
+  params: Promise<{ slug: string; sub: string }>;
+  searchParams: Promise<{ page?: string; cols?: string }>;
 }) {
-  const { slug, sub } = props.params;
-  const { page, cols } = props.searchParams;
+  const params = await paramsPromise; // Асинхронно получаем params
+  const searchParams = await searchParamsPromise; // Асинхронно получаем searchParams
+  const { slug, sub } = params;
+  const { page, cols } = searchParams;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
   if (!category || !subcategory) return notFound();
 
   const currentPage = parseInt(page || '1', 10);
-  // const colCount = cols === '2' ? 2 : 1;
-
+// Получение продуктов
   const allProducts = await fetchProducts(slug, sub);
 
   const colVariant = cols === '2' ? '2' : '1'; // ✅ всегда строка '1' или '2'
