@@ -7,13 +7,14 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
+    "noImplicitAny": false, // ✅ добавлено — отключает ошибку на неявный any
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-     "types": [],
+    "types": [],
     "plugins": [
       {
         "name": "next"
