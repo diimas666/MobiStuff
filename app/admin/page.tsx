@@ -113,6 +113,21 @@ export default function AdminPage() {
         required
       />
       <input
+        placeholder="Стара ціна (необов’язково)"
+        type="number"
+        value={form.oldPrice}
+        onChange={(e) => setForm({ ...form, oldPrice: e.target.value })}
+        className="w-full border p-2"
+      />
+
+      <input
+        placeholder="Знижка % (необов’язково)"
+        type="number"
+        value={form.discountPercent}
+        onChange={(e) => setForm({ ...form, discountPercent: e.target.value })}
+        className="w-full border p-2"
+      />
+      <input
         placeholder="Головне фото (URL)"
         value={form.image}
         onChange={(e) => setForm({ ...form, image: e.target.value })}
@@ -170,24 +185,11 @@ export default function AdminPage() {
         onChange={(e) => setForm({ ...form, tags: e.target.value })}
         className="w-full border p-2"
       />
-      <input
-        placeholder="Стара ціна (необов’язково)"
-        type="number"
-        value={form.oldPrice}
-        onChange={(e) => setForm({ ...form, oldPrice: e.target.value })}
-        className="w-full border p-2"
-      />
 
+      <label className="block text-sm font-medium text-gray-700">
+        Рейтинг (0–5)
+      </label>
       <input
-        placeholder="Знижка % (необов’язково)"
-        type="number"
-        value={form.discountPercent}
-        onChange={(e) => setForm({ ...form, discountPercent: e.target.value })}
-        className="w-full border p-2"
-      />
-
-      <input
-        placeholder="Рейтинг (0–5)"
         type="number"
         min="0"
         max="5"
@@ -197,8 +199,10 @@ export default function AdminPage() {
         className="w-full border p-2"
       />
 
+      <label className="block text-sm font-medium text-gray-700">
+        Кількість відгуків
+      </label>
       <input
-        placeholder="Кількість відгуків"
         type="number"
         value={form.reviewsCount}
         onChange={(e) => setForm({ ...form, reviewsCount: e.target.value })}
