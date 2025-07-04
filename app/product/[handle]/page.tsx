@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import GalleryImages from '@/components/GalleryImages';
 import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
-
+// import VariantSelector from '@/components/VariantSelector';
 export async function generateMetadata({
   params: paramsPromise,
 }: {
@@ -113,18 +113,13 @@ export default async function ProductPage({
               )}
             </div>
             {/* variant  */}
-            <div className="h-[50px] ">
-              <ul className="flex gap-4">
-                {product.variants?.map((item, index) => (
-                  <li
-                    key={index}
-                    className="border min-w-[67px]  py-1 px-2 rounded-md flex items-center justify-center text-sm bg-gray-100"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* <VariantSelector
+              variants={product.variants}
+              onSelect={(variant) => {
+                // можно сохранить в cookies, localStorage, context или прокинуть в addToCart
+                console.log('Вибрано варіант:', variant);
+              }}
+            /> */}
             {/* variant  */}
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition cursor-pointer min-w-[182px]">
