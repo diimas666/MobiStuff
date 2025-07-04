@@ -2,24 +2,35 @@
 import { useState } from 'react';
 import { catalogCategory } from '@/data/catalogCategory';
 import { toSlug } from '@/lib/slugify';
+import { toast } from 'react-toastify';
 
+import Image from 'next/image';
+const initialFormState = {
+  title: '',
+  description: '',
+  image: '',
+  images: '',
+  price: '',
+  oldPrice: '',
+  discountPercent: '',
+  category: '',
+  subcategory: '',
+  brand: '',
+  tags: '',
+  isNew: false,
+  isFeatured: false,
+  inStock: true,
+  rating: '0',
+  reviewsCount: '0',
+  variants: '',
+};
 export default function AdminPage() {
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    image: '',
-    images: '',
-    price: '',
-    category: '',
-    subcategory: '',
-    brand: '',
-    tags: '',
-    isNew: false,
-    isFeatured: false,
-  });
+  const [form, setForm] = useState(initialFormState);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     const res = await fetch('/api/admin/addProduct', {
       method: 'POST',
       headers: {
@@ -29,6 +40,16 @@ export default function AdminPage() {
       body: JSON.stringify({
         ...form,
         price: parseFloat(form.price),
+        oldPrice: form.oldPrice ? parseFloat(form.oldPrice) : undefined,
+        discountPercent: form.discountPercent
+          ? parseFloat(form.discountPercent)
+          : undefined,
+        inStock: form.inStock,
+        rating: parseFloat(form.rating),
+        reviewsCount: parseInt(form.reviewsCount),
+        variants: form.variants
+          ? form.variants.split(',').map((v) => v.trim())
+          : [],
         images: form.images.split(',').map((i) => i.trim()),
         categorySlug: toSlug(form.category),
         subcategorySlug: toSlug(form.subcategory),
@@ -38,24 +59,12 @@ export default function AdminPage() {
     });
 
     const data = await res.json();
-
+    setLoading(false);
     if (res.ok) {
-      alert('Товар додано!');
-      setForm({
-        title: '',
-        description: '',
-        image: '',
-        images: '',
-        price: '',
-        category: '',
-        subcategory: '',
-        brand: '',
-        tags: '',
-        isNew: false,
-        isFeatured: false,
-      });
+      toast.success('✅ Товар успішно додано!');
+      setForm(initialFormState);
     } else {
-      alert(`Помилка: ${data.error}`);
+      toast.error(`❌ Помилка: ${data.error}`);
     }
 
     alert(res.ok ? 'Товар додано!' : `Помилка: ${data.error}`);
@@ -67,6 +76,21 @@ export default function AdminPage() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-6 space-y-4">
+      {/* Превью картинки */}
+      {form.image && !form.image.startsWith('http') && (
+        <p className="text-red-500 text-sm">⚠️ Неправильний формат URL</p>
+      )}
+      {form.image && (
+        <div className="w-full border p-2 rounded bg-white shadow">
+          <Image
+            src={form.image}
+            alt="Головне зображення"
+            width={200}
+            height={200}
+            className="object-contain mx-auto"
+          />
+        </div>
+      )}
       <input
         placeholder="Назва"
         value={form.title}
@@ -146,6 +170,56 @@ export default function AdminPage() {
         onChange={(e) => setForm({ ...form, tags: e.target.value })}
         className="w-full border p-2"
       />
+      <input
+        placeholder="Стара ціна (необов’язково)"
+        type="number"
+        value={form.oldPrice}
+        onChange={(e) => setForm({ ...form, oldPrice: e.target.value })}
+        className="w-full border p-2"
+      />
+
+      <input
+        placeholder="Знижка % (необов’язково)"
+        type="number"
+        value={form.discountPercent}
+        onChange={(e) => setForm({ ...form, discountPercent: e.target.value })}
+        className="w-full border p-2"
+      />
+
+      <input
+        placeholder="Рейтинг (0–5)"
+        type="number"
+        min="0"
+        max="5"
+        step="0.1"
+        value={form.rating}
+        onChange={(e) => setForm({ ...form, rating: e.target.value })}
+        className="w-full border p-2"
+      />
+
+      <input
+        placeholder="Кількість відгуків"
+        type="number"
+        value={form.reviewsCount}
+        onChange={(e) => setForm({ ...form, reviewsCount: e.target.value })}
+        className="w-full border p-2"
+      />
+
+      <input
+        placeholder="Варіанти (через кому — колір, розмір тощо)"
+        value={form.variants}
+        onChange={(e) => setForm({ ...form, variants: e.target.value })}
+        className="w-full border p-2"
+      />
+
+      <label className="block">
+        <input
+          type="checkbox"
+          checked={form.inStock}
+          onChange={(e) => setForm({ ...form, inStock: e.target.checked })}
+        />
+        {' В наявності'}
+      </label>
 
       <label className="block">
         <input
@@ -165,8 +239,12 @@ export default function AdminPage() {
         {' Показувати на головній'}
       </label>
 
-      <button type="submit" className="bg-black text-white px-4 py-2 rounded">
-        Загрузити товар
+      <button
+        disabled={loading}
+        type="submit"
+        className="bg-black text-white px-4 py-2 rounded"
+      >
+        {loading ? 'Завантаження..' : 'Загрузити товар'}
       </button>
     </form>
   );

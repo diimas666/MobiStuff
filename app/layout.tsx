@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { MobileSidebarProvider } from '@/context/MobileSidebarContext';
-
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 import { Roboto } from 'next/font/google';
 
 import Header from '@/components/Header';
@@ -33,6 +34,7 @@ export default function RootLayout({
 
           <Footer />
         </MobileSidebarProvider>
+        <ToastContainer position="top-right" autoClose={3000} />
       </body>
     </html>
   );
