@@ -66,3 +66,5 @@ export default async function ProductPage({
     </div>
   );
 }
+
+//// все работает в я шоке!!))
