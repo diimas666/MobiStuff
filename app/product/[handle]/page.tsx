@@ -3,11 +3,12 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({
-  params,
+  params: paramsPromise,
 }: {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
-  const { handle } = params;
+  const { handle } = await paramsPromise;
+
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${handle}`
   );
@@ -20,17 +21,15 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({
-  params,
+  params: paramsPromise,
 }: {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 }) {
-  const { handle } = params;
+  const { handle } = await paramsPromise;
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   if (!baseUrl) {
-    throw new Error(
-      '❌ NEXT_PUBLIC_BASE_URL не задан. Добавь его в .env.production'
-    );
+    throw new Error('❌ NEXT_PUBLIC_BASE_URL не задан');
   }
 
   const res = await fetch(`${baseUrl}/api/products/${handle}`);
