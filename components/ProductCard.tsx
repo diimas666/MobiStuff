@@ -34,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* низ карточки цена. и тд   */}
         <div className="p-4 bg-gray-800 text-white min-h-[80px]  relative">
           {/* название заголовок  */}
-          <h3 className="text-lg font-semibold line-clamp-1 mb-1 max-w-[270px]">
+          <h3 className="text-lg font-semibold line-clamp-3 mb-1 max-w-[270px]">
             {product.title}
           </h3>
           {/* рейтинг */}
@@ -50,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.brand && <div className="flex gap-1">{product.brand}</div>}
           {/* цена  */}
           <div className="flex  gap-2 min-h-[80px] max-[490px]:flex-col items-start">
-            <span className="text-xl font-bold text-white ">
+            <span className="text-xl font-bold  text-gray-500 ">
               {product.price} грн
             </span>
             {product.oldPrice && (

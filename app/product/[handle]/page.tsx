@@ -112,7 +112,20 @@ export default async function ProductPage({
                 </span>
               )}
             </div>
-
+            {/* variant  */}
+            <div className="h-[50px] ">
+              <ul className="flex gap-4">
+                {product.variants?.map((item, index) => (
+                  <li
+                    key={index}
+                    className="border min-w-[67px]  py-1 px-2 rounded-md flex items-center justify-center text-sm bg-gray-100"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* variant  */}
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition cursor-pointer min-w-[182px]">
                 Додати в корзину

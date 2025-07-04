@@ -61,13 +61,11 @@ export default function AdminPage() {
     const data = await res.json();
     setLoading(false);
     if (res.ok) {
-      toast.success('✅ Товар успішно додано!');
+      toast.success('Товар успішно додано!');
       setForm(initialFormState);
     } else {
       toast.error(`❌ Помилка: ${data.error}`);
     }
-
-    alert(res.ok ? 'Товар додано!' : `Помилка: ${data.error}`);
   };
 
   const subcategories =
