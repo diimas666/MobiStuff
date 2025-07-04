@@ -1,5 +1,5 @@
 export interface Product {
-  _id: string;
+  _id?: string;
   id: string;
   title: string;
   description?: string; // Описание товара
