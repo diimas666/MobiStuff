@@ -11,11 +11,10 @@ import { fetchProducts } from '@/lib/api';
 const ITEMS_PER_PAGE = 20;
 
 export async function generateMetadata({
-  params: paramsPromise,
+  params,
 }: {
-  params: Promise<{ slug: string; sub: string }>;
+  params: { slug: string; sub: string };
 }): Promise<Metadata> {
-  const params = await paramsPromise; // Асинхронно получаем params
   const { slug, sub } = params;
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
@@ -32,6 +31,7 @@ export async function generateMetadata({
   };
 }
 
+
 export async function generateStaticParams() {
   return catalogCategory.flatMap((category) =>
     category.subcategories.map((sub) => ({
@@ -42,16 +42,15 @@ export async function generateStaticParams() {
 }
 
 export default async function SubcategoryPage({
-  params: paramsPromise,
-  searchParams: searchParamsPromise,
+  params,
+  searchParams,
 }: {
-  params: Promise<{ slug: string; sub: string }>;
-  searchParams: Promise<{ page?: string; cols?: string }>;
+  params: { slug: string; sub: string };
+  searchParams: { page?: string; cols?: string };
 }) {
-  const params = await paramsPromise; // Асинхронно получаем params
-  const searchParams = await searchParamsPromise; // Асинхронно получаем searchParams
   const { slug, sub } = params;
-  const { page, cols } = searchParams;
+  const { page, cols } = searchParams ?? {};
+
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
