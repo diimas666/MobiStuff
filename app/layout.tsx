@@ -4,6 +4,7 @@ import { MobileSidebarProvider } from '@/context/MobileSidebarContext';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { Roboto } from 'next/font/google';
+import { FavoritesProvider } from '@/context/FavoritesContext';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="uk ">
       <body className={`${roboto.variable}  antialiased min-h-screen`}>
+        <FavoritesProvider>
         <MobileSidebarProvider>
           <Header />
 
@@ -34,6 +36,7 @@ export default function RootLayout({
 
           <Footer />
         </MobileSidebarProvider>
+        </FavoritesProvider>
         <ToastContainer position="top-right" autoClose={3000} />
       </body>
     </html>

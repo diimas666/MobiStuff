@@ -9,11 +9,18 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const toggleFavorite = (productId: string) => {
+    const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const updated = stored.includes(productId)
+      ? stored.filter((id: string) => id !== productId)
+      : [...stored, productId];
+    localStorage.setItem('favorites', JSON.stringify(updated));
+  };
   return (
-    <div className="min-h-[460px] flex flex-col justify-between rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative">
+    <div className="min-h-[460px] flex flex-col justify-between border rounded-xl overflow-hidden shadow-md  hover:border-green-500 transition-all duration-300 relative">
       {/* <div className="w-full max-w-[340px] mx-auto rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative"> */}
       <Link href={`/product/${product.handle}`} className="block ">
-        <div className="relative w-full aspect-[4/4] bg-gray-100 border">
+        <div className="relative w-full aspect-[4/4] bg-gray-100 ">
           <Image
             src={product.image.replace(/"/g, '')}
             alt={product.title}
@@ -75,7 +82,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
       <div className="border-white flex  gap-4 absolute right-5 bottom-3">
-        <button className="button-block-card hover:bg-green-500">
+        <button
+          onClick={() => toggleFavorite(product._id!)}
+          className="button-block-card hover:bg-green-500"
+        >
           {''}
           <Heart className="glass-icon-svg" />
         </button>

@@ -6,6 +6,7 @@ import SearchBar from './SearchBar';
 import Container from './Container';
 import { useMobileSidebar } from '@/context/MobileSidebarContext';
 import MobileSidebar from './MobileSidebar';
+import FavoritesCountBadge from '@/components/FavoritesCountBadge';
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -44,8 +45,9 @@ export default function Header() {
             {''}
             <Search className="glass-icon-svg min-w-[40px]" />
           </button>
-          <Link href="/favorites" className="glass-icon min-w-[40px]">
+          <Link href="/favorites" className="relative glass-icon min-w-[40px]">
             <Heart className="glass-icon-svg" />
+            <FavoritesCountBadge />
           </Link>
           <Link href="/cart" className="glass-icon min-w-[40px]">
             <ShoppingCart className="glass-icon-svg" />

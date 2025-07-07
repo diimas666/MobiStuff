@@ -1,6 +1,8 @@
 import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
-import ProductCard from '@/components/ProductCard';
+// import ProductCard from '@/components/ProductCard';
+import ProductList from '@/components/ProductList';
+
 import CategoryList from '@/components/CategoryList';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -115,20 +117,9 @@ export default async function SubcategoryPage({
         </aside>
 
         {/* Товары */}
-        <div
-          className={`grid gap-1 ${
-            colVariant === '1' ? 'grid-cols-1' : 'grid-cols-2'
-          } sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]`}
-        >
-          {paginatedProducts.length > 0 ? (
-            paginatedProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-500">
-              Товари у цій підкатегорії не знайдено.
-            </p>
-          )}
+        {/* Товары */}
+        <div className="w-full">
+          <ProductList products={paginatedProducts} />
         </div>
       </div>
 
