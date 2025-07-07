@@ -10,13 +10,14 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative">
+      {/* <div className="w-full max-w-[340px] mx-auto rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative"> */}
       <Link href={`/product/${product.handle}`} className="block">
-        <div className="relative w-full h-60 bg-gray-100 border ">
+        <div className="relative w-full aspect-[4/4] bg-gray-100 border">
           <Image
             src={product.image.replace(/"/g, '')}
             alt={product.title}
             fill
-            className="object-cover"
+            className="object-cover rounded-t-xl"
           />
           {/* новинка слева.  */}
           {product.isNew && (
@@ -54,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.price} грн
             </span>
             {product.oldPrice && (
-              <span className="text-sm line-through text-gray-500">
+              <span className="text-sm line-through text-gray-500 mt-2">
                 {product.oldPrice} грн
               </span>
             )}
@@ -69,11 +70,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
       <div className="border-white flex flex-col gap-2 absolute right-3 bottom-3">
-        <button className="button-block-card">
+        <button className="button-block-card hover:bg-gray-500">
           {''}
           <Heart className="glass-icon-svg" />
         </button>
-        <button className="button-block-card">
+        <button className="button-block-card hover:bg-gray-500">
           {''}
           <ShoppingCart className="glass-icon-svg" />
         </button>
