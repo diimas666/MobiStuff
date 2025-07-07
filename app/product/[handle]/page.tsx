@@ -76,7 +76,7 @@ export default async function ProductPage({
           {/* Правая колонка: текст, кнопки */}
           <div className="flex flex-col gap-4">
             {/* Заголовок */}
-            <h1 className="text-3xl sm:text-lg font-bold ">{product.title}</h1>
+            <h1 className="sm:text-xl  font-bold ">{product.title}</h1>
 
             {/* Цена */}
             <div className="text-2xl font-semibold">
