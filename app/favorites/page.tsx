@@ -5,7 +5,6 @@ import CategoryList from '@/components/CategoryList';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/interface/product';
 import { fetchProductsByIds } from '@/lib/fetchProductsByIds';
-import { useSearchParams, useRouter } from 'next/navigation';
 
 const ITEMS_PER_PAGE = 12;
 
