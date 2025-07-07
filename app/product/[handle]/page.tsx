@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import GalleryImages from '@/components/GalleryImages';
 import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
-import VariantSelector from '@/components/VariantSelector';
 import VariantSection from '@/components/VariantSection';
 export async function generateMetadata({
   params: paramsPromise,
@@ -77,7 +76,7 @@ export default async function ProductPage({
           {/* Правая колонка: текст, кнопки */}
           <div className="flex flex-col gap-4">
             {/* Заголовок */}
-            <h1 className="text-3xl font-bold">{product.title}</h1>
+            <h1 className="text-3xl sm:text-lg font-bold ">{product.title}</h1>
 
             {/* Цена */}
             <div className="text-2xl font-semibold">
