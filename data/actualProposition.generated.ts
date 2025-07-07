@@ -752,7 +752,7 @@ export const actualProposition: Product[] = [
     category: 'Komp Iuterna Peryferiia',
     categorySlug: 'komp-iuterna-peryferiia',
     subcategorySlug: 'myshky',
-    rating:  Seufert: 4.8,
+    rating: 4.8,
     reviewsCount: 42,
     tags: ['at', 'ut', 'ut'],
     variants: ['Сірий'],
