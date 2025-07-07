@@ -1,6 +1,6 @@
 import { Product } from '@/interface/product';
 
-export const actualProposition: Product[] = [
+export const rawProducts: Product[] = [
   {
     id: '6',
     title: 'Voluptatum minima',
@@ -998,3 +998,7 @@ export const actualProposition: Product[] = [
     tags: ['repellendus', 'consectetur', 'numquam'],
   },
 ];
+export const actualProposition: Product[] = rawProducts.map((product) => ({
+  ...product,
+  _id: product.id, // теперь он не будет "затираться"
+}));

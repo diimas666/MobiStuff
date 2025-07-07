@@ -3,10 +3,12 @@
 import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 import { Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
   const { cart, increment, decrement, removeFromCart } = useCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const router = useRouter();
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -80,7 +82,7 @@ export default function CartPage() {
 
           <button
             onClick={() => {
-              // Открыть модальное окно оформления (сделаем позже)
+              router.push('checkout');
             }}
             className="w-full mt-6 bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition cursor-pointer"
           >
