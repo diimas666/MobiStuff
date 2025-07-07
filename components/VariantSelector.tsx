@@ -1,37 +1,35 @@
-// 'use client';
+'use client';
 
-// import { useState } from 'react';
+interface VariantSelectorProps {
+  variants: string[];
+  selected: string | null;
+  setSelected: (variant: string) => void;
+}
 
-// interface VariantSelectorProps {
-//   variants: string[];
-//   onSelect: (variant: string) => void;
-// }
-// export default function VariantSelector({
-//   variants,
-//   onSelect,
-// }: VariantSelectorProps) {
-//   const [selected, setSelected] = useState<string | null>(null);
-//   function handleSelect(variant: string) {
-//     setSelected(variant);
-//     onSelect(variant);
-//   }
-//   return (
-//     <div className="h-[50px]">
-//       <ul className="flex gap-4">
-//         {variants.map((item, index) => (
-//           <li
-//             onClick={() => handleSelect(item)}
-//             key={index}
-//             className={`cursor-pointer border min-w-[67px] px-2 py-1 rounded-md flex items-center justify-centertext-sm transition-all ${
-//               selected === item
-//                 ? 'border-black font-semibold bg-white'
-//                 : 'border-gray-300 bg-gray-100'
-//             }`}
-//           >
-//             {item}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
+export default function VariantSelector({
+  variants,
+  selected,
+  setSelected,
+}: VariantSelectorProps) {
+  if (!variants || variants.length === 0) return null;
+
+  return (
+    <div className="h-[60px] ">
+      <ul className="flex  gap-4 justify-center ">
+        {variants.map((variant, index) => (
+          <li
+            key={index}
+            onClick={() => setSelected(variant)}
+            className={` min-w-[80px] py-2 px-4 rounded-4xl shadow-md flex items-center justify-center text-md cursor-pointer transition ${
+              selected === variant
+                ? 'bg-black text-white border-black'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+          >
+            {variant}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

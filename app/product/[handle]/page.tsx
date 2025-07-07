@@ -3,7 +3,8 @@ import type { Metadata } from 'next';
 import GalleryImages from '@/components/GalleryImages';
 import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
-// import VariantSelector from '@/components/VariantSelector';
+import VariantSelector from '@/components/VariantSelector';
+import VariantSection from '@/components/VariantSection';
 export async function generateMetadata({
   params: paramsPromise,
 }: {
@@ -47,7 +48,7 @@ export default async function ProductPage({
   return (
     <>
       {/* хлеб крошки  */}
-      <div className="text-sm mb-4 text-gray-500">
+      <div className="text-sm mb-4 text-gray-500 mb-4">
         <Link href="/" className="hover:underline">
           Головна
         </Link>{' '}
@@ -67,22 +68,34 @@ export default async function ProductPage({
       </div>
       {/* хлеб крошки   конец */}
       <div className="max-w-5xl mx-auto p-6 border border-green-600">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Блок с заголовком — первым на мобилках */}
-          <div className="order-1 md:order-none md:col-span-2">
-            <h1 className="text-3xl font-bold mb-4 text-center">
-              {product.title}
-            </h1>
-          </div>
-
-          {/* Галерея — второй блок на мобилках, первый на десктопе */}
-          <div className="order-2 md:order-1 border">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ">
+          {/* Левая колонка: изображения */}
+          <div>
             <GalleryImages images={product.images} title={product.title} />
           </div>
 
-          {/* Описание и цена — третий блок на мобилках, второй на десктопе */}
-          <div className="order-3 md:order-2 border border-red-500">
-            <div className="text-gray-600 mb-4 leading-relaxed space-y-2">
+          {/* Правая колонка: текст, кнопки */}
+          <div className="flex flex-col gap-4">
+            {/* Заголовок */}
+            <h1 className="text-3xl font-bold">{product.title}</h1>
+
+            {/* Цена */}
+            <div className="text-2xl font-semibold">
+              Ціна: <span className="text-green-600">{product.price} ₴</span>
+              {product.oldPrice && (
+                <div className="text-gray-400 line-through text-sm">
+                  Стара ціна {product.oldPrice} ₴
+                </div>
+              )}
+            </div>
+
+            {/* Варианты */}
+            {product.variants?.length > 0 && (
+              <VariantSection variants={product.variants} />
+            )}
+
+            {/* Описание */}
+            <div className="text-gray-600 leading-relaxed space-y-2 max-h-[300px] overflow-y-auto  rounded p-2">
               {product.description
                 .split('\n')
                 .map((line: string, index: number) => {
@@ -101,37 +114,11 @@ export default async function ProductPage({
                   );
                 })}
             </div>
-
-            <div className="text-2xl font-semibold mb-6">
-              <h3>
-                Ціна: <span className="text-green-600">{product.price} ₴</span>
-              </h3>
-              {product.oldPrice && (
-                <span className="text-gray-400 line-through text-sm">
-                  Стара ціна {product.oldPrice} ₴
-                </span>
-              )}
-            </div>
-            {/* variant  */}
-            {/* <VariantSelector
-              variants={product.variants}
-              onSelect={(variant) => {
-                // можно сохранить в cookies, localStorage, context или прокинуть в addToCart
-                console.log('Вибрано варіант:', variant);
-              }}
-            /> */}
-            {/* variant  */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition cursor-pointer min-w-[182px]">
-                Додати в корзину
-              </button>
-              <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition cursor-pointer min-w-[182px]">
-                Додати в обране
-              </button>
-            </div>
           </div>
         </div>
+        {/* конец  */}
       </div>
+      <section className="border px-5">SLIDER</section>
     </>
   );
 }
