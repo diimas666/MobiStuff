@@ -1,6 +1,7 @@
 import { Product } from '@/interface/product';
 export const trendingProducts: Product[] = [
   {
+    _id: '1',
     id: '1',
     title: 'AirPods Pro',
     image: '/images/97319.jpg',
@@ -8,6 +9,7 @@ export const trendingProducts: Product[] = [
     handle: 'airpods-pro',
   },
   {
+    _id: '2',
     id: '2',
     title: 'AirPods Pro',
     image: '/images/headphones_mini,al.jpg',
@@ -15,6 +17,7 @@ export const trendingProducts: Product[] = [
     handle: 'airpods',
   },
   {
+    _id: '3',
     id: '3',
     title: 'AirPods Pro',
     image: '/images/besprovodnye-nausniki.jpg',
