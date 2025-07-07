@@ -7,10 +7,13 @@ import Container from './Container';
 import { useMobileSidebar } from '@/context/MobileSidebarContext';
 import MobileSidebar from './MobileSidebar';
 import FavoritesCountBadge from '@/components/FavoritesCountBadge';
+import { useCart } from '@/context/CartContext';
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { open } = useMobileSidebar(); // 🟢 Функция, вызываем
+  const { cart } = useCart();
+  const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <Container>
@@ -49,9 +52,15 @@ export default function Header() {
             <Heart className="glass-icon-svg" />
             <FavoritesCountBadge />
           </Link>
-          <Link href="/cart" className="glass-icon min-w-[40px]">
+          <Link href="/cart" className="relative glass-icon min-w-[40px]">
             <ShoppingCart className="glass-icon-svg" />
+            {totalQuantity > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full z-10">
+                {totalQuantity}
+              </span>
+            )}
           </Link>
+
           <button onClick={open} className="md:hidden menu-hamburger">
             Menu
           </button>

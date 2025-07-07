@@ -1,8 +1,8 @@
-// components/ProductCard.tsx
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingCart, Scale } from 'lucide-react';
 import { Product } from '@/interface/product';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -16,13 +16,21 @@ export default function ProductCard({ product }: ProductCardProps) {
       : [...stored, productId];
     localStorage.setItem('favorites', JSON.stringify(updated));
   };
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({
+      ...product,
+      image: (product.image ?? '').replace(/"/g, '').trim(),
+    });
+  };
   return (
     <div className="min-h-[460px] flex flex-col justify-between border rounded-xl overflow-hidden shadow-md  hover:border-green-500 transition-all duration-300 relative">
       {/* <div className="w-full max-w-[340px] mx-auto rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative"> */}
       <Link href={`/product/${product.handle}`} className="block ">
         <div className="relative w-full aspect-[4/4] bg-gray-100 ">
           <Image
-            src={product.image.replace(/"/g, '')}
+            src={(product.image ?? '').replace(/"/g, '')}
             alt={product.title}
             fill
             className="object-cover rounded-t-xl"
@@ -93,8 +101,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           {''}
           <Scale className="glass-icon-svg" />
         </button>
-        <button className="button-block-card hover:bg-green-500">
-          {''}
+        <button
+          onClick={handleAddToCart}
+          className="button-block-card hover:bg-green-500"
+          disabled={!product.inStock}
+          title={!product.inStock ? 'Немає в наявності' : 'Додати в кошик'}
+        >
           <ShoppingCart className="glass-icon-svg" />
         </button>
       </div>

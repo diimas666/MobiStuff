@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { Roboto } from 'next/font/google';
 import { FavoritesProvider } from '@/context/FavoritesContext';
-
+import { CartProvider } from '@/context/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Container from '@/components/Container';
@@ -29,13 +29,13 @@ export default function RootLayout({
     <html lang="uk ">
       <body className={`${roboto.variable}  antialiased min-h-screen`}>
         <FavoritesProvider>
-        <MobileSidebarProvider>
-          <Header />
-
-          <Container>{children}</Container>
-
-          <Footer />
-        </MobileSidebarProvider>
+          <CartProvider>
+            <MobileSidebarProvider>
+              <Header />
+              <Container>{children}</Container>
+              <Footer />
+            </MobileSidebarProvider>
+          </CartProvider>
         </FavoritesProvider>
         <ToastContainer position="top-right" autoClose={3000} />
       </body>
