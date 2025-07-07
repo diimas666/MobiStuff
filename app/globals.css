@@ -47,7 +47,7 @@ body {
   }
 
   .glass-icon-svg {
-    @apply w-5 h-5 text-gray-800 dark:text-white;
+    @apply w-6 h-6 text-gray-800 dark:text-white;
   }
   /* поиск  */
   .search-bar {

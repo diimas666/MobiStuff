@@ -1,17 +1,18 @@
 // components/ProductCard.tsx
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingCart } from 'lucide-react';
+import { Heart, ShoppingCart, Scale } from 'lucide-react';
 import { Product } from '@/interface/product';
+
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative">
+    <div className="min-h-[460px] flex flex-col justify-between rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative">
       {/* <div className="w-full max-w-[340px] mx-auto rounded-xl overflow-hidden shadow-md border hover:shadow-lg transition-all duration-300 relative"> */}
-      <Link href={`/product/${product.handle}`} className="block">
+      <Link href={`/product/${product.handle}`} className="block ">
         <div className="relative w-full aspect-[4/4] bg-gray-100 border">
           <Image
             src={product.image.replace(/"/g, '')}
@@ -33,9 +34,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
         {/* низ карточки цена. и тд   */}
-        <div className="p-4 bg-gray-800 text-white min-h-[80px]  relative">
+        <div className="p-4 bg-gray-800 text-white h-full max-h-[270px] ">
           {/* название заголовок  */}
-          <h3 className="text-lg font-semibold line-clamp-3 mb-1 max-w-[270px]">
+          <h3 className="text-lg font-semibold line-clamp-3 mb-1 max-w-[370px]">
             {product.title}
           </h3>
           {/* рейтинг */}
@@ -48,14 +49,18 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
           {/* бренди  */}
-          {product.brand && <div className="flex gap-1">{product.brand}</div>}
+          {product.brand && (
+            <div className="flex gap-1 font-medium">
+              Бренд : {product.brand}
+            </div>
+          )}
           {/* цена  */}
-          <div className="flex  gap-2 min-h-[80px] max-[490px]:flex-col items-start">
-            <span className="text-xl font-bold  text-gray-500 ">
+          <div className="flex  gap-2 min-h-[60px] max-[490px]:flex-row items-start mb-4">
+            <span className="text-xl font-bold  text-green-500 ">
               {product.price} грн
             </span>
             {product.oldPrice && (
-              <span className="text-sm line-through text-gray-500 mt-2">
+              <span className="text-sm line-through text-green-500 mt-2">
                 {product.oldPrice} грн
               </span>
             )}
@@ -69,12 +74,16 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* иноки корзина и сравнить  */}
         </div>
       </Link>
-      <div className="border-white flex flex-col gap-2 absolute right-3 bottom-3">
-        <button className="button-block-card hover:bg-gray-500">
+      <div className="border-white flex  gap-4 absolute right-5 bottom-3">
+        <button className="button-block-card hover:bg-green-500">
           {''}
           <Heart className="glass-icon-svg" />
         </button>
-        <button className="button-block-card hover:bg-gray-500">
+        <button className="button-block-card hover:bg-green-500">
+          {''}
+          <Scale className="glass-icon-svg" />
+        </button>
+        <button className="button-block-card hover:bg-green-500">
           {''}
           <ShoppingCart className="glass-icon-svg" />
         </button>

@@ -116,7 +116,7 @@ export default async function SubcategoryPage({
 
         {/* Товары */}
         <div
-          className={`grid gap-4 ${
+          className={`grid gap-1 ${
             colVariant === '1' ? 'grid-cols-1' : 'grid-cols-2'
           } sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]`}
         >
