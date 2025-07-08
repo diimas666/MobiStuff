@@ -6,9 +6,12 @@ import { ToastContainer } from 'react-toastify';
 import { Roboto } from 'next/font/google';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import { CartProvider } from '@/context/CartContext';
+import Head from 'next/head'; // ✅ Добавляем
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Container from '@/components/Container';
+import Canonical from '@/components/Canonical';
 const roboto = Roboto({
   subsets: ['latin'],
   weight: ['400', '500', '700'], // выбери нужные веса
@@ -28,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="uk ">
       <body className={`${roboto.variable}  antialiased min-h-screen`}>
+        <Canonical />
         <FavoritesProvider>
           <CartProvider>
             <MobileSidebarProvider>
