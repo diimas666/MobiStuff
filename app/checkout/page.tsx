@@ -103,7 +103,7 @@ export default function CheckoutPage() {
     <div className="max-w-2xl mx-auto p-4">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-sm text-gray-600 mb-4 hover:text-black transition"
+        className="flex items-center gap-2 text-sm text-gray-600 mb-4 hover:text-black transition cursor-pointer"
       >
         <ArrowLeft size={20} />
         Назад до кошика
@@ -162,44 +162,70 @@ export default function CheckoutPage() {
         />
 
         {citiesList.length > 0 && (
-          <select
-            className="w-full border rounded px-3 py-2"
-            onChange={(e) => {
-              const selected = citiesList.find((c) => c.Ref === e.target.value);
-              if (selected) {
-                setCityRef(selected.Ref);
-                setCityLabel(
-                  `${selected.Description} (${selected.AreaDescription})`
+          <div className="relative">
+            <select
+              aria-label="Оберіть місто"
+              className="w-full border rounded px-3 py-2 pr-10 bg-white cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-green-500"
+              onChange={(e) => {
+                const selected = citiesList.find(
+                  (c) => c.Ref === e.target.value
                 );
-                setCityInput(selected.Description);
-                setWarehouses([]);
-                setWarehouse('');
-              }
-            }}
-          >
-            <option value="">Оберіть місто зі списку</option>
-            {citiesList.map((c) => (
-              <option key={c.Ref} value={c.Ref}>
-                {c.Description} ({c.AreaDescription})
-              </option>
-            ))}
-          </select>
+                if (selected) {
+                  setCityRef(selected.Ref);
+                  setCityLabel(
+                    `${selected.Description} (${selected.AreaDescription})`
+                  );
+                  setCityInput(selected.Description);
+                  setWarehouses([]);
+                  setWarehouse('');
+                }
+              }}
+            >
+              <option value="">Оберіть місто зі списку</option>
+              {citiesList.map((c) => (
+                <option key={c.Ref} value={c.Ref}>
+                  {c.Description} ({c.AreaDescription})
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-600">
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.1 1.02l-4.25 4.66a.75.75 0 01-1.1 0l-4.25-4.66a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
         )}
 
         {warehouses.length > 0 && (
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={warehouse}
-            onChange={(e) => setWarehouse(e.target.value)}
-            required
-          >
-            <option value="">Оберіть відділення</option>
-            {warehouses.map((w) => (
-              <option key={w.Ref} value={w.Description}>
-                {w.Description}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              className="w-full border rounded px-3 py-2 pr-10 bg-white cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={warehouse}
+              onChange={(e) => setWarehouse(e.target.value)}
+              aria-label="Оберіть відділення"
+              required
+            >
+              <option value="">Оберіть відділення</option>
+              {warehouses.map((w) => (
+                <option key={w.Ref} value={w.Description}>
+                  {w.Description}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-600">
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.1 1.02l-4.25 4.66a.75.75 0 01-1.1 0l-4.25-4.66a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
         )}
 
         <textarea
@@ -211,18 +237,39 @@ export default function CheckoutPage() {
         />
 
         {/* Спосіб оплати */}
-        <div>
+        <div className="relative">
           <label className="block text-sm font-medium mb-1">
             Спосіб оплати
           </label>
           <select
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 appearance-none pr-10 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500"
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value)}
+            aria-label="Оберіть оплату"
           >
             <option value="cod">Оплата при отриманні</option>
             <option value="card">Оплата карткою</option>
           </select>
+
+          {/* Стрелочка справа */}
+          <div className="pointer-events-none absolute top-[38px] right-3 text-gray-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
         </div>
 
         <div className="flex justify-between items-center font-bold text-lg">
@@ -232,7 +279,7 @@ export default function CheckoutPage() {
 
         <button
           type="submit"
-          className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition"
+          className="w-full cursor-pointer bg-green-600 text-white py-3 rounded hover:bg-green-700 transition"
         >
           Підтвердити замовлення
         </button>
