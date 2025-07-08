@@ -17,6 +17,7 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('cod'); // 'cod' або 'card'
 
   const [cityInput, setCityInput] = useState('');
   const [citiesList, setCitiesList] = useState<any[]>([]);
@@ -26,7 +27,6 @@ export default function CheckoutPage() {
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [warehouse, setWarehouse] = useState('');
 
-  // 🔍 Автозагрузка городов
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (cityInput.length > 2) {
@@ -38,7 +38,6 @@ export default function CheckoutPage() {
     return () => clearTimeout(timeout);
   }, [cityInput]);
 
-  // 🏤 Загрузка отделений при выборе города
   useEffect(() => {
     if (cityRef) {
       fetchWarehouses(cityRef).then(setWarehouses);
@@ -51,17 +50,17 @@ export default function CheckoutPage() {
     e.preventDefault();
 
     if (!isValidPhone(phone)) {
-      alert('❌ Неверный номер телефона');
+      alert('❌ Невірний номер телефону');
       return;
     }
 
     if (!cityRef || !warehouse) {
-      alert('❌ Выберите город и отделение');
+      alert('❌ Оберіть місто та відділення');
       return;
     }
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert('❌ Неверный email');
+      alert('❌ Невірний email');
       return;
     }
 
@@ -71,6 +70,7 @@ export default function CheckoutPage() {
       phone,
       email,
       comment,
+      paymentMethod,
       city: cityLabel,
       cityRef,
       warehouse,
@@ -87,15 +87,15 @@ export default function CheckoutPage() {
       });
 
       if (res.ok) {
-        alert('✅ Заказ принят!');
+        alert('✅ Замовлення прийнято!');
         clearCart();
         router.push('/thank-you');
       } else {
         const data = await res.json();
-        alert(`❌ Ошибка: ${data.message || 'Попробуйте еще раз'}`);
+        alert(`❌ Помилка: ${data.message || 'Спробуйте ще раз'}`);
       }
     } catch {
-      alert('❌ Сервер недоступен');
+      alert('❌ Сервер недоступний');
     }
   };
 
@@ -106,15 +106,15 @@ export default function CheckoutPage() {
         className="flex items-center gap-2 text-sm text-gray-600 mb-4 hover:text-black transition"
       >
         <ArrowLeft size={20} />
-        Назад к корзине
+        Назад до кошика
       </button>
 
-      <h2 className="text-2xl font-bold mb-4">Оформление заказа</h2>
+      <h2 className="text-2xl font-bold mb-4">Оформлення замовлення</h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Имя"
+          placeholder="Ім’я"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -123,7 +123,7 @@ export default function CheckoutPage() {
 
         <input
           type="text"
-          placeholder="Фамилия"
+          placeholder="Прізвище"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           required
@@ -141,16 +141,15 @@ export default function CheckoutPage() {
 
         <input
           type="email"
-          placeholder="example@domain.com (необязательно)"
+          placeholder="email (необов’язково)"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full border rounded px-3 py-2"
         />
 
-        {/* Поле для ввода города */}
         <input
           type="text"
-          placeholder="Начните вводить название города"
+          placeholder="Почніть вводити назву міста"
           value={cityInput}
           onChange={(e) => {
             setCityInput(e.target.value);
@@ -162,7 +161,6 @@ export default function CheckoutPage() {
           className="w-full border rounded px-3 py-2"
         />
 
-        {/* Выбор из списка найденных городов */}
         {citiesList.length > 0 && (
           <select
             className="w-full border rounded px-3 py-2"
@@ -179,7 +177,7 @@ export default function CheckoutPage() {
               }
             }}
           >
-            <option value="">Выберите город из списка</option>
+            <option value="">Оберіть місто зі списку</option>
             {citiesList.map((c) => (
               <option key={c.Ref} value={c.Ref}>
                 {c.Description} ({c.AreaDescription})
@@ -188,7 +186,6 @@ export default function CheckoutPage() {
           </select>
         )}
 
-        {/* Отделения */}
         {warehouses.length > 0 && (
           <select
             className="w-full border rounded px-3 py-2"
@@ -207,14 +204,29 @@ export default function CheckoutPage() {
 
         <textarea
           rows={3}
-          placeholder="Комментарий к заказу (необязательно)"
+          placeholder="Коментар до замовлення (необов’язково)"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           className="w-full border rounded px-3 py-2"
         />
 
+        {/* Спосіб оплати */}
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Спосіб оплати
+          </label>
+          <select
+            className="w-full border rounded px-3 py-2"
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          >
+            <option value="cod">Оплата при отриманні</option>
+            <option value="card">Оплата карткою</option>
+          </select>
+        </div>
+
         <div className="flex justify-between items-center font-bold text-lg">
-          <span>Сумма к оплате:</span>
+          <span>Сума до оплати:</span>
           <span className="text-green-600">{total} ₴</span>
         </div>
 
@@ -222,7 +234,7 @@ export default function CheckoutPage() {
           type="submit"
           className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 transition"
         >
-          Подтвердить заказ
+          Підтвердити замовлення
         </button>
       </form>
     </div>
