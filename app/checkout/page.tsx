@@ -92,9 +92,11 @@ export default function CheckoutPage() {
       });
 
       if (res.ok) {
-        localStorage.setItem('lastOrder', JSON.stringify(order)); // 💾 Сохраняем заказ
         clearCart();
-        router.push('/thank-you');
+        router.push(
+          `/thank-you?data=${encodeURIComponent(JSON.stringify(order))}`
+        );
+
       } else {
         const data = await res.json();
         alert(`❌ Помилка: ${data.message || 'Спробуйте ще раз'}`);

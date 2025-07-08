@@ -1,45 +1,41 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function ThankYouPage() {
+  const searchParams = useSearchParams();
   const router = useRouter();
+
   const [order, setOrder] = useState<any>(null);
-  const [isSaving, setIsSaving] = useState(true); // 🟢 отслеживаем, отправлен ли заказ
+  const [isSaving, setIsSaving] = useState(true);
+
+  const dataParam = useMemo(() => searchParams.get('data'), [searchParams]);
 
   useEffect(() => {
-    const stored = localStorage.getItem('lastOrder');
+    if (!dataParam) {
+      setIsSaving(false);
+      return;
+    }
 
-    if (stored) {
-      const parsed = JSON.parse(stored);
+    try {
+      const parsed = JSON.parse(decodeURIComponent(dataParam));
       setOrder(parsed);
 
-      // Отправляем заказ в MongoDB
       fetch('/api/saveOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(parsed),
       })
-        .catch((error) => {
-          console.error('❌ Помилка збереження замовлення:', error);
+        .catch((err) => {
+          console.error('❌ Помилка збереження замовлення:', err);
         })
-        .finally(() => {
-          setIsSaving(false); // ✅ только после этого показываем страницу
-        });
-    } else {
-      setIsSaving(false); // если нет заказа
+        .finally(() => setIsSaving(false));
+    } catch (err) {
+      console.error('❌ Помилка розбору параметра:', err);
+      setIsSaving(false);
     }
-  }, []);
-
-  useEffect(() => {
-    if (!isSaving) {
-      const timeout = setTimeout(() => {
-        router.push('/');
-      }, 8000);
-      return () => clearTimeout(timeout);
-    }
-  }, [isSaving, router]);
+  }, [dataParam]);
 
   if (isSaving || !order) {
     return (
@@ -52,11 +48,12 @@ export default function ThankYouPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Дякуємо за замовлення!</h1>
-      <p className="mb-4">Ваше замовлення було прийнято та обробляється.</p>
-      <div className="bg-gray-100 p-4 rounded">
+      <h1 className="text-2xl font-bold mb-4">✅ Дякуємо за замовлення!</h1>
+      <p className="mb-4 text-center">Ваше замовлення прийнято та обробляється.</p>
+
+      <div className="bg-gray-100 p-4 rounded space-y-2 text-sm">
         <p>
-          <strong>Ім’я:</strong> {order.name}
+          <strong>Ім’я:</strong> {order.name} {order.lastName}
         </p>
         <p>
           <strong>Телефон:</strong> {order.phone}
@@ -74,6 +71,20 @@ export default function ThankYouPage() {
         <p>
           <strong>Сума:</strong> {order.total} ₴
         </p>
+        {order.comment && (
+          <p>
+            <strong>Коментар:</strong> {order.comment}
+          </p>
+        )}
+      </div>
+
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={() => router.push('/')}
+          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition cursor-pointer"
+        >
+          На головну
+        </button>
       </div>
     </div>
   );
