@@ -11,6 +11,7 @@ export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const router = useRouter();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -48,19 +49,23 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true); // 🔄 показываем лоадер
 
     if (!isValidPhone(phone)) {
       alert('❌ Невірний номер телефону');
+      setIsLoading(false);
       return;
     }
 
     if (!cityRef || !warehouse) {
       alert('❌ Оберіть місто та відділення');
+      setIsLoading(false);
       return;
     }
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       alert('❌ Невірний email');
+      setIsLoading(false);
       return;
     }
 
@@ -87,7 +92,7 @@ export default function CheckoutPage() {
       });
 
       if (res.ok) {
-        alert('✅ Замовлення прийнято!');
+        localStorage.setItem('lastOrder', JSON.stringify(order)); // 💾 Сохраняем заказ
         clearCart();
         router.push('/thank-you');
       } else {
@@ -96,6 +101,8 @@ export default function CheckoutPage() {
       }
     } catch {
       alert('❌ Сервер недоступний');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -279,12 +286,17 @@ export default function CheckoutPage() {
 
         <button
           type="submit"
-          className="w-full cursor-pointer bg-green-600 text-white py-3 rounded hover:bg-green-700 transition"
-          onClick={() => {
-            router.push('/thank-you');
-          }}
+          className="w-full flex justify-center items-center gap-2 bg-green-600 text-white py-3 rounded hover:bg-green-700 transition disabled:opacity-50"
+          disabled={isLoading}
         >
-          Підтвердити замовлення
+          {isLoading ? (
+            <>
+              <div className="animate-spin h-5 w-5 border-t-2 border-white border-solid rounded-full"></div>
+              Опрацювання...
+            </>
+          ) : (
+            'Підтвердити замовлення'
+          )}
         </button>
       </form>
     </div>

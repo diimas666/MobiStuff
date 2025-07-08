@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 export default function ThankYouPage() {
   const router = useRouter();
   const [order, setOrder] = useState<any>(null);
+  const [isSaving, setIsSaving] = useState(true); // 🟢 отслеживаем, отправлен ли заказ
 
-  // Загружаем заказ из localStorage
   useEffect(() => {
     const stored = localStorage.getItem('lastOrder');
+
     if (stored) {
       const parsed = JSON.parse(stored);
       setOrder(parsed);
@@ -19,22 +20,35 @@ export default function ThankYouPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(parsed),
-      }).catch((error) => {
-        console.error('❌ Помилка збереження замовлення:', error);
-      });
+      })
+        .catch((error) => {
+          console.error('❌ Помилка збереження замовлення:', error);
+        })
+        .finally(() => {
+          setIsSaving(false); // ✅ только после этого показываем страницу
+        });
+    } else {
+      setIsSaving(false); // если нет заказа
     }
   }, []);
 
-  // Редирект через 5 секунд
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      router.push('/');
-    }, 5000);
-    return () => clearTimeout(timeout);
-  }, [router]);
+    if (!isSaving) {
+      const timeout = setTimeout(() => {
+        router.push('/');
+      }, 8000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isSaving, router]);
 
-  if (!order)
-    return <p className="text-center mt-10">Завантаження замовлення...</p>;
+  if (isSaving || !order) {
+    return (
+      <div className="flex flex-col justify-center items-center h-64 gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500 border-solid"></div>
+        <p className="text-gray-600">Завантаження замовлення...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-4">
@@ -52,6 +66,10 @@ export default function ThankYouPage() {
         </p>
         <p>
           <strong>Відділення:</strong> {order.warehouse}
+        </p>
+        <p>
+          <strong>Оплата:</strong>{' '}
+          {order.paymentMethod === 'card' ? 'Карткою' : 'При отриманні'}
         </p>
         <p>
           <strong>Сума:</strong> {order.total} ₴

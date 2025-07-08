@@ -10,6 +10,7 @@ const OrderSchema = new mongoose.Schema(
     city: String,
     cityRef: String,
     warehouse: String,
+    paymentMethod: String,
     total: Number,
     items: Array,
     createdAt: String,

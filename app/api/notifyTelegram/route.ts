@@ -7,7 +7,13 @@ export async function POST(req: NextRequest) {
   const CHAT_ID = process.env.TELEGRAM_CHAT_ID!;
 
   try {
-    const text = `🛒 НОВЕ ЗАМОВЛЕННЯ\n👤 ${order.name} ${order.lastName}\n📞 ${order.phone}\n📍 ${order.city}\n🏤 ${order.warehouse}\n💰 ${order.total} ₴`;
+    const text = `🛒 НОВЕ ЗАМОВЛЕННЯ
+    👤 ${order.name} ${order.lastName}
+    📞 ${order.phone}
+    📍 ${order.city}
+    🏤 ${order.warehouse}
+    💳 Оплата: ${order.paymentMethod === 'card' ? 'Карткою' : 'Післяплата'}
+    💰 ${order.total} ₴`;
 
     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
       method: 'POST',
