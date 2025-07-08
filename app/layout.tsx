@@ -6,7 +6,6 @@ import { ToastContainer } from 'react-toastify';
 import { Roboto } from 'next/font/google';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import { CartProvider } from '@/context/CartContext';
-import Head from 'next/head'; // ✅ Добавляем
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';

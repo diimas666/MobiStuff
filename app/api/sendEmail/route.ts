@@ -15,10 +15,24 @@ export async function POST(req: NextRequest) {
 
     const subject = 'Підтвердження замовлення';
     const html = `
-      <p>Дякуємо, ${name}!</p>
-      <p>Ваше замовлення на суму <strong>${total} ₴</strong> прийнято.</p>
-      <p>Ми надішлемо його найближчим часом.</p>
-    `;
+    <div div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #10b981;">Дякуємо за замовлення, ${name}!</h2>
+
+    <p>Ваше замовлення на суму <strong>${total} ₴</strong> було успішно прийняте.</p>
+
+    <div style="background-color: #f3f4f6; padding: 10px 15px; border-radius: 6px; margin: 20px 0;">
+      <p><strong>Місто:</strong> ${body.city}</p>
+      <p><strong>Відділення:</strong> ${body.warehouse}</p>
+      <p><strong>Оплата:</strong> ${body.paymentMethod === 'card' ? 'Карткою' : 'При отриманні'}</p>
+      <p><strong>Телефон:</strong> ${body.phone}</p>
+      ${body.comment ? `<p><strong>Коментар:</strong> ${body.comment}</p>` : ''}
+    </div>
+
+    <p>Ми зв'яжемося з вами найближчим часом.</p>
+
+    <p style="font-size: 14px; color: #6b7280;">З повагою, команда MobiStuff<br/>mobistuff.shop</p>
+  </div>
+`;
 
     const data = await resend.emails.send({
       from: 'MobiStuff <info@mobistuff.shop>', // ← используем когда домен верифицируется
