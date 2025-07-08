@@ -84,7 +84,7 @@ export default function CartPage() {
             onClick={() => {
               router.push('checkout');
             }}
-            className="w-full mt-6 bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition cursor-pointer"
+            className="w-full mt-6 bg-black text-white py-3 rounded-md hover:bg-gray-800 transition cursor-pointer"
           >
             Оформити замовлення
           </button>

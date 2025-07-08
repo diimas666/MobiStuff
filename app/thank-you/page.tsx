@@ -9,6 +9,7 @@ export default function ThankYouPage() {
 
   const [order, setOrder] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(true);
+  const [emailSent, setEmailSent] = useState(false);
 
   const dataParam = useMemo(() => searchParams.get('data'), [searchParams]);
 
@@ -22,6 +23,7 @@ export default function ThankYouPage() {
       const parsed = JSON.parse(decodeURIComponent(dataParam));
       setOrder(parsed);
 
+      // Сохраняем заказ в MongoDB
       fetch('/api/saveOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,6 +33,21 @@ export default function ThankYouPage() {
           console.error('❌ Помилка збереження замовлення:', err);
         })
         .finally(() => setIsSaving(false));
+
+      // Отправляем email, если указан
+      console.log('📤 Відправка email...');
+      if (parsed.email) {
+        fetch('/api/sendEmail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsed),
+        })
+          .then((res) => {
+            if (res.ok) setEmailSent(true);
+            else console.error('❌ Email не надіслано');
+          })
+          .catch((err) => console.error('❌ Email помилка:', err));
+      }
     } catch (err) {
       console.error('❌ Помилка розбору параметра:', err);
       setIsSaving(false);
@@ -49,7 +66,14 @@ export default function ThankYouPage() {
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">✅ Дякуємо за замовлення!</h1>
-      <p className="mb-4 text-center">Ваше замовлення прийнято та обробляється.</p>
+      <p className="mb-4 text-center">
+        Ваше замовлення прийнято та обробляється.
+        {emailSent && (
+          <span className="block text-green-600 mt-2">
+            📧 Підтвердження надіслано на {order.email}
+          </span>
+        )}
+      </p>
 
       <div className="bg-gray-100 p-4 rounded space-y-2 text-sm">
         <p>
