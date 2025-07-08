@@ -1,4 +1,3 @@
-// lib/dbConnect.ts
 import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI!;
@@ -7,6 +6,7 @@ if (!MONGODB_URI) {
   throw new Error('❌ MONGODB_URI is not defined in environment variables');
 }
 
+// Используем глобальный кэш, чтобы избежать повторных подключений в dev-режиме
 interface MongooseGlobal {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
@@ -20,7 +20,7 @@ if (!globalWithMongoose.mongoose) {
   globalWithMongoose.mongoose = { conn: null, promise: null };
 }
 
-export async function connectDB() {
+export default async function dbConnect() {
   const cached = globalWithMongoose.mongoose;
 
   if (cached.conn) return cached.conn;

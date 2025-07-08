@@ -1,11 +1,11 @@
 // app/api/saveOrder/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@/lib/dbConnect';
+import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
 
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
+    await dbConnect();
 
     const body = await req.json();
 

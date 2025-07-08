@@ -280,6 +280,9 @@ export default function CheckoutPage() {
         <button
           type="submit"
           className="w-full cursor-pointer bg-green-600 text-white py-3 rounded hover:bg-green-700 transition"
+          onClick={() => {
+            router.push('/thank-you');
+          }}
         >
           Підтвердити замовлення
         </button>
