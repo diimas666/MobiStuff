@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await resend.emails.send({
-      from: 'store@example.com',
+      from: 'mobistuffinfo@gmail.com',
       to: body.email,
       subject: 'Підтвердження замовлення',
       html: `<p>Дякуємо, ${body.name}! Ваше замовлення на суму <strong>${body.total} ₴</strong> прийнято.</p>`,
