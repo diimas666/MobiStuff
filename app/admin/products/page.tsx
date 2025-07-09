@@ -15,6 +15,8 @@ export default function AllProductsAdminPage() {
         const data = await res.json();
         setProducts(data);
       } catch (err) {
+        console.error(err);
+
         toast.error('Помилка при завантаженні товарів');
       } finally {
         setLoading(false);
@@ -44,6 +46,8 @@ export default function AllProductsAdminPage() {
         toast.error('Не вдалося оновити');
       }
     } catch (err) {
+      console.error(err);
+
       toast.error('Помилка оновлення');
     }
   };
@@ -68,6 +72,7 @@ export default function AllProductsAdminPage() {
         toast.error('Не вдалося видалити');
       }
     } catch (err) {
+      console.error(err);
       toast.error('Помилка видалення');
     }
   };
