@@ -20,7 +20,7 @@ export async function DELETE(req: Request) {
     }
 
     return NextResponse.json({ message: 'Товар видалено' });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Помилка при видаленні товару' },
       { status: 500 }

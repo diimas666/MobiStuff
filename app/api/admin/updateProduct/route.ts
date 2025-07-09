@@ -23,7 +23,7 @@ export async function PATCH(req: Request) {
     }
 
     return NextResponse.json({ message: 'Оновлено', product: updated });
-  } catch (error) {
+  } catch  {
     return NextResponse.json(
       { error: 'Помилка при оновленні товару' },
       { status: 500 }
