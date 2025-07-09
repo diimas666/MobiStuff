@@ -93,10 +93,8 @@ export default function CheckoutPage() {
 
       if (res.ok) {
         clearCart();
-        router.push(
-          `/thank-you?data=${encodeURIComponent(JSON.stringify(order))}`
-        );
-
+        localStorage.setItem('lastOrder', JSON.stringify(order));
+        router.push('/thank-you');
       } else {
         const data = await res.json();
         alert(`❌ Помилка: ${data.message || 'Спробуйте ще раз'}`);
@@ -288,7 +286,7 @@ export default function CheckoutPage() {
 
         <button
           type="submit"
-          className="w-full flex justify-center items-center gap-2 bg-green-600 text-white py-3 rounded hover:bg-green-700 transition disabled:opacity-50"
+          className="w-full flex justify-center items-center cursor-pointer gap-2 bg-green-600 text-white py-3 rounded hover:bg-green-700 transition disabled:opacity-50"
           disabled={isLoading}
         >
           {isLoading ? (

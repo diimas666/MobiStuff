@@ -25,7 +25,7 @@ export default function CartPage() {
             >
               <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                 {item.image ? (
-                  <div className="relative w-30 h-20 mx-auto sm:mx-0">
+                  <div className="relative w-30 h-25 mx-auto sm:mx-0">
                     <Image
                       src={item.image}
                       alt={item.title}

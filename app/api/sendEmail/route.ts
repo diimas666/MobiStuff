@@ -1,50 +1,58 @@
-// app/api/sendEmail/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import nodemailer from 'nodemailer';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // Если прилетел весь заказ, вытащим нужные поля:
-    const to = body.email || body.to;
-    const name = body.name || 'Клієнт';
-    const total = body.total || 0;
-
-    const subject = 'Підтвердження замовлення';
-    const html = `
-    <div div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <h2 style="color: #10b981;">Дякуємо за замовлення, ${name}!</h2>
-
-    <p>Ваше замовлення на суму <strong>${total} ₴</strong> було успішно прийняте.</p>
-
-    <div style="background-color: #f3f4f6; padding: 10px 15px; border-radius: 6px; margin: 20px 0;">
-      <p><strong>Місто:</strong> ${body.city}</p>
-      <p><strong>Відділення:</strong> ${body.warehouse}</p>
-      <p><strong>Оплата:</strong> ${body.paymentMethod === 'card' ? 'Карткою' : 'При отриманні'}</p>
-      <p><strong>Телефон:</strong> ${body.phone}</p>
-      ${body.comment ? `<p><strong>Коментар:</strong> ${body.comment}</p>` : ''}
-    </div>
-
-    <p>Ми зв'яжемося з вами найближчим часом.</p>
-
-    <p style="font-size: 14px; color: #6b7280;">З повагою, команда MobiStuff<br/>mobistuff.shop</p>
-  </div>
-`;
-
-    const data = await resend.emails.send({
-      from: 'MobiStuff <info@mobistuff.shop>', // ← используем когда домен верифицируется
-      // from: 'MobiStuff <onboarding@resend.dev>', // ⚠️ тимчасово
-      to,
-      subject,
-      html,
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: false, // true for 465, false for 587
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
     });
 
-    return NextResponse.json({ success: true, data });
-  } catch (error) {
-    console.error('❌ Email send error:', error);
-    return NextResponse.json({ success: false, error }, { status: 500 });
+    const mailOptions = {
+      from: `"MobiStuff" <${process.env.SMTP_USER}>`,
+      to: body.email,
+      subject: 'Підтвердження замовлення',
+      html: `
+      <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
+        <div style="max-width: 600px; margin: 0 auto; background: white; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <h2 style="color: #10b981;">Дякуємо за замовлення, ${body.name}!</h2>
+          <p>Ваше замовлення на суму <strong>${body.total} ₴</strong> прийняте.</p>
+
+          <table style="width: 100%; margin-top: 20px; font-size: 14px;">
+            <tr><td><strong>Місто:</strong></td><td>${body.city}</td></tr>
+            <tr><td><strong>Відділення:</strong></td><td>${body.warehouse}</td></tr>
+            <tr><td><strong>Оплата:</strong></td><td>${body.paymentMethod === 'card' ? 'Карткою' : 'При отриманні'}</td></tr>
+            <tr><td><strong>Телефон:</strong></td><td>${body.phone}</td></tr>
+            ${
+              body.comment
+                ? `<tr><td><strong>Коментар:</strong></td><td>${body.comment}</td></tr>`
+                : ''
+            }
+          </table>
+
+          <p style="margin-top: 30px; font-size: 13px; color: #6b7280;">
+            З повагою, команда <strong>MobiStuff</strong><br/>mobistuff.shop
+          </p>
+        </div>
+      </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('❌ SMTP помилка:', error);
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 }
+    );
   }
 }

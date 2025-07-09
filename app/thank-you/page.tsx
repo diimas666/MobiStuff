@@ -1,26 +1,24 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function ThankYouPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [order, setOrder] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(true);
   const [emailSent, setEmailSent] = useState(false);
 
-  const dataParam = useMemo(() => searchParams.get('data'), [searchParams]);
-
   useEffect(() => {
-    if (!dataParam) {
+    const stored = localStorage.getItem('lastOrder');
+    if (!stored) {
       setIsSaving(false);
       return;
     }
 
     try {
-      const parsed = JSON.parse(decodeURIComponent(dataParam));
+      const parsed = JSON.parse(stored);
       setOrder(parsed);
 
       // Сохраняем заказ в MongoDB
@@ -34,25 +32,29 @@ export default function ThankYouPage() {
         })
         .finally(() => setIsSaving(false));
 
-      // Отправляем email, если указан
-      console.log('📤 Відправка email...');
-      if (parsed.email) {
+      // 👇 защита от повторной отправки
+      const alreadySent = localStorage.getItem('emailSent') === 'true';
+      if (parsed.email && !alreadySent) {
         fetch('/api/sendEmail', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(parsed),
         })
           .then((res) => {
-            if (res.ok) setEmailSent(true);
-            else console.error('❌ Email не надіслано');
+            if (res.ok) {
+              setEmailSent(true);
+              localStorage.setItem('emailSent', 'true'); // ✅ фіксація
+            } else {
+              console.error('❌ Email не надіслано');
+            }
           })
           .catch((err) => console.error('❌ Email помилка:', err));
       }
     } catch (err) {
-      console.error('❌ Помилка розбору параметра:', err);
+      console.error('❌ JSON parse error:', err);
       setIsSaving(false);
     }
-  }, [dataParam]);
+  }, []);
 
   if (isSaving || !order) {
     return (
@@ -65,7 +67,9 @@ export default function ThankYouPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">✅ Дякуємо за замовлення!</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        ✅ Дякуємо за замовлення!
+      </h1>
       <p className="mb-4 text-center">
         Ваше замовлення прийнято та обробляється.
         {emailSent && (
