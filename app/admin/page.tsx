@@ -4,7 +4,7 @@ import { catalogCategory } from '@/data/catalogCategory';
 import { toSlug } from '@/lib/slugify';
 import { toast } from 'react-toastify';
 import AdminWrapper from '@/components/AdminWrapper';
-
+import Link from 'next/link';
 import Image from 'next/image';
 const initialFormState = {
   title: '',
@@ -75,6 +75,12 @@ export default function AdminPage() {
 
   return (
     <AdminWrapper>
+      <Link href="/admin/products">
+        <button className="bg-gray-200 text-black px-4 py-2 rounded ml-2">
+          Всі товари
+        </button>
+      </Link>
+
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-6 space-y-4">
         {/* Превью картинки */}
         {form.image && !form.image.startsWith('http') && (
@@ -145,7 +151,6 @@ export default function AdminPage() {
 
         {/* Категория и подкатегория */}
         <select
-     
           value={form.category}
           onChange={(e) =>
             setForm({ ...form, category: e.target.value, subcategory: '' })
