@@ -55,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Низ: текстовая часть */}
-<div className="p-4 bg-gray-800 text-white flex flex-col justify-between min-h-[250px] grow">
+        <div className="p-4 bg-gray-800 text-white flex flex-col justify-between min-h-[250px] grow">
           <div>
             <h3 className="text-lg font-semibold line-clamp-3 mb-1">
               {product.title}

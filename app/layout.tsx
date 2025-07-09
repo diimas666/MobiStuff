@@ -35,8 +35,10 @@ export default function RootLayout({
           <CartProvider>
             <MobileSidebarProvider>
               <Header />
-              <Container>{children}</Container>
-              <Footer />
+                <div className="mt-[72px]">
+                  <Container>{children}</Container>
+                </div>
+                <Footer />
             </MobileSidebarProvider>
           </CartProvider>
         </FavoritesProvider>

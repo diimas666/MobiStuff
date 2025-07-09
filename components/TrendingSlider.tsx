@@ -39,7 +39,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
         href={`/product/${currentProduct.handle}`}
         className="block w-full h-full"
       >
-        <div className="relative w-full h-full">
+        <div className="relative aspect-[1/1] w-full h-full">
           <Image
             src={currentProduct.image}
             alt={currentProduct.title}

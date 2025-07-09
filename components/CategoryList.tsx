@@ -76,7 +76,7 @@ export default function CategoryList({ onClose }: Props) {
                 className={`${
                   isMobile
                     ? 'px-4 py-2 space-y-1'
-                    : 'absolute top-0 left-full ml-2 bg-white border shadow-md rounded p-3 space-y-1 w-56 z-20'
+                    : 'absolute top-0 left-full ml-2 bg-white shadow-md rounded p-3 space-y-1 w-56 z-20'
                 }`}
               >
                 {category.subcategories.map((subcategory) => (
@@ -89,7 +89,9 @@ export default function CategoryList({ onClose }: Props) {
                         if (onClose) onClose();
                       }}
                     >
-                      {subcategory.title}
+                      <h4 className="font-semibold text-sm text-gray-800 flex items-center gap-2">
+                        {subcategory.title}
+                      </h4>
                     </Link>
                   </li>
                 ))}
