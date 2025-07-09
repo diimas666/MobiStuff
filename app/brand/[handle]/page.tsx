@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import ProductCard from '@/components/ProductCard';
+import ProductCardClient from '@/components/ProductCardClient';
 import Image from 'next/image';
 import { brands } from '@/data/brands';
 import { actualProposition as products } from '@/data/actualProposition';
@@ -36,14 +36,16 @@ const BrandPage = async (props: any) => {
   return (
     <div>
       <div className="relative w-full min-h-[90px] max-h-[400px] overflow-hidden block mb-4">
-        <Image
-          src={brand.imageFull}
-          alt={brand.title}
-          width={1200}
-          height={300}
-          layout="responsive"
-          className="object-cover w-full"
-        />
+        {brand.imageFull && (
+          <Image
+            src={brand.imageFull}
+            alt={brand.title}
+            width={1200}
+            height={300}
+            layout="responsive"
+            className="object-cover w-full"
+          />
+        )}
       </div>
 
       <div className="flex gap-4">
@@ -74,7 +76,7 @@ const BrandPage = async (props: any) => {
 
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1">
             {paginatedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCardClient key={product.id} product={product} />
             ))}
 
             {paginatedProducts.length === 0 && (
