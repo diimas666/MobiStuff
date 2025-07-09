@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
 
     const data = await resend.emails.send({
       from: 'MobiStuff <info@mobistuff.shop>', // ← используем когда домен верифицируется
+      // from: 'MobiStuff <onboarding@resend.dev>', // ⚠️ тимчасово
       to,
       subject,
       html,

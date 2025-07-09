@@ -145,6 +145,7 @@ export default function AdminPage() {
 
         {/* Категория и подкатегория */}
         <select
+     
           value={form.category}
           onChange={(e) =>
             setForm({ ...form, category: e.target.value, subcategory: '' })
