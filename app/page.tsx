@@ -6,9 +6,98 @@ import TrendingSlider from '@/components/TrendingSlider';
 import { trendingProducts } from '@/data/trendingSlider';
 import { actualProposition } from '@/data/actualProposition';
 import BrandList from '@/components/BrandList';
-import { featuredSections } from '@/data/featuredSections';
 import OffersSection from '@/components/OffersSection.client';
-export default function GeneralPage() {
+
+// функция
+import { getProductsByCategory } from '@/lib/getProductsByCategory';
+
+export default async function GeneralPage() {
+  // ⚙️ Получаем данные из MongoDB
+  const headphones = await getProductsByCategory(
+    'navushnyky',
+    'usi-navushnyky'
+  );
+  const powerbanks = await getProductsByCategory(
+    'akumulyatory-ta-powerbank',
+    'paverbanky'
+  );
+  const cables = await getProductsByCategory('zaryadky-ta-kabeli', 'usb');
+  const mice = await getProductsByCategory('komp-yuterna-peryferiia', 'myshky');
+  const holders = await getProductsByCategory(
+    'avtomobilna-tematyka',
+    'trymachi'
+  );
+  const speakers = await getProductsByCategory('audio-ta-video', 'kolonky');
+  const watches = await getProductsByCategory('gadzhety', 'smart-hodynnyky');
+  const cases = await getProductsByCategory('chokhly', 'dlia-iphone');
+  const films = await getProductsByCategory('zakhyst-ekranu', 'plivky');
+  const testers = await getProductsByCategory(
+    'korysni-akcesuary',
+    'kabel-testery'
+  );
+  // ✅ Формируем секции динамически
+  const featuredSections = [
+    {
+      title: 'Навушники',
+      categorySlug: 'navushnyky',
+      subcategorySlug: 'usi-navushnyky',
+      products: headphones,
+    },
+    {
+      title: 'Павербанки',
+      categorySlug: 'akumulyatory-ta-powerbank',
+      subcategorySlug: 'paverbanky',
+      products: powerbanks,
+    },
+    {
+      title: 'USB кабелі',
+      categorySlug: 'zaryadky-ta-kabeli',
+      subcategorySlug: 'usb',
+      products: cables,
+    },
+    {
+      title: 'Мишки',
+      categorySlug: 'komp-yuterna-peryferiia',
+      subcategorySlug: 'myshky',
+      products: mice,
+    },
+    {
+      title: 'Тримачі в авто',
+      categorySlug: 'avtomobilna-tematyka',
+      subcategorySlug: 'trymachi',
+      products: holders,
+    },
+    {
+      title: 'Колонки',
+      categorySlug: 'audio-ta-video',
+      subcategorySlug: 'kolonky',
+      products: speakers,
+    },
+    {
+      title: 'Смарт-годинники',
+      categorySlug: 'gadzhety',
+      subcategorySlug: 'smart-hodynnyky',
+      products: watches,
+    },
+    {
+      title: 'Чохли для iPhone',
+      categorySlug: 'chokhly',
+      subcategorySlug: 'dlia-iphone',
+      products: cases,
+    },
+    {
+      title: 'Плівки на екран',
+      categorySlug: 'zakhyst-ekranu',
+      subcategorySlug: 'plivky',
+      products: films,
+    },
+    {
+      title: 'Кабель-тестери',
+      categorySlug: 'korysni-akcesuary',
+      subcategorySlug: 'kabel-testery',
+      products: testers,
+    },
+  ];
   return (
     <>
       <main className="text-md flex  gap-2 section-bottom">
