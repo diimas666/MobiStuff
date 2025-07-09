@@ -3,51 +3,59 @@ import { Product } from '@/interface/product';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
 import ProductCard from './ProductCard';
+
 interface OffersSliderProps {
   products: Product[];
   mobileSlidesToShow: number;
-  slidesToScroll:number;
-  
+  slidesToScroll: number;
 }
+
 export default function OffersSlider({
   products,
   mobileSlidesToShow,
-  slidesToScroll
+  slidesToScroll,
 }: OffersSliderProps) {
+  if (!products || products.length === 0) return null;
+
+  // 🛡️ Защита от 1 товара
+  if (products.length < 2) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    );
+  }
+
   const settings = {
-    dots: true, // точки под слайдером
-    infinite: true, // бесконечная прокрутка
-    speed: 500, // скорость перехода
-    slidesToShow: 4, // сколько карточек видно
-    slidesToScroll: 1, // сколько листается за раз
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
     autoplay: true,
-    // adaptiveHeight: true,
-    autoplaySpeed: 4000, // автопрокрутка (мс)
+    autoplaySpeed: 4000,
     responsive: [
       {
-        breakpoint: 1024, // до 1024px — 3 карточки
-        settings: {
-          slidesToShow: 3,
-        },
+        breakpoint: 1024,
+        settings: { slidesToShow: 3 },
       },
       {
-        breakpoint: 768, // до 768px — 2 карточки
-        settings: {
-          slidesToShow: 2,
-        },
+        breakpoint: 768,
+        settings: { slidesToShow: 2 },
       },
       {
-        breakpoint: 480, // до 480px — 1 карточка
+        breakpoint: 480,
         settings: {
           slidesToShow: mobileSlidesToShow,
-          slidesToScroll:slidesToScroll
-          // adaptiveHeight: true,
+          slidesToScroll: slidesToScroll,
         },
       },
     ],
   };
+
   return (
     <Slider {...settings} className="mb-1">
       {products.map((product) => (

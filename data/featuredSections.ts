@@ -1,6 +1,6 @@
 import { toSlug } from '@/lib/slugify';
 import { actualProposition } from '@/data/actualProposition';
-import { headphones } from '@/data/headphones';
+import { headphones } from '@/data/headphones';  
 
 export const featuredSections = [
   {
