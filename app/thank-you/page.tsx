@@ -12,6 +12,9 @@ export default function ThankYouPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem('lastOrder');
+    const sent = localStorage.getItem('emailSent') === 'true';
+    setEmailSent(sent);
+
     if (!stored) {
       setIsSaving(false);
       return;
@@ -21,7 +24,7 @@ export default function ThankYouPage() {
       const parsed = JSON.parse(stored);
       setOrder(parsed);
 
-      // Сохраняем заказ в MongoDB
+      // Збереження замовлення в MongoDB
       fetch('/api/saveOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,25 +34,6 @@ export default function ThankYouPage() {
           console.error('❌ Помилка збереження замовлення:', err);
         })
         .finally(() => setIsSaving(false));
-
-      // 👇 защита от повторной отправки
-      const alreadySent = localStorage.getItem('emailSent') === 'true';
-      if (parsed.email && !alreadySent) {
-        fetch('/api/sendEmail', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(parsed),
-        })
-          .then((res) => {
-            if (res.ok) {
-              setEmailSent(true);
-              localStorage.setItem('emailSent', 'true'); // ✅ фіксація
-            } else {
-              console.error('❌ Email не надіслано');
-            }
-          })
-          .catch((err) => console.error('❌ Email помилка:', err));
-      }
     } catch (err) {
       console.error('❌ JSON parse error:', err);
       setIsSaving(false);

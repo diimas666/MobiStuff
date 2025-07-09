@@ -93,11 +93,23 @@ export default function CheckoutPage() {
 
       if (res.ok) {
         clearCart();
+
+        // ✅ Надсилаємо email тільки 1 раз тут
+        if (email && !localStorage.getItem('emailSent')) {
+          try {
+            await fetch('/api/sendEmail', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(order),
+            });
+            localStorage.setItem('emailSent', 'true');
+          } catch (e) {
+            console.error('❌ Email не надіслано:', e);
+          }
+        }
+
         localStorage.setItem('lastOrder', JSON.stringify(order));
         router.push('/thank-you');
-      } else {
-        const data = await res.json();
-        alert(`❌ Помилка: ${data.message || 'Спробуйте ще раз'}`);
       }
     } catch {
       alert('❌ Сервер недоступний');
