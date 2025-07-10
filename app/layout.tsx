@@ -29,16 +29,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk ">
-      <body className={`${roboto.variable}  antialiased min-h-screen`}>
+      <body
+        className={`${roboto.variable}  antialiased min-h-screen flex flex-col`}
+      >
         <Canonical />
         <FavoritesProvider>
           <CartProvider>
             <MobileSidebarProvider>
               <Header />
-                <div className="mt-[80px]">
-                  <Container>{children}</Container>
-                </div>
-                <Footer />
+              <div className="mt-[80px] flex-1">
+                <Container>{children}</Container>
+              </div>
+              <Footer />
             </MobileSidebarProvider>
           </CartProvider>
         </FavoritesProvider>
