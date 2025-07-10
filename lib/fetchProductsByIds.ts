@@ -1,7 +1,8 @@
-// lib/fetchProductsByIds.ts
 import { Product } from '@/interface/product';
 
 export async function fetchProductsByIds(ids: string[]): Promise<Product[]> {
+  if (ids.length === 0) return [];
+
   const res = await fetch('/api/products/byIds', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -13,5 +14,6 @@ export async function fetchProductsByIds(ids: string[]): Promise<Product[]> {
     return [];
   }
 
-  return res.json();
+  const products = await res.json();
+  return products.filter((p: Product) => !!p._id); // ✅ Защита от пустых
 }
