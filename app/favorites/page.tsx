@@ -10,7 +10,7 @@ import { useFavorites } from '@/context/FavoritesContext';
 const ITEMS_PER_PAGE = 12;
 
 export default function FavoritesPage() {
-  const { favorites, toggleFavorite } = useFavorites(); // ✅ используем toggleFavorite
+  const { favorites, setFavorites, clearFavorites } = useFavorites();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,15 +28,18 @@ export default function FavoritesPage() {
       return;
     }
 
-    fetchProductsByIds(favorites).then((data) => {
-      setProducts(data);
+    fetchProductsByIds(favorites).then((fetched) => {
+      setProducts(fetched);
       setLoading(false);
-    });
-  }, [favorites]);
 
-  const clearFavorites = () => {
-    favorites.forEach((id) => toggleFavorite(id));
-  };
+      // Удаляем несуществующие товары из избранного
+      const existingIds = fetched.map((p) => p._id || p.id);
+      const cleaned = favorites.filter((id) => existingIds.includes(id));
+      if (cleaned.length !== favorites.length) {
+        setFavorites(cleaned);
+      }
+    });
+  }, [favorites, setFavorites]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-4">
@@ -52,14 +55,14 @@ export default function FavoritesPage() {
           {favorites.length > 0 && (
             <button
               onClick={clearFavorites}
-              className="text-sm text-red-600  py-2 px-4 rounded-md bg-gray-400 cursor-pointer hover:text-gray-100 transition-all duration-300 "
+              className="text-sm text-red-600 py-2 px-4 rounded-md bg-gray-400 cursor-pointer hover:text-gray-100 transition-all duration-300"
             >
               Очистити обране
             </button>
           )}
         </div>
 
-        <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
           {loading ? (
             <p className="col-span-full text-center">Завантаження...</p>
           ) : paginatedProducts.length > 0 ? (
