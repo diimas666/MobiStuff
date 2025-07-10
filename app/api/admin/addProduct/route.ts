@@ -4,6 +4,7 @@ import Product from '@/app/api/models/Product'; // ✅
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  // console.log('📥 BODY З АДМІНКИ:', body); // 🟢 ОБОВ'ЯЗКОВО
 
   const adminPassword = process.env.ADMIN_SECRET;
   const authHeader = req.headers.get('authorization');

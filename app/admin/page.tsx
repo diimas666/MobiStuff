@@ -24,6 +24,7 @@ const initialFormState = {
   rating: '0',
   reviewsCount: '0',
   variants: '',
+  isTrending: false,
 };
 export default function AdminPage() {
   const [form, setForm] = useState(initialFormState);
@@ -32,6 +33,10 @@ export default function AdminPage() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
+    //     console.log('🧾 Відправляється товар:', {
+    //   ...form,
+    //   isTrending: form.isTrending,
+    // });
     const res = await fetch('/api/admin/addProduct', {
       method: 'POST',
       headers: {
@@ -55,6 +60,8 @@ export default function AdminPage() {
         categorySlug: toSlug(form.category),
         subcategorySlug: toSlug(form.subcategory),
         handle: toSlug(form.title),
+        isTrending: form.isTrending,
+
         tags: form.tags.split(',').map((t) => t.trim()),
       }),
     });
@@ -76,8 +83,13 @@ export default function AdminPage() {
   return (
     <AdminWrapper>
       <Link href="/admin/products">
-        <button className="bg-gray-200 text-black px-4 py-2 rounded ml-2">
+        <button className="bg-gray-200 text-black px-4 py-2 rounded ml-2 cursor-pointer">
           Всі товари
+        </button>
+      </Link>
+      <Link href="/admin/import">
+        <button className="bg-gray-200 text-black px-4 py-2 rounded ml-2 cursor-pointer">
+          Import товарів
         </button>
       </Link>
 
@@ -240,6 +252,14 @@ export default function AdminPage() {
             onChange={(e) => setForm({ ...form, isNew: e.target.checked })}
           />
           {' Новинка'}
+        </label>
+        <label className="block">
+          <input
+            type="checkbox"
+            checked={form.isTrending}
+            onChange={(e) => setForm({ ...form, isTrending: e.target.checked })}
+          />
+          {' Тренд'}
         </label>
 
         <label className="block">

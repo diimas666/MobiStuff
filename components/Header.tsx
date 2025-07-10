@@ -18,6 +18,9 @@ export default function Header() {
   return (
     <Container>
       <header className="glass-header fixed py-4 px-2 z-50 max-w-screen-2xl mx-auto">
+        <Link className="absolute left-3 bottom-0" href="/admin">
+          <span className="text-[9px] text-gray-400 hover:underline">admin</span>
+        </Link>
         <div className="flex items-center justify-between w-full">
           {/* Логотип */}
           {(!isSearchOpen ||

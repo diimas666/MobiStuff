@@ -7,6 +7,8 @@ export async function PATCH(req: Request) {
   await dbConnect();
   const body = await req.json();
 
+  // console.log('📦 PATCH BODY:', body);
+
   const { id, ...updateFields } = body;
 
   if (!id) {
@@ -22,8 +24,11 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Товар не знайдено' }, { status: 404 });
     }
 
+    console.log('✅ Оновлений товар:', updated); // і тут лог
+
     return NextResponse.json({ message: 'Оновлено', product: updated });
-  } catch  {
+  } catch (e) {
+    console.error('❌ Помилка оновлення:', e);
     return NextResponse.json(
       { error: 'Помилка при оновленні товару' },
       { status: 500 }

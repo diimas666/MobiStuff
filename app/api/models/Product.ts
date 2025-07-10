@@ -18,12 +18,14 @@ const ProductSchema = new mongoose.Schema(
     subcategorySlug: String,
     brand: String,
     rating: Number,
+    isTrending: { type: Boolean, default: false },
     reviewsCount: Number,
     variants: [String],
     tags: [String],
   },
   {
     suppressReservedKeysWarning: true, // ✅ Добавь сюда
+    timestamps: true, // ✅ ОБОВʼЯЗКОВО!
   }
 );
 

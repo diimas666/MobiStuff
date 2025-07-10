@@ -7,11 +7,16 @@ import { trendingProducts } from '@/data/trendingSlider';
 import { actualProposition } from '@/data/actualProposition';
 import BrandList from '@/components/BrandList';
 import OffersSection from '@/components/OffersSection.client';
-
 // функция
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
+import { getTrendingProducts } from '@/lib/getTrendingProducts';
 
 export default async function GeneralPage() {
+  // тренд
+  const trending = await getTrendingProducts();
+  console.log('🔥 Трендові товари:', trending.length);
+
+
   // ⚙️ Получаем данные из MongoDB
   const headphones = await getProductsByCategory(
     'navushnyky',
@@ -36,6 +41,7 @@ export default async function GeneralPage() {
     'korysni-akcesuary',
     'kabel-testery'
   );
+
   // ✅ Формируем секции динамически
   const featuredSections = [
     {
@@ -114,7 +120,7 @@ export default async function GeneralPage() {
           {/* Трендові товари */}
           <div className="basis-1/2 flex-1   lg:h-[490px] md:h-[370px]">
             <h3 className="text-xl font-semibold mb-6 ">Трендові товари</h3>
-            <TrendingSlider products={trendingProducts} />
+            <TrendingSlider products={trending} />
           </div>
         </section>
       </main>
