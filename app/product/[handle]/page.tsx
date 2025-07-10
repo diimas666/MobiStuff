@@ -4,6 +4,7 @@ import GalleryImages from '@/components/GalleryImages';
 import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
 import VariantSection from '@/components/VariantSection';
+
 export async function generateMetadata({
   params: paramsPromise,
 }: {
@@ -47,7 +48,7 @@ export default async function ProductPage({
   return (
     <>
       {/* хлеб крошки  */}
-      <div className="text-sm mb-4 text-gray-500 mb-4">
+      <div className="text-sm mb-4 text-gray-500 ">
         <Link href="/" className="hover:underline">
           Головна
         </Link>{' '}
@@ -66,7 +67,7 @@ export default async function ProductPage({
         <span className="font-semibold text-gray-700">{product.title}</span>
       </div>
       {/* хлеб крошки   конец */}
-      <div className="max-w-5xl mx-auto p-6 border border-green-600">
+      <div className="max-w-5xl mx-auto p-6  border-green-600">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ">
           {/* Левая колонка: изображения */}
           <div>
@@ -90,7 +91,7 @@ export default async function ProductPage({
 
             {/* Варианты */}
             {product.variants?.length > 0 && (
-              <VariantSection variants={product.variants} />
+              <VariantSection variants={product.variants} product={product} />
             )}
 
             {/* Описание */}
@@ -117,7 +118,7 @@ export default async function ProductPage({
         </div>
         {/* конец  */}
       </div>
-      <section className="border px-5">SLIDER</section>
+      {/* <section className="border px-5">SLIDER</section> */}
     </>
   );
 }

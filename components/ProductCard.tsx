@@ -100,7 +100,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             toggleFavorite(productId); // ✅ Вызов из контекста
           }}
           className={`button-block-card hover:bg-green-500 ${
-            isFavorite ? 'bg-red-600 text-white' : ''
+            isFavorite ? 'bg-green-500 text-white' : ''
           }`}
           title={isFavorite ? 'Прибрати з обраного' : 'Додати в обране'}
         >
