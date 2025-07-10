@@ -5,21 +5,18 @@ import Image from 'next/image';
 import { Heart, ShoppingCart, Scale } from 'lucide-react';
 import { Product } from '@/interface/product';
 import { useCart } from '@/context/CartContext';
+import { useFavorites } from '@/context/FavoritesContext'; // ✅ Импорт
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const toggleFavorite = (productId: string) => {
-    const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
-    const updated = stored.includes(productId)
-      ? stored.filter((id: string) => id !== productId)
-      : [...stored, productId];
-    localStorage.setItem('favorites', JSON.stringify(updated));
-  };
-
   const { addToCart } = useCart();
+  const { favorites, toggleFavorite } = useFavorites(); // ✅ Используем контекст
+
+  const productId = product._id || product.id;
+  const isFavorite = favorites.includes(productId); // ✅ Проверка в контексте
 
   const handleAddToCart = () => {
     addToCart({
@@ -97,16 +94,27 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Кнопки */}
       <div className="flex gap-4 absolute right-4 bottom-3 z-10">
         <button
-          onClick={() => toggleFavorite(product._id!)}
-          className="button-block-card hover:bg-green-500"
+          onClick={(e) => {
+            e.preventDefault(); // не переходить по ссылке
+            toggleFavorite(productId); // ✅ Вызов из контекста
+          }}
+          className={`button-block-card hover:bg-green-500 ${
+            isFavorite ? 'bg-red-600 text-white' : ''
+          }`}
+          title={isFavorite ? 'Прибрати з обраного' : 'Додати в обране'}
         >
           <Heart className="glass-icon-svg" />
         </button>
+
         <button className="button-block-card hover:bg-green-500">
           <Scale className="glass-icon-svg" />
         </button>
+
         <button
-          onClick={handleAddToCart}
+          onClick={(e) => {
+            e.preventDefault(); // не переходить по ссылке
+            handleAddToCart();
+          }}
           className="button-block-card hover:bg-green-500"
           disabled={!product.inStock}
           title={!product.inStock ? 'Немає в наявності' : 'Додати в кошик'}

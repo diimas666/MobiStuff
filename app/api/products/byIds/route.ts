@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '../../models/Product';
+import mongoose from 'mongoose';
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -11,6 +12,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Invalid IDs' }, { status: 400 });
   }
 
-  const products = await Product.find({ _id: { $in: ids } });
-  return NextResponse.json(products);
+  try {
+    // ✅ Конвертируем строки в ObjectId
+    const objectIds = ids
+      .filter((id: string) => mongoose.Types.ObjectId.isValid(id))
+      .map((id: string) => new mongoose.Types.ObjectId(id));
+
+    const products = await Product.find({ _id: { $in: objectIds } });
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error('❌ Ошибка при поиске продуктов:', error);
+    return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+  }
 }

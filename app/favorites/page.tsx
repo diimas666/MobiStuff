@@ -47,7 +47,7 @@ export default function FavoritesPage() {
           <p className="col-span-full text-center">Завантаження...</p>
         ) : paginatedProducts.length > 0 ? (
           paginatedProducts.map((product) => (
-            <div key={product._id} className="max-w-[250px]">
+            <div key={product._id || product.id} className="max-w-[250px]">
               <ProductCard product={product} />
             </div>
           ))

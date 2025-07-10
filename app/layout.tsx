@@ -35,7 +35,7 @@ export default function RootLayout({
           <CartProvider>
             <MobileSidebarProvider>
               <Header />
-                <div className="mt-[72px]">
+                <div className="mt-[80px]">
                   <Container>{children}</Container>
                 </div>
                 <Footer />
