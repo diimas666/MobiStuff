@@ -119,7 +119,7 @@ export default async function SubcategoryPage({
         {/* Товары */}
         {/* Товары */}
         <div className="w-full">
-          <ProductList products={paginatedProducts} />
+          <ProductList products={paginatedProducts} colVariant={colVariant} />
         </div>
       </div>
 

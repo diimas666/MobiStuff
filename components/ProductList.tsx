@@ -5,14 +5,20 @@ import { Product } from '@/interface/product';
 
 interface Props {
   products: Product[];
+  colVariant?: '1' | '2';
 }
 
-export default function ProductList({ products }: Props) {
+export default function ProductList({ products, colVariant = '2' }: Props) {
+  const gridClass =
+    colVariant === '1'
+      ? 'grid-cols-1'
+      : 'grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]';
+
   return (
-    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+    <div className={`grid gap-4 ${gridClass}`}>
       {products.length > 0 ? (
         products.map((product) => (
-          <ProductCard key={product._id} product={product} />
+          <ProductCard key={product._id || product.id} product={product} />
         ))
       ) : (
         <p className="col-span-full text-center text-gray-500">
