@@ -3,7 +3,6 @@ import CategoryGrid from '@/components/CategoryGrid';
 import CategoryList from '@/components/CategoryList';
 import TrendingSlider from '@/components/TrendingSlider';
 //  data
-import { trendingProducts } from '@/data/trendingSlider';
 import { actualProposition } from '@/data/actualProposition';
 import BrandList from '@/components/BrandList';
 import OffersSection from '@/components/OffersSection.client';
