@@ -9,8 +9,6 @@ interface TrendingSliderProps {
 }
 
 export default function TrendingSlider({ products }: TrendingSliderProps) {
-  if (!products || products.length === 0) return null; // ⬅️ перемести СЮДА
-
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -20,7 +18,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
 
     return () => clearInterval(interval);
   }, [products.length]);
-
+  if (!products || products.length === 0) return null; // ⬅️ перемести СЮДА
   const next = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
   };
