@@ -27,6 +27,11 @@ body {
   padding: 0;
   /* overflow: hidden; */
 }
+@layer components {
+  .slick-dots li:nth-child(n + 6) {
+    display: none !important;
+  }
+}
 
 @layer components {
   /* секция  */
