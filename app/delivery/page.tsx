@@ -36,7 +36,7 @@ export default function DeliveryPage() {
             <strong>Безкоштовна доставка</strong> при замовленні від{' '}
             <strong>1500 грн</strong>
           </li>
-          <li>Можливість доставки на відділення або кур'єром</li>
+          <li>Можливість доставки на відділення або кур&apos;єром</li>
         </ul>
       </section>
 
@@ -57,7 +57,7 @@ export default function DeliveryPage() {
 
       <p className="mt-10 text-center text-gray-600">
         Якщо у вас є питання щодо доставки чи оплати —{' '}
-        <strong>зв'яжіться з нами</strong>, ми з радістю допоможемо!
+        <strong>зв&apos;яжіться з нами</strong>, ми з радістю допоможемо!
       </p>
     </main>
   );
