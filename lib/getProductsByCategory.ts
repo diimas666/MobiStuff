@@ -1,13 +1,12 @@
 import dbConnect from '@/lib/dbConnect';
-import ProductModel from '@/app/api/models/Product'; // Mongoose-модель
-import type { Product as ProductType } from '@/interface/product'; // Тип интерфейса
-import { sanitizeMongoDocs } from '@/lib/sanitizeMongoDocs';
+import ProductModel from '@/app/api/models/Product';
+import type { Product } from '@/interface/product';
 
 export async function getProductsByCategory(
   categorySlug: string,
   subcategorySlug: string,
   limit = 10
-): Promise<ProductType[]> {
+): Promise<Product[]> {
   await dbConnect();
 
   const products = await ProductModel.find({
@@ -17,5 +16,9 @@ export async function getProductsByCategory(
     .limit(limit)
     .lean();
 
-  return sanitizeMongoDocs(products) as ProductType[]; // если sanitize возвращает unknown[]
+  return products.map((p: any) => ({
+    ...p,
+    _id: p._id?.toString(), // ✅ ОБЯЗАТЕЛЬНО
+    id: p._id?.toString(), // ✅ для избранного
+  }));
 }
