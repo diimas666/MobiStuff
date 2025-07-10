@@ -51,11 +51,11 @@ export default function FavoritesPage() {
 
       {/* Контент */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
+        <div className="flex justify-center md:justify-start">
           {favorites.length > 0 && (
             <button
               onClick={clearFavorites}
-              className="text-sm text-red-600 py-2 px-4 rounded-md bg-gray-400 cursor-pointer hover:text-gray-100 transition-all duration-300"
+              className=" text-sm text-red-600 py-2 px-4 rounded-md bg-gray-400 cursor-pointer hover:text-gray-100 transition-all duration-300"
             >
               Очистити обране
             </button>
@@ -63,11 +63,13 @@ export default function FavoritesPage() {
         </div>
 
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
+          {/* <div className="flex flex-col gap-4 w-full"> */}
+
           {loading ? (
             <p className="col-span-full text-center">Завантаження...</p>
           ) : paginatedProducts.length > 0 ? (
             paginatedProducts.map((product) => (
-              <div key={product._id || product.id} className="max-w-[250px]">
+              <div key={product._id || product.id} className="w-full md:max-w-[250px]">
                 <ProductCard product={product} />
               </div>
             ))
