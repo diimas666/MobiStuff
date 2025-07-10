@@ -21,7 +21,6 @@ export default async function GeneralPage() {
     'akumulyatory-ta-powerbank',
     'paverbanky'
   );
-  // console.log('⚡ Павербанки:', powerbanks);
 
   const cables = await getProductsByCategory('zaryadky-ta-kabeli', 'usb');
   const mice = await getProductsByCategory('komp-yuterna-peryferiia', 'myshky');

@@ -25,7 +25,7 @@ export default function VariantSection({ variants, product }: Props) {
       <div className="flex flex-col gap-2  ">
         <button
           onClick={() => toggleFavorite(product._id || product.id)}
-          className={`px-6 py-2 rounded-2xl transition shadow cursor-pointer ${
+          className={`px-6 py-2 rounded-2xl transition shadow cursor-pointer flex gap-2 justify-center ${
             favorites.includes(product._id || product.id)
               ? 'bg-red-100 text-green-600 '
               : 'bg-white text-black hover:bg-gray-100'
@@ -34,6 +34,7 @@ export default function VariantSection({ variants, product }: Props) {
           {favorites.includes(product._id || product.id)
             ? 'В обраному'
             : 'Додати в обране'}
+          <Heart className="glass-icon-svg" />
         </button>
         <button
           onClick={() => addToCart(product)}
