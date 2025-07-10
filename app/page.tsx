@@ -9,6 +9,7 @@ import OffersSection from '@/components/OffersSection.client';
 // функция
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
 import { getTrendingProducts } from '@/lib/getTrendingProducts';
+export const dynamic = 'force-dynamic'; // 🔥 отключает кеш
 
 export default async function GeneralPage() {
   // тренд
