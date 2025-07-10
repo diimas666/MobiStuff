@@ -14,7 +14,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
-    }, 5000);
+    }, 7000);
 
     return () => clearInterval(interval);
   }, [products.length]);
@@ -32,7 +32,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
   const currentProduct = products[currentIndex];
 
   return (
-    <div className="relative w-full h-[370px] overflow-hidden rounded-xl shadow-xl">
+    <div className="relative w-full h-[380px] overflow-hidden rounded-xl shadow-xl">
       <Link
         href={`/product/${currentProduct.handle}`}
         className="block w-full h-full"
@@ -48,14 +48,17 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
           />
         </div>
 
-        <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white p-4">
+        <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white p-4 min-h-[100px]">
           <h3 className="text-lg font-semibold mb-1">{currentProduct.title}</h3>
+          <p className="text-sm text-gray-200 line-clamp-2 sm:line-clamp-3 mb-2">
+            {currentProduct.description}
+          </p>{' '}
           <div className="flex justify-between items-center">
-            <span className="text-xl font-bold">
+            <span className="text-xl font-bold text-green-500">
               {currentProduct.price} грн
             </span>
-            <span className="bg-yellow-400 text-black text-xs px-3 py-1 rounded">
-              Придбати
+            <span className="bg-gray-400 text-black text-xs px-3 py-1 rounded shadow-amber-300 hover:bg-yellow-500">
+              Купити зараз
             </span>
           </div>
         </div>
