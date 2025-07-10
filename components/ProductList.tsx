@@ -10,7 +10,7 @@ interface Props {
 
 export default function ProductList({ products, colVariant = '2' }: Props) {
   const gridClass =
-    colVariant === '1'
+    colVariant === '2'
       ? 'grid-cols-1'
       : 'grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]';
 
