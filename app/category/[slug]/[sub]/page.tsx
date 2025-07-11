@@ -117,12 +117,11 @@ export default async function SubcategoryPage({
         </aside>
 
         {/* Товары */}
-        {/* Товары */}
         <div className="w-full">
           <ProductList products={paginatedProducts} colVariant={colVariant} />
         </div>
       </div>
-
+{/* dmmd */}
       {/* Пагинация */}
       {totalPages > 1 && (
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
