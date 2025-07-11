@@ -111,7 +111,7 @@ export default async function SubcategoryPage({
       {/* Основная сетка */}
       <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-4">
         {/* Сайдбар */}
-        <aside className="hidden md:block border px-4 py-4 shadow-sm rounded bg-white h-fit sticky top-24 z-30">
+        <aside className="hidden md:block  px-4 py-4 shadow-sm rounded bg-white h-fit sticky top-24 z-30">
           <h3 className="text-lg font-semibold mb-4">Каталог</h3>
           <CategoryList />
         </aside>
