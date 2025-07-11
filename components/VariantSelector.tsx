@@ -13,17 +13,23 @@ export default function VariantSelector({
 }: VariantSelectorProps) {
   if (!variants || variants.length === 0) return null;
 
+  const isMany = variants.length >= 3;
+
   return (
-    <div className="h-[60px] ">
-      <ul className="flex  gap-4 justify-center ">
+    <div>
+      <ul
+        className={`flex gap-3 flex-wrap ${
+          isMany ? 'flex-col sm:flex-row text-sm' : 'justify-center text-base'
+        }`}
+      >
         {variants.map((variant, index) => (
           <li
             key={index}
             onClick={() => setSelected(variant)}
-            className={` min-w-[80px] py-2 px-4 rounded-4xl shadow-md flex items-center justify-center text-md cursor-pointer transition ${
+            className={`min-w-[80px] py-2 px-4 rounded-full shadow-sm flex items-center justify-center cursor-pointer transition text-center ${
               selected === variant
-                ? 'bg-black text-white border-black'
-                : 'bg-gray-100 hover:bg-gray-200'
+                ? 'bg-black text-white border border-black'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
             }`}
           >
             {variant}
