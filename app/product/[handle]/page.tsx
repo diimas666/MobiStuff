@@ -89,10 +89,7 @@ export default async function ProductPage({
               )}
             </div>
 
-            {/* Варианты */}
-            {product.variants?.length > 0 && (
-              <VariantSection variants={product.variants} product={product} />
-            )}
+            <VariantSection variants={product.variants} product={product} />
 
             {/* Описание */}
             <div className="text-gray-600 leading-relaxed space-y-2 max-h-[300px] overflow-y-auto  rounded p-2">

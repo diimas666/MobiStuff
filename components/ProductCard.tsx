@@ -29,7 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <div className="flex flex-col justify-between border rounded-xl overflow-hidden shadow-md hover:border-green-500 transition-all duration-300 relative h-full">
       <Link
         href={`/product/${product.handle}`}
-        className="block flex flex-col h-full"
+        className=" flex flex-col h-full"
       >
         {/* Верх: картинка */}
         <div className="relative w-full aspect-[4/4] bg-gray-100">
@@ -53,12 +53,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Низ: текстовая часть */}
         {/* 280 меняе смотрим когда как  */}
-        <div className="p-4 bg-gray-800 text-white flex flex-col justify-between min-h-[280px] grow"> 
+        <div className="p-4 bg-gray-800 text-white flex flex-col justify-between min-h-[280px] grow">
           <div>
             <h3 className="text-lg font-semibold line-clamp-3 mb-1">
               {product.title}
             </h3>
-
+            {product.description && (
+              <p className="text-sm text-gray-300 mb-2 line-clamp-3">
+                {product.description}
+              </p>
+            )}
             {product.rating && (
               <div className="flex items-center gap-1 mb-2 text-sm text-yellow-500">
                 {'★'.repeat(Math.round(product.rating))}

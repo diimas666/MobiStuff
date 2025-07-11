@@ -30,9 +30,11 @@ export async function POST(req: NextRequest) {
     const categorySlug = slugify(category);
     const tags = row.tags?.split(',').map((t: string) => t.trim()) || [];
 
-    const subcategorySlug = tags.includes('tws')
-      ? 'tws'
-      : row.subcategorySlug?.trim() || `usi-${categorySlug}`;
+    // Фиксируем подкатегорию как "usi-navushnyky" если категория "Навушники"
+    let subcategorySlug = row.subcategorySlug?.trim() || `usi-${categorySlug}`;
+    if (categorySlug === 'navushnyky') {
+      subcategorySlug = 'usi-navushnyky';
+    }
 
     if (!title || !image || isNaN(price) || !handle) {
       console.warn('❌ Пропущено: некорректные данные', row);
