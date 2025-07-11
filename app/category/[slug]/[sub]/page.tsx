@@ -64,7 +64,7 @@ export default async function SubcategoryPage({
   // Получение продуктов
   const allProducts: Product[] = await fetchProducts(slug, sub);
 
-  const colVariant = cols === '2' ? '2' : '1'; // ✅ всегда строка '1' или '2'
+  const colVariant = cols === '1' ? '1' : '2'; // ✅ теперь по умолчанию '2'
 
   // 🧮 Пагинация
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
