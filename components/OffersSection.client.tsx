@@ -39,7 +39,11 @@ export default function OffersSection({
     <section className="section-bottom">
       {/* Заголовок и кнопка переключения карточек (только на мобильных) */}
       <div className="flex justify-between items-start">
-        <h3 className="text-xl font-semibold mb-5">{title}</h3>
+        <h3 className="text-xl font-semibold mb-5">
+          {title}{' '}
+          <span className="text-gray-500 text-base">({products.length})</span>
+        </h3>
+
         <button onClick={toggleSliders} className="max-[490px]:block md:hidden">
           {/* Если показывается 1 карточка — иконка на 2, если 2 — иконка на 1 */}
           {mobileSlidesToShow === 1 ? (
