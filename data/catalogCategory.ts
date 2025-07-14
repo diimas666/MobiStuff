@@ -58,7 +58,13 @@ export const catalogCategory = [
     seoTitle: 'Купити зарядки та кабелі | MobiStuff',
     seoDescription:
       'USB, Lightning, MicroUSB — якісні кабелі та зарядки для будь-яких пристроїв.',
-    subcategories: ['USB', 'Lightning', 'MicroUSB', 'Магнітні'],
+    subcategories: [
+      'Lightning',
+      'MicroUSB',
+      'Type-ce',
+      'Бездротові зарядні пристрої',
+      'Мережеві зарядні пристрої',
+    ],
   },
   {
     title: "Комп'ютерна периферія",
