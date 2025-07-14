@@ -34,8 +34,6 @@ export default function OffersSection({
     setMobileSlideToShow(newValue);
     setSlidesToScroll(newValue);
   };
-const hasLink =
-  typeof categorySlug === 'string' && categorySlug.trim().length > 0;
 
   return (
     <section className="section-bottom">
