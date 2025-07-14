@@ -16,7 +16,6 @@ export default async function GeneralPage() {
   const trending = await getTrendingProducts();
   console.log('🔥 Трендові товари:', trending.length);
 
-
   // ⚙️ Получаем данные из MongoDB
   const headphones = await getProductsByCategory(
     'navushnyky',
@@ -27,7 +26,7 @@ export default async function GeneralPage() {
     'paverbanky'
   );
 
-  const cables = await getProductsByCategory('zaryadky-ta-kabeli', 'usb');
+  const cables = await getProductsByCategory('zaryadky-ta-kabeli');
   const mice = await getProductsByCategory('komp-yuterna-peryferiia', 'myshky');
   const holders = await getProductsByCategory(
     'avtomobilna-tematyka',
@@ -59,7 +58,7 @@ export default async function GeneralPage() {
     {
       title: 'USB кабелі',
       categorySlug: 'zaryadky-ta-kabeli',
-      subcategorySlug: 'usb',
+      subcategorySlug: null,
       products: cables,
     },
     {
