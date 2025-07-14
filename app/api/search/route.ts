@@ -1,25 +1,23 @@
 // app/api/search/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
 
-export async function GET(req: Request) {
-  await dbConnect();
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const query = searchParams.get('query');
+  const q = searchParams.get('q')?.trim() || '';
 
-  if (!query) {
+  if (q.length < 2) {
     return NextResponse.json([], { status: 200 });
   }
 
-  const regex = new RegExp(query, 'i'); // нечувствительный к регистру поиск
-  const results = await Product.find({
-    $or: [{ title: regex }, { description: regex }, { tags: regex }],
-  });
+  await dbConnect();
 
-  return NextResponse.json(results);
+  const regex = new RegExp(q, 'i'); // нечутливий до регістру
+  const products = await Product.find(
+    { title: regex },
+    'id title handle image'
+  ).limit(10);
+
+  return NextResponse.json(products);
 }
-
-
-// const res = await fetch(`/api/search?query=powerbank`);
-// const products = await res.json();
