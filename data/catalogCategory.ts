@@ -61,7 +61,7 @@ export const catalogCategory = [
     subcategories: [
       'Lightning',
       'MicroUSB',
-      'Type-ce',
+      'Type-c',
       'Бездротові зарядні пристрої',
       'Мережеві зарядні пристрої',
     ],
