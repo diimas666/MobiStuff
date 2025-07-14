@@ -5,7 +5,7 @@ import type { Product } from '@/interface/product';
 export async function getProductsByCategory(
   categorySlug: string,
   subcategorySlug: string,
-  limit = 10
+  limit = 40
 ): Promise<Product[]> {
   await dbConnect();
 
@@ -13,6 +13,8 @@ export async function getProductsByCategory(
     categorySlug,
     subcategorySlug,
   })
+    .sort({ createdAt: -1 }) // ❗️чтобы самые новые сверху
+
     .limit(limit)
     .lean();
 

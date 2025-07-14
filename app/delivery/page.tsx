@@ -34,7 +34,7 @@ export default function DeliveryPage() {
           </li>
           <li>
             <strong>Безкоштовна доставка</strong> при замовленні від{' '}
-            <strong>1500 грн</strong>
+            <strong>2500 грн</strong>
           </li>
           <li>Можливість доставки на відділення або кур&apos;єром</li>
         </ul>
