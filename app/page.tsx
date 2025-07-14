@@ -58,7 +58,7 @@ export default async function GeneralPage() {
     {
       title: 'USB кабелі',
       categorySlug: 'zaryadky-ta-kabeli',
-      subcategorySlug: null,
+      subcategorySlug: 'lightning',
       products: cables,
     },
     {
