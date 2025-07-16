@@ -27,6 +27,10 @@ export default async function GeneralPage() {
   );
 
   const cables = await getProductsByCategory('zaryadky-ta-kabeli');
+  const chargers = await getProductsByCategory(
+    'zaryadky-ta-kabeli',
+    'bezdrotovi-zaryadni-prystroyi'
+  );
   const mice = await getProductsByCategory('komp-yuterna-peryferiia', 'myshky');
   const holders = await getProductsByCategory(
     'avtomobilna-tematyka',
@@ -60,6 +64,12 @@ export default async function GeneralPage() {
       categorySlug: 'zaryadky-ta-kabeli',
       subcategorySlug: 'lightning',
       products: cables,
+    },
+    {
+      title: 'Бездротові зарядні пристрої',
+      categorySlug: 'zaryadky-ta-kabeli',
+      subcategorySlug: 'bezdrotovi-zaryadni-prystroyi',
+      products: chargers,
     },
     {
       title: 'Мишки',
