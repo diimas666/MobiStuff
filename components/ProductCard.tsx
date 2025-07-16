@@ -53,9 +53,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Низ: текстовая часть */}
         {/* 280 меняе смотрим когда как  */}
-        <div className="p-4 bg-gray-800 text-white flex flex-col justify-between min-h-[280px] grow">
+        <div className="p-4 bg-gray-800 text-white flex flex-col justify-between min-h-[290px] grow">
           <div>
-            <h3 className="text-lg font-semibold line-clamp-3 mb-1">
+            <h3 className="text-lg font-semibold line-clamp-2 mb-1">
               {product.title}
             </h3>
             {product.description && (
@@ -97,7 +97,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Кнопки */}
-      <div className="flex gap-4 absolute right-2 bottom-3 z-10">
+      <div className="flex gap-4 absolute right-3 bottom-3 z-10">
         <button
           onClick={(e) => {
             e.preventDefault(); // не переходить по ссылке
