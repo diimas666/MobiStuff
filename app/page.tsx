@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { popularItems } from '@/data/popularAndTrending';
 import CategoryGrid from '@/components/CategoryGrid';
 import CategoryList from '@/components/CategoryList';
@@ -10,7 +11,33 @@ import OffersSection from '@/components/OffersSection.client';
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
 import { getTrendingProducts } from '@/lib/getTrendingProducts';
 export const dynamic = 'force-dynamic'; // 🔥 отключает кеш
-
+export const metadata: Metadata = {
+  title: 'Купити аксесуари для телефону в Україні | MobiStuff',
+  description:
+    'Широкий вибір: павербанки, навушники, зарядки, кабелі, смарт-годинники, чохли та інше. Якісні аксесуари за доступними цінами. Доставка по Україні.',
+  keywords: [
+    'аксесуари для телефону',
+    'павербанк купити',
+    'навушники bluetooth',
+    'кабель lightning',
+    'смарт годинник',
+    'аксесуари Київ',
+    'чохол iPhone',
+    'зарядне бездротове',
+  ],
+  openGraph: {
+    title: 'Купити аксесуари для телефону в Україні | MobiStuff',
+    description:
+      'Найкращі пропозиції на аксесуари: зарядки, кабелі, павербанки, чохли, навушники та інше. Вибір і доставка по всій Україні.',
+    url: 'https://mobistuff.shop',
+    siteName: 'MobiStuff',
+    locale: 'uk_UA',
+    type: 'website',
+  },
+  alternates: {
+    canonical: 'https://mobistuff.shop',
+  },
+};
 export default async function GeneralPage() {
   // тренд
   const trending = await getTrendingProducts();
@@ -122,6 +149,10 @@ export default async function GeneralPage() {
           <CategoryList />
         </aside>
         {/* Популярні категорії */}
+        <h1 className="sr-only">
+          Інтернет-магазин мобільних аксесуарів — MobiStuff
+        </h1>
+
         <section className="flex w-full gap-5 max-[890px]:flex-col max-[658px]:gap-3 section-bottom">
           <div className="basis-1/2 flex-1 ">
             <CategoryGrid title="Популярні категорії" items={popularItems} />
@@ -143,6 +174,16 @@ export default async function GeneralPage() {
             />
           </div>
         </section>
+        {/* текст  */}
+        <section className="section-bottom">
+          <div className="text-gray-600 max-w-3xl mx-auto text-center mb-8 text-[18px]">
+            MobiStuff — інтернет-магазин мобільних аксесуарів. Ми пропонуємо
+            павербанки, зарядні пристрої, навушники, кабелі, чохли,
+            смарт-годинники та інші гаджети з доставкою по всій Україні. Якість,
+            гарантія, швидка доставка.
+          </div>
+        </section>
+
         {/* Популярні бренди */}
         <section className="section-bottom">
           <h3 className="text-xl font-semibold mb-6 ">Популярні бренди</h3>
