@@ -1,7 +1,7 @@
 import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
   return catalogCategory.map((cat) => ({
@@ -9,10 +9,11 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata(
-  { params }: { params: { slug: string } },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const category = catalogCategory.find((cat) => cat.slug === params.slug);
   if (!category) return {};
 
