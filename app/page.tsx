@@ -58,7 +58,7 @@ export default async function GeneralPage() {
     'zaryadky-ta-kabeli',
     'bezdrotovi-zaryadni-prystroyi'
   );
-  const mice = await getProductsByCategory('komp-yuterna-peryferiia', 'myshky');
+  const mice = await getProductsByCategory('kompyuterna-peryferiya', 'myshky');
   const holders = await getProductsByCategory(
     'avtomobilna-tematyka',
     'trymachi'
@@ -100,7 +100,7 @@ export default async function GeneralPage() {
     },
     {
       title: 'Мишки',
-      categorySlug: 'komp-yuterna-peryferiia',
+      categorySlug: 'kompyuterna-peryferiya',
       subcategorySlug: 'myshky',
       products: mice,
     },
