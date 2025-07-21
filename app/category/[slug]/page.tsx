@@ -1,7 +1,7 @@
-// app/category/[slug]/page.tsx
 import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 export async function generateStaticParams() {
   return catalogCategory.map((cat) => ({
@@ -9,13 +9,13 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export async function generateMetadata(
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const category = catalogCategory.find((cat) => cat.slug === params.slug);
   if (!category) return {};
+
   return {
     title: category.seoTitle,
     description: category.seoDescription,
@@ -38,9 +38,7 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
             href={`/category/${category.slug}/${sub.slug}`}
             className="border rounded-lg p-4 hover:shadow-md bg-white transition"
           >
-           
-            <div className="text-md font-semibold mb-1">{sub.title}</div>{' '}
-            {/* ✅ Тут sub.title */}
+            <div className="text-md font-semibold mb-1">{sub.title}</div>
             <div className="text-sm text-gray-500">Переглянути товари →</div>
           </Link>
         ))}
