@@ -1,6 +1,6 @@
 // components/popularData.ts
 import { toSlug } from '@/lib/slugify';
-// тут популярные товары и трнединг товары и все!! 
+// тут популярные товары и трнединг товары и все!!
 export const popularItems = [
   {
     id: 1,
@@ -36,11 +36,11 @@ export const popularItems = [
   },
   {
     id: 5,
-    title: 'USB-C кабелі',
+    title: 'Lightning кабелі',
     image: '/images/usb-kabel-tipa-c-na-sinem-fone.jpg',
     bg: 'bg-purple-100',
     categorySlug: toSlug('Зарядки та кабелі'), // zaryadky-ta-kabeli
-    subcategorySlug: toSlug('USB-C'), // usb-c
+    subcategorySlug: toSlug('Lightning'), // usb-c
   },
   {
     id: 6,
