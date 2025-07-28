@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+  "normalize-brands": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/normalizeBrands.ts"
   },
   "dependencies": {
     "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.1",
     "lucide-react": "^0.515.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.1",
@@ -27,13 +29,15 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.9",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-slick": "^0.23.13",
+    "dotenv-cli": "^9.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

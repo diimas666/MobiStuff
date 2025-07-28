@@ -134,12 +134,6 @@ export default async function GeneralPage() {
       subcategorySlug: 'plivky',
       products: films,
     },
-    {
-      title: 'Кабель-тестери',
-      categorySlug: 'korysni-akcesuary',
-      subcategorySlug: 'kabel-testery',
-      products: testers,
-    },
   ];
   return (
     <>

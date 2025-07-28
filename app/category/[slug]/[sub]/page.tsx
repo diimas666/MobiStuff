@@ -2,6 +2,7 @@ import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
 // import ProductCard from '@/components/ProductCard';
 import ProductList from '@/components/ProductList';
+import FilterBar from '@/components/FilterBar';
 
 import CategoryList from '@/components/CategoryList';
 import type { Metadata } from 'next';
@@ -48,21 +49,31 @@ export default async function SubcategoryPage({
   searchParams: searchParamsPromise,
 }: {
   params: Promise<{ slug: string; sub: string }>;
-  searchParams: Promise<{ page?: string; cols?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    cols?: string;
+    brand?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }>;
 }) {
   const params = await paramsPromise;
   const searchParams = await searchParamsPromise;
+  const { page, cols, brand, minPrice, maxPrice } = searchParams;
+  const filters = { brand, minPrice, maxPrice };
 
   const { slug, sub } = params;
-  const { page, cols } = searchParams;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
   if (!category || !subcategory) return notFound();
+  const queryString = `&brand=${encodeURIComponent(brand || '')}&minPrice=${
+    minPrice || ''
+  }&maxPrice=${maxPrice || ''}`;
 
   const currentPage = parseInt(page || '1', 10);
   // Получение продуктов
-  const allProducts: Product[] = await fetchProducts(slug, sub);
+  const allProducts = await fetchProducts(slug, sub, filters);
 
   const colVariant = cols === '1' ? '1' : '2'; // ✅ теперь по умолчанию '2'
 
@@ -111,9 +122,14 @@ export default async function SubcategoryPage({
       {/* Основная сетка */}
       <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-4">
         {/* Сайдбар */}
-        <aside className="hidden md:block  px-4 py-4 shadow-sm rounded bg-white h-fit sticky top-24 z-30">
+        <aside className="hidden md:block px-4 py-4 shadow-sm rounded bg-white h-fit  z-30 w-full">
           <h3 className="text-lg font-semibold mb-4">Каталог</h3>
           <CategoryList />
+
+          <div className="border-t pt-4 mt-4">
+            <h4 className="text-md font-medium mb-2">Фільтри</h4>
+            <FilterBar />
+          </div>
         </aside>
 
         {/* Товары */}
@@ -121,7 +137,7 @@ export default async function SubcategoryPage({
           <ProductList products={paginatedProducts} colVariant={colVariant} />
         </div>
       </div>
-{/* dmmd */}
+      {/* dmmd */}
       {/* Пагинация */}
       {totalPages > 1 && (
         <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
@@ -129,7 +145,7 @@ export default async function SubcategoryPage({
             <Link
               href={`/category/${slug}/${sub}?page=${
                 currentPage - 1
-              }&cols=${cols}`}
+              }&cols=${cols}${queryString}`}
               className="px-3 py-1 border rounded hover:bg-gray-100"
             >
               ← Попередня
@@ -138,7 +154,7 @@ export default async function SubcategoryPage({
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <Link
               key={p}
-              href={`/category/${slug}/${sub}?page=${p}&cols=${colVariant}`}
+              href={`/category/${slug}/${sub}?page=${p}&cols=${colVariant}${queryString}`}
               className={`px-3 py-1 border rounded hover:bg-gray-100 ${
                 p === currentPage ? 'bg-black text-white' : ''
               }`}
@@ -150,7 +166,7 @@ export default async function SubcategoryPage({
             <Link
               href={`/category/${slug}/${sub}?page=${
                 currentPage + 1
-              }&cols=${colVariant}`}
+              }&cols=${colVariant}${queryString}`}
               className="px-3 py-1 border rounded hover:bg-gray-100"
             >
               Наступна →
