@@ -5,6 +5,7 @@ import { brands } from '@/data/brands';
 import ProductCardClient from '@/components/ProductCardClient';
 import CategoryList from '@/components/CategoryList';
 import Image from 'next/image';
+import FilterBar from '@/components/FilterBar';
 
 export function generateStaticParams() {
   return brands.map((brand) => ({
@@ -74,6 +75,10 @@ export default async function BrandPage({
         <aside className="w-[250px] hidden md:block">
           <h3 className="text-2xl font-semibold mb-2">Каталог</h3>
           <CategoryList />
+          <div className="border-t pt-4 mt-4">
+            <h4 className="text-md font-medium mb-2">Фільтри</h4>
+            <FilterBar />
+          </div>
         </aside>
 
         <section className="flex-1">
