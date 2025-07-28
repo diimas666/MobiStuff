@@ -67,10 +67,7 @@ export default async function GeneralPage() {
   const watches = await getProductsByCategory('gadzhety', 'smart-hodynnyky');
   const cases = await getProductsByCategory('chokhly', 'dlia-iphone');
   const films = await getProductsByCategory('zakhyst-ekranu', 'plivky');
-  const testers = await getProductsByCategory(
-    'korysni-akcesuary',
-    'kabel-testery'
-  );
+ 
 
   // ✅ Формируем секции динамически
   const featuredSections = [

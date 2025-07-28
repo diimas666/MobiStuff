@@ -8,7 +8,6 @@ import CategoryList from '@/components/CategoryList';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Grid, LayoutList } from 'lucide-react';
-import { Product } from '@/interface/product';
 // фетч
 import { fetchProducts } from '@/lib/api';
 const ITEMS_PER_PAGE = 20;
