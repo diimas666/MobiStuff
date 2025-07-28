@@ -1,9 +1,10 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import ProductCardClient from '@/components/ProductCardClient';
-import Image from 'next/image';
+import { getProductsByBrand } from '@/lib/mongo/products';
 import { brands } from '@/data/brands';
-import { actualProposition as products } from '@/data/actualProposition';
+import ProductCardClient from '@/components/ProductCardClient';
 import CategoryList from '@/components/CategoryList';
+import Image from 'next/image';
 
 export function generateStaticParams() {
   return brands.map((brand) => ({
@@ -11,14 +12,35 @@ export function generateStaticParams() {
   }));
 }
 
-// 👇 Обход строгой типизации от Next.js через `any`
-const BrandPage = async (props: any) => {
-  const handle = props.params.handle;
-  const page = parseInt(props.searchParams?.page || '1', 10);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params; // Дожидаемся params
+  const brand = brands.find(
+    (b) => b.handle.toLowerCase() === handle.toLowerCase()
+  );
 
+  if (!brand) return { title: 'Бренд не найден' };
+
+  return {
+    title: `${brand.title} – Товары бренда`,
+    description: brand.description?.[0] || `Купить товары ${brand.title}`,
+  };
+}
+
+export default async function BrandPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ handle: string }>;
+  searchParams?: Promise<{ page?: string }>;
+}) {
+  const { handle } = await params; // Дожидаемся params
+  const resolvedSearchParams = await searchParams; // Дожидаемся searchParams
+  const page = parseInt(resolvedSearchParams?.page ?? '1', 10);
   const perPage = 20;
-  const start = (page - 1) * perPage;
-  const end = start + perPage;
 
   const brand = brands.find(
     (b) => b.handle.toLowerCase() === handle.toLowerCase()
@@ -26,27 +48,27 @@ const BrandPage = async (props: any) => {
 
   if (!brand) return notFound();
 
-  const filtered = products.filter(
-    (p) => p.brand?.toLowerCase() === brand.title.toLowerCase()
+  const { products, total } = await getProductsByBrand(
+    brand.title,
+    page,
+    perPage
   );
 
-  const paginatedProducts = filtered.slice(start, end);
-  const totalPages = Math.ceil(filtered.length / perPage);
+  const totalPages = Math.ceil(total / perPage);
 
   return (
     <div>
-      <div className="relative w-full min-h-[90px] max-h-[400px] overflow-hidden block mb-4">
-        {brand.imageFull && (
+      {brand.imageFull && (
+        <div className="relative w-full min-h-[90px] max-h-[400px] overflow-hidden block mb-4">
           <Image
             src={brand.imageFull}
             alt={brand.title}
             width={1200}
             height={300}
-            layout="responsive"
             className="object-cover w-full"
           />
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="flex gap-4">
         <aside className="w-[250px] hidden md:block">
@@ -59,33 +81,24 @@ const BrandPage = async (props: any) => {
 
           {Array.isArray(brand.description) &&
             brand.description.map((p, i) => (
-              <p className="mb-1 text-gray-700 leading-relaxed" key={i}>
+              <p key={i} className="mb-1 text-gray-700">
                 {p}
               </p>
             ))}
 
-          {brand.products && (
-            <ul className="list-disc list-inside mt-4 space-y-1 mb-4">
-              {brand.products.map((item, i) => (
-                <li className="text-gray-600 ml-5" key={i}>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1">
-            {paginatedProducts.map((product) => (
-              <ProductCardClient key={product.id} product={product} />
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-1 mt-5">
+            {products.map((product) => (
+              <ProductCardClient key={product._id} product={product} />
             ))}
 
-            {paginatedProducts.length === 0 && (
+            {products.length === 0 && (
               <p className="col-span-full text-center text-gray-500">
                 Товари цього бренду не знайдено.
               </p>
             )}
           </div>
 
+          {/* пагинация */}
           {totalPages > 1 && (
             <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
               {page > 1 && (
@@ -137,6 +150,4 @@ const BrandPage = async (props: any) => {
       </div>
     </div>
   );
-};
-
-export default BrandPage;
+}
