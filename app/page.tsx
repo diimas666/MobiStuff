@@ -4,12 +4,13 @@ import CategoryGrid from '@/components/CategoryGrid';
 import CategoryList from '@/components/CategoryList';
 import TrendingSlider from '@/components/TrendingSlider';
 //  data
-import { actualProposition } from '@/data/actualProposition';
+
 import BrandList from '@/components/BrandList';
 import OffersSection from '@/components/OffersSection.client';
 // функция
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
 import { getTrendingProducts } from '@/lib/getTrendingProducts';
+import PromoSlider from '@/components/PromoSlider';
 export const dynamic = 'force-dynamic'; // 🔥 отключает кеш
 export const metadata: Metadata = {
   title: 'Купити аксесуари для телефону в Україні | MobiStuff',
@@ -67,7 +68,6 @@ export default async function GeneralPage() {
   const watches = await getProductsByCategory('gadzhety', 'smart-hodynnyky');
   const cases = await getProductsByCategory('chokhly', 'dlia-iphone');
   const films = await getProductsByCategory('zakhyst-ekranu', 'plivky');
- 
 
   // ✅ Формируем секции динамически
   const featuredSections = [
@@ -158,11 +158,9 @@ export default async function GeneralPage() {
       <main>
         {/* Актуальні пропозиції' */}
         <section className="section-bottom">
-          <div className="w-full overflow-hidden  pb-6">
-            <OffersSection
-              products={actualProposition}
-              title={'Актуальні пропозиції'}
-            />
+          <div className="w-full pb-6">
+            <h2 className="text-xl font-bold mb-4">Актуальні пропозиції</h2>
+            <PromoSlider />
           </div>
         </section>
         {/* текст  */}
