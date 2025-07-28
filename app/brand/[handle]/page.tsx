@@ -5,7 +5,6 @@ import { brands } from '@/data/brands';
 import ProductCardClient from '@/components/ProductCardClient';
 import CategoryList from '@/components/CategoryList';
 import Image from 'next/image';
-import FilterBar from '@/components/FilterBar';
 
 export function generateStaticParams() {
   return brands.map((brand) => ({
