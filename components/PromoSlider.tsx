@@ -7,19 +7,19 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const banners = [
   {
-    src: '/banners/free-delivery.jpg',
+    src: '/images/banners/free-delivery.png',
     alt: 'Безкоштовна доставка від 2500 грн',
   },
   {
-    src: '/banners/borofone-discount.jpg',
+    src: '/images/banners/borofone-discount.png',
     alt: 'Знижка 5% на Borofone',
   },
   {
-    src: '/banners/new-arrivals.jpg',
+    src: '/images/banners/new-arrivals.jpg',
     alt: 'Новинки тижня',
   },
   {
-    src: '/banners/powerbanks-sale.jpg',
+    src: '/images/banners/powerbanks-sale.jpg',
     alt: 'Акція на повербанки',
   },
 ];
@@ -54,8 +54,8 @@ export default function PromoSlider() {
     <div className="w-full overflow-hidden">
       <Slider {...settings}>
         {banners.map((banner, i) => (
-          <div key={i} className="px-2 border">
-            <div className="relative w-full h-[200px] rounded-xl overflow-hidden">
+          <div key={i} className="px-2">
+            <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border shadow">
               <Image
                 src={banner.src}
                 alt={banner.alt}
