@@ -37,6 +37,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={(product.image ?? '').replace(/"/g, '')}
             alt={product.title}
             fill
+            unoptimized // <== ВАЖНО
             className="object-cover rounded-t-xl"
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />

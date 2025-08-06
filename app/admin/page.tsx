@@ -105,8 +105,17 @@ export default function AdminPage() {
               alt="Головне зображення"
               width={200}
               height={200}
+              unoptimized // <== ВАЖНО
               className="object-contain mx-auto"
             />
+
+            {/* <img
+              src={form.image}
+              alt="Головне зображення"
+              width={200}
+              height={200}
+              className="object-contain mx-auto"
+            /> */}
           </div>
         )}
         <input

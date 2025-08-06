@@ -65,6 +65,7 @@ export default async function BrandPage({
             alt={brand.title}
             width={1200}
             height={300}
+             unoptimized // <== ВАЖНО
             className="object-cover w-full"
           />
         </div>

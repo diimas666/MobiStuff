@@ -13,6 +13,7 @@ export default function BrandList() {
                 src={brand.image}
                 alt={brand.title}
                 fill
+                unoptimized // <== ВАЖНО
                 className="object-contain"
                 sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 25vw, 15vw"
               />
