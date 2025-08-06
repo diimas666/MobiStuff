@@ -41,7 +41,7 @@ export default function OffersSection({
       <div className="flex justify-between items-start">
         <h3 className="text-xl font-semibold mb-5">
           {title}{' '}
-          <span className="text-gray-500 text-base">({products.length})</span>
+          {/* <span className="text-gray-500 text-base">({products.length})</span> */}
         </h3>
 
         <button onClick={toggleSliders} className="max-[490px]:block md:hidden">
