@@ -5,7 +5,7 @@ import { toSlug } from '@/lib/slugify';
 import { toast } from 'react-toastify';
 import AdminWrapper from '@/components/AdminWrapper';
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
 const initialFormState = {
   title: '',
   description: '',
@@ -100,22 +100,22 @@ export default function AdminPage() {
         )}
         {form.image && (
           <div className="w-full border p-2 rounded bg-white shadow">
-            <Image
+            {/* <Image
               src={form.image}
               alt="Головне зображення"
               width={200}
               height={200}
               unoptimized // <== ВАЖНО
               className="object-contain mx-auto"
-            />
+            /> */}
 
-            {/* <img
+            <img
               src={form.image}
               alt="Головне зображення"
               width={200}
               height={200}
               className="object-contain mx-auto"
-            /> */}
+            />
           </div>
         )}
         <input

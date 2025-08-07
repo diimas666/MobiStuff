@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { Heart, ShoppingCart, Scale } from 'lucide-react';
 import { Product } from '@/interface/product';
 import { useCart } from '@/context/CartContext';
@@ -33,13 +33,18 @@ export default function ProductCard({ product }: ProductCardProps) {
       >
         {/* Верх: картинка */}
         <div className="relative w-full aspect-[4/4] bg-gray-100">
-          <Image
+          {/* <Image
             src={(product.image ?? '').replace(/"/g, '')}
             alt={product.title}
             fill
             unoptimized // <== ВАЖНО
             className="object-cover rounded-t-xl"
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          /> */}
+          <img
+            src={(product.image ?? '').replace(/"/g, '')}
+            alt={product.title}
+            className="object-cover rounded-t-xl w-full h-full"
           />
           {product.isNew && (
             <span className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
