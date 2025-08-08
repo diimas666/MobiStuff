@@ -20,6 +20,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-// images: {
-//     domains: ['cdn.shopify.com'],
-//   },
+
