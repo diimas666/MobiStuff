@@ -131,22 +131,26 @@ export default async function GeneralPage() {
 
   return (
     <>
-      <main className="text-md flex  gap-2 section-bottom">
-        <aside className="w-[300px]  px-2 shadow-sm relative hidden md:block ">
-          <h3 className="text-lg font-semibold mb-2 ">Каталог</h3>
+      <main className="text-md flex flex-col md:flex-row gap-2 section-bottom w-full min-w-0">
+        <aside className="w-[300px] px-2 shadow-sm relative hidden md:block shrink-0">
+          <h3 className="text-lg font-semibold mb-2">Каталог</h3>
           <CategoryList />
         </aside>
         <h1 className="sr-only">
           Інтернет-магазин мобільних аксесуарів — MobiStuff
         </h1>
 
-        <section className="flex w-full gap-5 max-[890px]:flex-col max-[658px]:gap-3 section-bottom">
-          <div className="basis-1/2 flex-1 ">
+        <section className="flex w-full min-w-0 gap-5 items-stretch max-[890px]:flex-col max-[890px]:gap-4 section-bottom">
+          <div className="basis-1/2 flex-1 flex flex-col min-w-0 max-[890px]:basis-full">
             <CategoryGrid title="Популярні категорії" items={popularItems} />
           </div>
-          <div className="basis-1/2 flex-1   lg:h-[490px] md:h-[370px]">
-            <h3 className="text-xl font-semibold mb-6 ">Трендові товари</h3>
-            <TrendingSlider products={trending} />
+          <div className="basis-1/2 flex-1 flex flex-col min-w-0 max-[890px]:basis-full">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 shrink-0">
+              Трендові товари
+            </h3>
+            <div className="flex-1 min-h-[300px] max-[890px]:flex-none max-[890px]:h-[280px]">
+              <TrendingSlider products={trending} />
+            </div>
           </div>
         </section>
       </main>

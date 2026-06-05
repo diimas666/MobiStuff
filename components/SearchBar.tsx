@@ -112,9 +112,9 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
             <div
               key={product.id || product.handle}
               onClick={() => handleSelect(product.handle)}
-              className="flex items-center justify-between px-4 py-2 gap-3 cursor-pointer 
-             hover:bg-gray-100 dark:hover:bg-gray-800 text-sm 
-             max-[490px]:relative max-[490px]:top-5 max-[490px]:w-[350px] bg-white rounded-2xl shadow-md mb-1 "
+              className="flex items-center justify-between px-4 py-2 gap-3 cursor-pointer
+             hover:bg-gray-100 dark:hover:bg-gray-800 text-sm
+             w-full bg-white dark:bg-gray-900 rounded-2xl shadow-md mb-1"
             >
               <div className="flex-1 ">
                 <p className="text-gray-800 dark:text-white ">

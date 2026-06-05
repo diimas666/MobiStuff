@@ -33,7 +33,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
   const currentProduct = products[currentIndex];
 
   return (
-    <div className="relative w-full h-[380px] overflow-hidden rounded-xl shadow-xl">
+    <div className="relative w-full h-full min-h-[260px] sm:min-h-[300px] overflow-hidden rounded-xl shadow-xl">
       <Link
         href={`/product/${currentProduct.handle}`}
         className="block w-full h-full"
@@ -49,11 +49,13 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
           />
         </div>
 
-        <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white p-4 min-h-[100px]">
-          <h3 className="text-lg font-semibold mb-1">{currentProduct.title}</h3>
-          <p className="text-sm text-gray-200 line-clamp-2 sm:line-clamp-3 mb-2">
+        <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white p-3 sm:p-4">
+          <h3 className="text-base sm:text-lg font-semibold mb-1 line-clamp-2">
+            {currentProduct.title}
+          </h3>
+          <p className="text-sm text-gray-200 line-clamp-1 sm:line-clamp-2 mb-2">
             {stripHtml(currentProduct.description || '')}
-          </p>{' '}
+          </p>
           <div className="flex justify-between items-center">
             <span className="text-xl font-bold text-green-500">
               {currentProduct.price} грн
@@ -67,14 +69,16 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
 
       {/* Стрелки */}
       <button
+        type="button"
         onClick={prev}
-        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow transition"
+        className="absolute top-1/2 left-1 sm:left-2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 sm:p-2 text-sm sm:text-base shadow transition"
       >
         ❮
       </button>
       <button
+        type="button"
         onClick={next}
-        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow transition"
+        className="absolute top-1/2 right-1 sm:right-2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 sm:p-2 text-sm sm:text-base shadow transition"
       >
         ❯
       </button>

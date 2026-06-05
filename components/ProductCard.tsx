@@ -55,8 +55,8 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
           )}
         </div>
 
-        <div className="p-4 pb-2 bg-gray-800 text-white flex-1 min-h-[160px]">
-          <h3 className="text-lg font-semibold line-clamp-2 mb-1">
+        <div className="p-3 sm:p-4 pb-2 bg-gray-800 text-white flex-1 min-h-[110px] sm:min-h-[160px]">
+          <h3 className="text-sm sm:text-lg font-semibold line-clamp-2 mb-1">
             {product.title}
           </h3>
           {product.description && (
@@ -83,9 +83,9 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         </div>
       </Link>
 
-      <div className="flex items-center justify-between gap-2 px-4 pb-4 pt-1 bg-gray-800">
+      <div className="flex items-center justify-between gap-2 px-3 sm:px-4 pb-3 sm:pb-4 pt-1 bg-gray-800">
         <div className="flex flex-col min-w-0 text-white">
-          <span className="text-xl font-bold text-green-500">
+          <span className="text-base sm:text-xl font-bold text-green-500">
             {product.price} грн
           </span>
           {product.oldPrice && (

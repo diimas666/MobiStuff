@@ -22,11 +22,12 @@ export default function CategoryItem({
     <Link
       href={`/category/${categorySlug}/${subcategorySlug}`}
       className={`
-      relative aspect-square overflow-hidden 
-      py-2 px-4 rounded-md shadow-md 
-      ${bg} hover:scale-101 transition  
+      relative h-full min-h-[140px] overflow-hidden
+      py-2 px-4 rounded-md shadow-md
+      ${bg} hover:scale-101 transition
       transform-gpu will-change-transform
-      max-[578px]:min-w-[160px] max-[578px]:max-w-[180px] max-[578px]:flex-shrink-0
+      max-[578px]:aspect-square max-[578px]:min-w-[140px] max-[578px]:max-w-[160px]
+      max-[578px]:flex-shrink-0 max-[578px]:h-auto max-[578px]:snap-start
   `}
     >
       <Image
