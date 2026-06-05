@@ -1,12 +1,47 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AdminWrapper from '@/components/AdminWrapper';
 import { toast } from 'react-toastify';
+import { catalogCategory } from '@/data/catalogCategory';
 
 export default function AllProductsAdminPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [subcategoryFilter, setSubcategoryFilter] = useState('');
+
+  const subcategoryOptions = useMemo(() => {
+    if (!categoryFilter) return [];
+    const category = catalogCategory.find((c) => c.slug === categoryFilter);
+    return category?.subcategories ?? [];
+  }, [categoryFilter]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      if (subcategoryFilter) {
+        return (
+          p.categorySlug === categoryFilter &&
+          p.subcategorySlug === subcategoryFilter
+        );
+      }
+      if (categoryFilter) {
+        return p.categorySlug === categoryFilter;
+      }
+      return true;
+    });
+  }, [products, categoryFilter, subcategoryFilter]);
+
+  const getCategoryLabel = (categorySlug?: string, subcategorySlug?: string) => {
+    const category = catalogCategory.find((c) => c.slug === categorySlug);
+    const sub = category?.subcategories.find((s) => s.slug === subcategorySlug);
+    if (category && sub) return `${category.title} / ${sub.title}`;
+    if (category) return category.title;
+    if (categorySlug || subcategorySlug) {
+      return `${categorySlug ?? '—'} / ${subcategorySlug ?? '—'}`;
+    }
+    return '—';
+  };
   // тренд
   const toggleTrending = async (id: string, isTrending: boolean) => {
     try {
@@ -136,9 +171,50 @@ export default function AllProductsAdminPage() {
   return (
     <AdminWrapper>
       <div className="p-6">
-        <h2 className="text-xl font-bold mb-4">Всі товари</h2>
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <h2 className="text-xl font-bold">Всі товари</h2>
+
+          <select
+            value={categoryFilter}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setSubcategoryFilter('');
+            }}
+            className="border rounded px-3 py-1.5 text-sm bg-white min-w-[180px]"
+          >
+            <option value="">Усі категорії</option>
+            {catalogCategory.map((cat) => (
+              <option key={cat.slug} value={cat.slug}>
+                {cat.title}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={subcategoryFilter}
+            onChange={(e) => setSubcategoryFilter(e.target.value)}
+            disabled={!categoryFilter}
+            className="border rounded px-3 py-1.5 text-sm bg-white min-w-[200px] disabled:opacity-50"
+          >
+            <option value="">Усі підкатегорії</option>
+            {subcategoryOptions.map((sub) => (
+              <option key={sub.slug} value={sub.slug}>
+                {sub.title}
+              </option>
+            ))}
+          </select>
+
+          {!loading && (
+            <span className="text-sm text-gray-500">
+              Показано {filteredProducts.length} з {products.length}
+            </span>
+          )}
+        </div>
+
         {loading ? (
           <p>Завантаження...</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-gray-500">Товарів у цій категорії немає.</p>
         ) : (
           <table className="w-full border">
             <thead>
@@ -154,7 +230,7 @@ export default function AllProductsAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {filteredProducts.map((p) => (
                 <tr key={p._id} className="text-sm">
                   <td className="border p-2 w-16">
                     {p.image ? (
@@ -170,7 +246,7 @@ export default function AllProductsAdminPage() {
                   </td>
                   <td className="border p-2">{p.title}</td>
                   <td className="border p-2">
-                    {p.categorySlug} / {p.subcategorySlug}
+                    {getCategoryLabel(p.categorySlug, p.subcategorySlug)}
                   </td>
                   <td className="border p-2">
                     <input
