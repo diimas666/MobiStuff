@@ -10,27 +10,13 @@ export default function AllProductsAdminPage() {
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [subcategoryFilter, setSubcategoryFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const subcategoryOptions = useMemo(() => {
     if (!categoryFilter) return [];
     const category = catalogCategory.find((c) => c.slug === categoryFilter);
     return category?.subcategories ?? [];
   }, [categoryFilter]);
-
-  const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
-      if (subcategoryFilter) {
-        return (
-          p.categorySlug === categoryFilter &&
-          p.subcategorySlug === subcategoryFilter
-        );
-      }
-      if (categoryFilter) {
-        return p.categorySlug === categoryFilter;
-      }
-      return true;
-    });
-  }, [products, categoryFilter, subcategoryFilter]);
 
   const getCategoryLabel = (categorySlug?: string, subcategorySlug?: string) => {
     const category = catalogCategory.find((c) => c.slug === categorySlug);
@@ -42,6 +28,41 @@ export default function AllProductsAdminPage() {
     }
     return '—';
   };
+
+  const filteredProducts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return products.filter((p) => {
+      if (subcategoryFilter) {
+        if (
+          p.categorySlug !== categoryFilter ||
+          p.subcategorySlug !== subcategoryFilter
+        ) {
+          return false;
+        }
+      } else if (categoryFilter && p.categorySlug !== categoryFilter) {
+        return false;
+      }
+
+      if (!query) return true;
+
+      const categoryLabel = getCategoryLabel(
+        p.categorySlug,
+        p.subcategorySlug
+      ).toLowerCase();
+
+      return (
+        p.title?.toLowerCase().includes(query) ||
+        p.handle?.toLowerCase().includes(query) ||
+        p.mmaKey?.toLowerCase().includes(query) ||
+        p.brand?.toLowerCase().includes(query) ||
+        p.categorySlug?.toLowerCase().includes(query) ||
+        p.subcategorySlug?.toLowerCase().includes(query) ||
+        categoryLabel.includes(query)
+      );
+    });
+  }, [products, categoryFilter, subcategoryFilter, searchQuery]);
+
   // тренд
   const toggleTrending = async (id: string, isTrending: boolean) => {
     try {
@@ -204,6 +225,24 @@ export default function AllProductsAdminPage() {
             ))}
           </select>
 
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Пошук за назвою, артикулом, брендом..."
+            className="border rounded px-3 py-1.5 text-sm bg-white min-w-[220px] flex-1 max-w-md"
+          />
+
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="text-sm text-gray-500 hover:text-gray-800 underline"
+            >
+              Скинути
+            </button>
+          )}
+
           {!loading && (
             <span className="text-sm text-gray-500">
               Показано {filteredProducts.length} з {products.length}
@@ -214,7 +253,11 @@ export default function AllProductsAdminPage() {
         {loading ? (
           <p>Завантаження...</p>
         ) : filteredProducts.length === 0 ? (
-          <p className="text-gray-500">Товарів у цій категорії немає.</p>
+          <p className="text-gray-500">
+            {searchQuery
+              ? 'За вашим запитом нічого не знайдено.'
+              : 'Товарів у цій категорії немає.'}
+          </p>
         ) : (
           <table className="w-full border">
             <thead>
