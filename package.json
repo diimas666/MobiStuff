@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "optimize-images": "node scripts/optimizeImages.mjs",
+    "generate-mma-catalog": "node scripts/generateMmaCatalog.mjs",
+    "sync-mma": "node scripts/syncMmaProducts.mjs",
     "normalize-brands": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/normalizeBrands.ts"
   },
   "dependencies": {

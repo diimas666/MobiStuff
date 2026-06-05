@@ -15,6 +15,15 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: 'ID відсутній' }, { status: 400 });
   }
 
+  if (updateFields.price !== undefined) {
+    const existing = (await Product.findById(id).select('price').lean()) as {
+      price?: number;
+    } | null;
+    if (existing && existing.price !== updateFields.price) {
+      updateFields.priceManuallyEdited = true;
+    }
+  }
+
   try {
     const updated = await Product.findByIdAndUpdate(id, updateFields, {
       new: true,

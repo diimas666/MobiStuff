@@ -79,6 +79,35 @@ export default function AllProductsAdminPage() {
     }
   };
 
+  const updatePrice = async (id: string, price: number) => {
+    if (!price || price <= 0) return;
+
+    try {
+      const res = await fetch(`/api/admin/updateProduct`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET}`,
+        },
+        body: JSON.stringify({ id, price }),
+      });
+
+      if (res.ok) {
+        setProducts((prev) =>
+          prev.map((p) =>
+            p._id === id ? { ...p, price, priceManuallyEdited: true } : p
+          )
+        );
+        toast.success('Ціну оновлено (захищено від синхронізації)');
+      } else {
+        toast.error('Не вдалося оновити ціну');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Помилка оновлення ціни');
+    }
+  };
+
   const deleteProduct = async (id: string) => {
     if (!confirm('Ти впевнений?')) return;
 
@@ -130,7 +159,19 @@ export default function AllProductsAdminPage() {
                   <td className="border p-2">
                     {p.categorySlug} / {p.subcategorySlug}
                   </td>
-                  <td className="border p-2">{p.price} грн</td>
+                  <td className="border p-2">
+                    <input
+                      type="number"
+                      defaultValue={p.price}
+                      className="w-20 border rounded px-1 py-0.5"
+                      onBlur={(e) =>
+                        updatePrice(p._id, parseFloat(e.target.value))
+                      }
+                    />
+                    {p.priceManuallyEdited && (
+                      <span className="block text-xs text-blue-600">ручна</span>
+                    )}
+                  </td>
                   <td className="border p-2">
                     <button
                       onClick={() => toggleInStock(p._id, p.inStock)}

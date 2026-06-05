@@ -1,54 +1,51 @@
-// components/popularData.ts
-import { toSlug } from '@/lib/slugify';
-// тут популярные товары и трнединг товары и все!!
 export const popularItems = [
   {
     id: 1,
     title: 'Навушники',
     image: '/images/besprovodnye-nausniki.webp',
     bg: 'bg-pink-100',
-    categorySlug: toSlug('Навушники'), // navushnyky
-    subcategorySlug: toSlug('Усі навушники'), // usi-navushnyky
+    categorySlug: 'category-naushniki',
+    subcategorySlug: 'category-bluetooth-stereo-garnituri-tws',
   },
   {
     id: 2,
     title: 'Павербанки',
     image: '/images/akkumulatornoi-bataree.webp',
     bg: 'bg-yellow-100',
-    categorySlug: toSlug('Акумулятори та PowerBank'), // akumulyatory-ta-powerbank
-    subcategorySlug: toSlug('Павербанки'), // paverbanky
+    categorySlug: 'category-akkumulyatori-i-powerbank',
+    subcategorySlug: 'category-portativnie-batarei',
   },
   {
     id: 3,
     title: 'Тримачі в авто',
     image: '/images/zensina-s-pomos-u-smartfona-s-rozetkoi.webp',
     bg: 'bg-blue-100',
-    categorySlug: toSlug('Автомобільна тематика'), // avtomobilna-tematyka
-    subcategorySlug: toSlug('Тримачі'), // trymachi
+    categorySlug: 'category-avtomobilynaya-tematika',
+    subcategorySlug: 'category-avtomobilynie-derzhateli',
   },
   {
     id: 4,
     title: 'Колонки Bluetooth',
     image: '/images/naturmort-tehnologiceskogo-ustroistva.webp',
     bg: 'bg-green-100',
-    categorySlug: toSlug('Аудіо та відео'), // audio-ta-video
-    subcategorySlug: toSlug('Колонки'), // kolonky
+    categorySlug: 'category-audio-i-video',
+    subcategorySlug: 'category-portativnie-kolonki',
   },
   {
     id: 5,
     title: 'Lightning кабелі',
     image: '/images/usb-kabel-tipa-c-na-sinem-fone.webp',
     bg: 'bg-purple-100',
-    categorySlug: toSlug('Зарядки та кабелі'), // zaryadky-ta-kabeli
-    subcategorySlug: toSlug('Lightning'), // usb-c
+    categorySlug: 'category-zaryadki-i-kabeli',
+    subcategorySlug: 'category-lightning',
   },
   {
     id: 6,
     title: 'Геймерські аксесуари',
     image: '/images/game.webp',
     bg: 'bg-red-100',
-    categorySlug: toSlug("Комп'ютерна периферія"), // komp-iuterna-peryferiia
-    subcategorySlug: toSlug('Клавіатури'), // klaviatury (или Hаби, если хочешь другое)
+    categorySlug: 'category-kompyyuternaya-periferiya',
+    subcategorySlug: 'category-klaviaturi',
   },
 ];
 
@@ -72,32 +69,3 @@ export const trendingItems = [
     bg: 'bg-orange-100',
   },
 ];
-
-// export const categoryStructure = {
-//   Кабелі: ['Type-C', 'Lightning', 'MicroUSB', 'USB-A', 'Магнітні'],
-//   Повербанки: [
-//     'Для телефону',
-//     'Для планшету',
-//     'Зарядні станції',
-//     'Сонячні',
-//     'Бездротові (MagSafe)',
-//     'З ліхтариком',
-//   ],
-//   Колонки: ['Bluetooth', 'Портативні', 'З підсвіткою', 'Стаціонарні'],
-//   'Зарядні пристрої': [
-//     'Мережеві',
-//     'Автомобільні',
-//     'Бездротові',
-//     'З кількома портами',
-//   ],
-//   Тримачі: ['В авто', 'На велосипед', 'Магнітні', 'На присосці'],
-//   Навушники: ['Вакуумні', 'Накладні', 'Bluetooth (TWS)', 'З мікрофоном'],
-//   Аксесуари: [
-//     'Перехідники',
-//     'Картридери',
-//     'Чохли',
-//     'Плівки та скло',
-//     'Селфі-палки',
-//   ],
-//   Інше: ['Розетки', 'Ліхтарики', 'Адаптери', 'Тестери кабелів'],
-// };

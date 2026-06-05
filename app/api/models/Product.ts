@@ -22,6 +22,11 @@ const ProductSchema = new mongoose.Schema(
     reviewsCount: Number,
     variants: [String],
     tags: [String],
+    mmaKey: { type: String, unique: true, sparse: true },
+    mmaSlug: String,
+    mmaSourcePrice: Number,
+    priceManuallyEdited: { type: Boolean, default: false },
+    lastSyncedAt: Date,
   },
   {
     suppressReservedKeysWarning: true, // ✅ Добавь сюда

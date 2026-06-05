@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import ProductImage from '@/components/ProductImage';
 interface SearchBarProps {
   setIsSearchOpen: (open: boolean) => void;
 }
@@ -128,7 +128,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
               </div>
               {product.image && (
                 <div className="relative w-12 h-12">
-                  <Image
+                  <ProductImage
                     src={product.image}
                     alt={product.title}
                     fill

@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import ProductImage from '@/components/ProductImage';
 import { useState } from 'react';
 
 interface GalleryImagesProps {
@@ -17,7 +17,7 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
     <div className="w-full">
       {/* Главное изображение */}
       <div className="relative w-full rounded overflow-hidden mb-4">
-        <Image
+        <ProductImage
           src={images[activeIndex]}
           alt={`${title} зображення ${activeIndex + 1}`}
           width={600}
@@ -39,7 +39,7 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
             }`}
           >
             {''}
-            <Image
+            <ProductImage
               src={image}
               alt={`${title} превью ${index + 1}`}
               width={96}

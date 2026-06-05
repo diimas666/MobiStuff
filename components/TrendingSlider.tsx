@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import ProductImage from '@/components/ProductImage';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Product } from '@/interface/product';
@@ -38,7 +38,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
         className="block w-full h-full"
       >
         <div className="relative aspect-[1/1] w-full h-full">
-          <Image
+          <ProductImage
             src={currentProduct.image}
             alt={currentProduct.title}
             fill

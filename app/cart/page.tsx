@@ -1,7 +1,7 @@
 'use client';
 
 import { useCart } from '@/context/CartContext';
-import Image from 'next/image';
+import ProductImage from '@/components/ProductImage';
 import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -26,7 +26,7 @@ export default function CartPage() {
               <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                 {item.image ? (
                   <div className="relative w-30 h-25 mx-auto sm:mx-0">
-                    <Image
+                    <ProductImage
                       src={item.image}
                       alt={item.title}
                       fill
