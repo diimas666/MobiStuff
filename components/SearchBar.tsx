@@ -110,7 +110,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
           )}
           {results.map((product) => (
             <div
-              key={product.id}
+              key={product.id || product.handle}
               onClick={() => handleSelect(product.handle)}
               className="flex items-center justify-between px-4 py-2 gap-3 cursor-pointer 
              hover:bg-gray-100 dark:hover:bg-gray-800 text-sm 

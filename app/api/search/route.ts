@@ -14,10 +14,17 @@ export async function GET(req: NextRequest) {
   await dbConnect();
 
   const regex = new RegExp(q, 'i'); // нечутливий до регістру
-  const products = await Product.find(
-    { title: regex },
-    'id title handle image'
-  ).limit(10);
+  const products = await Product.find({ title: regex })
+    .select('title handle image')
+    .limit(10)
+    .lean();
 
-  return NextResponse.json(products);
+  return NextResponse.json(
+    products.map((p) => ({
+      id: String(p._id),
+      title: p.title,
+      handle: p.handle,
+      image: p.image,
+    }))
+  );
 }
