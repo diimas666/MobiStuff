@@ -3,6 +3,7 @@ import ProductImage from '@/components/ProductImage';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Product } from '@/interface/product';
+import { stripHtml } from '@/lib/htmlUtils';
 
 interface TrendingSliderProps {
   products: Product[];
@@ -51,7 +52,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
         <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white p-4 min-h-[100px]">
           <h3 className="text-lg font-semibold mb-1">{currentProduct.title}</h3>
           <p className="text-sm text-gray-200 line-clamp-2 sm:line-clamp-3 mb-2">
-            {currentProduct.description}
+            {stripHtml(currentProduct.description || '')}
           </p>{' '}
           <div className="flex justify-between items-center">
             <span className="text-xl font-bold text-green-500">

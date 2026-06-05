@@ -6,6 +6,7 @@ import { Heart, ShoppingCart } from 'lucide-react';
 import { Product } from '@/interface/product';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
+import { stripHtml } from '@/lib/htmlUtils';
 
 interface ProductCardProps {
   product: Product;
@@ -60,7 +61,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
           </h3>
           {product.description && (
             <p className="text-sm text-gray-300 mb-2 line-clamp-3">
-              {product.description}
+              {stripHtml(product.description)}
             </p>
           )}
           {product.rating && (

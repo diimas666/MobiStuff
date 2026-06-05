@@ -4,6 +4,7 @@ import GalleryImages from '@/components/GalleryImages';
 import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
 import VariantSection from '@/components/VariantSection';
+import { stripHtml } from '@/lib/htmlUtils';
 
 export async function generateMetadata({
   params: paramsPromise,
@@ -19,7 +20,7 @@ export async function generateMetadata({
 
   return {
     title: product.title || 'Товар',
-    description: product.description || '',
+    description: stripHtml(product.description || ''),
   };
 }
 
@@ -92,25 +93,12 @@ export default async function ProductPage({
             <VariantSection variants={product.variants} product={product} />
 
             {/* Описание */}
-            <div className="text-gray-600 leading-relaxed space-y-2 max-h-[300px] overflow-y-auto  rounded p-2">
-              {product.description
-                .split('\n')
-                .map((line: string, index: number) => {
-                  const isBullet = line.trim().startsWith('•');
-                  return (
-                    <p key={index} className={isBullet ? 'pl-5 relative' : ''}>
-                      {isBullet ? (
-                        <>
-                          <span className="absolute left-0">•</span>{' '}
-                          {line.replace(/^•\s?/, '')}
-                        </>
-                      ) : (
-                        line
-                      )}
-                    </p>
-                  );
-                })}
-            </div>
+            {product.description && (
+              <div
+                className="text-gray-600 leading-relaxed max-h-[300px] overflow-y-auto rounded p-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_strong]:font-semibold [&_p]:mb-2"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              />
+            )}
           </div>
         </div>
         {/* конец  */}
