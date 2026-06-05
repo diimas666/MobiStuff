@@ -143,6 +143,7 @@ export default function AllProductsAdminPage() {
           <table className="w-full border">
             <thead>
               <tr className="bg-gray-100">
+                <th className="p-2 border w-16">Фото</th>
                 <th className="p-2 border">Назва</th>
                 <th className="p-2 border">Категорія</th>
                 <th className="p-2 border">Ціна</th>
@@ -155,6 +156,18 @@ export default function AllProductsAdminPage() {
             <tbody>
               {products.map((p) => (
                 <tr key={p._id} className="text-sm">
+                  <td className="border p-2 w-16">
+                    {p.image ? (
+                      <img
+                        src={p.image}
+                        alt={p.title}
+                        className="w-12 h-12 object-contain rounded bg-gray-50"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
+                  </td>
                   <td className="border p-2">{p.title}</td>
                   <td className="border p-2">
                     {p.categorySlug} / {p.subcategorySlug}
