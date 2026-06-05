@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -10,6 +11,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Container from '@/components/Container';
 import ToastProvider from '@/components/ToastProvider';
+import NavigationProgress from '@/components/NavigationProgress';
 
 const roboto = Roboto({
   subsets: ['latin', 'cyrillic'],
@@ -44,6 +46,9 @@ export default function RootLayout({
           <CartProvider>
             <MobileSidebarProvider>
               <Header />
+              <Suspense fallback={null}>
+                <NavigationProgress />
+              </Suspense>
               <div className="mt-[80px] flex-1">
                 <Container>{children}</Container>
               </div>
