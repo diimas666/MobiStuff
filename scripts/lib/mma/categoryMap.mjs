@@ -30,16 +30,32 @@ export function mapCategories(breadcrumbs = []) {
   };
 }
 
-export function isCableCategory(categorySlug, subcategorySlug, breadcrumbs = []) {
-  if (CABLE_ROOT_SLUGS.has(categorySlug)) return true;
-
-  const haystack = [
+function categoryHaystack(categorySlug, subcategorySlug, breadcrumbs = []) {
+  return [
     categorySlug,
     subcategorySlug,
     ...breadcrumbs.map((b) => b.slug || ''),
   ]
     .join(' ')
     .toLowerCase();
+}
 
+export function isCableCategory(categorySlug, subcategorySlug, breadcrumbs = []) {
+  if (CABLE_ROOT_SLUGS.has(categorySlug)) return true;
+  const haystack = categoryHaystack(categorySlug, subcategorySlug, breadcrumbs);
   return CABLE_KEYWORDS.some((kw) => haystack.includes(kw));
+}
+
+/** Захисне скло — +80% */
+export function isGlassCategory(categorySlug, subcategorySlug, breadcrumbs = []) {
+  if (subcategorySlug === 'category-zashtitnie-stekla') return true;
+  const haystack = categoryHaystack(categorySlug, subcategorySlug, breadcrumbs);
+  return haystack.includes('zashtitnie-stekla');
+}
+
+/** Мишки — +50% */
+export function isMiceCategory(categorySlug, subcategorySlug, breadcrumbs = []) {
+  if (subcategorySlug === 'category-mishi') return true;
+  const haystack = categoryHaystack(categorySlug, subcategorySlug, breadcrumbs);
+  return haystack.includes('category-mishi');
 }

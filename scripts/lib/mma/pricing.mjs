@@ -1,7 +1,16 @@
-import { isCableCategory } from './categoryMap.mjs';
+import {
+  isCableCategory,
+  isGlassCategory,
+  isMiceCategory,
+} from './categoryMap.mjs';
 
-const DEFAULT_MARKUP = 1.4;
-const CABLE_MARKUP = 1.8;
+const MARKUP_RULES = [
+  { test: isCableCategory, multiplier: 1.8, percent: 80, label: 'кабелі/зарядки' },
+  { test: isGlassCategory, multiplier: 1.8, percent: 80, label: 'захисне скло' },
+  { test: isMiceCategory, multiplier: 1.5, percent: 50, label: 'мишки' },
+];
+
+const DEFAULT_MARKUP = { multiplier: 1.4, percent: 40, label: 'стандарт' };
 
 export function getUsdRate() {
   const rate = Number(process.env.MMA_USD_RATE || 42);
@@ -14,17 +23,19 @@ export function toUah(usdPrice) {
   return Math.ceil(usdPrice * getUsdRate());
 }
 
+export function getMarkupRule(categorySlug, subcategorySlug, breadcrumbs = []) {
+  const rule = MARKUP_RULES.find((r) => r.test(categorySlug, subcategorySlug, breadcrumbs));
+  return rule ?? DEFAULT_MARKUP;
+}
+
 export function applyMarkup(sourcePriceUsd, { categorySlug, subcategorySlug, breadcrumbs }) {
   const baseUah = toUah(sourcePriceUsd);
   if (!baseUah) return null;
 
-  const markup = isCableCategory(categorySlug, subcategorySlug, breadcrumbs)
-    ? CABLE_MARKUP
-    : DEFAULT_MARKUP;
-
-  return Math.ceil(baseUah * markup);
+  const { multiplier } = getMarkupRule(categorySlug, subcategorySlug, breadcrumbs);
+  return Math.ceil(baseUah * multiplier);
 }
 
 export function getMarkupPercent(categorySlug, subcategorySlug, breadcrumbs) {
-  return isCableCategory(categorySlug, subcategorySlug, breadcrumbs) ? 80 : 40;
+  return getMarkupRule(categorySlug, subcategorySlug, breadcrumbs).percent;
 }

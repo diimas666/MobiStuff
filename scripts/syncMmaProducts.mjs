@@ -177,7 +177,7 @@ async function main() {
   const isFullSync = !categoryFilter && productLimit === 0;
 
   console.log('🔄 Синхронизация ассортимента MMA → MobiStuff');
-  console.log(`   Наценка: +40% (кабели +80%)`);
+  console.log(`   Наценка: +40% | кабелі/скло +80% | мишки +50%`);
   console.log(`   Курс USD→UAH: ${process.env.MMA_USD_RATE || 42}`);
   console.log(`   Фото: URL с cdn.mma.ua`);
   console.log(`   Ручные цены в админке не перезаписываются\n`);
