@@ -3,15 +3,14 @@ import { popularItems } from '@/data/popularAndTrending';
 import CategoryGrid from '@/components/CategoryGrid';
 import CategoryList from '@/components/CategoryList';
 import TrendingSlider from '@/components/TrendingSlider';
-//  data
-
 import BrandList from '@/components/BrandList';
 import OffersSection from '@/components/OffersSection.client';
-// функция
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
 import { getTrendingProducts } from '@/lib/getTrendingProducts';
 import PromoSlider from '@/components/PromoSlider';
-export const dynamic = 'force-dynamic'; // 🔥 отключает кеш
+
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: 'Купити аксесуари для телефону в Україні | MobiStuff',
   description:
@@ -39,37 +38,34 @@ export const metadata: Metadata = {
     canonical: 'https://mobistuff.shop',
   },
 };
+
 export default async function GeneralPage() {
-  // тренд
-  const trending = await getTrendingProducts();
-  console.log('🔥 Трендові товари:', trending.length);
+  const [
+    trending,
+    headphones,
+    powerbanks,
+    cables,
+    chargers,
+    mice,
+    holders,
+    speakers,
+    watches,
+    cases,
+    films,
+  ] = await Promise.all([
+    getTrendingProducts(),
+    getProductsByCategory('navushnyky', 'usi-navushnyky'),
+    getProductsByCategory('akumulyatory-ta-powerbank', 'paverbanky'),
+    getProductsByCategory('zaryadky-ta-kabeli'),
+    getProductsByCategory('zaryadky-ta-kabeli', 'bezdrotovi-zaryadni-prystroyi'),
+    getProductsByCategory('kompyuterna-peryferiya', 'myshky'),
+    getProductsByCategory('avtomobilna-tematyka', 'trymachi'),
+    getProductsByCategory('audio-ta-video', 'kolonky'),
+    getProductsByCategory('gadzhety', 'smart-hodynnyky'),
+    getProductsByCategory('chokhly', 'dlia-iphone'),
+    getProductsByCategory('zakhyst-ekranu', 'plivky'),
+  ]);
 
-  // ⚙️ Получаем данные из MongoDB
-  const headphones = await getProductsByCategory(
-    'navushnyky',
-    'usi-navushnyky'
-  );
-  const powerbanks = await getProductsByCategory(
-    'akumulyatory-ta-powerbank',
-    'paverbanky'
-  );
-
-  const cables = await getProductsByCategory('zaryadky-ta-kabeli');
-  const chargers = await getProductsByCategory(
-    'zaryadky-ta-kabeli',
-    'bezdrotovi-zaryadni-prystroyi'
-  );
-  const mice = await getProductsByCategory('kompyuterna-peryferiya', 'myshky');
-  const holders = await getProductsByCategory(
-    'avtomobilna-tematyka',
-    'trymachi'
-  );
-  const speakers = await getProductsByCategory('audio-ta-video', 'kolonky');
-  const watches = await getProductsByCategory('gadzhety', 'smart-hodynnyky');
-  const cases = await getProductsByCategory('chokhly', 'dlia-iphone');
-  const films = await getProductsByCategory('zakhyst-ekranu', 'plivky');
-
-  // ✅ Формируем секции динамически
   const featuredSections = [
     {
       title: 'Навушники',
@@ -132,6 +128,7 @@ export default async function GeneralPage() {
       products: films,
     },
   ];
+
   return (
     <>
       <main className="text-md flex  gap-2 section-bottom">
@@ -139,7 +136,6 @@ export default async function GeneralPage() {
           <h3 className="text-lg font-semibold mb-2 ">Каталог</h3>
           <CategoryList />
         </aside>
-        {/* Популярні категорії */}
         <h1 className="sr-only">
           Інтернет-магазин мобільних аксесуарів — MobiStuff
         </h1>
@@ -148,7 +144,6 @@ export default async function GeneralPage() {
           <div className="basis-1/2 flex-1 ">
             <CategoryGrid title="Популярні категорії" items={popularItems} />
           </div>
-          {/* Трендові товари */}
           <div className="basis-1/2 flex-1   lg:h-[490px] md:h-[370px]">
             <h3 className="text-xl font-semibold mb-6 ">Трендові товари</h3>
             <TrendingSlider products={trending} />
@@ -156,14 +151,12 @@ export default async function GeneralPage() {
         </section>
       </main>
       <main>
-        {/* Актуальні пропозиції' */}
         <section className="section-bottom">
           <div className="w-full pb-6">
             <h2 className="text-xl font-bold mb-4">Актуальні пропозиції</h2>
             <PromoSlider />
           </div>
         </section>
-        {/* текст  */}
         <section className="section-bottom">
           <div className="text-gray-600 max-w-3xl mx-auto text-center mb-8 text-[18px]">
             MobiStuff — інтернет-магазин мобільних аксесуарів. Ми пропонуємо
@@ -173,7 +166,6 @@ export default async function GeneralPage() {
           </div>
         </section>
 
-        {/* Популярні бренди */}
         <section className="section-bottom">
           <h3 className="text-xl font-semibold mb-6 ">Популярні бренди</h3>
           <BrandList />
@@ -195,4 +187,3 @@ export default async function GeneralPage() {
     </>
   );
 }
-// hello

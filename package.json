@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-  "normalize-brands": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/normalizeBrands.ts"
+    "optimize-images": "node scripts/optimizeImages.mjs",
+    "normalize-brands": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/normalizeBrands.ts"
   },
   "dependencies": {
     "csv-parser": "^3.2.0",
@@ -22,6 +23,7 @@
     "react-dom": "^19.0.0",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.5",
+    "sharp": "^0.34.5",
     "slick-carousel": "^1.8.1",
     "slugify": "^1.6.6",
     "transliteration": "^2.3.5"

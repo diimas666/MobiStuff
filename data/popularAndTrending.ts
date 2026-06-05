@@ -5,7 +5,7 @@ export const popularItems = [
   {
     id: 1,
     title: 'Навушники',
-    image: '/images/besprovodnye-nausniki.jpg',
+    image: '/images/besprovodnye-nausniki.webp',
     bg: 'bg-pink-100',
     categorySlug: toSlug('Навушники'), // navushnyky
     subcategorySlug: toSlug('Усі навушники'), // usi-navushnyky
@@ -13,7 +13,7 @@ export const popularItems = [
   {
     id: 2,
     title: 'Павербанки',
-    image: '/images/akkumulatornoi-bataree.jpg',
+    image: '/images/akkumulatornoi-bataree.webp',
     bg: 'bg-yellow-100',
     categorySlug: toSlug('Акумулятори та PowerBank'), // akumulyatory-ta-powerbank
     subcategorySlug: toSlug('Павербанки'), // paverbanky
@@ -21,7 +21,7 @@ export const popularItems = [
   {
     id: 3,
     title: 'Тримачі в авто',
-    image: '/images/zensina-s-pomos-u-smartfona-s-rozetkoi.jpg',
+    image: '/images/zensina-s-pomos-u-smartfona-s-rozetkoi.webp',
     bg: 'bg-blue-100',
     categorySlug: toSlug('Автомобільна тематика'), // avtomobilna-tematyka
     subcategorySlug: toSlug('Тримачі'), // trymachi
@@ -29,7 +29,7 @@ export const popularItems = [
   {
     id: 4,
     title: 'Колонки Bluetooth',
-    image: '/images/naturmort-tehnologiceskogo-ustroistva.jpg',
+    image: '/images/naturmort-tehnologiceskogo-ustroistva.webp',
     bg: 'bg-green-100',
     categorySlug: toSlug('Аудіо та відео'), // audio-ta-video
     subcategorySlug: toSlug('Колонки'), // kolonky
@@ -37,7 +37,7 @@ export const popularItems = [
   {
     id: 5,
     title: 'Lightning кабелі',
-    image: '/images/usb-kabel-tipa-c-na-sinem-fone.jpg',
+    image: '/images/usb-kabel-tipa-c-na-sinem-fone.webp',
     bg: 'bg-purple-100',
     categorySlug: toSlug('Зарядки та кабелі'), // zaryadky-ta-kabeli
     subcategorySlug: toSlug('Lightning'), // usb-c
@@ -45,7 +45,7 @@ export const popularItems = [
   {
     id: 6,
     title: 'Геймерські аксесуари',
-    image: '/images/game.jpg',
+    image: '/images/game.webp',
     bg: 'bg-red-100',
     categorySlug: toSlug("Комп'ютерна периферія"), // komp-iuterna-peryferiia
     subcategorySlug: toSlug('Клавіатури'), // klaviatury (или Hаби, если хочешь другое)

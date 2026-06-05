@@ -11,8 +11,8 @@ export const brands: Brand[] = [
   {
     id: 1,
     title: 'Ridea',
-    image: '/images/brands/ridea.png',
-    imageFull: '/images/brands/imagesFull/ridea.jpg',
+    image: '/images/brands/ridea.webp',
+    imageFull: '/images/brands/imagesFull/ridea.webp',
     handle: 'ridea',
     description: [
       'В розробці своєї продукції компанія Ridea зробила головний фокус на якості збірки та інновативності технологій по доступній ціні, адже це виявляється найголовнішим у результаті для кінцевого споживача.',
@@ -23,8 +23,8 @@ export const brands: Brand[] = [
   {
     id: 2,
     title: 'XO',
-    image: '/images/brands/xo.jpg',
-    imageFull: '/images/brands/imagesFull/XO.jpg',
+    image: '/images/brands/xo.webp',
+    imageFull: '/images/brands/imagesFull/XO.webp',
     handle: 'xo',
     description: [
       "Це відносно молодий китайський бренд, який швидко завоював світ завдяки своєму унікальному екстер'єру та високій якості продукції.",
@@ -41,7 +41,7 @@ export const brands: Brand[] = [
   {
     id: 3,
     title: 'Baseus',
-    image: '/images/brands/baseus.png',
+    image: '/images/brands/baseus.webp',
     imageFull: '/images/brands/imagesFull/baseus.webp',
     handle: 'baseus',
     description: [
@@ -52,8 +52,8 @@ export const brands: Brand[] = [
   {
     id: 4,
     title: 'Borofone',
-    image: '/images/brands/borofone.jpg',
-    imageFull: '/images/brands/imagesFull/borofone.jpg',
+    image: '/images/brands/borofone.webp',
+    imageFull: '/images/brands/imagesFull/borofone.webp',
     handle: 'borofone',
     description: [
       'Borofone — це бренд аксесуарів для мобільних пристроїв, який є дочірнім підприємством компанії HOCO Technology (Hong Kong) Co., Ltd. Бренд був заснований у 2011 році і спеціалізується на виробництві високоякісних аксесуарів для цифрових пристроїв, включаючи аудіопристрої, зарядні пристрої, кабелі, мобільні акумулятори та автоаксесуари. Borofone прагне пропонувати доступні, але якісні продукти для користувачів у всьому світi',
@@ -62,8 +62,8 @@ export const brands: Brand[] = [
   {
     id: 5,
     title: 'Celebrat',
-    image: '/images/brands/Celebrat.png',
-    imageFull: '/images/brands/imagesFull/Celebrat.jpg',
+    image: '/images/brands/Celebrat.webp',
+    imageFull: '/images/brands/imagesFull/Celebrat.webp',
     handle: 'celebrat',
     description: [
       'Молодий китайський бренд "Celebrat" тому приклад. Засновники торгової марки не довго думали над її назвою - відкинули від англійського слова "celebrate" (святкувати) останню букву і зосередилися на якості продукції. І "святкування" вдалося! Поки ще не культовий, але вже досить відомий бренд мобільних аксесуарів "Celebrat" упевнено прокладає дорогу на торгові вітрини країн Азії, Близького Сходу і старенької Європи',
@@ -74,8 +74,8 @@ export const brands: Brand[] = [
   {
     id: 6,
     title: 'Fantech',
-    image: '/images/brands/fantech.png',
-    imageFull: '/images/brands/imagesFull/fantech.jpg',
+    image: '/images/brands/fantech.webp',
+    imageFull: '/images/brands/imagesFull/fantech.webp',
     handle: 'fantech',
     description: [
       "Це компанія, відома як виробник ігрової периферії та комп'ютерних аксесуарів. Вона була заснована в 2009 році і швидко розширила свою присутність на ринку, пропонуючи широкий асортимент продукції для геймерів. ",
@@ -85,8 +85,8 @@ export const brands: Brand[] = [
   {
     id: 7,
     title: 'Hoco',
-    image: '/images/brands/hoco.png',
-    imageFull: '/images/brands/imagesFull/hoco.jpg',
+    image: '/images/brands/hoco.webp',
+    imageFull: '/images/brands/imagesFull/hoco.webp',
     handle: 'hoco',
     description: [
       'Компанія надає широкий асортимент цифрових аксесуарів і товарів для щоденного життя, включаючи різні категорії товарів. Основной акцент компанії hoco. зроблено на якість продукції, і вона прагне створити прості, практичні, стильні та яскраві товари.',
@@ -96,8 +96,8 @@ export const brands: Brand[] = [
   {
     id: 8,
     title: 'Inobi',
-    image: '/images/brands/inobi.png',
-    imageFull: '/images/brands/imagesFull/inobi.jpg',
+    image: '/images/brands/inobi.jpg',
+    imageFull: '/images/brands/imagesFull/inobi.webp',
     handle: 'inobi',
     description: [
       'iNobi - українська компанія, яка з 2022 року спеціалізується на розробці та виробництві захисних плівок та стекол для екранів смартфонів, планшетів та ноутбуків. Вони відомі своїм плотером iNobi CUT-1 та різноманітністю плівок, а також представили нові моделі плоттерів та лінійки скла. ',

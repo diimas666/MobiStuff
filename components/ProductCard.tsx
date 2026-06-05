@@ -1,27 +1,29 @@
 'use client';
 
 import Link from 'next/link';
-// import Image from 'next/image';
+import Image from 'next/image';
 import { Heart, ShoppingCart, Scale } from 'lucide-react';
 import { Product } from '@/interface/product';
 import { useCart } from '@/context/CartContext';
-import { useFavorites } from '@/context/FavoritesContext'; // ✅ Импорт
+import { useFavorites } from '@/context/FavoritesContext';
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, priority = false }: ProductCardProps) {
   const { addToCart } = useCart();
-  const { favorites, toggleFavorite } = useFavorites(); // ✅ Используем контекст
+  const { favorites, toggleFavorite } = useFavorites();
 
   const productId = product._id || product.id;
-  const isFavorite = favorites.includes(productId); // ✅ Проверка в контексте
+  const isFavorite = favorites.includes(productId);
+  const imageSrc = (product.image ?? '').replace(/"/g, '').trim();
 
   const handleAddToCart = () => {
     addToCart({
       ...product,
-      image: (product.image ?? '').replace(/"/g, '').trim(),
+      image: imageSrc,
     });
   };
 
@@ -31,21 +33,18 @@ export default function ProductCard({ product }: ProductCardProps) {
         href={`/product/${product.handle}`}
         className=" flex flex-col h-full"
       >
-        {/* Верх: картинка */}
         <div className="relative w-full aspect-[4/4] bg-gray-100">
-          {/* <Image
-            src={(product.image ?? '').replace(/"/g, '')}
-            alt={product.title}
-            fill
-            unoptimized // <== ВАЖНО
-            className="object-cover rounded-t-xl"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          /> */}
-          <img
-            src={(product.image ?? '').replace(/"/g, '')}
-            alt={product.title}
-            className="object-cover rounded-t-xl w-full h-full"
-          />
+          {imageSrc && (
+            <Image
+              src={imageSrc}
+              alt={product.title}
+              fill
+              className="object-cover rounded-t-xl"
+              sizes="(max-width: 480px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 280px"
+              loading={priority ? 'eager' : 'lazy'}
+              priority={priority}
+            />
+          )}
           {product.isNew && (
             <span className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
               Новинка
@@ -58,8 +57,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Низ: текстовая часть */}
-        {/* 280 меняе смотрим когда как  */}
         <div className="p-4 bg-gray-800 text-white flex flex-col justify-between min-h-[290px] grow">
           <div>
             <h3 className="text-lg font-semibold line-clamp-2 mb-1">
@@ -103,12 +100,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
-      {/* Кнопки */}
       <div className="flex gap-4 absolute right-3 bottom-3 z-10">
         <button
           onClick={(e) => {
-            e.preventDefault(); // не переходить по ссылке
-            toggleFavorite(productId); // ✅ Вызов из контекста
+            e.preventDefault();
+            toggleFavorite(productId);
           }}
           className={`button-block-card hover:bg-green-500 ${
             isFavorite ? 'bg-green-500 text-white' : ''
@@ -125,7 +121,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         <button
           onClick={(e) => {
-            e.preventDefault(); // не переходить по ссылке
+            e.preventDefault();
             handleAddToCart();
           }}
           className="button-block-card hover:bg-green-500"

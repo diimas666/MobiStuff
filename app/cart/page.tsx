@@ -31,7 +31,7 @@ export default function CartPage() {
                       alt={item.title}
                       fill
                       sizes="80px"
-                      priority
+                      loading="lazy"
                       className="object-cover rounded"
                     />
                   </div>

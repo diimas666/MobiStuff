@@ -22,6 +22,7 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
           alt={`${title} зображення ${activeIndex + 1}`}
           width={600}
           height={400}
+          sizes="(max-width: 768px) 100vw, 600px"
           className="w-full h-auto object-contain transition-transform duration-200 hover:scale-110"
           priority
         />
@@ -43,6 +44,8 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
               alt={`${title} превью ${index + 1}`}
               width={96}
               height={96}
+              sizes="96px"
+              loading="lazy"
               className="object-cover w-full h-full"
             />
           </button>

@@ -132,6 +132,8 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
                     src={product.image}
                     alt={product.title}
                     fill
+                    sizes="48px"
+                    loading="lazy"
                     className="object-contain rounded"
                   />
                 </div>

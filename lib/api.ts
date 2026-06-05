@@ -12,7 +12,7 @@ export async function fetchProducts(
   if (filters?.minPrice) url.searchParams.set('minPrice', filters.minPrice);
   if (filters?.maxPrice) url.searchParams.set('maxPrice', filters.maxPrice);
 
-  const res = await fetch(url.toString(), { cache: 'no-store' });
+  const res = await fetch(url.toString(), { next: { revalidate: 300 } });
   return res.json();
 }
 

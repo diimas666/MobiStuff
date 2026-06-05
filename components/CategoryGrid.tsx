@@ -28,7 +28,7 @@ export default function CategoryGrid({ title, items }: CategoryGridProps) {
         
       "
       >
-        {items.map((item) => (
+        {items.map((item, index) => (
           <CategoryItem
             key={item.id}
             title={item.title}
@@ -36,6 +36,7 @@ export default function CategoryGrid({ title, items }: CategoryGridProps) {
             bg={item.bg}
             categorySlug={item.categorySlug}
             subcategorySlug={item.subcategorySlug}
+            priority={index < 2}
           />
         ))}
       </div>

@@ -11,8 +11,6 @@ export async function getTrendingProducts(limit = 10): Promise<Product[]> {
     .limit(limit)
     .lean();
 
-  console.log('🔥 trending products count:', trending.length); // <- додай
-
   return trending.map((p: any) => ({
     ...p,
     _id: p._id.toString(),

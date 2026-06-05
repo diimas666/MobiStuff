@@ -1,7 +1,18 @@
-'use client'; // Указывает, что компонент работает на клиенте (использует useState и т.п.)
+'use client';
 
-import { useState } from 'react'; // Хук состояния
-import OffersSlider from '@/components/OffersSlider'; // Компонент со слайдером товаров
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+
+const OffersSlider = dynamic(() => import('@/components/OffersSlider'), {
+  ssr: false,
+  loading: () => (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-pulse">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="h-80 bg-gray-200 rounded-xl" />
+      ))}
+    </div>
+  ),
+});
 import { Columns2, Dice1 } from 'lucide-react'; // Иконки для кнопки переключения
 import { Product } from '@/interface/product'; // Тип товара
 import Link from 'next/link'; // Компонент Next.js для ссылок (без перезагрузки страницы)

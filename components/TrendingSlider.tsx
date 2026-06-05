@@ -42,8 +42,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
             src={currentProduct.image}
             alt={currentProduct.title}
             fill
-            unoptimized // <== ВАЖНО
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
             className="object-cover w-full h-full rounded-xl transition-all duration-900 ease-in-out"
             priority
           />

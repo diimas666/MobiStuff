@@ -1,26 +1,16 @@
 'use client';
 
-// import Image from 'next/image';
+import Image from 'next/image';
 import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 const banners = [
   {
-    src: '/images/banners/free-delivery.png',
+    src: '/images/banners/free-delivery.webp',
     alt: 'Безкоштовна доставка від 2500 грн',
   },
   {
-    src: '/images/banners/borofone-discount.png',
+    src: '/images/banners/borofone-discount.webp',
     alt: 'Знижка 5% на Borofone',
-  },
-  {
-    src: '/images/banners/new-arrivals.jpg',
-    alt: 'Новинки тижня',
-  },
-  {
-    src: '/images/banners/powerbanks-sale.jpg',
-    alt: 'Акція на повербанки',
   },
 ];
 
@@ -29,18 +19,13 @@ export default function PromoSlider() {
     dots: true,
     infinite: true,
     speed: 600,
-    slidesToShow: 4,
+    slidesToShow: 2,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
     arrows: false,
+    lazyLoad: 'ondemand' as const,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
       {
         breakpoint: 640,
         settings: {
@@ -56,19 +41,14 @@ export default function PromoSlider() {
         {banners.map((banner, i) => (
           <div key={i} className="px-2">
             <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border shadow">
-              {/* <Image
+              <Image
                 src={banner.src}
                 alt={banner.alt}
                 fill
-                unoptimized // <== ВАЖНО
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                sizes="(max-width: 640px) 100vw, 50vw"
+                loading={i === 0 ? 'eager' : 'lazy'}
                 priority={i === 0}
-              /> */}
-              <img
-                src={banner.src}
-                alt={banner.alt}
-                className="object-cover w-full h-full absolute inset-0"
               />
             </div>
           </div>

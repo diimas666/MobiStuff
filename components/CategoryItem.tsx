@@ -1,12 +1,13 @@
-// components/PopularItem.tsx
-// import Image from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
+
 interface ItemProps {
   title: string;
   image: string;
   bg: string;
   categorySlug: string;
   subcategorySlug: string;
+  priority?: boolean;
 }
 
 export default function CategoryItem({
@@ -15,6 +16,7 @@ export default function CategoryItem({
   bg,
   categorySlug,
   subcategorySlug,
+  priority = false,
 }: ItemProps) {
   return (
     <Link
@@ -27,17 +29,14 @@ export default function CategoryItem({
       max-[578px]:min-w-[160px] max-[578px]:max-w-[180px] max-[578px]:flex-shrink-0
   `}
     >
-      {/* <Image
+      <Image
         src={image}
         alt={title}
         fill
         className="object-cover"
-        unoptimized
-      /> */}
-      <img
-        src={image}
-        alt={title}
-        className="object-cover w-full h-full absolute inset-0"
+        sizes="(max-width: 578px) 180px, (max-width: 890px) 33vw, 250px"
+        loading={priority ? 'eager' : 'lazy'}
+        priority={priority}
       />
 
       <div className="absolute inset-0 bg-black/30 flex items-end p-2">
