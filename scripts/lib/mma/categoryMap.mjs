@@ -72,10 +72,25 @@ export function isCableCategory(categorySlug, subcategorySlug, breadcrumbs = [])
 }
 
 /** Захисне скло — +80% */
-export function isGlassCategory(categorySlug, subcategorySlug, breadcrumbs = []) {
+export function isGlassCategory(
+  categorySlug,
+  subcategorySlug,
+  breadcrumbs = [],
+  title = ''
+) {
   if (subcategorySlug === 'category-zashtitnie-stekla') return true;
+
   const haystack = categoryHaystack(categorySlug, subcategorySlug, breadcrumbs);
-  return haystack.includes('zashtitnie-stekla');
+  if (haystack.includes('zashtitnie-stekla')) return true;
+
+  if (categorySlug !== 'category-zashtita-ekrana' && !haystack.includes('zashtita-ekrana')) {
+    return false;
+  }
+
+  const normalizedTitle = (title || '').toLowerCase();
+  return /\b(захисн\w*\s+скл|захисне\s+скло|tempered\s+glass|screen\s+protector|protective\s+glass)\b/i.test(
+    normalizedTitle
+  );
 }
 
 /** Мишки — +50% */

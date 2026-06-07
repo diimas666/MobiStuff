@@ -1,6 +1,7 @@
 // lib/api.ts
 export interface ProductFilters {
   brand?: string;
+  phone?: string;
   minPrice?: string;
   maxPrice?: string;
   isTrending?: string;
@@ -18,6 +19,7 @@ export async function fetchProducts(
   if (category) url.searchParams.set('category', category);
   if (subcategory) url.searchParams.set('subcategory', subcategory);
   if (filters?.brand) url.searchParams.set('brand', filters.brand);
+  if (filters?.phone) url.searchParams.set('phone', filters.phone);
   if (filters?.minPrice) url.searchParams.set('minPrice', filters.minPrice);
   if (filters?.maxPrice) url.searchParams.set('maxPrice', filters.maxPrice);
   if (filters?.isTrending) url.searchParams.set('isTrending', filters.isTrending);
@@ -36,6 +38,7 @@ export async function fetchProductFacets(category: string, subcategory: string) 
   const res = await fetch(url.toString(), { next: { revalidate: 300 } });
   return res.json() as Promise<{
     brands: string[];
+    phoneModels: string[];
     minPrice: number;
     maxPrice: number;
     count: number;

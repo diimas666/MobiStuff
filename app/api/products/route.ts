@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
 import { filterCatalogProducts } from '@/lib/productCategoryRules';
+import { titleMatchesPhoneModel } from '@/lib/glassPhoneFilter';
 
 function escapeRegex(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -16,6 +17,7 @@ export async function GET(req: Request) {
     const category = searchParams.get('category');
     const subcategory = searchParams.get('subcategory');
     const brand = searchParams.get('brand');
+    const phone = searchParams.get('phone');
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const isTrending = searchParams.get('isTrending');
@@ -61,8 +63,16 @@ export async function GET(req: Request) {
         sortOption = { title: 1 };
     }
 
-    const products = await Product.find(filter).sort(sortOption).lean();
-    return NextResponse.json(filterCatalogProducts(products, category));
+    const products = filterCatalogProducts(
+      await Product.find(filter).sort(sortOption).lean(),
+      category
+    );
+
+    const filteredProducts = phone
+      ? products.filter((product) => titleMatchesPhoneModel(product.title, phone))
+      : products;
+
+    return NextResponse.json(filteredProducts);
   } catch (error) {
     console.error('❌ Ошибка при получении товаров:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

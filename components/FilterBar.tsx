@@ -5,15 +5,18 @@ import { useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import PriceRangeSlider from './PriceRangeSlider';
+import { groupPhoneModels } from '@/lib/glassPhoneFilter';
 
 interface FilterBarProps {
   availableBrands?: string[];
+  availablePhoneModels?: string[];
   priceBounds?: { min: number; max: number };
   variant?: 'light' | 'dark';
 }
 
 export default function FilterBar({
   availableBrands,
+  availablePhoneModels,
   priceBounds,
   variant = 'light',
 }: FilterBarProps) {
@@ -21,6 +24,7 @@ export default function FilterBar({
   const pathname = usePathname();
 
   const brand = searchParams.get('brand') || '';
+  const phone = searchParams.get('phone') || '';
   const minPriceParam = searchParams.get('minPrice');
   const maxPriceParam = searchParams.get('maxPrice');
   const isTrending = searchParams.get('isTrending') === 'true';
@@ -31,6 +35,7 @@ export default function FilterBar({
   const initialBounds = priceBounds ?? { min: 0, max: 5000 };
 
   const [brands, setBrands] = useState<string[]>(availableBrands ?? []);
+  const [phoneModels, setPhoneModels] = useState<string[]>(availablePhoneModels ?? []);
   const [bounds, setBounds] = useState(initialBounds);
   const [minPrice, setMinPrice] = useState(
     minPriceParam ? Number(minPriceParam) : initialBounds.min
@@ -41,8 +46,9 @@ export default function FilterBar({
 
   useEffect(() => {
     if (availableBrands) setBrands(availableBrands);
+    if (availablePhoneModels) setPhoneModels(availablePhoneModels);
     if (priceBounds) setBounds(priceBounds);
-  }, [availableBrands, priceBounds]);
+  }, [availableBrands, availablePhoneModels, priceBounds]);
 
   useEffect(() => {
     if (availableBrands && priceBounds) return;
@@ -55,6 +61,7 @@ export default function FilterBar({
       .then((res) => res.json())
       .then((data) => {
         if (data.brands) setBrands(data.brands);
+        if (data.phoneModels) setPhoneModels(data.phoneModels);
         if (typeof data.minPrice === 'number' && typeof data.maxPrice === 'number') {
           const nextBounds = {
             min: data.minPrice,
@@ -80,7 +87,9 @@ export default function FilterBar({
     (maxPriceParam && Number(maxPriceParam) < bounds.max);
 
   const hasActiveFilters =
-    brand || priceFilterActive || isTrending || onSale || sort;
+    brand || phone || priceFilterActive || isTrending || onSale || sort;
+
+  const phoneModelGroups = groupPhoneModels(phoneModels);
 
   const isDark = variant === 'dark';
   const selectClass = isDark
@@ -142,6 +151,27 @@ export default function FilterBar({
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
+
+        {phoneModelGroups.length > 0 && (
+          <div className="relative flex flex-col">
+            <label className={labelClass}>Модель телефону</label>
+            <select name="phone" defaultValue={phone} className={selectClass}>
+              <option value="">Усі моделі</option>
+              {phoneModelGroups.map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.models.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <div className={`pointer-events-none absolute right-3 bottom-2.5 ${chevronClass}`}>
+              <ChevronDown className="w-4 h-4" />
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col">
           <label className={isDark ? 'text-sm text-gray-400 mb-2' : 'text-sm text-gray-600 mb-2'}>

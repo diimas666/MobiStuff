@@ -23,19 +23,29 @@ export function toUah(usdPrice) {
   return Math.ceil(usdPrice * getUsdRate());
 }
 
-export function getMarkupRule(categorySlug, subcategorySlug, breadcrumbs = []) {
-  const rule = MARKUP_RULES.find((r) => r.test(categorySlug, subcategorySlug, breadcrumbs));
+export function getMarkupRule(categorySlug, subcategorySlug, breadcrumbs = [], title = '') {
+  const rule = MARKUP_RULES.find((r) =>
+    r.test(categorySlug, subcategorySlug, breadcrumbs, title)
+  );
   return rule ?? DEFAULT_MARKUP;
 }
 
-export function applyMarkup(sourcePriceUsd, { categorySlug, subcategorySlug, breadcrumbs }) {
+export function applyMarkup(
+  sourcePriceUsd,
+  { categorySlug, subcategorySlug, breadcrumbs, title }
+) {
   const baseUah = toUah(sourcePriceUsd);
   if (!baseUah) return null;
 
-  const { multiplier } = getMarkupRule(categorySlug, subcategorySlug, breadcrumbs);
+  const { multiplier } = getMarkupRule(
+    categorySlug,
+    subcategorySlug,
+    breadcrumbs,
+    title
+  );
   return Math.ceil(baseUah * multiplier);
 }
 
-export function getMarkupPercent(categorySlug, subcategorySlug, breadcrumbs) {
-  return getMarkupRule(categorySlug, subcategorySlug, breadcrumbs).percent;
+export function getMarkupPercent(categorySlug, subcategorySlug, breadcrumbs, title = '') {
+  return getMarkupRule(categorySlug, subcategorySlug, breadcrumbs, title).percent;
 }

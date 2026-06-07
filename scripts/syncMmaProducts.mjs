@@ -87,9 +87,15 @@ function buildProductDoc(listing, details, client) {
     categorySlug,
     subcategorySlug,
     breadcrumbs,
+    title,
   });
   const retailOldPrice = sourceOldPrice
-    ? applyMarkup(sourceOldPrice, { categorySlug, subcategorySlug, breadcrumbs })
+    ? applyMarkup(sourceOldPrice, {
+        categorySlug,
+        subcategorySlug,
+        breadcrumbs,
+        title,
+      })
     : undefined;
 
   const brand = details?.brand?.translation?.seoTitle || undefined;
@@ -234,7 +240,8 @@ async function main() {
         const markup = getMarkupPercent(
           doc.categorySlug,
           doc.subcategorySlug,
-          details?.category?.breadcrumbs
+          details?.category?.breadcrumbs,
+          doc.title
         );
         if (stats.created + stats.updated <= 3) {
           console.log(

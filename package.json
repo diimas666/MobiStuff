@@ -10,6 +10,8 @@
     "optimize-images": "node scripts/optimizeImages.mjs",
     "generate-mma-catalog": "node scripts/generateMmaCatalog.mjs",
     "sync-mma": "node scripts/syncMmaProducts.mjs",
+    "recalc-mma-prices": "node scripts/recalcMmaPrices.mjs",
+    "recalc-glass-prices": "MMA_RECALC_GLASS=1 node scripts/recalcMmaPrices.mjs",
     "normalize-brands": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/normalizeBrands.ts"
   },
   "dependencies": {

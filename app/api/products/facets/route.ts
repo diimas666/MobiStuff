@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
 import { filterCatalogProducts } from '@/lib/productCategoryRules';
+import {
+  GLASS_SUBCATEGORY_SLUG,
+  getPhoneModelsFromTitles,
+  titleMatchesPhoneModel,
+} from '@/lib/glassPhoneFilter';
 
 export async function GET(req: Request) {
   try {
@@ -36,6 +41,10 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       brands,
+      phoneModels:
+        subcategory === GLASS_SUBCATEGORY_SLUG
+          ? getPhoneModelsFromTitles(products.map((p) => p.title))
+          : [],
       minPrice: prices.length ? Math.floor(Math.min(...prices)) : 0,
       maxPrice: prices.length ? Math.ceil(Math.max(...prices)) : 5000,
       count: products.length,

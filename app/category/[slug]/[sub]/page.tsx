@@ -53,6 +53,7 @@ export default async function SubcategoryPage({
     page?: string;
     cols?: string;
     brand?: string;
+    phone?: string;
     minPrice?: string;
     maxPrice?: string;
     isTrending?: string;
@@ -62,9 +63,9 @@ export default async function SubcategoryPage({
 }) {
   const params = await paramsPromise;
   const searchParams = await searchParamsPromise;
-  const { page, cols, brand, minPrice, maxPrice, isTrending, onSale, sort } =
+  const { page, cols, brand, phone, minPrice, maxPrice, isTrending, onSale, sort } =
     searchParams;
-  const filters = { brand, minPrice, maxPrice, isTrending, onSale, sort };
+  const filters = { brand, phone, minPrice, maxPrice, isTrending, onSale, sort };
 
   const { slug, sub } = params;
 
@@ -73,6 +74,7 @@ export default async function SubcategoryPage({
   if (!category || !subcategory) return notFound();
   const filterQuery = new URLSearchParams();
   if (brand) filterQuery.set('brand', brand);
+  if (phone) filterQuery.set('phone', phone);
   if (minPrice) filterQuery.set('minPrice', minPrice);
   if (maxPrice) filterQuery.set('maxPrice', maxPrice);
   if (isTrending) filterQuery.set('isTrending', isTrending);
@@ -133,6 +135,7 @@ export default async function SubcategoryPage({
             <h4 className="text-md font-medium mb-2">Фільтри</h4>
             <FilterBar
               availableBrands={facets.brands}
+              availablePhoneModels={facets.phoneModels}
               priceBounds={{ min: facets.minPrice, max: facets.maxPrice }}
             />
           </div>
