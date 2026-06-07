@@ -148,7 +148,7 @@ export default async function GeneralPage() {
             <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 shrink-0">
               Трендові товари
             </h3>
-            <div className="flex-1 min-h-[300px] max-[890px]:min-h-[200px]">
+            <div className="flex-1 min-h-[300px] max-[890px]:h-[260px] max-[890px]:flex-none">
               <TrendingSlider products={trending} />
             </div>
           </div>

@@ -40,6 +40,17 @@ body {
     height: 100%;
   }
 
+  @media (max-width: 890px) {
+    .trending-slider,
+    .trending-slider .slick-list,
+    .trending-slider .slick-track,
+    .trending-slider .slick-slide,
+    .trending-slider .slick-slide > div {
+      height: 260px;
+      min-height: 260px;
+    }
+  }
+
   .trending-slider .slick-dots {
     bottom: 6px;
   }
