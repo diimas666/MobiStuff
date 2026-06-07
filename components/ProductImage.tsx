@@ -11,11 +11,12 @@ export function isExternalProductImage(src: string) {
 }
 
 /** Внешние фото MMA грузим напрямую — next/image proxy даёт timeout на cdn.mma.ua */
-export default function ProductImage({ src, ...props }: ImageProps) {
+export default function ProductImage({ src, alt = '', ...props }: ImageProps) {
   const srcStr = typeof src === 'string' ? src : '';
   return (
     <Image
       src={src}
+      alt={alt}
       unoptimized={isExternalProductImage(srcStr)}
       {...props}
     />

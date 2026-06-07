@@ -16,12 +16,12 @@ export function isMisclassifiedInCategory(title = '', categorySlug = '') {
   return rules.some((re) => re.test(haystack));
 }
 
-export function filterCatalogProducts<T extends { title?: string }>(
+export function filterCatalogProducts<T>(
   products: T[],
   categorySlug?: string | null
 ): T[] {
   return products.filter((product) => {
-    const title = product.title || '';
+    const title = String((product as { title?: string }).title || '');
     if (isSampleProduct(title)) return false;
     if (categorySlug && isMisclassifiedInCategory(title, categorySlug)) return false;
     return true;
