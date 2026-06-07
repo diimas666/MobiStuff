@@ -146,9 +146,9 @@ export default async function GeneralPage() {
         </aside>
 
         <section className="flex w-full min-w-0 gap-5 items-stretch max-[890px]:flex-col max-[890px]:gap-4 section-bottom flex-1">
-          <div className="basis-1/2 flex-1 flex flex-col min-w-0 max-[890px]:basis-full rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+          <div className="basis-1/2 flex-1 flex flex-col min-h-[360px] min-w-0 max-[890px]:basis-full rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
             <HomeSectionTitle title="Популярні категорії" />
-            <CategoryGrid items={popularItems} />
+            <CategoryGrid items={popularItems} variant="home" className="flex-1" />
             <div className="sr-only">
               <h1>Інтернет-магазин мобільних аксесуарів — MobiStuff</h1>
             </div>

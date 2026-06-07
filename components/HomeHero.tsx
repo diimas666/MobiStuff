@@ -22,7 +22,7 @@ export default function HomeHero() {
             товарів з доставкою по всій Україні.
           </p>
           <Link
-            href="/category/category-naushniki/category-bluetooth-stereo-garnituri-tws"
+            href="/catalog"
             className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition text-sm sm:text-base"
           >
             Переглянути каталог
