@@ -1,46 +1,50 @@
-// lib/novaposhta.ts
-
 export const NOVA_API_URL = 'https://api.novaposhta.ua/v2.0/json/';
 const NOVA_API_KEY = process.env.NEXT_PUBLIC_NOVA_POSHTA_API_KEY;
 
-export async function fetchCities(query: string) {
+export interface NovaCity {
+  Ref: string;
+  Description: string;
+  AreaDescription: string;
+}
+
+export interface NovaWarehouse {
+  Ref: string;
+  Description: string;
+  Number?: string;
+}
+
+async function novaRequest<T>(calledMethod: string, methodProperties: Record<string, string>) {
   const res = await fetch(NOVA_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       apiKey: NOVA_API_KEY,
       modelName: 'Address',
-      calledMethod: 'getCities',
-      methodProperties: {
-        FindByString: query,
-      },
+      calledMethod,
+      methodProperties,
     }),
   });
 
   const data = await res.json();
-  return data.data || [];
+  return (data.data || []) as T[];
 }
 
-export async function fetchWarehouses(cityRef: string) {
-  try {
-    const res = await fetch(NOVA_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        apiKey: NOVA_API_KEY,
-        modelName: 'Address',
-        calledMethod: 'getWarehouses',
-        methodProperties: {
-          CityRef: cityRef,
-        },
-      }),
-    });
+export async function fetchCities(query: string) {
+  if (!query.trim()) return [];
+  return novaRequest<NovaCity>('getCities', { FindByString: query.trim() });
+}
 
-    const data = await res.json();
-    console.log('✅ Отделения:', data);
-    return data.data || [];
-  } catch (error) {
-    console.error('❌ Ошибка при загрузке отделений:', error);
+export async function fetchWarehouses(cityRef: string, findByString = '') {
+  if (!cityRef) return [];
+
+  const methodProperties: Record<string, string> = { CityRef: cityRef };
+  if (findByString.trim()) {
+    methodProperties.FindByString = findByString.trim();
+  }
+
+  try {
+    return await novaRequest<NovaWarehouse>('getWarehouses', methodProperties);
+  } catch {
     return [];
   }
 }
