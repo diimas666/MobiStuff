@@ -67,9 +67,12 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
     setIsSearchOpen(false);
     router.push(`/product/${handle}`);
   };
-  // функция маркер
+  function escapeRegex(value: string) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   function highlightMatch(text: string, keyword: string) {
-    const regex = new RegExp(`(${keyword})`, 'gi');
+    const regex = new RegExp(`(${escapeRegex(keyword)})`, 'gi');
     const parts = text.split(regex);
 
     return parts.map((part, i) =>
@@ -110,12 +113,12 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
       {showDropdown && (
         <div className="absolute z-50 mt-1 w-full bg-transparent dark:bg-black rounded-xl shadow-md backdrop-blur-sm">
           {error && (
-            <div className="px-4 py-2 text-sm text-red-600 dark:text-red-400">
+            <div className="px-4 py-3 text-sm text-red-600 dark:text-red-400 w-full bg-white dark:bg-gray-900 rounded-2xl shadow-md">
               {error}
             </div>
           )}
           {!error && results.length === 0 && (
-            <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 w-full ">
+            <div className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 w-full bg-white dark:bg-gray-900 rounded-2xl shadow-md">
               Нічого не знайдено
             </div>
           )}

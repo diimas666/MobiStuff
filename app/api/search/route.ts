@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q')?.trim() || '';
@@ -13,7 +17,7 @@ export async function GET(req: NextRequest) {
 
   await dbConnect();
 
-  const regex = new RegExp(q, 'i'); // нечутливий до регістру
+  const regex = new RegExp(escapeRegex(q), 'i');
   const products = await Product.find({ title: regex })
     .select('title handle image')
     .limit(10)
