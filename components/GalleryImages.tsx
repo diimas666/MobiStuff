@@ -16,7 +16,7 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
   return (
     <div className="w-full">
       {/* Главное изображение */}
-      <div className="relative w-full rounded-xl overflow-hidden mb-4 bg-gray-50">
+      <div className="relative w-full rounded-xl overflow-hidden mb-4 bg-white border border-gray-100 shadow-sm">
         <ProductImage
           src={images[activeIndex]}
           alt={`${title} зображення ${activeIndex + 1}`}

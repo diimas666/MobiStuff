@@ -23,6 +23,16 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
   const router = useRouter();
 
   useEffect(() => {
+    if (search.trim()) return;
+
+    const autoCloseTimer = setTimeout(() => {
+      setIsSearchOpen(false);
+    }, 5000);
+
+    return () => clearTimeout(autoCloseTimer);
+  }, [search, setIsSearchOpen]);
+
+  useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (search.trim().length > 1) {
         fetch(`/api/search?q=${encodeURIComponent(search.trim())}`)
@@ -54,6 +64,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
   const handleSelect = (handle: string) => {
     setSearch('');
     setShowDropdown(false);
+    setIsSearchOpen(false);
     router.push(`/product/${handle}`);
   };
   // функция маркер
@@ -91,7 +102,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
           autoComplete="off"
         />
         <XCircle
-          className="w-5 h-5  ml-auto"
+          className="w-5 h-5 ml-auto text-gray-400 hover:text-white cursor-pointer shrink-0 transition-colors"
           onClick={() => setIsSearchOpen(false)}
         />
       </form>

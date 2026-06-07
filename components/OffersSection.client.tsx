@@ -24,6 +24,7 @@ interface OfferSectionProps {
   categorySlug?: string | null;
   subcategorySlug?: string | null;
   compact?: boolean;
+  hideLayoutToggle?: boolean;
 }
 
 // Основной компонент
@@ -33,12 +34,11 @@ export default function OffersSection({
   categorySlug,
   subcategorySlug,
   compact = false,
+  hideLayoutToggle = false,
 }: OfferSectionProps) {
-  // Состояние количества карточек, отображаемых на мобильных
-  const [mobileSlidesToShow, setMobileSlideToShow] = useState(1);
-
-  // Состояние — сколько карточек скроллить за раз
-  const [slidesToScroll, setSlidesToScroll] = useState(1);
+  const defaultMobileSlides = hideLayoutToggle ? 2 : 1;
+  const [mobileSlidesToShow, setMobileSlideToShow] = useState(defaultMobileSlides);
+  const [slidesToScroll, setSlidesToScroll] = useState(defaultMobileSlides);
 
   // Функция переключения отображения карточек: 1 или 2
   const toggleSliders = () => {
@@ -50,21 +50,27 @@ export default function OffersSection({
   return (
     <section className="section-bottom">
       {/* Заголовок и кнопка переключения карточек (только на мобильных) */}
-      <div className="flex justify-between items-start">
-        <h3 className={`font-semibold mb-5 ${compact ? 'text-lg' : 'text-xl'}`}>
-          {title}{' '}
-          {/* <span className="text-gray-500 text-base">({products.length})</span> */}
-        </h3>
-
-        <button onClick={toggleSliders} className="max-[490px]:block md:hidden">
-          {/* Если показывается 1 карточка — иконка на 2, если 2 — иконка на 1 */}
-          {mobileSlidesToShow === 1 ? (
-            <Columns2 size={30} />
-          ) : (
-            <Dice1 size={30} />
+      {title ? (
+        <div className="flex justify-between items-start gap-3 mb-5">
+          <h3 className={`font-semibold ${compact ? 'text-lg' : 'text-xl'}`}>
+            {title}
+          </h3>
+          {!hideLayoutToggle && (
+            <button
+              type="button"
+              onClick={toggleSliders}
+              className="md:hidden shrink-0 p-1 -mt-1"
+              aria-label="Змінити кількість карток"
+            >
+              {mobileSlidesToShow === 1 ? (
+                <Columns2 size={24} />
+              ) : (
+                <Dice1 size={24} />
+              )}
+            </button>
           )}
-        </button>
-      </div>
+        </div>
+      ) : null}
 
       {/* Сам слайдер товаров */}
       <div className="w-full overflow-hidden pb-6 mb-4">

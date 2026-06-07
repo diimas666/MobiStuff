@@ -107,22 +107,24 @@ export default function ProductCard({ product, priority = false, compact = false
           <button
             type="button"
             onClick={() => toggleFavorite(productId)}
-            className={`button-block-card hover:bg-green-500 ${
+            className={`button-block-card text-gray-800 hover:bg-green-500 hover:text-white ${
               compact ? "!p-1.5" : ""
             } ${isFavorite ? "bg-green-500 text-white" : ""}`}
             title={isFavorite ? "Прибрати з обраного" : "Додати в обране"}
           >
-            <Heart className={compact ? "w-4 h-4" : "glass-icon-svg"} />
+            <Heart className={compact ? "w-4 h-4" : "w-5 h-5"} />
           </button>
 
           <button
             type="button"
             onClick={handleAddToCart}
-            className={`button-block-card hover:bg-green-500 disabled:opacity-50 ${compact ? "!p-1.5" : ""}`}
+            className={`button-block-card text-gray-800 hover:bg-green-500 hover:text-white disabled:opacity-50 ${
+              compact ? "!p-1.5" : ""
+            }`}
             disabled={!product.inStock}
             title={!product.inStock ? "Немає в наявності" : "Додати в кошик"}
           >
-            <ShoppingCart className={compact ? "w-4 h-4" : "glass-icon-svg"} />
+            <ShoppingCart className={compact ? "w-4 h-4" : "w-5 h-5"} />
           </button>
         </div>
       </div>

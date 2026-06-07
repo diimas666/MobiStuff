@@ -51,7 +51,7 @@ export default function NavigationProgress() {
 
   return (
     <div
-      className="fixed top-[72px] left-0 right-0 z-[60] h-1 overflow-hidden bg-gray-200"
+      className="fixed top-[65px] left-0 right-0 z-[60] h-0.5 overflow-hidden bg-gray-800/60"
       role="progressbar"
       aria-label="Завантаження сторінки"
     >

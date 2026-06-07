@@ -9,9 +9,14 @@ import PriceRangeSlider from './PriceRangeSlider';
 interface FilterBarProps {
   availableBrands?: string[];
   priceBounds?: { min: number; max: number };
+  variant?: 'light' | 'dark';
 }
 
-export default function FilterBar({ availableBrands, priceBounds }: FilterBarProps) {
+export default function FilterBar({
+  availableBrands,
+  priceBounds,
+  variant = 'light',
+}: FilterBarProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -77,8 +82,25 @@ export default function FilterBar({ availableBrands, priceBounds }: FilterBarPro
   const hasActiveFilters =
     brand || priceFilterActive || isTrending || onSale || sort;
 
-  const selectClass =
-    'appearance-none border border-gray-300 rounded-md px-3 py-2 text-sm w-full pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500';
+  const isDark = variant === 'dark';
+  const selectClass = isDark
+    ? 'appearance-none border border-white/15 bg-white/10 text-white rounded-xl px-3 py-2.5 text-sm w-full pr-10 focus:outline-none focus:ring-2 focus:ring-green-500/40 focus:border-green-500/30'
+    : 'appearance-none border border-gray-300 rounded-md px-3 py-2 text-sm w-full pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500';
+  const labelClass = isDark ? 'text-sm text-gray-400 mb-1' : 'text-sm text-gray-600 mb-1';
+  const sectionLabelClass = isDark ? 'text-sm text-gray-400' : 'text-sm text-gray-600';
+  const checkboxLabelClass = isDark
+    ? 'flex items-center gap-2 text-sm cursor-pointer text-gray-300'
+    : 'flex items-center gap-2 text-sm cursor-pointer';
+  const checkboxClass = isDark
+    ? 'rounded border-white/20 bg-white/10 text-green-500 focus:ring-green-500/40'
+    : 'rounded border-gray-300 text-green-500 focus:ring-green-500';
+  const submitClass = isDark
+    ? 'w-full bg-green-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-600 transition shadow-lg'
+    : 'w-full bg-black text-white px-5 py-2.5 rounded-md text-sm hover:bg-gray-800 transition shadow';
+  const resetClass = isDark
+    ? 'inline-block mt-3 text-sm text-green-400 hover:text-green-300 transition'
+    : 'inline-block mt-3 text-sm text-green-600 hover:underline';
+  const chevronClass = isDark ? 'text-gray-500' : 'text-gray-400';
 
   return (
     <>
@@ -93,7 +115,7 @@ export default function FilterBar({ availableBrands, priceBounds }: FilterBarPro
         ) : null}
 
         <div className="relative flex flex-col">
-          <label className="text-sm text-gray-600 mb-1">Сортування</label>
+          <label className={labelClass}>Сортування</label>
           <select name="sort" defaultValue={sort} className={selectClass}>
             <option value="">За замовчуванням</option>
             <option value="price-asc">Ціна: від дешевих</option>
@@ -101,13 +123,13 @@ export default function FilterBar({ availableBrands, priceBounds }: FilterBarPro
             <option value="newest">Спочатку новинки</option>
             <option value="title-asc">За назвою А–Я</option>
           </select>
-          <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
+          <div className={`pointer-events-none absolute right-3 bottom-2.5 ${chevronClass}`}>
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
 
         <div className="relative flex flex-col">
-          <label className="text-sm text-gray-600 mb-1">Бренд</label>
+          <label className={labelClass}>Бренд</label>
           <select name="brand" defaultValue={brand} className={selectClass}>
             <option value="">Усі бренди</option>
             {brands.map((item) => (
@@ -116,13 +138,15 @@ export default function FilterBar({ availableBrands, priceBounds }: FilterBarPro
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute right-3 bottom-2.5 text-gray-400">
+          <div className={`pointer-events-none absolute right-3 bottom-2.5 ${chevronClass}`}>
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
 
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600 mb-2">Ціна, грн</label>
+          <label className={isDark ? 'text-sm text-gray-400 mb-2' : 'text-sm text-gray-600 mb-2'}>
+            Ціна, грн
+          </label>
           <PriceRangeSlider
             min={bounds.min}
             max={bounds.max}
@@ -136,42 +160,36 @@ export default function FilterBar({ availableBrands, priceBounds }: FilterBarPro
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-sm text-gray-600">Додатково</span>
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <span className={sectionLabelClass}>Додатково</span>
+          <label className={checkboxLabelClass}>
             <input
               type="checkbox"
               name="onSale"
               value="true"
               defaultChecked={onSale}
-              className="rounded border-gray-300 text-green-500 focus:ring-green-500"
+              className={checkboxClass}
             />
             Зі знижкою
           </label>
-          <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <label className={checkboxLabelClass}>
             <input
               type="checkbox"
               name="isTrending"
               value="true"
               defaultChecked={isTrending}
-              className="rounded border-gray-300 text-green-500 focus:ring-green-500"
+              className={checkboxClass}
             />
             Тренд
           </label>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-black text-white px-5 py-2.5 rounded-md text-sm hover:bg-gray-800 transition shadow"
-        >
+        <button type="submit" className={submitClass}>
           Застосувати
         </button>
       </form>
 
       {hasActiveFilters && (
-        <Link
-          href={`${pathname}?page=1&cols=${cols}`}
-          className="inline-block mt-3 text-sm text-green-600 hover:underline"
-        >
+        <Link href={`${pathname}?page=1&cols=${cols}`} className={resetClass}>
           Скинути фільтри
         </Link>
       )}
