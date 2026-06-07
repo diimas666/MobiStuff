@@ -1,22 +1,29 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
+
+const REDIRECT_SECONDS = 5;
 
 export default function ThankYouPage() {
   const router = useRouter();
-
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<{
+    total?: number;
+    city?: string;
+    warehouse?: string;
+    [key: string]: unknown;
+  } | null>(null);
   const [isSaving, setIsSaving] = useState(true);
-  const [emailSent, setEmailSent] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
 
   useEffect(() => {
     const stored = localStorage.getItem('lastOrder');
-    const sent = localStorage.getItem('emailSent') === 'true';
-    setEmailSent(sent);
 
     if (!stored) {
       setIsSaving(false);
+      router.replace('/');
       return;
     }
 
@@ -24,7 +31,6 @@ export default function ThankYouPage() {
       const parsed = JSON.parse(stored);
       setOrder(parsed);
 
-      // Збереження замовлення в MongoDB
       fetch('/api/saveOrder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,66 +43,77 @@ export default function ThankYouPage() {
     } catch (err) {
       console.error('❌ JSON parse error:', err);
       setIsSaving(false);
+      router.replace('/');
     }
-  }, []);
+  }, [router]);
+
+  useEffect(() => {
+    if (isSaving || !order) return;
+
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isSaving, order]);
+
+  useEffect(() => {
+    if (isSaving || !order || secondsLeft > 0) return;
+    router.replace('/');
+  }, [isSaving, order, secondsLeft, router]);
 
   if (isSaving || !order) {
     return (
-      <div className="flex flex-col justify-center items-center h-64 gap-4">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500 border-solid"></div>
-        <p className="text-gray-600">Завантаження замовлення...</p>
+      <div className="flex flex-col justify-center items-center min-h-[50vh] gap-4">
+        <Loader2 className="w-10 h-10 text-green-500 animate-spin" />
+        <p className="text-gray-500 text-sm">Обробка замовлення...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">
-        ✅ Дякуємо за замовлення!
-      </h1>
-      <p className="mb-4 text-center">
-        Ваше замовлення прийнято та обробляється.
-        {emailSent && (
-          <span className="block text-green-600 mt-2">
-            📧 Підтвердження надіслано на {order.email}
-          </span>
-        )}
-      </p>
+    <div className="pb-12 flex justify-center">
+      <div className="w-full max-w-lg">
+        <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-10 shadow-sm text-center">
+          <div className="mx-auto w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-6">
+            <CheckCircle2 className="w-12 h-12 text-green-500" strokeWidth={1.75} />
+          </div>
 
-      <div className="bg-gray-100 p-4 rounded space-y-2 text-sm">
-        <p>
-          <strong>Ім’я:</strong> {order.name} {order.lastName}
-        </p>
-        <p>
-          <strong>Телефон:</strong> {order.phone}
-        </p>
-        <p>
-          <strong>Місто:</strong> {order.city}
-        </p>
-        <p>
-          <strong>Відділення:</strong> {order.warehouse}
-        </p>
-        <p>
-          <strong>Оплата:</strong>{' '}
-          {order.paymentMethod === 'card' ? 'Карткою' : 'При отриманні'}
-        </p>
-        <p>
-          <strong>Сума:</strong> {order.total} ₴
-        </p>
-        {order.comment && (
-          <p>
-            <strong>Коментар:</strong> {order.comment}
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+            Замовлення оформлено!
+          </h1>
+          <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-2">
+            Дякуємо, що обрали MobiStuff. Ваше замовлення прийнято та незабаром буде оброблене.
           </p>
-        )}
-      </div>
+          <p className="text-gray-500 text-sm mb-6">
+            Дякуємо, що користуєтесь нашим асортиментом — сподіваємось побачити вас знову!
+          </p>
 
-      <div className="mt-6 flex justify-center">
-        <button
-          onClick={() => router.push('/')}
-          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition cursor-pointer"
-        >
-          На головну
-        </button>
+          <div className="rounded-xl bg-gray-50 border border-gray-100 p-4 text-left text-sm space-y-2 mb-6">
+            <p>
+              <span className="text-gray-500">Сума:</span>{' '}
+              <strong className="text-green-600">{order.total} грн</strong>
+            </p>
+            <p>
+              <span className="text-gray-500">Доставка:</span> {order.city}
+            </p>
+            <p className="line-clamp-2">
+              <span className="text-gray-500">Відділення:</span> {order.warehouse}
+            </p>
+          </div>
+
+          <p className="text-xs text-gray-400 mb-4">
+            Перехід на головну через {secondsLeft} сек…
+          </p>
+
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl transition"
+          >
+            На головну зараз
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </section>
       </div>
     </div>
   );

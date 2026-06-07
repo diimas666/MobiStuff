@@ -8,7 +8,7 @@ import PaymentRulesNote from '@/components/PaymentRulesNote';
 import ProductImage from '@/components/ProductImage';
 import { ArrowLeft, ArrowRight, CreditCard, Loader2, Package } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CARD_ONLY_FROM, storePolicies } from '@/data/storePolicies';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 
@@ -21,6 +21,7 @@ export default function CheckoutPage() {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isLoading, setIsLoading] = useState(false);
+  const orderCompletedRef = useRef(false);
 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -37,7 +38,7 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    if (cart.length === 0) {
+    if (cart.length === 0 && !orderCompletedRef.current) {
       router.replace('/cart');
     }
   }, [cart.length, router]);
@@ -100,23 +101,10 @@ export default function CheckoutPage() {
       });
 
       if (res.ok) {
-        clearCart();
-
-        if (email && !localStorage.getItem('emailSent')) {
-          try {
-            await fetch('/api/sendEmail', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(order),
-            });
-            localStorage.setItem('emailSent', 'true');
-          } catch (e) {
-            console.error('❌ Email не надіслано:', e);
-          }
-        }
-
+        orderCompletedRef.current = true;
         localStorage.setItem('lastOrder', JSON.stringify(order));
-        router.push('/thank-you');
+        clearCart();
+        router.replace('/thank-you');
       }
     } catch {
       alert('❌ Сервер недоступний');
@@ -125,7 +113,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (cart.length === 0) {
+  if (cart.length === 0 && !orderCompletedRef.current) {
     return null;
   }
 
