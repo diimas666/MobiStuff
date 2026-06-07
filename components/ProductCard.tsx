@@ -30,9 +30,13 @@ export default function ProductCard({ product, priority = false, compact = false
   };
 
   return (
-    <div className="flex flex-col border rounded-xl overflow-hidden shadow-md hover:border-green-500 transition-all duration-300 h-full">
-      <Link href={`/product/${product.handle}`} className="flex flex-col flex-1">
-        <div className={`relative w-full bg-gray-100 ${compact ? "h-[130px]" : "aspect-[4/4]"}`}>
+    <div
+      className={`flex flex-col border rounded-xl overflow-hidden shadow-md hover:border-green-500 transition-all duration-300 ${
+        compact ? "h-[262px]" : "h-full"
+      }`}
+    >
+      <Link href={`/product/${product.handle}`} className={`flex flex-col ${compact ? "shrink-0" : "flex-1"}`}>
+        <div className={`relative w-full shrink-0 bg-gray-100 ${compact ? "h-[185px]" : "aspect-[4/4]"}`}>
           {imageSrc && (
             <ProductImage
               src={imageSrc}
@@ -56,14 +60,19 @@ export default function ProductCard({ product, priority = false, compact = false
               -{product.discountPercent}%
             </span>
           )}
+          {compact && !product.inStock && (
+            <span className="absolute bottom-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded">
+              Немає
+            </span>
+          )}
         </div>
 
         <div
-          className={`bg-gray-800 text-white flex-1 ${
-            compact ? "p-2 pb-1 min-h-[72px]" : "p-3 sm:p-4 pb-2 min-h-[110px] sm:min-h-[160px]"
+          className={`bg-gray-800 text-white ${
+            compact ? "px-2 py-1.5 shrink-0 h-[34px] overflow-hidden" : "flex-1 p-3 sm:p-4 pb-2 min-h-[110px] sm:min-h-[160px]"
           }`}
         >
-          <h3 className={`font-semibold line-clamp-2 mb-1 ${compact ? "text-xs leading-tight" : "text-sm sm:text-lg"}`}>
+          <h3 className={`font-semibold line-clamp-2 ${compact ? "text-[11px] leading-[14px]" : "text-sm sm:text-lg mb-1"}`}>
             {product.title}
           </h3>
           {!compact && product.description && (
@@ -76,13 +85,13 @@ export default function ProductCard({ product, priority = false, compact = false
             </div>
           )}
           {!compact && product.brand && <div className="flex gap-1 font-medium mb-2">Бренд : {product.brand}</div>}
-          {!product.inStock && <span className="text-xs text-red-500">{compact ? "Немає" : "Нет в наличии"}</span>}
+          {!compact && !product.inStock && <span className="text-xs text-red-500">Нет в наличии</span>}
         </div>
       </Link>
 
       <div
-        className={`flex items-center justify-between gap-1 bg-gray-800 pt-1 ${
-          compact ? "px-2 pb-2" : "px-3 sm:px-4 pb-3 sm:pb-4"
+        className={`flex items-center justify-between gap-1 bg-gray-800 shrink-0 mt-auto ${
+          compact ? "px-2 h-[43px]" : "px-3 sm:px-4 pt-1 pb-3 sm:pb-4"
         }`}
       >
         <div className="flex flex-col min-w-0 text-white">
