@@ -5,6 +5,7 @@ import ProductList from '@/components/ProductList';
 import FilterBar from '@/components/FilterBar';
 import CategorySeoArticle from '@/components/CategorySeoArticle';
 import CategoryList from '@/components/CategoryList';
+import CategoryPageHeader from '@/components/CategoryPageHeader';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Grid, LayoutList } from 'lucide-react';
@@ -95,19 +96,11 @@ export default async function SubcategoryPage({
 
   return (
     <div>
-      {/* Навигация */}
-      <div className="text-sm mb-4 text-gray-500">
-        <Link href="/" className="hover:underline">
-          Головна
-        </Link>{' '}
-        / <span className="font-semibold text-gray-700">{category.title}</span>
-      </div>
-
-      {/* Заголовки */}
-      <h1 className="text-2xl font-bold">Категорія: {category.title}</h1>
-      <h2 className="text-xl text-gray-700 mb-6">
-        Підкатегорія: {subcategory.title}
-      </h2>
+      <CategoryPageHeader
+        categoryTitle={category.title}
+        subcategoryTitle={subcategory.title}
+        productCount={facets.count}
+      />
 
       {/* Переключение количества карточек */}
       <div className="md:hidden mb-4 flex items-center gap-2">
