@@ -35,7 +35,7 @@ export default function TrendingSlider({ products }: TrendingSliderProps) {
   };
 
   const settings = {
-    dots: true,
+    dots: false,
     arrows: false,
     infinite: products.length > 1,
     speed: 500,

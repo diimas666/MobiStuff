@@ -12,16 +12,18 @@ interface Item {
 }
 
 interface CategoryGridProps {
-  title: string;
+  title?: string;
   items: Item[];
 }
 
 export default function CategoryGrid({ title, items }: CategoryGridProps) {
   return (
     <section className="flex flex-col h-full">
-      <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 shrink-0">
-        {title}
-      </h2>
+      {title && (
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 shrink-0">
+          {title}
+        </h2>
+      )}
       <div
         className="
         flex-1 min-h-[300px] max-[890px]:min-h-[200px]

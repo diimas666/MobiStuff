@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import InfoPageLayout, { InfoCard } from '@/components/InfoPageLayout';
+import PaymentRulesNote from '@/components/PaymentRulesNote';
 import { Clock, Facebook, Instagram, Mail, MapPin, MessageCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -19,6 +20,10 @@ export default function ContactsPage() {
       ctaLabel="Перейти до магазину"
       ctaHref="/"
     >
+      <div className="mb-8">
+        <PaymentRulesNote />
+      </div>
+
       <div className="grid sm:grid-cols-2 gap-4 mb-10">
         <InfoCard icon={<Mail className="w-5 h-5" />} title="Email">
           <a

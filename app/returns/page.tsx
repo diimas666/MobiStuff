@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import InfoPageLayout, { InfoCard, InfoStep } from '@/components/InfoPageLayout';
+import PaymentRulesNote from '@/components/PaymentRulesNote';
 import { CheckCircle2, Mail, PackageX, RefreshCw, Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -19,6 +20,10 @@ export default function ReturnsPage() {
       ctaLabel="Переглянути каталог"
       ctaHref="/"
     >
+      <div className="mb-8">
+        <PaymentRulesNote />
+      </div>
+
       <div className="grid sm:grid-cols-3 gap-4 mb-10">
         <InfoCard icon={<Shield className="w-5 h-5" />} title="14 днів">
           На повернення або обмін з моменту отримання замовлення

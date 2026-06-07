@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import InfoPageLayout, { InfoCard, InfoHighlight } from '@/components/InfoPageLayout';
+import PaymentRulesNote from '@/components/PaymentRulesNote';
+import { FREE_DELIVERY_FROM } from '@/data/storePolicies';
 import { Award, Headphones, ShieldCheck, Sparkles, Truck, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -16,6 +18,10 @@ export default function AboutPage() {
       title="Аксесуари, яким можна довіряти"
       subtitle="Український інтернет-магазин мобільних аксесуарів. Ми відбираємо лише перевірені бренди, тримаємо чесні ціни та доставляємо по всій Україні."
     >
+      <div className="mb-8">
+        <PaymentRulesNote />
+      </div>
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-10">
         <InfoHighlight value="5000+" label="товарів у каталозі" />
         <InfoHighlight value="1–3 дні" label="доставка по Україні" />
@@ -37,8 +43,8 @@ export default function AboutPage() {
           кур&apos;єром до дверей.
         </InfoCard>
         <InfoCard icon={<Award className="w-5 h-5" />} title="Вигідні ціни">
-          Регулярні акції, знижки на бренди та безкоштовна доставка від 2500 грн. Якість без
-          переплат.
+          Регулярні акції, знижки на бренди та безкоштовна доставка від {FREE_DELIVERY_FROM} грн.
+          Якість без переплат.
         </InfoCard>
         <InfoCard icon={<Users className="w-5 h-5" />} title="Підтримка клієнтів">
           Допоможемо обрати аксесуар, відповімо на питання до та після покупки. Ваш комфорт —

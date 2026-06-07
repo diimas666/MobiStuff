@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { popularItems } from '@/data/popularAndTrending';
 import CategoryGrid from '@/components/CategoryGrid';
 import CategoryList from '@/components/CategoryList';
@@ -8,6 +9,11 @@ import OffersSection from '@/components/OffersSection.client';
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
 import { getTrendingProducts } from '@/lib/getTrendingProducts';
 import PromoSlider from '@/components/PromoSlider';
+import HomeHero from '@/components/HomeHero';
+import HomeSectionTitle from '@/components/HomeSectionTitle';
+import PaymentRulesNote from '@/components/PaymentRulesNote';
+import { storePolicies } from '@/data/storePolicies';
+import { ArrowRight } from 'lucide-react';
 
 export const revalidate = 300;
 
@@ -131,53 +137,84 @@ export default async function GeneralPage() {
 
   return (
     <>
-      <main className="text-md flex flex-col md:flex-row gap-2 section-bottom w-full min-w-0">
-        <aside className="w-[300px] px-2 shadow-sm relative hidden md:block shrink-0">
-          <h3 className="text-lg font-semibold mb-2">Каталог</h3>
+      <HomeHero />
+
+      <main className="text-md flex flex-col md:flex-row gap-4 section-bottom w-full min-w-0">
+        <aside className="w-[300px] px-4 py-4 rounded-2xl border border-gray-100 bg-white shadow-sm relative hidden md:block shrink-0">
+          <HomeSectionTitle title="Каталог" />
           <CategoryList />
         </aside>
-        <h1 className="sr-only">
-          Інтернет-магазин мобільних аксесуарів — MobiStuff
-        </h1>
 
-        <section className="flex w-full min-w-0 gap-5 items-stretch max-[890px]:flex-col max-[890px]:gap-4 section-bottom">
-          <div className="basis-1/2 flex-1 flex flex-col min-w-0 max-[890px]:basis-full">
-            <CategoryGrid title="Популярні категорії" items={popularItems} />
+        <section className="flex w-full min-w-0 gap-5 items-stretch max-[890px]:flex-col max-[890px]:gap-4 section-bottom flex-1">
+          <div className="basis-1/2 flex-1 flex flex-col min-w-0 max-[890px]:basis-full rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+            <HomeSectionTitle title="Популярні категорії" />
+            <CategoryGrid items={popularItems} />
+            <div className="sr-only">
+              <h1>Інтернет-магазин мобільних аксесуарів — MobiStuff</h1>
+            </div>
           </div>
-          <div className="basis-1/2 flex-1 flex flex-col h-full min-w-0 max-[890px]:basis-full">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 shrink-0">
-              Трендові товари
-            </h3>
+          <div className="basis-1/2 flex-1 flex flex-col h-full min-w-0 max-[890px]:basis-full rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+            <HomeSectionTitle title="Трендові товари" subtitle="Хіти продажів цього сезону" />
             <div className="flex-1 min-h-[300px] max-[890px]:h-[260px] max-[890px]:flex-none">
               <TrendingSlider products={trending} />
             </div>
           </div>
         </section>
       </main>
+
       <main>
-        <section className="section-bottom">
-          <div className="w-full pb-6">
-            <h2 className="text-xl font-bold mb-4">Актуальні пропозиції</h2>
-            <PromoSlider />
-          </div>
-        </section>
-        <section className="section-bottom">
-          <div className="text-gray-600 max-w-3xl mx-auto text-center mb-8 text-[18px]">
-            MobiStuff — інтернет-магазин мобільних аксесуарів. Ми пропонуємо
-            павербанки, зарядні пристрої, навушники, кабелі, чохли,
-            смарт-годинники та інші гаджети з доставкою по всій Україні. Якість,
-            гарантія, швидка доставка.
-          </div>
+        <section className="section-bottom rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm">
+          <HomeSectionTitle title="Актуальні пропозиції" subtitle="Акції та спеціальні умови" />
+          <PromoSlider />
         </section>
 
         <section className="section-bottom">
-          <h3 className="text-xl font-semibold mb-6 ">Популярні бренди</h3>
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-50 via-white to-green-50 border border-green-100 px-6 py-8 sm:px-10 sm:py-10 text-center">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-200/30 rounded-full blur-2xl" />
+            <p className="relative text-gray-700 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
+              <strong className="text-gray-900">MobiStuff</strong> — інтернет-магазин мобільних
+              аксесуарів. Павербанки, зарядні пристрої, навушники, кабелі, чохли, смарт-годинники
+              та інші гаджети з доставкою по всій Україні. Якість, гарантія, швидка доставка.
+            </p>
+            <div className="relative max-w-2xl mx-auto mt-5">
+              <PaymentRulesNote />
+            </div>
+            <div className="relative flex flex-wrap justify-center gap-3 mt-6">
+              <Link
+                href="/delivery"
+                className="text-sm font-medium text-green-700 hover:text-green-800 hover:underline"
+              >
+                Доставка і оплата
+              </Link>
+              <span className="text-gray-300">•</span>
+              <Link
+                href="/returns"
+                className="text-sm font-medium text-green-700 hover:text-green-800 hover:underline"
+              >
+                Повернення
+              </Link>
+              <span className="text-gray-300">•</span>
+              <Link
+                href="/about"
+                className="text-sm font-medium text-green-700 hover:text-green-800 hover:underline"
+              >
+                Про нас
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="section-bottom rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm">
+          <HomeSectionTitle title="Популярні бренди" />
           <BrandList />
         </section>
 
         {featuredSections.map((section) => (
-          <section key={section.title} className="section-bottom">
-            <div className="w-full overflow-hidden pb-6">
+          <section
+            key={section.title}
+            className="section-bottom rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm"
+          >
+            <div className="w-full overflow-hidden pb-2">
               <OffersSection
                 title={section.title}
                 products={section.products}
@@ -187,6 +224,22 @@ export default async function GeneralPage() {
             </div>
           </section>
         ))}
+
+        <section className="section-bottom">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 text-white px-6 py-8 sm:px-10">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold">Знайшли потрібний аксесуар?</h2>
+              <p className="text-gray-300 text-sm mt-1">{storePolicies.paymentSummary}</p>
+            </div>
+            <Link
+              href="/category/category-zaryadki-i-kabeli/category-lightning"
+              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition shrink-0"
+            >
+              До каталогу
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
       </main>
     </>
   );

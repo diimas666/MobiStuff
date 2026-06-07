@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext';
 import ProductImage from '@/components/ProductImage';
 import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import PaymentRulesNote from '@/components/PaymentRulesNote';
 
 export default function CartPage() {
   const { cart, increment, decrement, removeFromCart } = useCart();
@@ -78,6 +79,10 @@ export default function CartPage() {
           <div className="flex justify-between items-center border-t pt-4 mt-4">
             <span className="text-xl font-bold">Сума:</span>
             <span className="text-xl font-bold text-green-600">{total} ₴</span>
+          </div>
+
+          <div className="mt-4">
+            <PaymentRulesNote />
           </div>
 
           <button

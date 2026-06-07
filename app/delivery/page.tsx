@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import InfoPageLayout, { InfoCard, InfoStep } from '@/components/InfoPageLayout';
+import PaymentRulesNote from '@/components/PaymentRulesNote';
+import { CARD_ONLY_FROM, FREE_DELIVERY_FROM, storePolicies } from '@/data/storePolicies';
 import { Banknote, CreditCard, Gift, MapPin, Package, Truck } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Доставка і оплата | MobiStuff',
   description:
-    'Дізнайтесь про доставку Новою Поштою, оплату онлайн або післяплатою, строки відправки та безкоштовну доставку від 2500 грн.',
+    'Дізнайтесь про доставку Новою Поштою, оплату карткою або післяплатою до 4000 грн, безкоштовну доставку від 2500 грн.',
   alternates: { canonical: '/delivery' },
 };
 
@@ -15,14 +17,20 @@ export default function DeliveryPage() {
     <InfoPageLayout
       badge="Доставка"
       title="Швидко. Зручно. По всій Україні"
-      subtitle="Відправляємо щодня через Нову Пошту. Оплата карткою онлайн або при отриманні — обирайте зручний спосіб."
+      subtitle={`Відправляємо щодня через Нову Пошту. ${storePolicies.codAvailable}. ${storePolicies.cardOnly}.`}
       ctaLabel="Оформити замовлення"
       ctaHref="/"
     >
+      <div className="mb-6">
+        <PaymentRulesNote />
+      </div>
+
       <div className="rounded-2xl bg-green-50 border border-green-100 px-6 py-5 mb-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <Gift className="w-8 h-8 text-green-600 shrink-0" />
         <div>
-          <p className="font-semibold text-green-800 text-lg">Безкоштовна доставка від 2500 грн</p>
+          <p className="font-semibold text-green-800 text-lg">
+            Безкоштовна доставка від {FREE_DELIVERY_FROM} грн
+          </p>
           <p className="text-green-700 text-sm mt-1">
             Нова Пошта та Укрпошта — на відділення по всій Україні
           </p>
@@ -50,13 +58,14 @@ export default function DeliveryPage() {
 
       <h2 className="text-xl font-bold text-gray-900 mb-4">Способи оплати</h2>
       <div className="grid sm:grid-cols-2 gap-4 mb-10">
-        <InfoCard icon={<CreditCard className="w-5 h-5" />} title="Онлайн-оплата">
-          Visa / MasterCard через захищений платіжний сервіс. Швидко, безпечно, без зайвих кроків
-          при оформленні замовлення.
+        <InfoCard icon={<CreditCard className="w-5 h-5" />} title="Онлайн-оплата карткою">
+          Visa / MasterCard через захищений платіжний сервіс.{' '}
+          <strong>Обов&apos;язкова для замовлень від {CARD_ONLY_FROM} грн</strong> — повна
+          передоплата на картку.
         </InfoCard>
         <InfoCard icon={<Banknote className="w-5 h-5" />} title="Оплата при отриманні">
-          Післяплата через Нову Пошту — платите лише тоді, коли отримуєте товар. Комісія згідно
-          тарифів перевізника.
+          Післяплата через Нову Пошту — доступна для замовлень{' '}
+          <strong>до {CARD_ONLY_FROM} грн</strong>. Комісія згідно тарифів перевізника.
         </InfoCard>
       </div>
 

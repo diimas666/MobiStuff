@@ -1,6 +1,7 @@
 // components/Footer.tsx
 import Link from 'next/link';
 import { Facebook, Instagram, Mail } from 'lucide-react';
+import { storePolicies } from '@/data/storePolicies';
 
 export default function Footer() {
   return (
@@ -11,6 +12,9 @@ export default function Footer() {
           <h2 className="text-xl font-bold mb-3">Mobistuff</h2>
           <p className="text-gray-400">
             Найкращі аксесуари для ваших ґаджетів.
+          </p>
+          <p className="text-gray-500 text-xs mt-3 leading-relaxed">
+            {storePolicies.paymentSummary}
           </p>
           <p className="mt-4 flex items-center gap-2 text-gray-400">
             <Mail size={16} /> mobistuffinfo@gmail.com

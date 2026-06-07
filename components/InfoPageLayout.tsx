@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { storePolicies } from '@/data/storePolicies';
 
 interface InfoPageLayoutProps {
   title: string;
@@ -40,9 +41,7 @@ export default function InfoPageLayout({
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl bg-gray-50 border border-gray-100 px-6 py-8 sm:px-10">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">Готові обрати аксесуар?</h2>
-            <p className="text-gray-600 text-sm mt-1">
-              Тисячі товарів з доставкою по всій Україні
-            </p>
+            <p className="text-gray-600 text-sm mt-1">{storePolicies.paymentSummary}</p>
           </div>
           <Link
             href={ctaHref}

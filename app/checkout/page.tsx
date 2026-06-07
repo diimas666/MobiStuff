@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchCities, fetchWarehouses } from '@/lib/novaposhta';
+import { CARD_ONLY_FROM, storePolicies } from '@/data/storePolicies';
 
 const isValidPhone = (phone: string) => /^(\+?38)?0\d{9}$/.test(phone.trim());
 
@@ -18,7 +19,8 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('cod'); // 'cod' або 'card'
+  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const cardOnlyRequired = total >= CARD_ONLY_FROM;
 
   const [cityInput, setCityInput] = useState('');
   const [citiesList, setCitiesList] = useState<any[]>([]);
@@ -47,6 +49,12 @@ export default function CheckoutPage() {
     }
   }, [cityRef]);
 
+  useEffect(() => {
+    if (cardOnlyRequired) {
+      setPaymentMethod('card');
+    }
+  }, [cardOnlyRequired]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true); // 🔄 показываем лоадер
@@ -65,6 +73,12 @@ export default function CheckoutPage() {
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       alert('❌ Невірний email');
+      setIsLoading(false);
+      return;
+    }
+
+    if (cardOnlyRequired && paymentMethod !== 'card') {
+      alert(`❌ ${storePolicies.cardOnly}`);
       setIsLoading(false);
       return;
     }
@@ -255,18 +269,31 @@ export default function CheckoutPage() {
           className="w-full border rounded px-3 py-2"
         />
 
+        {cardOnlyRequired && (
+          <div className="rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-900">
+            {storePolicies.cardOnly}
+          </div>
+        )}
+
+        {!cardOnlyRequired && (
+          <p className="text-sm text-gray-500">{storePolicies.codAvailable}</p>
+        )}
+
         {/* Спосіб оплати */}
         <div className="relative">
           <label className="block text-sm font-medium mb-1">
             Спосіб оплати
           </label>
           <select
-            className="w-full border rounded px-3 py-2 appearance-none pr-10 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full border rounded px-3 py-2 appearance-none pr-10 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-70"
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value)}
             aria-label="Оберіть оплату"
+            disabled={cardOnlyRequired}
           >
-            <option value="cod">Оплата при отриманні</option>
+            <option value="cod" disabled={cardOnlyRequired}>
+              Оплата при отриманні
+            </option>
             <option value="card">Оплата карткою</option>
           </select>
 
