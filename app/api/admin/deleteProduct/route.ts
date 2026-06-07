@@ -1,9 +1,12 @@
 // ✅ /app/api/admin/deleteProduct/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
+import { checkAdminAuth, unauthorizedResponse } from '@/lib/adminAuth';
 import Product from '../../models/Product';
 
 export async function DELETE(req: Request) {
+  if (!checkAdminAuth(req)) return unauthorizedResponse();
+
   await dbConnect();
   const body = await req.json();
   const { id } = body;

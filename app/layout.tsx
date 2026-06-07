@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="uk">
+    <html lang="uk" suppressHydrationWarning>
       <body
         className={`${roboto.variable} antialiased min-h-screen flex flex-col`}
       >

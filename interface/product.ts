@@ -11,6 +11,7 @@ export interface Product {
   inStock?: boolean; // В наличии или нет
   isNew?: boolean; // Новый товар
   isFeatured?: boolean; // Показывать на главной
+  isTrending?: boolean; // Трендовый товар
   handle: string; // URL-адрес
   category?: string; // Категория
   categorySlug?: string;

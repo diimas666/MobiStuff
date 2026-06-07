@@ -4,6 +4,7 @@ import { catalogCategory } from '@/data/catalogCategory';
 import { toSlug } from '@/lib/slugify';
 import { toast } from 'react-toastify';
 import AdminWrapper from '@/components/AdminWrapper';
+import { adminHeaders } from '@/lib/adminHeaders';
 import Link from 'next/link';
 // import Image from 'next/image';
 const initialFormState = {
@@ -39,10 +40,7 @@ export default function AdminPage() {
     // });
     const res = await fetch('/api/admin/addProduct', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET}`,
-      },
+      headers: adminHeaders(),
       body: JSON.stringify({
         ...form,
         price: parseFloat(form.price),

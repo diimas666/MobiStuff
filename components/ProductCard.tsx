@@ -98,7 +98,9 @@ export default function ProductCard({ product, priority = false, compact = false
           <span className={`font-bold text-green-500 ${compact ? "text-sm" : "text-base sm:text-xl"}`}>
             {product.price} грн
           </span>
-          {product.oldPrice && <span className="text-sm line-through text-green-500">{product.oldPrice} грн</span>}
+          {product.oldPrice && product.oldPrice > product.price && (
+            <span className="text-sm line-through text-gray-400">{product.oldPrice} грн</span>
+          )}
         </div>
 
         <div className={`flex items-center shrink-0 ${compact ? "gap-1" : "gap-2"}`}>

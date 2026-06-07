@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Grid, LayoutList } from 'lucide-react';
 // фетч
-import { fetchProducts } from '@/lib/api';
+import { fetchProducts, fetchProductFacets } from '@/lib/api';
 const ITEMS_PER_PAGE = 20;
 
 export async function generateMetadata({
@@ -54,25 +54,36 @@ export default async function SubcategoryPage({
     brand?: string;
     minPrice?: string;
     maxPrice?: string;
+    isTrending?: string;
+    onSale?: string;
+    sort?: string;
   }>;
 }) {
   const params = await paramsPromise;
   const searchParams = await searchParamsPromise;
-  const { page, cols, brand, minPrice, maxPrice } = searchParams;
-  const filters = { brand, minPrice, maxPrice };
+  const { page, cols, brand, minPrice, maxPrice, isTrending, onSale, sort } =
+    searchParams;
+  const filters = { brand, minPrice, maxPrice, isTrending, onSale, sort };
 
   const { slug, sub } = params;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
   if (!category || !subcategory) return notFound();
-  const queryString = `&brand=${encodeURIComponent(brand || '')}&minPrice=${
-    minPrice || ''
-  }&maxPrice=${maxPrice || ''}`;
+  const filterQuery = new URLSearchParams();
+  if (brand) filterQuery.set('brand', brand);
+  if (minPrice) filterQuery.set('minPrice', minPrice);
+  if (maxPrice) filterQuery.set('maxPrice', maxPrice);
+  if (isTrending) filterQuery.set('isTrending', isTrending);
+  if (onSale) filterQuery.set('onSale', onSale);
+  if (sort) filterQuery.set('sort', sort);
+  const queryString = filterQuery.toString() ? `&${filterQuery.toString()}` : '';
 
   const currentPage = parseInt(page || '1', 10);
-  // Получение продуктов
-  const allProducts = await fetchProducts(slug, sub, filters);
+  const [allProducts, facets] = await Promise.all([
+    fetchProducts(slug, sub, filters),
+    fetchProductFacets(slug, sub),
+  ]);
 
   const colVariant = cols === '1' ? '1' : '2'; // ✅ теперь по умолчанию '2'
 
@@ -127,7 +138,10 @@ export default async function SubcategoryPage({
 
           <div className="border-t pt-4 mt-4">
             <h4 className="text-md font-medium mb-2">Фільтри</h4>
-            <FilterBar />
+            <FilterBar
+              availableBrands={facets.brands}
+              priceBounds={{ min: facets.minPrice, max: facets.maxPrice }}
+            />
           </div>
         </aside>
 

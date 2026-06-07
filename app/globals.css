@@ -81,6 +81,33 @@ body {
     width: 100%;
     height: 100%;
   }
+
+  .price-range-thumb {
+    pointer-events: none;
+  }
+
+  .price-range-thumb::-webkit-slider-thumb {
+    pointer-events: auto;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #22c55e;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+    cursor: pointer;
+  }
+
+  .price-range-thumb::-moz-range-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #22c55e;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+    cursor: pointer;
+  }
 }
 
 @layer components {

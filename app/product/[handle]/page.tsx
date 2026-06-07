@@ -90,9 +90,10 @@ export default async function ProductPage({
             {/* Цена */}
             <div className="text-2xl font-semibold">
               Ціна: <span className="text-green-600">{product.price} ₴</span>
-              {product.oldPrice && (
+              {product.oldPrice && product.oldPrice > product.price && (
                 <div className="text-gray-400 line-through text-sm">
                   Стара ціна {product.oldPrice} ₴
+                  {product.discountPercent ? ` (−${product.discountPercent}%)` : ''}
                 </div>
               )}
             </div>

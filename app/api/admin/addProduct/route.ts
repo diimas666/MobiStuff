@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect'; // ✅
-import Product from '@/app/api/models/Product'; // ✅
+import dbConnect from '@/lib/dbConnect';
+import { checkAdminAuth } from '@/lib/adminAuth';
+import Product from '@/app/api/models/Product';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   // console.log('📥 BODY З АДМІНКИ:', body); // 🟢 ОБОВ'ЯЗКОВО
 
-  const adminPassword = process.env.ADMIN_SECRET;
-  const authHeader = req.headers.get('authorization');
-
-  if (authHeader !== `Bearer ${adminPassword}`) {
+  if (!checkAdminAuth(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

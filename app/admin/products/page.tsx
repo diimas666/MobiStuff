@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import AdminWrapper from '@/components/AdminWrapper';
+import { adminHeaders } from '@/lib/adminHeaders';
 import { toast } from 'react-toastify';
 import { catalogCategory } from '@/data/catalogCategory';
 
@@ -68,10 +69,7 @@ export default function AllProductsAdminPage() {
     try {
       const res = await fetch(`/api/admin/updateProduct`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET}`,
-        },
+        headers: adminHeaders(),
         body: JSON.stringify({ id, isTrending: !isTrending }),
       });
 
@@ -113,10 +111,7 @@ export default function AllProductsAdminPage() {
     try {
       const res = await fetch(`/api/admin/updateProduct`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET}`,
-        },
+        headers: adminHeaders(),
         body: JSON.stringify({ id, inStock: !inStock }),
       });
 
@@ -141,18 +136,14 @@ export default function AllProductsAdminPage() {
     try {
       const res = await fetch(`/api/admin/updateProduct`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET}`,
-        },
+        headers: adminHeaders(),
         body: JSON.stringify({ id, price }),
       });
 
       if (res.ok) {
+        const data = await res.json();
         setProducts((prev) =>
-          prev.map((p) =>
-            p._id === id ? { ...p, price, priceManuallyEdited: true } : p
-          )
+          prev.map((p) => (p._id === id ? { ...p, ...data.product } : p))
         );
         toast.success('Ціну оновлено (захищено від синхронізації)');
       } else {
@@ -164,16 +155,44 @@ export default function AllProductsAdminPage() {
     }
   };
 
+  const updateDiscount = async (id: string, discountPercent: number) => {
+    if (discountPercent < 0 || discountPercent >= 100) {
+      if (discountPercent !== 0) return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/updateProduct`, {
+        method: 'PATCH',
+        headers: adminHeaders(),
+        body: JSON.stringify({ id, discountPercent }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setProducts((prev) =>
+          prev.map((p) => (p._id === id ? { ...p, ...data.product } : p))
+        );
+        toast.success(
+          discountPercent > 0
+            ? `Знижку ${discountPercent}% застосовано`
+            : 'Знижку скасовано'
+        );
+      } else {
+        toast.error('Не вдалося оновити знижку');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Помилка оновлення знижки');
+    }
+  };
+
   const deleteProduct = async (id: string) => {
     if (!confirm('Ти впевнений?')) return;
 
     try {
       const res = await fetch(`/api/admin/deleteProduct`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET}`,
-        },
+        headers: adminHeaders(),
         body: JSON.stringify({ id }),
       });
 
@@ -266,6 +285,7 @@ export default function AllProductsAdminPage() {
                 <th className="p-2 border">Назва</th>
                 <th className="p-2 border">Категорія</th>
                 <th className="p-2 border">Ціна</th>
+                <th className="p-2 border">Знижка %</th>
                 <th className="p-2 border">Наявність</th>
                 <th className="p-2 border">Тренд</th>
                 <th className="p-2 border">Дія</th>
@@ -294,15 +314,41 @@ export default function AllProductsAdminPage() {
                   <td className="border p-2">
                     <input
                       type="number"
+                      key={`price-${p._id}-${p.price}`}
                       defaultValue={p.price}
                       className="w-20 border rounded px-1 py-0.5"
                       onBlur={(e) =>
                         updatePrice(p._id, parseFloat(e.target.value))
                       }
                     />
+                    {p.oldPrice && p.oldPrice > p.price && (
+                      <span className="block text-xs text-gray-400 line-through">
+                        {p.oldPrice} грн
+                      </span>
+                    )}
                     {p.priceManuallyEdited && (
                       <span className="block text-xs text-blue-600">ручна</span>
                     )}
+                  </td>
+                  <td className="border p-2">
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        min={0}
+                        max={99}
+                        key={`discount-${p._id}-${p.discountPercent ?? 0}`}
+                        defaultValue={p.discountPercent ?? ''}
+                        placeholder="0"
+                        className="w-14 border rounded px-1 py-0.5"
+                        onBlur={(e) =>
+                          updateDiscount(
+                            p._id,
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
+                      />
+                      <span className="text-xs text-gray-500">%</span>
+                    </div>
                   </td>
                   <td className="border p-2">
                     <button

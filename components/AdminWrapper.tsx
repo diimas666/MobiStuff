@@ -1,4 +1,3 @@
-// components/AdminWrapper.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,21 +10,50 @@ export default function AdminWrapper({
 }) {
   const [auth, setAuth] = useState(false);
   const [pass, setPass] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const [error, setError] = useState('');
 
-  // 🔐 Читання пароля з localStorage при завантаженні сторінки
+  const verifyPassword = async (password: string) => {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
+    return res.ok;
+  };
+
   useEffect(() => {
     const saved = localStorage.getItem('admin_access');
-    if (saved === process.env.NEXT_PUBLIC_ADMIN_SECRET) {
-      setAuth(true);
+    if (!saved) {
+      setChecking(false);
+      return;
     }
+
+    verifyPassword(saved)
+      .then((ok) => {
+        if (ok) setAuth(true);
+        else localStorage.removeItem('admin_access');
+      })
+      .finally(() => setChecking(false));
   }, []);
 
-  const handleLogin = () => {
-    if (pass === process.env.NEXT_PUBLIC_ADMIN_SECRET) {
-      setAuth(true);
-      localStorage.setItem('admin_access', pass);
-    } else {
-      alert('❌ Неправильний пароль');
+  const handleLogin = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const ok = await verifyPassword(pass);
+      if (ok) {
+        setAuth(true);
+        localStorage.setItem('admin_access', pass);
+      } else {
+        setError('Неправильний пароль');
+      }
+    } catch {
+      setError('Помилка зʼєднання з сервером');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,29 +63,40 @@ export default function AdminWrapper({
     setPass('');
   };
 
+  if (checking) {
+    return (
+      <div className="h-screen flex items-center justify-center text-gray-500">
+        Перевірка доступу...
+      </div>
+    );
+  }
+
   if (!auth) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center">
+      <div className="h-screen flex flex-col justify-center items-center px-4">
         <h1 className="text-xl font-bold mb-4">🔐 Вхід в адмінку</h1>
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleLogin();
           }}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center w-full max-w-xs"
         >
           <input
             type="password"
             placeholder="Введіть пароль"
-            className="border px-4 py-2 rounded"
+            className="border px-4 py-2 rounded w-full"
             value={pass}
             onChange={(e) => setPass(e.target.value)}
+            autoComplete="current-password"
           />
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <button
             type="submit"
-            className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            disabled={loading || !pass}
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 w-full"
           >
-            Увійти
+            {loading ? 'Вхід...' : 'Увійти'}
           </button>
         </form>
       </div>
@@ -67,7 +106,7 @@ export default function AdminWrapper({
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           <Link href="/admin" className="text-blue-600 hover:underline">
             ➕ Додати товар
           </Link>
