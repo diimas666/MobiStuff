@@ -1,89 +1,101 @@
-// app/returns/page.tsx
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import InfoPageLayout, { InfoCard, InfoStep } from '@/components/InfoPageLayout';
+import { CheckCircle2, Mail, PackageX, RefreshCw, Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Повернення | MobiStuff',
   description:
     'Політика повернення товарів у магазині MobiStuff. Ви можете повернути товар протягом 14 днів згідно із законодавством України.',
-  alternates: {
-    canonical: '/returns',
-  },
+  alternates: { canonical: '/returns' },
 };
 
 export default function ReturnsPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10 text-left">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Повернення товарів
-      </h1>
+    <InfoPageLayout
+      badge="Гарантія спокою"
+      title="Повернення без зайвих клопотів"
+      subtitle="Не підійшов товар? У вас є 14 днів, щоб повернути або обміняти його згідно із законодавством України."
+      ctaLabel="Переглянути каталог"
+      ctaHref="/"
+    >
+      <div className="grid sm:grid-cols-3 gap-4 mb-10">
+        <InfoCard icon={<Shield className="w-5 h-5" />} title="14 днів">
+          На повернення або обмін з моменту отримання замовлення
+        </InfoCard>
+        <InfoCard icon={<RefreshCw className="w-5 h-5" />} title="3–5 днів">
+          Повернення коштів після перевірки товару на рахунок
+        </InfoCard>
+        <InfoCard icon={<CheckCircle2 className="w-5 h-5" />} title="Просто">
+          Погоджуємо повернення заздалегідь — без сюрпризів
+        </InfoCard>
+      </div>
 
-      <p className="mb-6 text-gray-700 text-lg text-center">
-        Ми дбаємо про комфорт і впевненість кожного клієнта. Якщо товар вам не
-        підійшов — ви маєте право його повернути або обміняти.
-      </p>
-
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-4">📦 Умови повернення</h2>
-        <ul className="list-disc list-inside space-y-2 text-gray-800">
-          <li>
-            Повернення або обмін можливий протягом <strong>14 днів</strong> з
-            моменту отримання
+      <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm mb-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <PackageX className="w-5 h-5 text-green-500" />
+          Умови повернення
+        </h2>
+        <ul className="space-y-3 text-sm text-gray-700">
+          <li className="flex gap-2">
+            <span className="text-green-500 font-bold">✓</span>
+            Товар у <strong>оригінальній упаковці</strong>, без слідів використання
           </li>
-          <li>
-            Товар повинен бути:
-            <ul className="list-disc list-inside ml-4 space-y-1">
-              <li>в оригінальній упаковці</li>
-              <li>без слідів використання чи пошкоджень</li>
-              <li>у повній комплектації</li>
-            </ul>
+          <li className="flex gap-2">
+            <span className="text-green-500 font-bold">✓</span>
+            Повна <strong>комплектація</strong> збережена
           </li>
-          <li>
-            Повернення здійснюється службою <strong>Нова Пошта</strong> за
-            попереднім погодженням
+          <li className="flex gap-2">
+            <span className="text-green-500 font-bold">✓</span>
+            Наявність <strong>чека або підтвердження замовлення</strong>
           </li>
-          <li>
-            Перед поверненням обов’язково{' '}
-            <strong>зв’яжіться з нашою підтримкою</strong>
+          <li className="flex gap-2">
+            <span className="text-green-500 font-bold">✓</span>
+            Попереднє погодження з нашою підтримкою обов&apos;язкове
           </li>
         </ul>
       </section>
 
-      <section>
-        <h2 className="text-xl font-semibold mb-4">
-          📋 Як оформити повернення
+      <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm mb-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <Mail className="w-5 h-5 text-green-500" />
+          Як оформити повернення
         </h2>
-        <ol className="list-decimal list-inside space-y-2 text-gray-800">
-          <li>
-            Напишіть нам на email:{' '}
-            <a href="mailto:mobistuffinfo@gmail.com" className="underline">
+        <div className="space-y-6">
+          <InfoStep number={1} title="Напишіть нам">
+            Email:{' '}
+            <a href="mailto:mobistuffinfo@gmail.com" className="text-green-600 font-medium hover:underline">
               mobistuffinfo@gmail.com
             </a>
-          </li>
-          <li>
-            У листі вкажіть: номер замовлення, причину повернення, фото товару
-            (за потреби)
-          </li>
-          <li>Ми підтвердимо можливість повернення і надамо інструкцію</li>
-          <li>Відправте товар через Нову Пошту за вказаними даними</li>
-        </ol>
+            . Вкажіть номер замовлення та причину.
+          </InfoStep>
+          <InfoStep number={2} title="Отримайте підтвердження">
+            Ми перевіримо можливість повернення та надішлемо інструкцію з адресою відправки.
+          </InfoStep>
+          <InfoStep number={3} title="Відправте товар">
+            Надішліть через Нову Пошту за узгодженими реквізитами.
+          </InfoStep>
+          <InfoStep number={4} title="Отримайте кошти">
+            Після перевірки товару повернемо кошти протягом 3–5 банківських днів.
+          </InfoStep>
+        </div>
       </section>
 
-      <p className="mt-10 text-center text-gray-600">
-        Повернення коштів здійснюється протягом{' '}
-        <strong>3–5 банківських днів</strong> після перевірки товару.
-      </p>
-
-      <p className="mt-4 text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-gray-500">
         Детальніше — в{' '}
         <a
           href="https://zakon.rada.gov.ua/laws/show/1023-12"
           target="_blank"
           rel="noopener noreferrer"
-          className="underline"
+          className="text-green-600 hover:underline"
         >
           Законі України «Про захист прав споживачів»
         </a>
+        . Питання?{' '}
+        <Link href="/contacts" className="text-green-600 hover:underline">
+          Контакти
+        </Link>
       </p>
-    </main>
+    </InfoPageLayout>
   );
 }

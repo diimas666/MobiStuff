@@ -1,48 +1,63 @@
-// app/about/page.tsx
 import { Metadata } from 'next';
+import InfoPageLayout, { InfoCard, InfoHighlight } from '@/components/InfoPageLayout';
+import { Award, Headphones, ShieldCheck, Sparkles, Truck, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Про нас | MobiStuff',
   description:
     'Дізнайтесь більше про магазин MobiStuff — наші цінності, переваги та підхід до якості. Ми прагнемо забезпечити найкращий вибір аксесуарів для вашої техніки.',
-  alternates: {
-    canonical: '/about',
-  },
+  alternates: { canonical: '/about' },
 };
 
 export default function AboutPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10 text-center">
-      <h1 className="text-3xl font-bold mb-6">Про нас</h1>
+    <InfoPageLayout
+      badge="MobiStuff"
+      title="Аксесуари, яким можна довіряти"
+      subtitle="Український інтернет-магазин мобільних аксесуарів. Ми відбираємо лише перевірені бренди, тримаємо чесні ціни та доставляємо по всій Україні."
+    >
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-10">
+        <InfoHighlight value="5000+" label="товарів у каталозі" />
+        <InfoHighlight value="1–3 дні" label="доставка по Україні" />
+        <InfoHighlight value="14 днів" label="на повернення" />
+        <InfoHighlight value="24/7" label="онлайн-замовлення" />
+      </div>
 
-      <p className="mb-4 text-gray-700">
-        <strong>MobiStuff</strong> — це український інтернет-магазин аксесуарів
-        для смартфонів, планшетів, ноутбуків та інших ґаджетів. Ми ретельно
-        відбираємо кожен товар, співпрацюємо лише з надійними постачальниками, і
-        завжди орієнтуємось на ваш комфорт та зручність.
-      </p>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+        <InfoCard icon={<ShieldCheck className="w-5 h-5" />} title="Перевірена якість">
+          Кожен товар проходить відбір у надійних постачальників. Ми працюємо з офіційними
+          брендами: Borofone, Hoco, Baseus та іншими лідерами ринку.
+        </InfoCard>
+        <InfoCard icon={<Headphones className="w-5 h-5" />} title="Широкий асортимент">
+          Чохли, кабелі, навушники, павербанки, автотримачі, захисне скло — все для вашого
+          смартфона, планшета та ноутбука в одному місці.
+        </InfoCard>
+        <InfoCard icon={<Truck className="w-5 h-5" />} title="Швидка доставка">
+          Відправляємо замовлення щодня. Нова Пошта по всій Україні — на відділення або
+          кур&apos;єром до дверей.
+        </InfoCard>
+        <InfoCard icon={<Award className="w-5 h-5" />} title="Вигідні ціни">
+          Регулярні акції, знижки на бренди та безкоштовна доставка від 2500 грн. Якість без
+          переплат.
+        </InfoCard>
+        <InfoCard icon={<Users className="w-5 h-5" />} title="Підтримка клієнтів">
+          Допоможемо обрати аксесуар, відповімо на питання до та після покупки. Ваш комфорт —
+          наш пріоритет.
+        </InfoCard>
+        <InfoCard icon={<Sparkles className="w-5 h-5" />} title="Завжди в тренді">
+          Оновлюємо каталог щодня. Новинки, хіти продажів і актуальні рішення для ваших
+          гаджетів.
+        </InfoCard>
+      </div>
 
-      <p className="mb-4 text-gray-700">
-        Ми пропонуємо великий асортимент: від захисних чохлів і кабелів — до
-        бездротових навушників і зарядних станцій. Усі товари протестовані на
-        якість, щоб забезпечити довготривале використання.
-      </p>
-
-      <p className="mb-4 text-gray-700">
-        Наша команда щодня працює над тим, щоб ваш досвід покупок був простим,
-        швидким і приємним. Ми постійно оновлюємо асортимент і запускаємо нові
-        акції, щоб зробити покупки ще вигіднішими.
-      </p>
-
-      <p className="mb-4 text-gray-700">
-        <strong>Наша місія</strong> — зробити сучасні технології доступними
-        кожному. Ми віримо, що аксесуари — це не тільки про захист техніки, а й
-        про стиль, комфорт і індивідуальність.
-      </p>
-
-      <p className="text-gray-700">
-        Дякуємо, що ви з нами. З любов’ю — <strong>команда MobiStuff</strong> 💙
-      </p>
-    </main>
+      <section className="rounded-2xl bg-gray-900 text-white px-6 py-8 sm:px-10 sm:py-10">
+        <h2 className="text-xl font-bold mb-3">Наша місія</h2>
+        <p className="text-gray-300 leading-relaxed max-w-3xl">
+          Зробити сучасні технології доступними кожному. Ми віримо, що правильний аксесуар —
+          це не лише захист техніки, а й стиль, зручність і впевненість у щоденному житті.
+          Дякуємо, що обираєте <strong className="text-white">MobiStuff</strong>.
+        </p>
+      </section>
+    </InfoPageLayout>
   );
 }

@@ -1,64 +1,90 @@
-// app/delivery/page.tsx
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import InfoPageLayout, { InfoCard, InfoStep } from '@/components/InfoPageLayout';
+import { Banknote, CreditCard, Gift, MapPin, Package, Truck } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Доставка і оплата | MobiStuff',
   description:
-    'Дізнайтесь про доставку Новою Поштою, оплату онлайн або післяплатою, строки відправки та безкоштовну доставку від 1500 грн.',
-  alternates: {
-    canonical: '/delivery',
-  },
+    'Дізнайтесь про доставку Новою Поштою, оплату онлайн або післяплатою, строки відправки та безкоштовну доставку від 2500 грн.',
+  alternates: { canonical: '/delivery' },
 };
 
 export default function DeliveryPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10 text-left">
-      <h1 className="text-3xl font-bold mb-6 text-center">Доставка і оплата</h1>
+    <InfoPageLayout
+      badge="Доставка"
+      title="Швидко. Зручно. По всій Україні"
+      subtitle="Відправляємо щодня через Нову Пошту. Оплата карткою онлайн або при отриманні — обирайте зручний спосіб."
+      ctaLabel="Оформити замовлення"
+      ctaHref="/"
+    >
+      <div className="rounded-2xl bg-green-50 border border-green-100 px-6 py-5 mb-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <Gift className="w-8 h-8 text-green-600 shrink-0" />
+        <div>
+          <p className="font-semibold text-green-800 text-lg">Безкоштовна доставка від 2500 грн</p>
+          <p className="text-green-700 text-sm mt-1">
+            Нова Пошта та Укрпошта — на відділення по всій Україні
+          </p>
+        </div>
+      </div>
 
-      <p className="mb-6 text-gray-700 text-lg text-center">
-        Ми прагнемо зробити процес доставки максимально зручним для вас.
-        Ознайомтесь з умовами доставки та доступними способами оплати нижче:
-      </p>
+      <h2 className="text-xl font-bold text-gray-900 mb-4">Як ми доставляємо</h2>
+      <div className="grid sm:grid-cols-2 gap-4 mb-10">
+        <InfoCard icon={<Truck className="w-5 h-5" />} title="Нова Пошта">
+          <ul className="space-y-1.5 mt-1">
+            <li>• Термін: <strong>1–3 робочих дні</strong></li>
+            <li>• На відділення або кур&apos;єром</li>
+            <li>• Відстеження посилки онлайн</li>
+            <li>• Відправка щодня до <strong>17:00</strong></li>
+          </ul>
+        </InfoCard>
+        <InfoCard icon={<MapPin className="w-5 h-5" />} title="По всій Україні">
+          <ul className="space-y-1.5 mt-1">
+            <li>• Київ, Львів, Одеса, Харків та всі міста</li>
+            <li>• Села та селища — через відділення НП</li>
+            <li>• Зручний вибір відділення при оформленні</li>
+          </ul>
+        </InfoCard>
+      </div>
 
-      <section className="mb-10">
-        <h2 className="text-xl font-semibold mb-4">🚚 Доставка</h2>
-        <ul className="list-disc list-inside space-y-2 text-gray-800">
-          <li>
-            Доставка по всій Україні через <strong>Нову Пошту</strong>
-          </li>
-          <li>
-            Термін доставки: <strong>1–3 робочих дні</strong>
-          </li>
-          <li>
-            Відправка замовлень: <strong>щодня до 17:00</strong>
-          </li>
-          <li>
-            <strong>Безкоштовна доставка</strong> при замовленні від{' '}
-            <strong>2500 грн</strong>
-          </li>
-          <li>Можливість доставки на відділення або кур&apos;єром</li>
-        </ul>
+      <h2 className="text-xl font-bold text-gray-900 mb-4">Способи оплати</h2>
+      <div className="grid sm:grid-cols-2 gap-4 mb-10">
+        <InfoCard icon={<CreditCard className="w-5 h-5" />} title="Онлайн-оплата">
+          Visa / MasterCard через захищений платіжний сервіс. Швидко, безпечно, без зайвих кроків
+          при оформленні замовлення.
+        </InfoCard>
+        <InfoCard icon={<Banknote className="w-5 h-5" />} title="Оплата при отриманні">
+          Післяплата через Нову Пошту — платите лише тоді, коли отримуєте товар. Комісія згідно
+          тарифів перевізника.
+        </InfoCard>
+      </div>
+
+      <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm mb-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <Package className="w-5 h-5 text-green-500" />
+          Як проходить замовлення
+        </h2>
+        <div className="space-y-6">
+          <InfoStep number={1} title="Оформлення">
+            Додайте товари в кошик, вкажіть контакти та адресу доставки Новою Поштою.
+          </InfoStep>
+          <InfoStep number={2} title="Підтвердження">
+            Ми обробляємо замовлення та відправляємо протягом 1 робочого дня.
+          </InfoStep>
+          <InfoStep number={3} title="Отримання">
+            Ви отримуєте SMS від Нової Пошти та забираєте посилку у зручний час.
+          </InfoStep>
+        </div>
       </section>
 
-      <section>
-        <h2 className="text-xl font-semibold mb-4">💳 Оплата</h2>
-        <ul className="list-disc list-inside space-y-2 text-gray-800">
-          <li>
-            Онлайн-оплата карткою <strong>Visa / MasterCard</strong>
-          </li>
-          <li>
-            Оплата при отриманні (післяплата) —{' '}
-            <em>згідно тарифів Нової Пошти</em>
-          </li>
-          <li>Безпечні платежі через захищені сервіси</li>
-          <li>Всі ціни на сайті — у гривнях з ПДВ</li>
-        </ul>
-      </section>
-
-      <p className="mt-10 text-center text-gray-600">
-        Якщо у вас є питання щодо доставки чи оплати —{' '}
-        <strong>зв&apos;яжіться з нами</strong>, ми з радістю допоможемо!
+      <p className="text-center text-gray-600 text-sm">
+        Є питання?{' '}
+        <Link href="/contacts" className="text-green-600 font-medium hover:underline">
+          Зв&apos;яжіться з нами
+        </Link>{' '}
+        — відповімо протягом робочого дня.
       </p>
-    </main>
+    </InfoPageLayout>
   );
 }
