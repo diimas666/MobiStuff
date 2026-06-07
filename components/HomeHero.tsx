@@ -39,7 +39,7 @@ export default function HomeHero() {
           <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 px-3 py-4 text-center">
             <Gift className="w-5 h-5 text-green-400 mx-auto mb-2" />
             <p className="text-xs sm:text-sm font-semibold">від {FREE_DELIVERY_FROM} ₴</p>
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">безкоштовно</p>
+            <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">доставка безкоштовно</p>
           </div>
           <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 px-3 py-4 text-center">
             <CreditCard className="w-5 h-5 text-green-400 mx-auto mb-2" />
