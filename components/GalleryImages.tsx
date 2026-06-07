@@ -16,7 +16,7 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
   return (
     <div className="w-full">
       {/* Главное изображение */}
-      <div className="relative w-full rounded overflow-hidden mb-4">
+      <div className="relative w-full rounded-xl overflow-hidden mb-4 bg-gray-50">
         <ProductImage
           src={images[activeIndex]}
           alt={`${title} зображення ${activeIndex + 1}`}
@@ -29,27 +29,34 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
       </div>
 
       {/* Превьюшки */}
-      <div className="flex justify-between md:justify-normal md:gap-2 overflow-x-auto scrollbar-thin ">
-        {images.map((image, index) => (
-          <button
-            key={index}
-            onClick={() => setActiveIndex(index)}
-            className={`flex-shrink-0 border rounded overflow-hidden w-24 h-24 ${
-              activeIndex === index ? 'ring-2 ring-black' : ''
-            }`}
-          >
-            {''}
-            <ProductImage
-              src={image}
-              alt={`${title} превью ${index + 1}`}
-              width={96}
-              height={96}
-              sizes="96px"
-              loading="lazy"
-              className="object-cover w-full h-full"
-            />
-          </button>
-        ))}
+      <div className="flex gap-2 overflow-x-auto scrollbar-thin py-1">
+        {images.map((image, index) => {
+          const isActive = activeIndex === index;
+          return (
+            <button
+              key={index}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              aria-label={`Показати зображення ${index + 1}`}
+              aria-pressed={isActive}
+              className={`flex-shrink-0 rounded-lg overflow-hidden w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 transition-all duration-200 box-border ${
+                isActive
+                  ? 'border-2 border-green-500 opacity-100'
+                  : 'border-2 border-transparent opacity-60 hover:opacity-90'
+              }`}
+            >
+              <ProductImage
+                src={image}
+                alt={`${title} превью ${index + 1}`}
+                width={96}
+                height={96}
+                sizes="96px"
+                loading="lazy"
+                className="object-cover w-full h-full"
+              />
+            </button>
+          );
+        })}
       </div>
     </div>
   );
