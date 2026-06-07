@@ -66,9 +66,9 @@ async function runPool(items, worker, concurrency) {
 
 function buildProductDoc(listing, details, client) {
   const breadcrumbs = details?.category?.breadcrumbs || [];
-  const { category, categorySlug, subcategorySlug } = mapCategories(breadcrumbs);
   const slug = details?.translation?.slug || listing.translation?.slug;
   const title = details?.translation?.name || listing.translation?.name;
+  const { category, categorySlug, subcategorySlug } = mapCategories(breadcrumbs, title);
   const description = details?.translation?.description || '';
   const sourcePrice =
     listing.productVariantInfo?.price?.minValue ||

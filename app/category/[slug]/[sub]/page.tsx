@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 // import ProductCard from '@/components/ProductCard';
 import ProductList from '@/components/ProductList';
 import FilterBar from '@/components/FilterBar';
-
+import CategorySeoArticle from '@/components/CategorySeoArticle';
 import CategoryList from '@/components/CategoryList';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -186,6 +186,15 @@ export default async function SubcategoryPage({
             </Link>
           )}
         </div>
+      )}
+
+      {currentPage === 1 && (
+        <CategorySeoArticle
+          categorySlug={slug}
+          subcategorySlug={sub}
+          categoryTitle={category.title}
+          subcategoryTitle={subcategory.title}
+        />
       )}
     </div>
   );

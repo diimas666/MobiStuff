@@ -152,6 +152,7 @@ export default function FilterBar({
             max={bounds.max}
             minValue={minPrice}
             maxValue={maxPrice}
+            variant={variant}
             onChange={(min, max) => {
               setMinPrice(min);
               setMaxPrice(max);

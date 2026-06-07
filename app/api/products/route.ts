@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
+import { filterCatalogProducts } from '@/lib/productCategoryRules';
 
 function escapeRegex(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -60,8 +61,8 @@ export async function GET(req: Request) {
         sortOption = { title: 1 };
     }
 
-    const products = await Product.find(filter).sort(sortOption);
-    return NextResponse.json(products);
+    const products = await Product.find(filter).sort(sortOption).lean();
+    return NextResponse.json(filterCatalogProducts(products, category));
   } catch (error) {
     console.error('❌ Ошибка при получении товаров:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

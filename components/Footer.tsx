@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Container from '@/components/Container';
-import { Facebook, Instagram, Mail, Truck, CreditCard } from 'lucide-react';
+import { Mail, Truck, CreditCard } from 'lucide-react';
+// import { Facebook, Instagram } from 'lucide-react';
 import { storePolicies } from '@/data/storePolicies';
 
 const navLinks = [
@@ -74,6 +75,7 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* TODO: увімкнути, коли будуть актуальні соцмережі
           <div className="lg:col-span-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-white mb-4">
               <span className="w-1 h-5 rounded-full bg-green-400" />
@@ -103,6 +105,7 @@ export default function Footer() {
               </Link>
             </div>
           </div>
+          */}
         </div>
 
         <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">

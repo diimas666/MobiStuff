@@ -11,7 +11,32 @@ const CABLE_KEYWORDS = [
   'magsafe',
 ];
 
-export function mapCategories(breadcrumbs = []) {
+function categoryFromTitle(title = '') {
+  const haystack = title.toLowerCase();
+
+  if (/\bколонк/.test(haystack)) {
+    return {
+      category: 'Аудіо та відео',
+      categorySlug: 'category-audio-i-video',
+      subcategorySlug: 'category-portativnie-kolonki',
+    };
+  }
+
+  if (/\b(навушник|гарнітур|earbud|headphone)\b/.test(haystack)) {
+    return {
+      category: 'Навушники',
+      categorySlug: 'category-naushniki',
+      subcategorySlug: 'category-naushniki-dlya-telefona',
+    };
+  }
+
+  return null;
+}
+
+export function mapCategories(breadcrumbs = [], title = '') {
+  const titleOverride = categoryFromTitle(title);
+  if (titleOverride) return titleOverride;
+
   if (!breadcrumbs.length) {
     return {
       category: 'Корисні аксесуари',

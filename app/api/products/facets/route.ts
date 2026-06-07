@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
+import { filterCatalogProducts } from '@/lib/productCategoryRules';
 
 export async function GET(req: Request) {
   try {
@@ -13,12 +14,15 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'category and subcategory required' }, { status: 400 });
     }
 
-    const products = await Product.find({
-      categorySlug: category,
-      subcategorySlug: subcategory,
-    })
-      .select('brand price')
-      .lean();
+    const products = filterCatalogProducts(
+      await Product.find({
+        categorySlug: category,
+        subcategorySlug: subcategory,
+      })
+        .select('brand price title')
+        .lean(),
+      category
+    );
 
     const brands = [
       ...new Set(
