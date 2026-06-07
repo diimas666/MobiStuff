@@ -4,17 +4,17 @@ import path from 'path';
 const MMA_GRAPHQL = 'https://api.mma.ua/graphql';
 
 const ICON_BY_SLUG = {
-  'category-chehli': 'Smartphone',
-  'category-zashtita-ekrana': 'Shield',
-  'category-akkumulyatori-i-powerbank': 'BatteryCharging',
-  'category-avtomobilynaya-tematika': 'Car',
+  'category-chehli': 'TabletSmartphone',
+  'category-zashtita-ekrana': 'ShieldCheck',
+  'category-akkumulyatori-i-powerbank': 'BatteryFull',
+  'category-avtomobilynaya-tematika': 'CarFront',
   'category-gadzheti': 'Watch',
-  'category-zaryadki-i-kabeli': 'Plug',
-  'category-kompyyuternaya-periferiya': 'MonitorSmartphone',
-  'category-kompyyuternaya-mebely': 'MonitorSmartphone',
-  'category-naushniki': 'Headphones',
-  'category-audio-i-video': 'Volume2',
-  'category-poleznie-aksessuari': 'Puzzle',
+  'category-zaryadki-i-kabeli': 'Cable',
+  'category-kompyyuternaya-periferiya': 'Keyboard',
+  'category-kompyyuternaya-mebely': 'Armchair',
+  'category-naushniki': 'Headset',
+  'category-audio-i-video': 'Speaker',
+  'category-poleznie-aksessuari': 'Wrench',
 };
 
 function collectSubs(children, acc = []) {
@@ -61,12 +61,12 @@ function escape(str) {
 }
 
 function buildFile(roots) {
-  const imports = new Set(['Car', 'BatteryCharging', 'Volume2', 'Watch', 'Plug', 'MonitorSmartphone', 'Headphones', 'Smartphone', 'Puzzle', 'Shield']);
+  const imports = new Set(['Wrench']);
 
   const items = roots.map((root) => {
     const title = root.translation.name;
     const slug = root.slug;
-    const icon = ICON_BY_SLUG[slug] || 'Puzzle';
+    const icon = ICON_BY_SLUG[slug] || 'Wrench';
     imports.add(icon);
     const subs = collectSubs(root.children);
 

@@ -79,7 +79,7 @@ export default function CategoryList({ onClose, variant = 'light' }: Props) {
               onClick={() => handleClick(category.title)}
             >
               <div className="flex gap-3 items-center min-w-0">
-                <category.icon className={iconClass} />
+                <category.icon className={iconClass} strokeWidth={2} aria-hidden />
                 <h4 className={titleClass}>{category.title}</h4>
               </div>
               {isMobile ? (

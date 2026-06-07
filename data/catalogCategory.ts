@@ -1,22 +1,23 @@
 // Автогенерация из MMA — npm run generate-mma-catalog
 import {
-  BatteryCharging,
-  Car,
-  Headphones,
-  MonitorSmartphone,
-  Plug,
-  Puzzle,
-  Shield,
-  Smartphone,
-  Volume2,
+  Armchair,
+  BatteryFull,
+  Cable,
+  CarFront,
+  Headset,
+  Keyboard,
+  ShieldCheck,
+  Speaker,
+  TabletSmartphone,
   Watch,
+  Wrench,
 } from 'lucide-react';
 
 export const catalogCategory = [
   {
     title: 'Чохли',
     slug: 'category-chehli',
-    icon: Smartphone,
+    icon: TabletSmartphone,
     seoTitle: 'Купити Чохли | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Чохли». Доставка по Україні.',
     subcategories: [
@@ -151,7 +152,7 @@ export const catalogCategory = [
   {
     title: 'Захист екрану',
     slug: 'category-zashtita-ekrana',
-    icon: Shield,
+    icon: ShieldCheck,
     seoTitle: 'Купити Захист екрану | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Захист екрану». Доставка по Україні.',
     subcategories: [
@@ -184,7 +185,7 @@ export const catalogCategory = [
   {
     title: 'Акумулятори та powerbank',
     slug: 'category-akkumulyatori-i-powerbank',
-    icon: BatteryCharging,
+    icon: BatteryFull,
     seoTitle: 'Купити Акумулятори та powerbank | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Акумулятори та powerbank». Доставка по Україні.',
     subcategories: [
@@ -247,7 +248,7 @@ export const catalogCategory = [
   {
     title: 'Автомобiльна тематика',
     slug: 'category-avtomobilynaya-tematika',
-    icon: Car,
+    icon: CarFront,
     seoTitle: 'Купити Автомобiльна тематика | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Автомобiльна тематика». Доставка по Україні.',
     subcategories: [
@@ -343,7 +344,7 @@ export const catalogCategory = [
   {
     title: 'Зарядки та кабелі',
     slug: 'category-zaryadki-i-kabeli',
-    icon: Plug,
+    icon: Cable,
     seoTitle: 'Купити Зарядки та кабелі | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Зарядки та кабелі». Доставка по Україні.',
     subcategories: [
@@ -454,7 +455,7 @@ export const catalogCategory = [
   {
     title: 'Комп\'ютерна периферія',
     slug: 'category-kompyyuternaya-periferiya',
-    icon: MonitorSmartphone,
+    icon: Keyboard,
     seoTitle: 'Купити Комп\'ютерна периферія | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Комп\'ютерна периферія». Доставка по Україні.',
     subcategories: [
@@ -529,7 +530,7 @@ export const catalogCategory = [
   {
     title: 'Комп\'ютерні меблі',
     slug: 'category-kompyyuternaya-mebely',
-    icon: MonitorSmartphone,
+    icon: Armchair,
     seoTitle: 'Купити Комп\'ютерні меблі | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Комп\'ютерні меблі». Доставка по Україні.',
     subcategories: [
@@ -550,7 +551,7 @@ export const catalogCategory = [
   {
     title: 'Навушники',
     slug: 'category-naushniki',
-    icon: Headphones,
+    icon: Headset,
     seoTitle: 'Купити Навушники | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Навушники». Доставка по Україні.',
     subcategories: [
@@ -589,7 +590,7 @@ export const catalogCategory = [
   {
     title: 'Аудіо та відео',
     slug: 'category-audio-i-video',
-    icon: Volume2,
+    icon: Speaker,
     seoTitle: 'Купити Аудіо та відео | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Аудіо та відео». Доставка по Україні.',
     subcategories: [
@@ -628,7 +629,7 @@ export const catalogCategory = [
   {
     title: 'Корисні аксесуари',
     slug: 'category-poleznie-aksessuari',
-    icon: Puzzle,
+    icon: Wrench,
     seoTitle: 'Купити Корисні аксесуари | MobiStuff',
     seoDescription: 'Широкий вибір товарів у категорії «Корисні аксесуари». Доставка по Україні.',
     subcategories: [
