@@ -9,6 +9,7 @@ export interface Product {
   oldPrice?: number; // Старая цена до скидки
   discountPercent?: number; // Скидка в %
   inStock?: boolean; // В наличии или нет
+  lowStock?: boolean; // Закінчується
   isNew?: boolean; // Новый товар
   isFeatured?: boolean; // Показывать на главной
   isTrending?: boolean; // Трендовый товар

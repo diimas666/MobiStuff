@@ -108,6 +108,10 @@ export default async function ProductPage({
                 <span className="px-2.5 py-0.5 text-xs font-semibold bg-gray-400 text-white rounded-full">
                   Немає в наявності
                 </span>
+              ) : product.lowStock ? (
+                <span className="px-2.5 py-0.5 text-xs font-semibold bg-amber-100 text-amber-800 rounded-full">
+                  Закінчується
+                </span>
               ) : (
                 <span className="px-2.5 py-0.5 text-xs font-semibold bg-green-100 text-green-700 rounded-full">
                   В наявності

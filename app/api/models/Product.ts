@@ -10,6 +10,7 @@ const ProductSchema = new mongoose.Schema(
     oldPrice: Number,
     discountPercent: Number,
     inStock: { type: Boolean, default: true },
+    lowStock: { type: Boolean, default: false },
     isNew: Boolean,
     isFeatured: Boolean,
     handle: { type: String, required: true, unique: true },

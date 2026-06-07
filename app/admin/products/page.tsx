@@ -107,17 +107,35 @@ export default function AllProductsAdminPage() {
     fetchProducts();
   }, []);
 
-  const toggleInStock = async (id: string, inStock: boolean) => {
+  const getStockStatus = (p: { inStock?: boolean; lowStock?: boolean }) => {
+    if (p.inStock === false) return 'out' as const;
+    if (p.lowStock) return 'low' as const;
+    return 'in' as const;
+  };
+
+  const cycleStockStatus = async (product: {
+    _id: string;
+    inStock?: boolean;
+    lowStock?: boolean;
+  }) => {
+    const current = getStockStatus(product);
+    const next =
+      current === 'in'
+        ? { inStock: true, lowStock: true }
+        : current === 'low'
+          ? { inStock: false, lowStock: false }
+          : { inStock: true, lowStock: false };
+
     try {
       const res = await fetch(`/api/admin/updateProduct`, {
         method: 'PATCH',
         headers: adminHeaders(),
-        body: JSON.stringify({ id, inStock: !inStock }),
+        body: JSON.stringify({ id: product._id, ...next }),
       });
 
       if (res.ok) {
         setProducts((prev) =>
-          prev.map((p) => (p._id === id ? { ...p, inStock: !inStock } : p))
+          prev.map((p) => (p._id === product._id ? { ...p, ...next } : p))
         );
         toast.success('Наявність оновлено');
       } else {
@@ -125,7 +143,6 @@ export default function AllProductsAdminPage() {
       }
     } catch (err) {
       console.error(err);
-
       toast.error('Помилка оновлення');
     }
   };
@@ -351,14 +368,28 @@ export default function AllProductsAdminPage() {
                     </div>
                   </td>
                   <td className="border p-2">
-                    <button
-                      onClick={() => toggleInStock(p._id, p.inStock)}
-                      className={`px-2 py-1 text-white rounded ${
-                        p.inStock ? 'bg-green-500' : 'bg-gray-400'
-                      }`}
-                    >
-                      {p.inStock ? 'В наявності' : 'Немає'}
-                    </button>
+                    {(() => {
+                      const status = getStockStatus(p);
+                      return (
+                        <button
+                          onClick={() => cycleStockStatus(p)}
+                          className={`px-2 py-1 text-white rounded text-xs whitespace-nowrap ${
+                            status === 'in'
+                              ? 'bg-green-500'
+                              : status === 'low'
+                                ? 'bg-amber-500'
+                                : 'bg-gray-400'
+                          }`}
+                          title="Клік: В наявності → Закінчується → Немає"
+                        >
+                          {status === 'in'
+                            ? 'В наявності'
+                            : status === 'low'
+                              ? 'Закінчується'
+                              : 'Немає'}
+                        </button>
+                      );
+                    })()}
                   </td>
                   <td className="border p-2">
                     <button
