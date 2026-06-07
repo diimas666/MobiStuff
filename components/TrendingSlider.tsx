@@ -1,7 +1,9 @@
 'use client';
+
 import ProductImage from '@/components/ProductImage';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
+import Slider from 'react-slick';
 import { Product } from '@/interface/product';
 import { stripHtml } from '@/lib/htmlUtils';
 
@@ -10,78 +12,90 @@ interface TrendingSliderProps {
 }
 
 export default function TrendingSlider({ products }: TrendingSliderProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
+  const dragStart = useRef<number | null>(null);
+  const wasDragged = useRef(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
-    }, 7000);
+  if (!products || products.length === 0) return null;
 
-    return () => clearInterval(interval);
-  }, [products.length]);
-  if (!products || products.length === 0) return null; // ⬅️ перемести СЮДА
-  const next = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
+  const onDragStart = (clientX: number) => {
+    dragStart.current = clientX;
+    wasDragged.current = false;
   };
 
-  const prev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? products.length - 1 : prevIndex - 1
-    );
+  const onDragMove = (clientX: number) => {
+    if (dragStart.current !== null && Math.abs(clientX - dragStart.current) > 8) {
+      wasDragged.current = true;
+    }
   };
 
-  const currentProduct = products[currentIndex];
+  const onProductClick = (handle: string) => {
+    if (wasDragged.current) return;
+    router.push(`/product/${handle}`);
+  };
+
+  const settings = {
+    dots: true,
+    arrows: false,
+    infinite: products.length > 1,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: products.length > 1,
+    autoplaySpeed: 5000,
+    pauseOnHover: true,
+    swipe: true,
+    swipeToSlide: true,
+    touchMove: true,
+    draggable: true,
+    touchThreshold: 8,
+  };
 
   return (
-    <div className="relative w-full h-full min-h-[260px] sm:min-h-[300px] overflow-hidden rounded-xl shadow-xl">
-      <Link
-        href={`/product/${currentProduct.handle}`}
-        className="block w-full h-full"
-      >
-        <div className="relative aspect-[1/1] w-full h-full">
-          <ProductImage
-            src={currentProduct.image}
-            alt={currentProduct.title}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-            className="object-cover w-full h-full rounded-xl transition-all duration-900 ease-in-out"
-            priority
-          />
-        </div>
+    <Slider {...settings} className="trending-slider h-full">
+      {products.map((product) => (
+        <div key={product.id || product._id} className="outline-none h-full">
+          <div
+            role="link"
+            tabIndex={0}
+            onClick={() => onProductClick(product.handle)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onProductClick(product.handle);
+              }
+            }}
+            onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
+            onTouchMove={(e) => onDragMove(e.touches[0].clientX)}
+            onMouseDown={(e) => onDragStart(e.clientX)}
+            onMouseMove={(e) => onDragMove(e.clientX)}
+            className="block relative rounded-xl overflow-hidden shadow-md h-full cursor-pointer group"
+          >
+            <ProductImage
+              src={product.image}
+              alt={product.title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              priority
+            />
 
-        <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white p-3 sm:p-4">
-          <h3 className="text-base sm:text-lg font-semibold mb-1 line-clamp-2">
-            {currentProduct.title}
-          </h3>
-          <p className="text-sm text-gray-200 line-clamp-1 sm:line-clamp-2 mb-2">
-            {stripHtml(currentProduct.description || '')}
-          </p>
-          <div className="flex justify-between items-center">
-            <span className="text-xl font-bold text-green-500">
-              {currentProduct.price} грн
-            </span>
-            <span className="bg-gray-400 text-black text-xs px-3 py-1 rounded shadow-amber-300 hover:bg-yellow-500">
-              Купити зараз
-            </span>
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent px-4 pb-8 pt-10 sm:pb-10">
+              <h3 className="text-sm sm:text-base font-semibold text-white line-clamp-2 mb-1">
+                {product.title}
+              </h3>
+              {product.description && (
+                <p className="text-xs sm:text-sm text-gray-200 line-clamp-2 mb-2">
+                  {stripHtml(product.description)}
+                </p>
+              )}
+              <span className="text-lg sm:text-xl font-bold text-green-400">
+                {product.price} грн
+              </span>
+            </div>
           </div>
         </div>
-      </Link>
-
-      {/* Стрелки */}
-      <button
-        type="button"
-        onClick={prev}
-        className="absolute top-1/2 left-1 sm:left-2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 sm:p-2 text-sm sm:text-base shadow transition"
-      >
-        ❮
-      </button>
-      <button
-        type="button"
-        onClick={next}
-        className="absolute top-1/2 right-1 sm:right-2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-1.5 sm:p-2 text-sm sm:text-base shadow transition"
-      >
-        ❯
-      </button>
-    </div>
+      ))}
+    </Slider>
   );
 }

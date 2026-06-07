@@ -23,7 +23,7 @@ interface OfferSectionProps {
   products: Product[]; // Список товаров, которые показываются в слайдере
   categorySlug?: string | null;
   subcategorySlug?: string | null;
-  // Слаг категории — нужен для перехода по кнопке "Показати більше"
+  compact?: boolean;
 }
 
 // Основной компонент
@@ -32,6 +32,7 @@ export default function OffersSection({
   products,
   categorySlug,
   subcategorySlug,
+  compact = false,
 }: OfferSectionProps) {
   // Состояние количества карточек, отображаемых на мобильных
   const [mobileSlidesToShow, setMobileSlideToShow] = useState(1);
@@ -50,7 +51,7 @@ export default function OffersSection({
     <section className="section-bottom">
       {/* Заголовок и кнопка переключения карточек (только на мобильных) */}
       <div className="flex justify-between items-start">
-        <h3 className="text-xl font-semibold mb-5">
+        <h3 className={`font-semibold mb-5 ${compact ? 'text-lg' : 'text-xl'}`}>
           {title}{' '}
           {/* <span className="text-gray-500 text-base">({products.length})</span> */}
         </h3>
@@ -69,8 +70,9 @@ export default function OffersSection({
       <div className="w-full overflow-hidden pb-6 mb-4">
         <OffersSlider
           products={products}
-          mobileSlidesToShow={mobileSlidesToShow} // передаём количество карточек
-          slidesToScroll={slidesToScroll} // и сколько скроллить
+          mobileSlidesToShow={mobileSlidesToShow}
+          slidesToScroll={slidesToScroll}
+          compact={compact}
         />
       </div>
 

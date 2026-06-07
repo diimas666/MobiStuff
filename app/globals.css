@@ -31,6 +31,29 @@ body {
   .slick-dots li:nth-child(n + 6) {
     display: none !important;
   }
+
+  .trending-slider,
+  .trending-slider .slick-list,
+  .trending-slider .slick-track,
+  .trending-slider .slick-slide,
+  .trending-slider .slick-slide > div {
+    height: 100%;
+  }
+
+  .trending-slider .slick-dots {
+    bottom: 6px;
+  }
+
+  .trending-slider .slick-dots li button:before {
+    color: #fff;
+    opacity: 0.45;
+    font-size: 8px;
+  }
+
+  .trending-slider .slick-dots li.slick-active button:before {
+    color: #4ade80;
+    opacity: 1;
+  }
 }
 
 @layer components {

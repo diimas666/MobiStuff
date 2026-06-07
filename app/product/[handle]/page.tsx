@@ -4,7 +4,9 @@ import GalleryImages from '@/components/GalleryImages';
 import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
 import VariantSection from '@/components/VariantSection';
+import OffersSection from '@/components/OffersSection.client';
 import { stripHtml } from '@/lib/htmlUtils';
+import { getRelatedProducts } from '@/lib/getRelatedProducts';
 
 export async function generateMetadata({
   params: paramsPromise,
@@ -46,6 +48,11 @@ export default async function ProductPage({
   const subcategory = category?.subcategories.find(
     (sub) => sub.slug === product.subcategorySlug
   );
+
+  const relatedProducts = product.categorySlug
+    ? await getRelatedProducts(product.categorySlug, product.handle, 20)
+    : [];
+
   return (
     <>
       {/* хлеб крошки  */}
@@ -103,7 +110,18 @@ export default async function ProductPage({
         </div>
         {/* конец  */}
       </div>
-      {/* <section className="border px-5">SLIDER</section> */}
+
+      {relatedProducts.length > 0 && category && (
+        <section className="mt-10 pb-8">
+          <OffersSection
+            title={`Також вас можуть зацікавити — ${category.title}`}
+            products={relatedProducts}
+            categorySlug={product.categorySlug}
+            subcategorySlug={product.subcategorySlug}
+            compact
+          />
+        </section>
+      )}
     </>
   );
 }

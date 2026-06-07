@@ -144,11 +144,11 @@ export default async function GeneralPage() {
           <div className="basis-1/2 flex-1 flex flex-col min-w-0 max-[890px]:basis-full">
             <CategoryGrid title="Популярні категорії" items={popularItems} />
           </div>
-          <div className="basis-1/2 flex-1 flex flex-col min-w-0 max-[890px]:basis-full">
+          <div className="basis-1/2 flex-1 flex flex-col h-full min-w-0 max-[890px]:basis-full">
             <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 shrink-0">
               Трендові товари
             </h3>
-            <div className="flex-1 min-h-[300px] max-[890px]:flex-none max-[890px]:h-[280px]">
+            <div className="flex-1 min-h-[300px] max-[890px]:min-h-[200px]">
               <TrendingSlider products={trending} />
             </div>
           </div>
