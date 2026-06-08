@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ProductImage from '@/components/ProductImage';
+import { trackSearch } from '@/lib/analytics';
 interface SearchBarProps {
   setIsSearchOpen: (open: boolean) => void;
 }
@@ -62,6 +63,7 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
   }, [search]);
 
   const handleSelect = (handle: string) => {
+    trackSearch(search);
     setSearch('');
     setShowDropdown(false);
     setIsSearchOpen(false);

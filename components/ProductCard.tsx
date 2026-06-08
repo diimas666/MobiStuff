@@ -7,6 +7,7 @@ import { Product } from "@/interface/product";
 import { useCart } from "@/context/CartContext";
 import { useFavorites } from "@/context/FavoritesContext";
 import { stripHtml } from "@/lib/htmlUtils";
+import { trackAddToWishlist } from "@/lib/analytics";
 
 interface ProductCardProps {
   product: Product;
@@ -106,7 +107,10 @@ export default function ProductCard({ product, priority = false, compact = false
         <div className={`flex items-center shrink-0 ${compact ? "gap-1" : "gap-2"}`}>
           <button
             type="button"
-            onClick={() => toggleFavorite(productId)}
+            onClick={() => {
+              if (!isFavorite) trackAddToWishlist(product);
+              toggleFavorite(productId);
+            }}
             className={`button-block-card text-gray-800 hover:bg-green-500 hover:text-white ${
               compact ? "!p-1.5" : ""
             } ${isFavorite ? "bg-green-500 text-white" : ""}`}

@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { CARD_ONLY_FROM, storePolicies } from '@/data/storePolicies';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
+import { trackBeginCheckout } from '@/lib/analytics';
 
 const inputClass =
   'w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/40 focus:border-green-500/50 transition';
@@ -22,6 +23,7 @@ export default function CheckoutPage() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isLoading, setIsLoading] = useState(false);
   const orderCompletedRef = useRef(false);
+  const checkoutTrackedRef = useRef(false);
 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -48,6 +50,12 @@ export default function CheckoutPage() {
       setPaymentMethod('card');
     }
   }, [cardOnlyRequired]);
+
+  useEffect(() => {
+    if (checkoutTrackedRef.current || cart.length === 0) return;
+    checkoutTrackedRef.current = true;
+    trackBeginCheckout(cart);
+  }, [cart]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

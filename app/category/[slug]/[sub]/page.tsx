@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Grid, LayoutList } from 'lucide-react';
 // фетч
 import { fetchProducts, fetchProductFacets } from '@/lib/api';
+import EcommerceTracker from '@/components/EcommerceTracker';
 const ITEMS_PER_PAGE = 20;
 
 export async function generateMetadata({
@@ -98,6 +99,12 @@ export default async function SubcategoryPage({
 
   return (
     <div>
+      <EcommerceTracker
+        event="view_item_list"
+        products={paginatedProducts}
+        listName={subcategory.title}
+        listId={`${slug}/${sub}`}
+      />
       <CategoryPageHeader
         categoryTitle={category.title}
         subcategoryTitle={subcategory.title}

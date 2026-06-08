@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
+import { trackPurchase } from '@/lib/analytics';
+import { CartItem } from '@/context/CartContext';
 
 const REDIRECT_SECONDS = 5;
 
@@ -13,10 +15,15 @@ export default function ThankYouPage() {
     total?: number;
     city?: string;
     warehouse?: string;
+    phone?: string;
+    paymentMethod?: string;
+    createdAt?: string;
+    items?: CartItem[];
     [key: string]: unknown;
   } | null>(null);
   const [isSaving, setIsSaving] = useState(true);
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
+  const purchaseTrackedRef = useRef(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('lastOrder');
@@ -46,6 +53,18 @@ export default function ThankYouPage() {
       router.replace('/');
     }
   }, [router]);
+
+  useEffect(() => {
+    if (!order || purchaseTrackedRef.current || typeof order.total !== 'number') return;
+    purchaseTrackedRef.current = true;
+    trackPurchase({
+      createdAt: order.createdAt,
+      phone: order.phone,
+      total: order.total,
+      paymentMethod: order.paymentMethod,
+      items: order.items,
+    });
+  }, [order]);
 
   useEffect(() => {
     if (isSaving || !order) return;

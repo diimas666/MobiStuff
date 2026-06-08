@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -12,6 +13,7 @@ import Footer from '@/components/Footer';
 import Container from '@/components/Container';
 import ToastProvider from '@/components/ToastProvider';
 import NavigationProgress from '@/components/NavigationProgress';
+import AnalyticsPageView from '@/components/AnalyticsPageView';
 
 const roboto = Roboto({
   subsets: ['latin', 'cyrillic'],
@@ -37,6 +39,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <html lang="uk" suppressHydrationWarning>
       <body
@@ -48,6 +52,7 @@ export default function RootLayout({
               <Header />
               <Suspense fallback={null}>
                 <NavigationProgress />
+                <AnalyticsPageView />
               </Suspense>
               <div className="mt-[80px] flex-1">
                 <Container>{children}</Container>
@@ -58,6 +63,7 @@ export default function RootLayout({
         </FavoritesProvider>
         <ToastProvider />
       </body>
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }

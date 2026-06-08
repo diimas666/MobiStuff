@@ -2,6 +2,7 @@
 'use client';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { Product } from '@/interface/product';
+import { trackAddToCart, trackRemoveFromCart } from '@/lib/analytics';
 
 export interface CartItem extends Product {
   quantity: number;
@@ -53,6 +54,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (existing) {
         console.log('🔁 Увеличиваем количество:', product.title);
+        trackAddToCart(product, 1);
         return prev.map((item) =>
           item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
@@ -66,12 +68,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         quantity: 1,
       };
 
+      trackAddToCart(newItem, 1);
       return [...prev, newItem];
     });
   };
 
   const removeFromCart = (id: string) => {
-    setCart((prev) => prev.filter((item) => item._id !== id));
+    setCart((prev) => {
+      const item = prev.find((entry) => entry._id === id);
+      if (item) trackRemoveFromCart(item, item.quantity);
+      return prev.filter((entry) => entry._id !== id);
+    });
   };
   const increment = (id: string) => {
     setCart((prev) =>

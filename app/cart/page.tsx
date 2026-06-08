@@ -8,13 +8,22 @@ import HomeSectionTitle from '@/components/HomeSectionTitle';
 import PaymentRulesNote from '@/components/PaymentRulesNote';
 import { ArrowRight, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import { FREE_DELIVERY_FROM } from '@/data/storePolicies';
+import { trackViewCart } from '@/lib/analytics';
 
 export default function CartPage() {
   const { cart, increment, decrement, removeFromCart } = useCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const router = useRouter();
+  const viewedCartRef = useRef(false);
+
+  useEffect(() => {
+    if (viewedCartRef.current || cart.length === 0) return;
+    viewedCartRef.current = true;
+    trackViewCart(cart);
+  }, [cart]);
 
   const deliveryProgress = Math.min(100, Math.round((total / FREE_DELIVERY_FROM) * 100));
   const amountToFreeDelivery = Math.max(0, FREE_DELIVERY_FROM - total);

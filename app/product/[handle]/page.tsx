@@ -11,6 +11,7 @@ import { stripHtml } from '@/lib/htmlUtils';
 import { getRelatedProducts } from '@/lib/getRelatedProducts';
 import { CARD_ONLY_FROM } from '@/data/storePolicies';
 import { ChevronRight, ShieldCheck, Truck } from 'lucide-react';
+import EcommerceTracker from '@/components/EcommerceTracker';
 
 export async function generateMetadata({
   params: paramsPromise,
@@ -62,6 +63,7 @@ export default async function ProductPage({
 
   return (
     <>
+      <EcommerceTracker event="view_item" product={product} />
       <nav
         aria-label="Навігація"
         className="flex flex-wrap items-center gap-1 text-sm text-gray-500 mb-5 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100"
