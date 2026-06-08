@@ -12,6 +12,8 @@ export default function AnalyticsPageView() {
     if (!pathname) return;
     const query = searchParams?.toString();
     trackPageView(query ? `${pathname}?${query}` : pathname);
+
+    fetch('/api/analytics/pageview', { method: 'POST' }).catch(() => {});
   }, [pathname, searchParams]);
 
   return null;

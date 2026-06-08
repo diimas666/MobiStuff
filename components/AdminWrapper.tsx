@@ -116,6 +116,9 @@ export default function AdminWrapper({
           <Link href="/admin/orders" className="text-blue-600 hover:underline">
             📦 Замовлення
           </Link>
+          <Link href="/admin/analytics" className="text-blue-600 hover:underline">
+            📊 Аналітика
+          </Link>
           <Link href="/admin/sync" className="text-blue-600 hover:underline">
             🔄 Синх. MMA
           </Link>
