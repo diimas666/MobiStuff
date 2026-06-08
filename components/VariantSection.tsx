@@ -35,7 +35,7 @@ export default function VariantSection({ variants, product }: Props) {
         <button
           type="button"
           onClick={() => toggleFavorite(productId)}
-          className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-medium transition shadow-sm border ${
+          className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-medium transition shadow-sm border cursor-pointer ${
             isFavorite
               ? 'bg-green-500 text-white border-green-500 hover:bg-green-600'
               : 'bg-white text-gray-800 border-gray-200 hover:border-green-300 hover:bg-green-50'
@@ -49,7 +49,7 @@ export default function VariantSection({ variants, product }: Props) {
           type="button"
           onClick={() => addToCart(product)}
           disabled={!inStock}
-          className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold bg-green-500 text-white hover:bg-green-600 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold bg-green-500 text-white hover:bg-green-600 transition shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ShoppingCart className="w-5 h-5" />
           {inStock ? 'Купити' : 'Немає в наявності'}
