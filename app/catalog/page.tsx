@@ -17,13 +17,16 @@ export default async function CatalogPage() {
 
   return (
     <div className="pb-10">
-      <div className="mb-8 rounded-2xl border border-gray-100 bg-white p-5 sm:p-8 shadow-sm">
+      <div className="section-surface mb-8 p-5 sm:p-8">
         <HomeSectionTitle title="Каталог" subtitle="Усі категорії товарів — оберіть потрібний розділ" />
       </div>
 
       <div className="space-y-8">
-        {sections.map((section) => (
-          <section key={section.slug} className="rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm">
+        {sections.map((section, index) => (
+          <section
+            key={section.slug}
+            className={`p-4 sm:p-6 ${index % 2 === 0 ? 'section-surface' : 'section-surface-alt'}`}
+          >
             <HomeSectionTitle title={section.title} />
             <CategoryGrid items={section.items} variant="catalog" />
           </section>

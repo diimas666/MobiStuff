@@ -44,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="uk" suppressHydrationWarning>
       <body
-        className={`${roboto.variable} antialiased min-h-screen flex flex-col`}
+        className={`${roboto.variable} antialiased min-h-screen flex flex-col site-page-bg`}
       >
         <FavoritesProvider>
           <CartProvider>

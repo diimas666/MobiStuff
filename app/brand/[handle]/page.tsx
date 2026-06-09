@@ -134,7 +134,7 @@ export default async function BrandPage({
       </section>
 
       {page === 1 && (brand.description?.length || brand.products?.length) ? (
-        <section className="mb-6 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6">
+        <section className="section-surface mb-6 p-4 sm:p-6">
           <HomeSectionTitle title={`Про бренд ${brand.title}`} />
           {Array.isArray(brand.description) &&
             brand.description.map((paragraph, index) => (
@@ -159,7 +159,7 @@ export default async function BrandPage({
       ) : null}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_1fr] sm:gap-6">
-        <aside className="sticky top-24 hidden h-fit rounded-2xl border border-gray-100 bg-white p-4 shadow-sm md:block">
+        <aside className="section-surface sticky top-24 hidden h-fit p-4 md:block">
           <div className="mb-4 flex items-center gap-2">
             <span className="h-6 w-1 rounded-full bg-gradient-to-b from-green-400 to-green-600" />
             <h2 className="text-lg font-bold text-gray-900">Каталог</h2>

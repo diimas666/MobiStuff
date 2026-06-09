@@ -140,20 +140,20 @@ export default async function GeneralPage() {
       <HomeHero />
 
       <main className="text-md flex flex-col md:flex-row gap-4 section-bottom w-full min-w-0">
-        <aside className="w-[300px] px-4 py-4 rounded-2xl border border-gray-100 bg-white shadow-sm relative hidden md:block shrink-0">
+        <aside className="section-surface w-[300px] px-4 py-4 relative hidden md:block shrink-0">
           <HomeSectionTitle title="Каталог" />
           <CategoryList />
         </aside>
 
         <section className="flex w-full min-w-0 gap-5 items-stretch max-[890px]:flex-col max-[890px]:gap-4 section-bottom flex-1">
-          <div className="basis-1/2 flex-1 flex flex-col min-h-[360px] min-w-0 max-[890px]:basis-full rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+          <div className="section-surface basis-1/2 flex-1 flex flex-col min-h-[360px] min-w-0 max-[890px]:basis-full p-4 sm:p-5">
             <HomeSectionTitle title="Популярні категорії" />
             <CategoryGrid items={popularItems} variant="home" className="flex-1" />
             <div className="sr-only">
               <h1>Інтернет-магазин мобільних аксесуарів — MobiStuff</h1>
             </div>
           </div>
-          <div className="basis-1/2 flex-1 flex flex-col h-full min-w-0 max-[890px]:basis-full rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 shadow-sm">
+          <div className="section-surface-alt basis-1/2 flex-1 flex flex-col h-full min-w-0 max-[890px]:basis-full p-4 sm:p-5">
             <HomeSectionTitle title="Трендові товари" subtitle="Хіти продажів цього сезону" />
             <div className="flex-1 min-h-[300px] max-[890px]:h-[260px] max-[890px]:flex-none">
               <TrendingSlider products={trending} />
@@ -163,7 +163,7 @@ export default async function GeneralPage() {
       </main>
 
       <main>
-        <section className="section-bottom rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm">
+        <section className="section-bottom section-surface p-4 sm:p-6">
           <HomeSectionTitle title="Актуальні пропозиції" subtitle="Акції та спеціальні умови" />
           <PromoSlider />
         </section>
@@ -204,15 +204,17 @@ export default async function GeneralPage() {
           </div>
         </section>
 
-        <section className="section-bottom rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm">
+        <section className="section-bottom section-surface-alt p-4 sm:p-6">
           <HomeSectionTitle title="Популярні бренди" />
           <BrandList />
         </section>
 
-        {featuredSections.map((section) => (
+        {featuredSections.map((section, index) => (
           <section
             key={section.title}
-            className="section-bottom rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm"
+            className={`section-bottom p-4 sm:p-6 ${
+              index % 2 === 0 ? 'section-surface' : 'section-surface-alt'
+            }`}
           >
             <div className="w-full">
               <OffersSection
@@ -226,7 +228,7 @@ export default async function GeneralPage() {
         ))}
 
         <section className="section-bottom">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 text-white px-6 py-8 sm:px-10">
+          <div className="section-surface-dark flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-8 sm:px-10">
             <div>
               <h2 className="text-lg sm:text-xl font-bold">Знайшли потрібний аксесуар?</h2>
               <p className="text-gray-300 text-sm mt-1">{storePolicies.paymentSummary}</p>
