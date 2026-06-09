@@ -13,7 +13,7 @@ const OffersSlider = dynamic(() => import('@/components/OffersSlider'), {
     </div>
   ),
 });
-import { Columns2, Dice1 } from 'lucide-react'; // Иконки для кнопки переключения
+import { ArrowRight, Columns2, Dice1 } from 'lucide-react';
 import { Product } from '@/interface/product'; // Тип товара
 import Link from 'next/link'; // Компонент Next.js для ссылок (без перезагрузки страницы)
 import { getCategoryLink } from '@/lib/getCategoryLink';
@@ -82,17 +82,15 @@ export default function OffersSection({
         />
       </div>
 
-      {/* Кнопка "Показати більше" с переходом в категорию */}
-      {categorySlug && (
-        <div className="text-center mt-2">
-          {categorySlug && subcategorySlug && (
-            <Link
-              href={getCategoryLink(categorySlug, subcategorySlug)} // путь на страницу категории
-              className="inline-block bg-black text-white text-sm px-6 py-2 rounded hover:bg-gray-800 transition"
-            >
-              Показати більше
-            </Link>
-          )}
+      {categorySlug && subcategorySlug && (
+        <div className="text-center mt-1">
+          <Link
+            href={getCategoryLink(categorySlug, subcategorySlug)}
+            className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition text-sm cursor-pointer"
+          >
+            Показати більше
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       )}
     </section>
