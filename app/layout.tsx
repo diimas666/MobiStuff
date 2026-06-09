@@ -14,6 +14,7 @@ import Container from '@/components/Container';
 import ToastProvider from '@/components/ToastProvider';
 import NavigationProgress from '@/components/NavigationProgress';
 import AnalyticsPageView from '@/components/AnalyticsPageView';
+import GoogleAdsConfig from '@/components/GoogleAdsConfig';
 
 const roboto = Roboto({
   subsets: ['latin', 'cyrillic'],
@@ -64,6 +65,7 @@ export default function RootLayout({
         <ToastProvider />
       </body>
       {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
+      <GoogleAdsConfig />
     </html>
   );
 }

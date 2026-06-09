@@ -2,6 +2,9 @@ import { Product } from '@/interface/product';
 import { CartItem } from '@/context/CartContext';
 
 export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+export const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+export const GOOGLE_ADS_ADD_TO_CART_CONVERSION =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_ADD_TO_CART_CONVERSION;
 
 const CURRENCY = 'UAH';
 
@@ -20,13 +23,23 @@ declare global {
   }
 }
 
-function isEnabled() {
-  return typeof window !== 'undefined' && Boolean(GA_MEASUREMENT_ID);
+function isGtagAvailable() {
+  return typeof window !== 'undefined' && typeof window.gtag === 'function';
 }
 
 function gtag(...args: unknown[]) {
-  if (!isEnabled()) return;
+  if (!isGtagAvailable()) return;
   window.gtag?.(...args);
+}
+
+function trackGoogleAdsAddToCartConversion(value: number) {
+  if (!isGtagAvailable() || !GOOGLE_ADS_ADD_TO_CART_CONVERSION) return;
+
+  gtag('event', 'conversion', {
+    send_to: GOOGLE_ADS_ADD_TO_CART_CONVERSION,
+    value,
+    currency: CURRENCY,
+  });
 }
 
 export function productToGaItem(
@@ -89,6 +102,8 @@ export function trackAddToCart(
     value: product.price * quantity,
     items: [productToGaItem(product, quantity)],
   });
+
+  trackGoogleAdsAddToCartConversion(product.price * quantity);
 }
 
 export function trackRemoveFromCart(
