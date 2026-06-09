@@ -214,7 +214,7 @@ export default async function GeneralPage() {
             key={section.title}
             className="section-bottom rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm"
           >
-            <div className="w-full overflow-hidden pb-2">
+            <div className="w-full">
               <OffersSection
                 title={section.title}
                 products={section.products}

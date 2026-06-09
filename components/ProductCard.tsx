@@ -125,7 +125,7 @@ export default function ProductCard({
   }
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:border-green-200 hover:shadow-md">
+    <article className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:border-green-200 hover:shadow-md">
       <div className="relative aspect-square shrink-0 bg-white">
         <Link
           href={`/product/${product.handle}`}
@@ -175,18 +175,23 @@ export default function ProductCard({
       </div>
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <Link href={`/product/${product.handle}`} className="min-h-0 flex-1">
-          {product.brand && (
-            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-green-600">
-              {product.brand}
-            </p>
-          )}
-          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900 sm:text-base">
+        <Link
+          href={`/product/${product.handle}`}
+          className="flex min-h-[5.5rem] flex-1 flex-col sm:min-h-[6rem]"
+        >
+          <p
+            className={`mb-1 min-h-[14px] text-[11px] font-semibold uppercase tracking-wide text-green-600 ${
+              product.brand ? "" : "invisible"
+            }`}
+          >
+            {product.brand || "—"}
+          </p>
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug text-gray-900 sm:min-h-[2.75rem] sm:text-base">
             {product.title}
           </h3>
         </Link>
 
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-2 flex min-h-[22px] items-center gap-2">
           {inStock ? (
             product.lowStock ? (
               <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 ring-1 ring-amber-200">
@@ -204,15 +209,19 @@ export default function ProductCard({
           )}
         </div>
 
-        <div className="mt-auto flex items-end justify-between gap-3 pt-3 border-t border-gray-100">
-          <div className="min-w-0">
+        <div className="mt-auto flex min-h-[52px] items-end justify-between gap-3 border-t border-gray-100 pt-3">
+          <div className="min-h-[40px] min-w-0">
             <p className="text-xl font-bold text-gray-900 sm:text-2xl">
               {product.price}
               <span className="ml-0.5 text-sm font-semibold text-green-600">₴</span>
             </p>
-            {hasDiscount && (
-              <p className="text-sm text-gray-400 line-through">{product.oldPrice} ₴</p>
-            )}
+            <p
+              className={`text-sm text-gray-400 line-through ${
+                hasDiscount ? "" : "invisible"
+              }`}
+            >
+              {hasDiscount ? `${product.oldPrice} ₴` : "—"}
+            </p>
           </div>
 
           <button

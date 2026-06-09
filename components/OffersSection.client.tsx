@@ -72,8 +72,7 @@ export default function OffersSection({
         </div>
       ) : null}
 
-      {/* Сам слайдер товаров */}
-      <div className="w-full overflow-hidden pb-6 mb-4">
+      <div className="w-full pb-10">
         <OffersSlider
           products={products}
           mobileSlidesToShow={mobileSlidesToShow}
