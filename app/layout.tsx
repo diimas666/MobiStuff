@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -14,7 +13,7 @@ import Container from '@/components/Container';
 import ToastProvider from '@/components/ToastProvider';
 import NavigationProgress from '@/components/NavigationProgress';
 import AnalyticsPageView from '@/components/AnalyticsPageView';
-import GoogleAdsConfig from '@/components/GoogleAdsConfig';
+import GoogleTags from '@/components/GoogleTags';
 
 const roboto = Roboto({
   subsets: ['latin', 'cyrillic'],
@@ -40,10 +39,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-
   return (
     <html lang="uk" suppressHydrationWarning>
+      <head>
+        <GoogleTags />
+      </head>
       <body
         className={`${roboto.variable} antialiased min-h-screen flex flex-col site-page-bg`}
       >
@@ -64,8 +64,6 @@ export default function RootLayout({
         </FavoritesProvider>
         <ToastProvider />
       </body>
-      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
-      <GoogleAdsConfig />
     </html>
   );
 }
