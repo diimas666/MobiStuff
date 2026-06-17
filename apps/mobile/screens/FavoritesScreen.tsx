@@ -1,4 +1,7 @@
-import type { CompositeNavigationProp, RouteProp } from '@react-navigation/native';
+import type {
+  CompositeNavigationProp,
+  RouteProp,
+} from '@react-navigation/native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -32,7 +35,8 @@ const { width: screenWidth } = Dimensions.get('window');
 const GRID_GAP = 12;
 const NUM_COLUMNS = 2;
 const GRID_CARD_WIDTH =
-  (screenWidth - spacing.screen * 2 - GRID_GAP * (NUM_COLUMNS - 1)) / NUM_COLUMNS;
+  (screenWidth - spacing.screen * 2 - GRID_GAP * (NUM_COLUMNS - 1)) /
+  NUM_COLUMNS;
 
 function toHomeProduct(item: FavoriteItem): HomeProduct {
   return {
@@ -46,66 +50,66 @@ function toHomeProduct(item: FavoriteItem): HomeProduct {
 
 export function FavoritesScreen() {
   const { styles, colors } = useThemedStyles(c => ({
-  list: {
-    paddingHorizontal: spacing.screen - GRID_GAP / 2,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  header: {
-    paddingHorizontal: GRID_GAP / 2,
-    paddingTop: 8,
-    paddingBottom: 16,
-  },
-  backRow: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: c.textOnDark,
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    lineHeight: 20,
-    marginBottom: 14,
-  },
-  summaryCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 16,
-    backgroundColor: c.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    marginBottom: 8,
-  },
-  summaryLabel: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-  },
-  summaryValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: c.priceLight,
-  },
-  gridItem: {
-    flex: 1,
-    paddingHorizontal: GRID_GAP / 2,
-    marginBottom: GRID_GAP,
-  },
-  emptyWrap: {
-    paddingHorizontal: GRID_GAP / 2,
-    paddingTop: 8,
-  },
-}));
+    list: {
+      paddingHorizontal: spacing.screen - GRID_GAP / 2,
+      paddingBottom: 32,
+    },
+    loadingHeader: {
+      paddingHorizontal: spacing.screen,
+      paddingTop: 8,
+      paddingBottom: 8,
+    },
+    header: {
+      paddingHorizontal: GRID_GAP / 2,
+      paddingTop: 8,
+      paddingBottom: 16,
+    },
+    backRow: {
+      marginBottom: 16,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: c.textOnDark,
+      marginBottom: 6,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      lineHeight: 20,
+      marginBottom: 14,
+    },
+    summaryCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      borderRadius: 16,
+      backgroundColor: c.homeSearch,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.08)',
+      marginBottom: 8,
+    },
+    summaryLabel: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+    },
+    summaryValue: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: c.priceLight,
+    },
+    gridItem: {
+      flex: 1,
+      paddingHorizontal: GRID_GAP / 2,
+      marginBottom: GRID_GAP,
+    },
+    emptyWrap: {
+      paddingHorizontal: GRID_GAP / 2,
+      paddingTop: 8,
+    },
+  }));
 
   const navigation = useNavigation<FavoritesNavigationProp>();
   const route = useRoute<FavoritesRouteProp>();
@@ -202,8 +206,8 @@ export function FavoritesScreen() {
               {items.length === 1
                 ? 'товар збережено'
                 : items.length < 5
-                  ? 'товари збережено'
-                  : 'товарів збережено'}
+                ? 'товари збережено'
+                : 'товарів збережено'}
             </Text>
             <View style={styles.summaryCard}>
               <Text style={styles.summaryLabel}>На суму</Text>
@@ -211,7 +215,9 @@ export function FavoritesScreen() {
             </View>
           </>
         ) : (
-          <Text style={styles.subtitle}>Збережені товари для швидкого доступу</Text>
+          <Text style={styles.subtitle}>
+            Збережені товари для швидкого доступу
+          </Text>
         )}
       </View>
     ),
@@ -221,7 +227,10 @@ export function FavoritesScreen() {
   const listEmpty = useCallback(
     () => (
       <View style={styles.emptyWrap}>
-        <FavoritesEmptyState onBrowseCatalog={openCatalog} onGoHome={openHome} />
+        <FavoritesEmptyState
+          onBrowseCatalog={openCatalog}
+          onGoHome={openHome}
+        />
       </View>
     ),
     [openCatalog, openHome],
@@ -257,4 +266,3 @@ export function FavoritesScreen() {
     </Screen>
   );
 }
-

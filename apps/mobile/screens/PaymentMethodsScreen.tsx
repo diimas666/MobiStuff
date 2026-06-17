@@ -22,7 +22,10 @@ import type { PaymentMethodType } from '../types/paymentMethods';
 import { PAYMENT_METHOD_META } from '../types/paymentMethods';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 
-type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'PaymentMethods'>;
+type NavigationProp = NativeStackNavigationProp<
+  ProfileStackParamList,
+  'PaymentMethods'
+>;
 
 const METHOD_ORDER: PaymentMethodType[] = [
   'card_transfer',
@@ -34,61 +37,61 @@ const METHOD_ORDER: PaymentMethodType[] = [
 
 export function PaymentMethodsScreen() {
   const { styles, colors } = useThemedStyles(c => ({
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  headerRow: {
-    marginBottom: 16,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  section: {
-    gap: 12,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  methodList: {
-    gap: 12,
-  },
-  infoCard: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    padding: 14,
-    borderRadius: radius.md,
-    backgroundColor: c.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  infoText: {
-    flex: 1,
-    fontSize: 13,
-    color: c.textOnDarkMuted,
-    lineHeight: 19,
-  },
-}));
+    content: {
+      paddingHorizontal: spacing.screen,
+      paddingBottom: 32,
+    },
+    loadingHeader: {
+      paddingHorizontal: spacing.screen,
+      paddingTop: 8,
+      paddingBottom: 8,
+    },
+    headerRow: {
+      marginBottom: 16,
+    },
+    titleBlock: {
+      marginBottom: 20,
+      gap: 6,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      lineHeight: 20,
+    },
+    section: {
+      gap: 12,
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    methodList: {
+      gap: 12,
+    },
+    infoCard: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: 12,
+      padding: 14,
+      borderRadius: radius.md,
+      backgroundColor: c.homeSearch,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    infoText: {
+      flex: 1,
+      fontSize: 13,
+      color: c.textOnDarkMuted,
+      lineHeight: 19,
+    },
+  }));
 
   const navigation = useNavigation<NavigationProp>();
   const { defaultMethod, isHydrated, setDefaultMethod } = usePaymentMethods();
@@ -124,7 +127,8 @@ export function PaymentMethodsScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.headerRow}>
           <BackButton onPress={() => navigation.goBack()} />
         </View>
@@ -152,14 +156,18 @@ export function PaymentMethodsScreen() {
         </View>
 
         <View style={styles.infoCard}>
-          <Ionicons name="shield-checkmark-outline" size={20} color={colors.primary} />
+          <Ionicons
+            name="shield-checkmark-outline"
+            size={20}
+            color={colors.primary}
+          />
           <Text style={styles.infoText}>
             Зараз доступні переказ на картку та оплата при отриманні. Stripe,
-            Google Pay та Apple Pay з&apos;являться після підключення онлайн-оплати.
+            Google Pay та Apple Pay з&apos;являться після підключення
+            онлайн-оплати.
           </Text>
         </View>
       </ScrollView>
     </Screen>
   );
 }
-

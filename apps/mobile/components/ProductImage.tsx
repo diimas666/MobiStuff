@@ -20,20 +20,20 @@ export function ProductImage({
   backgroundColor,
 }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
-  image: {
-    backgroundColor: c.screen,
-  },
-  placeholder: {
-    backgroundColor: c.screen,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  placeholderText: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: c.textMuted,
-  },
-}));
+    image: {
+      backgroundColor: c.screen,
+    },
+    placeholder: {
+      backgroundColor: c.screen,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    placeholderText: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: c.textMuted,
+    },
+  }));
 
   const resolvedBackground = backgroundColor ?? colors.screen;
 
@@ -43,21 +43,32 @@ export function ProductImage({
         source={{ uri }}
         style={[
           styles.image,
-          { width: size, height: size, borderRadius: rounded, backgroundColor: resolvedBackground },
+          {
+            width: size,
+            height: size,
+            borderRadius: rounded,
+            backgroundColor: resolvedBackground,
+          },
         ]}
         resizeMode={resizeMode}
       />
     );
   }
-
   return (
     <View
       style={[
         styles.placeholder,
-        { width: size, height: size, borderRadius: rounded, backgroundColor: resolvedBackground },
-      ]}>
-      <Text style={styles.placeholderText}>{label.slice(0, 1).toUpperCase()}</Text>
+        {
+          width: size,
+          height: size,
+          borderRadius: rounded,
+          backgroundColor: resolvedBackground,
+        },
+      ]}
+    >
+      <Text style={styles.placeholderText}>
+        {label.slice(0, 1).toUpperCase()}
+      </Text>
     </View>
   );
 }
-

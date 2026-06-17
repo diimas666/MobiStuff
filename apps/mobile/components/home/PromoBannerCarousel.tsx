@@ -22,7 +22,11 @@ type Props = {
   onBannerPress?: (banner: PromoBanner) => void;
 };
 
-export function PromoBannerCarousel({ items, visible = true, onBannerPress }: Props) {
+export function PromoBannerCarousel({
+  items,
+  visible = true,
+  onBannerPress,
+}: Props) {
   const { styles } = useThemedStyles(c => ({
     wrapper: {
       marginBottom: 28,
@@ -131,7 +135,8 @@ export function PromoBannerCarousel({ items, visible = true, onBannerPress }: Pr
               styles.banner,
               { width: bannerWidth, backgroundColor: item.color },
               pressed && styles.pressed,
-            ]}>
+            ]}
+          >
             <View style={styles.content}>
               <Text style={styles.title}>{item.title}</Text>
               <Text style={styles.subtitle}>{item.subtitle}</Text>

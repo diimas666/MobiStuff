@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { ErrorState } from '../components/ErrorState';
+import { OfflineState } from '../components/OfflineState';
 import { LoadingState } from '../components/LoadingState';
 import { Screen } from '../components/Screen';
 import { CategoryBanner } from '../components/category/CategoryBanner';
@@ -24,8 +25,16 @@ import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { showErrorToast } from '../context/ToastContext';
 import { useCategoryProducts } from '../hooks/useCategoryProducts';
-import type { CategoriesStackParamList, RootStackParamList } from '../navigation/types';
-import { mapProduct, type ApiProduct, type HomeProduct } from '../types/catalog';
+import { useNetwork } from '../context/NetworkContext';
+import type {
+  CategoriesStackParamList,
+  RootStackParamList,
+} from '../navigation/types';
+import {
+  mapProduct,
+  type ApiProduct,
+  type HomeProduct,
+} from '../types/catalog';
 import { addHomeProductToCart } from '../utils/addProductToCart';
 import { countActiveFilters } from '../utils/categoryFilters';
 import { getCatalogSubcategories } from '../utils/catalogTree';
@@ -45,7 +54,8 @@ const { width: screenWidth } = Dimensions.get('window');
 const GRID_GAP = 12;
 const NUM_COLUMNS = 2;
 const GRID_CARD_WIDTH =
-  (screenWidth - spacing.screen * 2 - GRID_GAP * (NUM_COLUMNS - 1)) / NUM_COLUMNS;
+  (screenWidth - spacing.screen * 2 - GRID_GAP * (NUM_COLUMNS - 1)) /
+  NUM_COLUMNS;
 
 const CategoryProductCard = memo(function CategoryProductCard({
   product,
@@ -79,56 +89,59 @@ const CategoryProductCard = memo(function CategoryProductCard({
 
 export function CategoryScreen({ route, navigation }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
-  list: {
-    paddingHorizontal: spacing.screen - GRID_GAP / 2,
-    paddingBottom: 32,
-  },
-  headerBody: {
-    paddingHorizontal: GRID_GAP / 2,
-  },
-  gridItem: {
-    flex: 1,
-    paddingHorizontal: GRID_GAP / 2,
-    marginBottom: GRID_GAP,
-  },
-  count: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: c.textOnDarkMuted,
-    marginBottom: 12,
-  },
-  listFooter: {
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-  empty: {
-    alignItems: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 24,
-    gap: 8,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-}));
+    list: {
+      paddingHorizontal: spacing.screen - GRID_GAP / 2,
+      paddingBottom: 32,
+    },
+    headerBody: {
+      paddingHorizontal: GRID_GAP / 2,
+    },
+    gridItem: {
+      flex: 1,
+      paddingHorizontal: GRID_GAP / 2,
+      marginBottom: GRID_GAP,
+    },
+    count: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: c.textOnDarkMuted,
+      marginBottom: 12,
+    },
+    listFooter: {
+      paddingVertical: 20,
+      alignItems: 'center',
+    },
+    empty: {
+      alignItems: 'center',
+      paddingVertical: 40,
+      paddingHorizontal: 24,
+      gap: 8,
+    },
+    emptyTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    emptyText: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      textAlign: 'center',
+      lineHeight: 20,
+    },
+  }));
 
-  const { category, subcategorySlug, subcategoryTitle, onSaleOnly } = route.params;
+  const { category, subcategorySlug, subcategoryTitle, onSaleOnly } =
+    route.params;
   const catalogSubcategories = useMemo(
     () => getCatalogSubcategories(category.id),
     [category.id],
   );
   const [sheetVisible, setSheetVisible] = useState(false);
+  const { isOffline } = useNetwork();
   const { isFavorite, toggleFavorite, items: favoriteItems } = useFavorites();
   const { addToCart, items } = useCart();
   const {
+    products,
     displayedProducts,
     totalCount,
     brands,
@@ -141,9 +154,28 @@ export function CategoryScreen({ route, navigation }: Props) {
     isLoadingMore,
     loadMore,
     error,
-  } = useCategoryProducts(category.id, category.title, subcategorySlug, onSaleOnly);
+    retry,
+  } = useCategoryProducts(
+    category.id,
+    category.title,
+    subcategorySlug,
+    onSaleOnly,
+  );
 
   const selectedSubcategorySlug = filters.subcategories[0] ?? null;
+  const bannerSubtitle = onSaleOnly
+    ? subcategoryTitle
+      ? `${subcategoryTitle} · Зі знижкою`
+      : 'Зі знижкою'
+    : subcategoryTitle;
+  const categoryWithImage = useMemo(
+    () => ({
+      ...category,
+      image:
+        category.image || products[0]?.image || products[0]?.images?.[0],
+    }),
+    [category, products],
+  );
 
   const handleSubcategorySelect = useCallback(
     (slug: string | null) => {
@@ -198,8 +230,8 @@ export function CategoryScreen({ route, navigation }: Props) {
     () => (
       <>
         <CategoryBanner
-          category={category}
-          subtitle={subcategoryTitle}
+          category={categoryWithImage}
+          subtitle={bannerSubtitle}
           onBack={() => navigation.goBack()}
         />
         <View style={styles.headerBody}>
@@ -224,13 +256,15 @@ export function CategoryScreen({ route, navigation }: Props) {
     ),
     [
       catalogSubcategories,
-      category,
+      categoryWithImage,
       filters,
       handleSubcategorySelect,
       navigation,
       selectedSubcategorySlug,
       setFilters,
       subcategoryTitle,
+      onSaleOnly,
+      bannerSubtitle,
       totalCount,
     ],
   );
@@ -260,17 +294,23 @@ export function CategoryScreen({ route, navigation }: Props) {
   );
 
   const extraData = useMemo(
-    () => ({ filters, favoriteCount: favoriteItems.length, cartSize: items.length }),
+    () => ({
+      filters,
+      favoriteCount: favoriteItems.length,
+      cartSize: items.length,
+    }),
     [favoriteItems.length, filters, items.length],
   );
 
   return (
     <Screen variant="home">
       <StatusBar barStyle="light-content" />
-      {isLoading && displayedProducts.length === 0 ? (
+      {isOffline && displayedProducts.length === 0 ? (
+        <OfflineState onRetry={retry} />
+      ) : isLoading && displayedProducts.length === 0 ? (
         <LoadingState label="Завантаження товарів..." />
       ) : error ? (
-        <ErrorState message={error} />
+        <ErrorState message={error} onRetry={retry} />
       ) : (
         <>
           <FlashList
@@ -303,4 +343,3 @@ export function CategoryScreen({ route, navigation }: Props) {
     </Screen>
   );
 }
-

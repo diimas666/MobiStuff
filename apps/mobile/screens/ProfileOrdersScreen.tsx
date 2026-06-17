@@ -1,5 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,7 +19,10 @@ import { useOrders } from '../context/OrdersContext';
 import type { ProfileStackParamList } from '../navigation/types';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 
-type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'ProfileOrders'>;
+type NavigationProp = NativeStackNavigationProp<
+  ProfileStackParamList,
+  'ProfileOrders'
+>;
 
 function formatOrdersCount(count: number) {
   if (count === 1) {
@@ -28,149 +38,152 @@ function formatOrdersCount(count: number) {
 
 export function ProfileOrdersScreen() {
   const { styles, colors } = useThemedStyles(c => ({
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  headerRow: {
-    marginBottom: 16,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
-  },
-  summaryCard: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    borderRadius: radius.md,
-    backgroundColor: c.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  summaryIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: c.homeSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  summaryIconActive: {
-    backgroundColor: 'rgba(245, 158, 11, 0.14)',
-  },
-  summaryValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  summaryLabel: {
-    fontSize: 12,
-    color: c.textOnDarkMuted,
-    marginTop: 1,
-  },
-  syncBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: radius.sm,
-    backgroundColor: c.homeSurface,
-  },
-  syncHint: {
-    fontSize: 13,
-    color: c.textOnDarkMuted,
-  },
-  section: {
-    gap: 12,
-  },
-  ordersList: {
-    gap: 20,
-  },
-  orderItem: {
-    gap: 8,
-  },
-  orderIndex: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: c.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-    paddingLeft: 4,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-    backgroundColor: c.homeSearch,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    gap: 10,
-  },
-  emptyIcon: {
-    width: 72,
-    height: 72,
-    borderRadius: radius.md,
-    backgroundColor: c.homeSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    textAlign: 'center',
-    lineHeight: 21,
-    maxWidth: 280,
-  },
-  emptyButton: {
-    marginTop: 8,
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: radius.pill,
-    backgroundColor: c.primary,
-  },
-  emptyButtonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  pressed: {
-    opacity: 0.88,
-  },
-}));
+    content: {
+      paddingHorizontal: spacing.screen,
+      paddingBottom: 32,
+    },
+    headerRow: {
+      marginBottom: 16,
+    },
+    titleBlock: {
+      marginBottom: 20,
+      gap: 6,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      lineHeight: 20,
+    },
+    summaryRow: {
+      flexDirection: 'row',
+      gap: 12,
+      marginBottom: 16,
+    },
+    summaryCard: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      paddingHorizontal: 14,
+      paddingVertical: 14,
+      borderRadius: radius.md,
+      backgroundColor: c.homeSearch,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    summaryIcon: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: c.homeSurface,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    summaryIconActive: {
+      backgroundColor: 'rgba(245, 158, 11, 0.14)',
+    },
+    summaryValue: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    summaryLabel: {
+      fontSize: 12,
+      color: c.textOnDarkMuted,
+      marginTop: 1,
+    },
+    syncBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      marginBottom: 14,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      borderRadius: radius.sm,
+      backgroundColor: c.homeSurface,
+    },
+    syncHint: {
+      fontSize: 13,
+      color: c.textOnDarkMuted,
+    },
+    section: {
+      gap: 12,
+    },
+    ordersList: {
+      gap: 20,
+    },
+    orderItem: {
+      gap: 8,
+    },
+    orderIndex: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: c.textOnDarkMuted,
+      textTransform: 'uppercase',
+      letterSpacing: 0.4,
+      paddingLeft: 4,
+    },
+    emptyState: {
+      alignItems: 'center',
+      paddingVertical: 40,
+      paddingHorizontal: 20,
+      backgroundColor: c.homeSearch,
+      borderRadius: radius.lg,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.08)',
+      gap: 10,
+    },
+    emptyIcon: {
+      width: 72,
+      height: 72,
+      borderRadius: radius.md,
+      backgroundColor: c.homeSurface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 4,
+    },
+    emptyTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    emptyText: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      textAlign: 'center',
+      lineHeight: 21,
+      maxWidth: 280,
+    },
+    emptyButton: {
+      marginTop: 8,
+      paddingHorizontal: 18,
+      paddingVertical: 12,
+      borderRadius: radius.pill,
+      backgroundColor: c.primary,
+    },
+    emptyButtonText: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    pressed: {
+      opacity: 0.88,
+    },
+  }));
 
   const navigation = useNavigation<NavigationProp>();
   const { orders, isHydrated, isSyncing, refreshOrders } = useOrders();
 
   const activeOrdersCount = useMemo(
-    () => orders.filter(order => order.status !== 'completed' && order.status !== 'cancelled').length,
+    () =>
+      orders.filter(
+        order => order.status !== 'completed' && order.status !== 'cancelled',
+      ).length,
     [orders],
   );
 
@@ -186,7 +199,8 @@ export function ProfileOrdersScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.headerRow}>
           <BackButton onPress={() => navigation.goBack()} />
         </View>
@@ -204,7 +218,11 @@ export function ProfileOrdersScreen() {
           <View style={styles.summaryRow}>
             <View style={styles.summaryCard}>
               <View style={styles.summaryIcon}>
-                <Ionicons name="receipt-outline" size={18} color={colors.primary} />
+                <Ionicons
+                  name="receipt-outline"
+                  size={18}
+                  color={colors.primary}
+                />
               </View>
               <View>
                 <Text style={styles.summaryValue}>{orders.length}</Text>
@@ -226,7 +244,11 @@ export function ProfileOrdersScreen() {
 
         {isSyncing ? (
           <View style={styles.syncBanner}>
-            <Ionicons name="sync-outline" size={16} color={colors.textOnDarkMuted} />
+            <Ionicons
+              name="sync-outline"
+              size={16}
+              color={colors.textOnDarkMuted}
+            />
             <Text style={styles.syncHint}>Оновлення статусів...</Text>
           </View>
         ) : null}
@@ -237,7 +259,11 @@ export function ProfileOrdersScreen() {
           ) : orders.length === 0 ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIcon}>
-                <Ionicons name="receipt-outline" size={32} color={colors.primary} />
+                <Ionicons
+                  name="receipt-outline"
+                  size={32}
+                  color={colors.primary}
+                />
               </View>
               <Text style={styles.emptyTitle}>Замовлень ще немає</Text>
               <Text style={styles.emptyText}>
@@ -247,8 +273,14 @@ export function ProfileOrdersScreen() {
               <Pressable
                 accessibilityRole="button"
                 onPress={() => navigation.goBack()}
-                style={({ pressed }) => [styles.emptyButton, pressed && styles.pressed]}>
-                <Text style={styles.emptyButtonText}>Повернутися до профілю</Text>
+                style={({ pressed }) => [
+                  styles.emptyButton,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Text style={styles.emptyButtonText}>
+                  Повернутися до профілю
+                </Text>
               </Pressable>
             </View>
           ) : (
@@ -270,4 +302,3 @@ export function ProfileOrdersScreen() {
     </Screen>
   );
 }
-

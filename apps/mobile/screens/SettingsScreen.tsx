@@ -25,7 +25,10 @@ import { useNotifications } from '../context/NotificationsContext';
 import { useSettings } from '../context/SettingsContext';
 import { showToast } from '../context/ToastContext';
 import { useViewedProducts } from '../context/ViewedProductsContext';
-import type { ProfileStackParamList, RootStackParamList } from '../navigation/types';
+import type {
+  ProfileStackParamList,
+  RootStackParamList,
+} from '../navigation/types';
 import { invalidateCache } from '../services/apiCache';
 import { clearStoredNotifications } from '../services/notificationsStorage';
 import { useThemedStyles } from '../hooks/useThemedStyles';
@@ -42,58 +45,64 @@ type NavigationProp = CompositeNavigationProp<
 
 export function SettingsScreen() {
   const { styles } = useThemedStyles(c => ({
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  headerRow: {
-    marginBottom: 16,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-  },
-  group: {
-    gap: 10,
-    marginBottom: 18,
-  },
-  groupLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-    paddingHorizontal: 4,
-  },
-  resetCard: {
-    borderRadius: radius.lg,
-    padding: 14,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  resetTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    paddingHorizontal: 4,
-  },
-  resetText: {
-    fontSize: 13,
-    lineHeight: 18,
-    paddingHorizontal: 4,
-    marginBottom: 4,
-  },
-}));
+    content: {
+      paddingHorizontal: spacing.screen,
+      paddingBottom: 32,
+    },
+    loadingHeader: {
+      paddingHorizontal: spacing.screen,
+      paddingTop: 8,
+      paddingBottom: 8,
+    },
+    headerRow: {
+      marginBottom: 16,
+    },
+    titleBlock: {
+      marginBottom: 20,
+      gap: 6,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+    },
+    group: {
+      gap: 10,
+      marginBottom: 18,
+    },
+    groupLabel: {
+      fontSize: 15,
+      fontWeight: '600',
+      paddingHorizontal: 4,
+    },
+    resetCard: {
+      borderRadius: radius.lg,
+      padding: 14,
+      gap: 8,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    resetTitle: {
+      fontSize: 16,
+      fontWeight: '700',
+      paddingHorizontal: 4,
+    },
+    resetText: {
+      fontSize: 13,
+      lineHeight: 18,
+      paddingHorizontal: 4,
+      marginBottom: 4,
+    },
+  }));
 
   const navigation = useNavigation<NavigationProp>();
-  const { settings, isHydrated, colors, resolvedTheme, updateSettings, resetSettings } =
-    useSettings();
+  const {
+    settings,
+    isHydrated,
+    colors,
+    resolvedTheme,
+    updateSettings,
+    resetSettings,
+  } = useSettings();
   const { clearViewedProducts } = useViewedProducts();
   const { refreshNotifications } = useNotifications();
 
@@ -117,18 +126,22 @@ export function SettingsScreen() {
   }, []);
 
   const clearViewedHistory = useCallback(() => {
-    Alert.alert('Очистити історію?', 'Список переглянутих товарів буде видалено.', [
-      { text: 'Скасувати', style: 'cancel' },
-      {
-        text: 'Очистити',
-        style: 'destructive',
-        onPress: () => {
-          void clearViewedProducts().then(() => {
-            showToast('Історію переглядів очищено', 'success');
-          });
+    Alert.alert(
+      'Очистити історію?',
+      'Список переглянутих товарів буде видалено.',
+      [
+        { text: 'Скасувати', style: 'cancel' },
+        {
+          text: 'Очистити',
+          style: 'destructive',
+          onPress: () => {
+            void clearViewedProducts().then(() => {
+              showToast('Історію переглядів очищено', 'success');
+            });
+          },
         },
-      },
-    ]);
+      ],
+    );
   }, [clearViewedProducts]);
 
   const clearNotifications = useCallback(() => {
@@ -148,18 +161,22 @@ export function SettingsScreen() {
   }, [refreshNotifications]);
 
   const resetAllSettings = useCallback(() => {
-    Alert.alert('Скинути налаштування?', 'Усі параметри повернуться до стандартних.', [
-      { text: 'Скасувати', style: 'cancel' },
-      {
-        text: 'Скинути',
-        style: 'destructive',
-        onPress: () => {
-          void resetSettings().then(() => {
-            showToast('Налаштування скинуто', 'success');
-          });
+    Alert.alert(
+      'Скинути налаштування?',
+      'Усі параметри повернуться до стандартних.',
+      [
+        { text: 'Скасувати', style: 'cancel' },
+        {
+          text: 'Скинути',
+          style: 'destructive',
+          onPress: () => {
+            void resetSettings().then(() => {
+              showToast('Налаштування скинуто', 'success');
+            });
+          },
         },
-      },
-    ]);
+      ],
+    );
   }, [resetSettings]);
 
   const openContacts = useCallback(() => {
@@ -174,7 +191,9 @@ export function SettingsScreen() {
     return (
       <Screen variant="home">
         <StatusBar
-          barStyle={resolvedTheme === 'dark' ? 'light-content' : 'light-content'}
+          barStyle={
+            resolvedTheme === 'dark' ? 'light-content' : 'light-content'
+          }
         />
         <View style={styles.loadingHeader}>
           <BackButton onPress={() => navigation.goBack()} />
@@ -186,22 +205,33 @@ export function SettingsScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle={resolvedTheme === 'dark' ? 'light-content' : 'dark-content'} />
+      <StatusBar
+        barStyle={resolvedTheme === 'dark' ? 'light-content' : 'dark-content'}
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.headerRow}>
           <BackButton onPress={() => navigation.goBack()} />
         </View>
 
         <View style={styles.titleBlock}>
-          <Text style={[styles.title, { color: colors.textOnDark }]}>Налаштування</Text>
+          <Text style={[styles.title, { color: colors.textOnDark }]}>
+            Налаштування
+          </Text>
         </View>
 
-        <SettingsSection title="Зовнішній вигляд" icon="color-palette-outline" />
+        <SettingsSection
+          title="Зовнішній вигляд"
+          icon="color-palette-outline"
+        />
         <View style={styles.group}>
-          <SettingThemeRow value={settings.theme} onChange={handleThemeChange} />
+          <SettingThemeRow
+            value={settings.theme}
+            onChange={handleThemeChange}
+          />
         </View>
 
         <View style={styles.group}>
@@ -218,21 +248,27 @@ export function SettingsScreen() {
             label="Статуси замовлень"
             hint="Повідомлення про відправку та виконання"
             value={settings.orderStatusNotifications}
-            onValueChange={value => void updateSettings({ orderStatusNotifications: value })}
+            onValueChange={value =>
+              void updateSettings({ orderStatusNotifications: value })
+            }
           />
           <SettingToggleRow
             icon="pricetag-outline"
             label="Знижки в обраному"
             hint="Коли ціна на збережений товар знижується"
             value={settings.favoriteDiscountNotifications}
-            onValueChange={value => void updateSettings({ favoriteDiscountNotifications: value })}
+            onValueChange={value =>
+              void updateSettings({ favoriteDiscountNotifications: value })
+            }
           />
           <SettingToggleRow
             icon="megaphone-outline"
             label="Акції та новинки"
             hint="Спеціальні пропозиції магазину"
             value={settings.promoNotifications}
-            onValueChange={value => void updateSettings({ promoNotifications: value })}
+            onValueChange={value =>
+              void updateSettings({ promoNotifications: value })
+            }
           />
         </View>
 
@@ -243,21 +279,27 @@ export function SettingsScreen() {
             label="Показувати знижки"
             hint="Відсоток економії на картках товарів"
             value={settings.showDiscountPrices}
-            onValueChange={value => void updateSettings({ showDiscountPrices: value })}
+            onValueChange={value =>
+              void updateSettings({ showDiscountPrices: value })
+            }
           />
           <SettingToggleRow
             icon="eye-outline"
             label="Історія переглядів"
             hint="Зберігати переглянуті товари в профілі"
             value={settings.saveViewedHistory}
-            onValueChange={value => void updateSettings({ saveViewedHistory: value })}
+            onValueChange={value =>
+              void updateSettings({ saveViewedHistory: value })
+            }
           />
           <SettingToggleRow
             icon="phone-portrait-outline"
             label="Вібровідгук"
             hint="Легкий відгук при додаванні в кошик (на реальному пристрої)"
             value={settings.hapticFeedback}
-            onValueChange={value => void updateSettings({ hapticFeedback: value })}
+            onValueChange={value =>
+              void updateSettings({ hapticFeedback: value })
+            }
           />
         </View>
 
@@ -308,7 +350,9 @@ export function SettingsScreen() {
           />
         </View>
 
-        <View style={[styles.resetCard, { backgroundColor: colors.homeSearch }]}>
+        <View
+          style={[styles.resetCard, { backgroundColor: colors.homeSearch }]}
+        >
           <Text style={[styles.resetTitle, { color: colors.textOnDark }]}>
             Скинути налаштування
           </Text>
@@ -326,4 +370,3 @@ export function SettingsScreen() {
     </Screen>
   );
 }
-

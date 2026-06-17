@@ -3,7 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useMemo } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { LoadingState } from '../components/LoadingState';
 import { BackButton } from '../components/navigation/BackButton';
 import { RelatedProductCard } from '../components/product/RelatedProductCard';
@@ -14,7 +21,11 @@ import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { showErrorToast } from '../context/ToastContext';
 import { useViewedProducts } from '../context/ViewedProductsContext';
-import type { ProfileStackParamList, RootStackParamList, TabParamList } from '../navigation/types';
+import type {
+  ProfileStackParamList,
+  RootStackParamList,
+  TabParamList,
+} from '../navigation/types';
 import { formatPrice, type HomeProduct } from '../types/catalog';
 import type { ViewedProductItem } from '../types/viewedProducts';
 import { addHomeProductToCart } from '../utils/addProductToCart';
@@ -56,95 +67,95 @@ function chunkItems<T>(items: T[], size: number): T[][] {
 
 export function ViewedProductsScreen() {
   const { styles, colors } = useThemedStyles(c => ({
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  headerRow: {
-    marginBottom: 16,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  groups: {
-    gap: 20,
-  },
-  group: {
-    gap: 12,
-    padding: GROUP_PADDING,
-    borderRadius: 20,
-    backgroundColor: c.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  groupHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  groupTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  groupCount: {
-    fontSize: 13,
-    color: c.textOnDarkMuted,
-  },
-  grid: {
-    gap: GRID_GAP,
-  },
-  gridRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  gridRowSingle: {
-    justifyContent: 'flex-start',
-  },
-  gridItem: {
-    gap: 6,
-  },
-  viewedTime: {
-    fontSize: 12,
-    color: c.textOnDarkMuted,
-    paddingLeft: 4,
-    marginTop: 6,
-  },
-  groupSummary: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 4,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  groupSummaryLabel: {
-    fontSize: 13,
-    color: c.textOnDarkMuted,
-  },
-  groupSummaryValue: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: c.priceLight,
-  },
-}));
+    content: {
+      paddingHorizontal: spacing.screen,
+      paddingBottom: 32,
+    },
+    loadingHeader: {
+      paddingHorizontal: spacing.screen,
+      paddingTop: 8,
+      paddingBottom: 8,
+    },
+    headerRow: {
+      marginBottom: 16,
+    },
+    titleBlock: {
+      marginBottom: 20,
+      gap: 6,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      lineHeight: 20,
+    },
+    groups: {
+      gap: 20,
+    },
+    group: {
+      gap: 12,
+      padding: GROUP_PADDING,
+      borderRadius: 20,
+      backgroundColor: c.homeSearch,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    groupHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 12,
+    },
+    groupTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    groupCount: {
+      fontSize: 13,
+      color: c.textOnDarkMuted,
+    },
+    grid: {
+      gap: GRID_GAP,
+    },
+    gridRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    gridRowSingle: {
+      justifyContent: 'flex-start',
+    },
+    gridItem: {
+      gap: 6,
+    },
+    viewedTime: {
+      fontSize: 12,
+      color: c.textOnDarkMuted,
+      paddingLeft: 4,
+      marginTop: 6,
+    },
+    groupSummary: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingTop: 4,
+      borderTopWidth: 1,
+      borderTopColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    groupSummaryLabel: {
+      fontSize: 13,
+      color: c.textOnDarkMuted,
+    },
+    groupSummaryValue: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: c.priceLight,
+    },
+  }));
 
   const navigation = useNavigation<NavigationProp>();
   const { width: windowWidth } = useWindowDimensions();
@@ -210,7 +221,8 @@ export function ViewedProductsScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.headerRow}>
           <BackButton onPress={() => navigation.goBack()} />
         </View>
@@ -223,8 +235,8 @@ export function ViewedProductsScreen() {
                   items.length === 1
                     ? 'перегляд'
                     : items.length < 5
-                      ? 'перегляди'
-                      : 'переглядів'
+                    ? 'перегляди'
+                    : 'переглядів'
                 }`
               : 'Історія переглянутих товарів'}
           </Text>
@@ -243,8 +255,8 @@ export function ViewedProductsScreen() {
                     {group.items.length === 1
                       ? 'товар'
                       : group.items.length < 5
-                        ? 'товари'
-                        : 'товарів'}
+                      ? 'товари'
+                      : 'товарів'}
                   </Text>
                 </View>
 
@@ -252,28 +264,40 @@ export function ViewedProductsScreen() {
                   {chunkItems(group.items, NUM_COLUMNS).map((row, rowIndex) => (
                     <View
                       key={`${group.dateKey}-row-${rowIndex}`}
-                      style={[styles.gridRow, row.length === 1 && styles.gridRowSingle]}>
+                      style={[
+                        styles.gridRow,
+                        row.length === 1 && styles.gridRowSingle,
+                      ]}
+                    >
                       {row.map(item => {
                         const product = toHomeProduct(item);
 
                         return (
                           <View
                             key={`${group.dateKey}-${item.productId}`}
-                            style={[styles.gridItem, { width: cardWidth }]}>
+                            style={[styles.gridItem, { width: cardWidth }]}
+                          >
                             <RelatedProductCard
                               product={product}
                               width={cardWidth}
                               onPress={() => openProduct(product)}
-                              onFavoritePress={() => void toggleFavorite(product)}
-                              onAddToCartPress={() => void handleAddToCart(product)}
+                              onFavoritePress={() =>
+                                void toggleFavorite(product)
+                              }
+                              onAddToCartPress={() =>
+                                void handleAddToCart(product)
+                              }
                               isFavorite={isFavorite(product.id)}
                               isInCart={isProductInCart(product.id)}
                             />
                             <Text style={styles.viewedTime}>
-                              {new Date(item.viewedAt).toLocaleTimeString('uk-UA', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
+                              {new Date(item.viewedAt).toLocaleTimeString(
+                                'uk-UA',
+                                {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                },
+                              )}
                             </Text>
                           </View>
                         );
@@ -283,9 +307,13 @@ export function ViewedProductsScreen() {
                 </View>
 
                 <View style={styles.groupSummary}>
-                  <Text style={styles.groupSummaryLabel}>На суму в цій групі</Text>
+                  <Text style={styles.groupSummaryLabel}>
+                    На суму в цій групі
+                  </Text>
                   <Text style={styles.groupSummaryValue}>
-                    {formatPrice(group.items.reduce((sum, item) => sum + item.price, 0))}
+                    {formatPrice(
+                      group.items.reduce((sum, item) => sum + item.price, 0),
+                    )}
                   </Text>
                 </View>
               </View>
@@ -296,4 +324,3 @@ export function ViewedProductsScreen() {
     </Screen>
   );
 }
-

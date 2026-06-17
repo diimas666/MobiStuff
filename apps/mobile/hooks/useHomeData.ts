@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchHomeCatalog } from '../services/catalog';
 import { getCached } from '../services/apiCache';
+import { useNetworkReconnectEffect } from '../context/NetworkContext';
 import { reportLoadError } from '../utils/reportLoadError';
 import { errorMessages } from '../utils/errors';
 import {
@@ -22,6 +23,7 @@ type HomeData = {
   popular: HomeProduct[];
   isLoading: boolean;
   error: string | null;
+  retry: () => void;
 };
 
 function mapHomeCatalog(data: HomeCatalogCache) {
@@ -43,6 +45,13 @@ export function useHomeData(): HomeData {
   const [popular, setPopular] = useState<HomeProduct[]>(initial?.popular ?? []);
   const [isLoading, setIsLoading] = useState(!initial);
   const [error, setError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  const retry = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+    setReloadToken(token => token + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,12 +79,16 @@ export function useHomeData(): HomeData {
       }
     }
 
-    load();
+    void load();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadToken]);
+
+  useNetworkReconnectEffect(() => {
+    retry();
+  });
 
   return {
     categories,
@@ -83,5 +96,6 @@ export function useHomeData(): HomeData {
     popular,
     isLoading,
     error,
+    retry,
   };
 }

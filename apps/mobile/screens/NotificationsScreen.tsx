@@ -3,7 +3,14 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useMemo } from 'react';
-import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LoadingState } from '../components/LoadingState';
 import { BackButton } from '../components/navigation/BackButton';
@@ -11,7 +18,11 @@ import { NotificationListItem } from '../components/notification/NotificationLis
 import { Screen } from '../components/Screen';
 import { radius, spacing } from '../constants/theme';
 import { useNotifications } from '../context/NotificationsContext';
-import type { ProfileStackParamList, RootStackParamList, TabParamList } from '../navigation/types';
+import type {
+  ProfileStackParamList,
+  RootStackParamList,
+  TabParamList,
+} from '../navigation/types';
 import type { NotificationItem } from '../types/notification';
 import { groupNotificationsByDate } from '../utils/groupNotificationsByDate';
 import { useThemedStyles } from '../hooks/useThemedStyles';
@@ -26,89 +37,89 @@ type NavigationProp = CompositeNavigationProp<
 
 export function NotificationsScreen() {
   const { styles, colors } = useThemedStyles(c => ({
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  markAllButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: radius.pill,
-    backgroundColor: c.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  markAllText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: c.textOnDark,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  groups: {
-    gap: 20,
-  },
-  group: {
-    gap: 12,
-  },
-  groupLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  groupList: {
-    gap: 12,
-  },
-  emptyCard: {
-    backgroundColor: c.card,
-    borderRadius: radius.lg,
-    padding: 24,
-    alignItems: 'center',
-    gap: 10,
-  },
-  emptyIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#F0FDF4',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: c.text,
-    textAlign: 'center',
-  },
-  emptyText: {
-    fontSize: 14,
-    color: c.textMuted,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-  pressed: {
-    opacity: 0.88,
-  },
-}));
+    content: {
+      paddingHorizontal: spacing.screen,
+      paddingBottom: 32,
+    },
+    headerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 16,
+    },
+    markAllButton: {
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: radius.pill,
+      backgroundColor: c.homeSearch,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    markAllText: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: c.textOnDark,
+    },
+    titleBlock: {
+      marginBottom: 20,
+      gap: 6,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      lineHeight: 20,
+    },
+    groups: {
+      gap: 20,
+    },
+    group: {
+      gap: 12,
+    },
+    groupLabel: {
+      fontSize: 15,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    groupList: {
+      gap: 12,
+    },
+    emptyCard: {
+      backgroundColor: c.card,
+      borderRadius: radius.lg,
+      padding: 24,
+      alignItems: 'center',
+      gap: 10,
+    },
+    emptyIcon: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: '#F0FDF4',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 4,
+    },
+    emptyTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: c.text,
+      textAlign: 'center',
+    },
+    emptyText: {
+      fontSize: 14,
+      color: c.textMuted,
+      lineHeight: 20,
+      textAlign: 'center',
+    },
+    pressed: {
+      opacity: 0.88,
+    },
+  }));
 
   const navigation = useNavigation<NavigationProp>();
   const {
@@ -159,14 +170,19 @@ export function NotificationsScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.headerRow}>
           <BackButton onPress={() => navigation.goBack()} />
           {unreadCount > 0 ? (
             <Pressable
               accessibilityRole="button"
               onPress={() => void markAllAsRead()}
-              style={({ pressed }) => [styles.markAllButton, pressed && styles.pressed]}>
+              style={({ pressed }) => [
+                styles.markAllButton,
+                pressed && styles.pressed,
+              ]}
+            >
               <Text style={styles.markAllText}>Прочитати все</Text>
             </Pressable>
           ) : null}
@@ -188,12 +204,16 @@ export function NotificationsScreen() {
         ) : items.length === 0 ? (
           <View style={styles.emptyCard}>
             <View style={styles.emptyIcon}>
-              <Ionicons name="notifications-off-outline" size={28} color={colors.primary} />
+              <Ionicons
+                name="notifications-off-outline"
+                size={28}
+                color={colors.primary}
+              />
             </View>
             <Text style={styles.emptyTitle}>Повідомлень поки немає</Text>
             <Text style={styles.emptyText}>
-              Тут з&apos;являться оновлення статусів замовлень і сповіщення про знижки на
-              товари з обраного.
+              Тут з&apos;являться оновлення статусів замовлень і сповіщення про
+              знижки на товари з обраного.
             </Text>
           </View>
         ) : (
@@ -218,4 +238,3 @@ export function NotificationsScreen() {
     </Screen>
   );
 }
-

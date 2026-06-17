@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchCategories } from '../services/catalog';
 import { getCached } from '../services/apiCache';
+import { useNetworkReconnectEffect } from '../context/NetworkContext';
 import { reportLoadError } from '../utils/reportLoadError';
 import { errorMessages } from '../utils/errors';
+import type { HomeCategory } from '../types/catalog';
 
 type CategoriesData = {
   categories: HomeCategory[];
   isLoading: boolean;
   error: string | null;
+  retry: () => void;
 };
 
 export function useCategories(): CategoriesData {
@@ -15,6 +18,13 @@ export function useCategories(): CategoriesData {
   const [categories, setCategories] = useState<HomeCategory[]>(cached ?? []);
   const [isLoading, setIsLoading] = useState(!cached);
   const [error, setError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  const retry = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+    setReloadToken(token => token + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,12 +50,16 @@ export function useCategories(): CategoriesData {
       }
     }
 
-    load();
+    void load();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadToken]);
 
-  return { categories, isLoading, error };
+  useNetworkReconnectEffect(() => {
+    retry();
+  });
+
+  return { categories, isLoading, error, retry };
 }

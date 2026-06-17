@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@env';
+import { isNetworkOffline, setNetworkOffline } from '../lib/networkStatus';
 
 const baseUrl = API_BASE_URL.replace(/\/$/, '');
 
@@ -8,13 +9,25 @@ const jsonHeaders = {
 };
 
 function request(path: string, init?: RequestInit) {
+  if (isNetworkOffline()) {
+    return Promise.reject(new TypeError('Network request failed'));
+  }
+
   return fetch(`${baseUrl}${path}`, {
     ...init,
     headers: {
       ...jsonHeaders,
       ...init?.headers,
     },
-  });
+  })
+    .then(response => {
+      setNetworkOffline(false);
+      return response;
+    })
+    .catch(error => {
+      setNetworkOffline(true);
+      throw error;
+    });
 }
 
 export const api = {

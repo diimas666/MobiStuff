@@ -222,6 +222,7 @@ export function ProfileScreen() {
             />
           </View>
 
+          {/* Реєстрація/вхід ще не реалізовані — кнопки тимчасово приховані
           {hasProfile ? (
             <Pressable
               accessibilityRole="button"
@@ -237,6 +238,7 @@ export function ProfileScreen() {
               <Text style={styles.loginText}>Увійти</Text>
             </Pressable>
           )}
+          */}
         </View>
       </ScrollView>
     </Screen>

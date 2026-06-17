@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
 } from '../services/catalog';
 import { getCached } from '../services/apiCache';
+import { useNetworkReconnectEffect } from '../context/NetworkContext';
 import { reportLoadError } from '../utils/reportLoadError';
 import { errorMessages } from '../utils/errors';
 import type { HomeProduct, ProductDetail } from '../types/catalog';
@@ -13,6 +14,7 @@ type ProductScreenData = {
   related: HomeProduct[];
   isLoading: boolean;
   error: string | null;
+  retry: () => void;
 };
 
 export function useProductScreen(handle: string): ProductScreenData {
@@ -24,6 +26,13 @@ export function useProductScreen(handle: string): ProductScreenData {
     () => !getCached<ProductDetail>(`product:${handle}`),
   );
   const [error, setError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  const retry = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+    setReloadToken(token => token + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,12 +77,16 @@ export function useProductScreen(handle: string): ProductScreenData {
       }
     }
 
-    load();
+    void load();
 
     return () => {
       cancelled = true;
     };
-  }, [handle]);
+  }, [handle, reloadToken]);
 
-  return { product, related, isLoading, error };
+  useNetworkReconnectEffect(() => {
+    retry();
+  });
+
+  return { product, related, isLoading, error, retry };
 }

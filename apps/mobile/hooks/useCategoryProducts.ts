@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { fetchProductsByCategory } from '../services/catalog';
 import { getCached } from '../services/apiCache';
+import { useNetworkReconnectEffect } from '../context/NetworkContext';
 import { reportLoadError } from '../utils/reportLoadError';
 import { errorMessages } from '../utils/errors';
 import {
@@ -43,6 +44,7 @@ type CategoryProductsData = {
   hasMore: boolean;
   loadMore: () => void;
   error: string | null;
+  retry: () => void;
 };
 
 export function useCategoryProducts(
@@ -64,6 +66,13 @@ export function useCategoryProducts(
   const [isLoading, setIsLoading] = useState(!cachedProducts);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
+
+  const retry = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+    setReloadToken(token => token + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,6 +103,7 @@ export function useCategoryProducts(
         setFilters({
           ...defaultCategoryFilters,
           subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
+          onSaleOnly: initialOnSaleOnly ?? false,
         });
         setVisibleCount(PAGE_SIZE);
         setError(null);
@@ -113,7 +123,11 @@ export function useCategoryProducts(
     return () => {
       cancelled = true;
     };
-  }, [cacheKey, categoryId, categoryTitle, initialSubcategorySlug, initialOnSaleOnly]);
+  }, [cacheKey, categoryId, categoryTitle, initialSubcategorySlug, initialOnSaleOnly, reloadToken]);
+
+  useNetworkReconnectEffect(() => {
+    retry();
+  });
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
@@ -170,5 +184,6 @@ export function useCategoryProducts(
     hasMore,
     loadMore,
     error,
+    retry,
   };
 };

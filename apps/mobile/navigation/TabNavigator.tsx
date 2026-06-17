@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { CartScreen } from '../screens/CartScreen';
 import { FavoritesScreen } from '../screens/FavoritesScreen';
 import { CategoriesStackNavigator } from './CategoriesStackNavigator';
+import { createCategoriesTabListeners } from './categoriesTabListeners';
 import { HomeScreen } from '../screens/HomeScreen';
 import { ProfileStackNavigator } from './ProfileStackNavigator';
 import { tabItems } from './tabConfig';
@@ -77,7 +78,13 @@ export function TabNavigator() {
           key={tab.name}
           name={tab.name}
           component={screenComponents[tab.name]}
-          options={{ tabBarLabel: tab.label }}
+          options={{
+            tabBarLabel: tab.label,
+            unmountOnBlur: tab.name === 'Categories',
+          }}
+          listeners={
+            tab.name === 'Categories' ? createCategoriesTabListeners : undefined
+          }
         />
       ))}
     </Tab.Navigator>

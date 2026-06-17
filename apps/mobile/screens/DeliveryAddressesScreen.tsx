@@ -29,7 +29,10 @@ import type { ProfileStackParamList } from '../navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 
-type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'DeliveryAddresses'>;
+type NavigationProp = NativeStackNavigationProp<
+  ProfileStackParamList,
+  'DeliveryAddresses'
+>;
 
 const EMPTY_FORM = {
   label: '',
@@ -41,106 +44,106 @@ const EMPTY_FORM = {
 
 export function DeliveryAddressesScreen() {
   const { styles, colors } = useThemedStyles(c => ({
-  layout: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  headerRow: {
-    marginBottom: 16,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: c.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  section: {
-    gap: 12,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  addressList: {
-    gap: 12,
-  },
-  formCard: {
-    backgroundColor: c.card,
-    borderRadius: radius.lg,
-    padding: 16,
-    gap: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 4,
-  },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: c.card,
-  },
-  checkboxChecked: {
-    backgroundColor: c.primary,
-    borderColor: c.primary,
-  },
-  checkboxLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: c.text,
-  },
-  saveButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    backgroundColor: c.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 20,
-    marginTop: 4,
-  },
-  saveDisabled: {
-    opacity: 0.7,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  pressed: {
-    opacity: 0.88,
-  },
-}));
+    layout: {
+      flex: 1,
+    },
+    content: {
+      paddingHorizontal: spacing.screen,
+      paddingBottom: 32,
+    },
+    loadingHeader: {
+      paddingHorizontal: spacing.screen,
+      paddingTop: 8,
+      paddingBottom: 8,
+    },
+    headerRow: {
+      marginBottom: 16,
+    },
+    titleBlock: {
+      marginBottom: 20,
+      gap: 6,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+      lineHeight: 20,
+    },
+    section: {
+      gap: 12,
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    addressList: {
+      gap: 12,
+    },
+    formCard: {
+      backgroundColor: c.card,
+      borderRadius: radius.lg,
+      padding: 16,
+      gap: 16,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 10,
+      elevation: 3,
+    },
+    checkboxRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+      paddingVertical: 4,
+    },
+    checkbox: {
+      width: 22,
+      height: 22,
+      borderRadius: 6,
+      borderWidth: 2,
+      borderColor: '#D1D5DB',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: c.card,
+    },
+    checkboxChecked: {
+      backgroundColor: c.primary,
+      borderColor: c.primary,
+    },
+    checkboxLabel: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: c.text,
+    },
+    saveButton: {
+      minHeight: 52,
+      borderRadius: radius.pill,
+      backgroundColor: c.primary,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      paddingHorizontal: 20,
+      marginTop: 4,
+    },
+    saveDisabled: {
+      opacity: 0.7,
+    },
+    saveButtonText: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    pressed: {
+      opacity: 0.88,
+    },
+  }));
 
   const navigation = useNavigation<NavigationProp>();
   const {
@@ -160,7 +163,8 @@ export function DeliveryAddressesScreen() {
     }
   }, [addresses.length, isHydrated]);
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
-  const [showWarehouseSuggestions, setShowWarehouseSuggestions] = useState(false);
+  const [showWarehouseSuggestions, setShowWarehouseSuggestions] =
+    useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const {
@@ -278,11 +282,13 @@ export function DeliveryAddressesScreen() {
 
       <KeyboardAvoidingView
         style={styles.layout}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.content}>
+          contentContainerStyle={styles.content}
+        >
           <View style={styles.headerRow}>
             <BackButton onPress={() => navigation.goBack()} />
           </View>
@@ -320,7 +326,9 @@ export function DeliveryAddressesScreen() {
                 label="Назва адреси"
                 icon="bookmark-outline"
                 value={form.label}
-                onChangeText={text => setForm(current => ({ ...current, label: text }))}
+                onChangeText={text =>
+                  setForm(current => ({ ...current, label: text }))
+                }
                 placeholder="Наприклад: Дім, Робота"
               />
 
@@ -349,7 +357,11 @@ export function DeliveryAddressesScreen() {
                     setShowWarehouseSuggestions(true);
                   }
                 }}
-                placeholder={form.cityRef ? '№ відділення або вулиця' : 'Спочатку оберіть місто'}
+                placeholder={
+                  form.cityRef
+                    ? '№ відділення або вулиця'
+                    : 'Спочатку оберіть місто'
+                }
                 editable={Boolean(form.cityRef)}
                 suggestions={warehouseSuggestions}
                 isLoading={isWarehouseLoading}
@@ -363,13 +375,28 @@ export function DeliveryAddressesScreen() {
                 accessibilityRole="checkbox"
                 accessibilityState={{ checked: makeDefault }}
                 onPress={() => setMakeDefault(current => !current)}
-                style={({ pressed }) => [styles.checkboxRow, pressed && styles.pressed]}>
-                <View style={[styles.checkbox, makeDefault && styles.checkboxChecked]}>
+                style={({ pressed }) => [
+                  styles.checkboxRow,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <View
+                  style={[
+                    styles.checkbox,
+                    makeDefault && styles.checkboxChecked,
+                  ]}
+                >
                   {makeDefault ? (
-                    <Ionicons name="checkmark" size={14} color={colors.textOnDark} />
+                    <Ionicons
+                      name="checkmark"
+                      size={14}
+                      color={colors.textOnDark}
+                    />
                   ) : null}
                 </View>
-                <Text style={styles.checkboxLabel}>Зробити основною адресою</Text>
+                <Text style={styles.checkboxLabel}>
+                  Зробити основною адресою
+                </Text>
               </Pressable>
 
               <Pressable
@@ -380,8 +407,13 @@ export function DeliveryAddressesScreen() {
                   styles.saveButton,
                   pressed && !isSaving && styles.pressed,
                   isSaving && styles.saveDisabled,
-                ]}>
-                <Ionicons name="add-circle-outline" size={18} color={colors.textOnDark} />
+                ]}
+              >
+                <Ionicons
+                  name="add-circle-outline"
+                  size={18}
+                  color={colors.textOnDark}
+                />
                 <Text style={styles.saveButtonText}>Зберегти адресу</Text>
               </Pressable>
             </View>
@@ -391,4 +423,3 @@ export function DeliveryAddressesScreen() {
     </Screen>
   );
 }
-

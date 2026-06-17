@@ -9,8 +9,9 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
+import { LoadingState } from '../components/LoadingState';
+import { OfflineState } from '../components/OfflineState';
 import { AppTabBar } from '../components/navigation/AppTabBar';
 import { AddToCartButton } from '../components/product/AddToCartButton';
 import { ProductCategoryLabel } from '../components/product/ProductCategoryLabel';
@@ -27,6 +28,7 @@ import { useViewedProducts } from '../context/ViewedProductsContext';
 import { showErrorToast, showToast } from '../context/ToastContext';
 import { radius, spacing } from '../constants/theme';
 import { useProductScreen } from '../hooks/useProductScreen';
+import { useNetwork } from '../context/NetworkContext';
 import type { RootStackParamList } from '../navigation/types';
 import type { HomeProduct } from '../types/catalog';
 import { errorMessages } from '../utils/errors';
@@ -38,61 +40,65 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Product'>;
 
 export function ProductScreen({ route, navigation }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
-  layout: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  pressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.96 }],
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: c.textOnDark,
-    lineHeight: 28,
-    marginBottom: 12,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 24,
-  },
-  favoriteButton: {
-    flex: 1,
-    minHeight: 48,
-    borderRadius: radius.pill,
-    backgroundColor: c.card,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 12,
-  },
-  favoriteButtonActive: {
-    backgroundColor: c.primary,
-  },
-  favoriteText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: c.text,
-  },
-  favoriteTextActive: {
-    color: c.textOnDark,
-  },
-}));
+    layout: {
+      flex: 1,
+    },
+    content: {
+      paddingHorizontal: spacing.screen,
+      paddingTop: 16,
+      paddingBottom: 16,
+    },
+    pressed: {
+      opacity: 0.85,
+      transform: [{ scale: 0.96 }],
+    },
+    title: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: c.textOnDark,
+      lineHeight: 28,
+      marginBottom: 12,
+    },
+    actions: {
+      flexDirection: 'row',
+      gap: 10,
+      marginBottom: 24,
+    },
+    favoriteButton: {
+      flex: 1,
+      minHeight: 48,
+      borderRadius: radius.pill,
+      backgroundColor: c.card,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      paddingHorizontal: 12,
+    },
+    favoriteButtonActive: {
+      backgroundColor: c.primary,
+    },
+    favoriteText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: c.text,
+    },
+    favoriteTextActive: {
+      color: c.textOnDark,
+    },
+  }));
 
   const { product: preview } = route.params;
-  const { product, related, isLoading, error } = useProductScreen(preview.handle);
+  const { isOffline } = useNetwork();
+  const { product, related, isLoading, error, retry } = useProductScreen(
+    preview.handle,
+  );
   const displayProduct = product ?? previewToProductDetail(preview);
   const showBlockingLoader = isLoading && !product;
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addViewedProduct } = useViewedProducts();
-  const { totalQuantity, addToCart, removeFromCart, isInCart, items } = useCart();
+  const { totalQuantity, addToCart, removeFromCart, isInCart, items } =
+    useCart();
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
 
   useEffect(() => {
@@ -190,15 +196,18 @@ export function ProductScreen({ route, navigation }: Props) {
         cartCount={totalQuantity}
       />
 
-      {showBlockingLoader ? (
+      {showBlockingLoader && isOffline && !product ? (
+        <OfflineState onRetry={retry} />
+      ) : showBlockingLoader ? (
         <LoadingState />
       ) : error && !product ? (
-        <ErrorState message={error ?? 'Товар не знайдено'} />
+        <ErrorState message={error ?? 'Товар не знайдено'} onRetry={retry} />
       ) : (
         <View style={styles.layout}>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.content}>
+            contentContainerStyle={styles.content}
+          >
             <ProductImageCard
               title={displayProduct.title}
               images={displayProduct.images}
@@ -234,17 +243,25 @@ export function ProductScreen({ route, navigation }: Props) {
                   styles.favoriteButton,
                   isFavorite(displayProduct.id) && styles.favoriteButtonActive,
                   pressed && styles.pressed,
-                ]}>
+                ]}
+              >
                 <Ionicons
-                  name={isFavorite(displayProduct.id) ? 'heart' : 'heart-outline'}
+                  name={
+                    isFavorite(displayProduct.id) ? 'heart' : 'heart-outline'
+                  }
                   size={22}
-                  color={isFavorite(displayProduct.id) ? colors.textOnDark : colors.text}
+                  color={
+                    isFavorite(displayProduct.id)
+                      ? colors.textOnDark
+                      : colors.text
+                  }
                 />
                 <Text
                   style={[
                     styles.favoriteText,
                     isFavorite(displayProduct.id) && styles.favoriteTextActive,
-                  ]}>
+                  ]}
+                >
                   {isFavorite(displayProduct.id) ? 'В обраному' : 'В обране'}
                 </Text>
               </Pressable>
@@ -273,4 +290,3 @@ export function ProductScreen({ route, navigation }: Props) {
     </Screen>
   );
 }
-

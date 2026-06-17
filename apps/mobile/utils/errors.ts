@@ -1,6 +1,7 @@
 export const errorMessages = {
   noInternet:
     'Немає з\'єднання з інтернетом. Перевірте мережу та спробуйте ще раз.',
+  connectionRestored: 'З\'єднання відновлено',
   outOfStock: 'Цей товар зараз недоступний для замовлення',
   addToCartFailed: 'Не вдалося додати товар у кошик',
   invalidProduct: 'Товар недоступний',

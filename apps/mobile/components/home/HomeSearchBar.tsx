@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, Text, TextInput, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { radius } from '../../constants/theme';
 import { useProductSearch } from '../../hooks/useProductSearch';
@@ -13,42 +13,47 @@ type Props = {
 
 export function HomeSearchBar({ onProductPress }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
-  wrapper: {
-    marginBottom: 20,
-  },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    backgroundColor: c.homeSearch,
-    borderRadius: radius.pill,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  input: {
-    flex: 1,
-    fontSize: 15,
-    color: c.textOnDark,
-    paddingVertical: 4,
-  },
-  results: {
-    marginTop: 8,
-    backgroundColor: c.card,
-    borderRadius: radius.md,
-    overflow: 'hidden',
-  },
-  emptyText: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 14,
-    color: c.textMuted,
-    textAlign: 'center',
-  },
-}));
+    wrapper: {
+      marginBottom: 20,
+    },
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      backgroundColor: c.homeSearch,
+      borderRadius: radius.pill,
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+    },
+    input: {
+      flex: 1,
+      fontSize: 15,
+      color: c.textOnDark,
+      paddingVertical: 4,
+    },
+    searchingText: {
+      fontSize: 14,
+      color: c.textOnDarkMuted,
+    },
+    results: {
+      marginTop: 8,
+      backgroundColor: c.card,
+      borderRadius: radius.md,
+      overflow: 'hidden',
+    },
+    emptyText: {
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      fontSize: 14,
+      color: c.textMuted,
+      textAlign: 'center',
+    },
+  }));
 
   const [query, setQuery] = useState('');
   const { results, isSearching } = useProductSearch(query);
-  const showResults = query.trim().length > 0;
+  const trimmedQuery = query.trim();
+  const showResults = trimmedQuery.length > 0 && !isSearching;
 
   const handleProductPress = (product: HomeProduct) => {
     setQuery('');
@@ -62,14 +67,16 @@ export function HomeSearchBar({ onProductPress }: Props) {
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder="Пошук товарів"
+          placeholder={isSearching ? 'Пошук...' : 'Пошук товарів'}
           placeholderTextColor={colors.textOnDarkMuted}
           style={styles.input}
           returnKeyType="search"
           autoCorrect={false}
           autoCapitalize="none"
         />
-        {query.length > 0 ? (
+        {isSearching ? (
+          <Text style={styles.searchingText}>Пошук...</Text>
+        ) : query.length > 0 ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Очистити пошук"
@@ -82,9 +89,7 @@ export function HomeSearchBar({ onProductPress }: Props) {
 
       {showResults ? (
         <View style={styles.results}>
-          {isSearching ? (
-            <Text style={styles.emptyText}>Пошук...</Text>
-          ) : results.length === 0 ? (
+          {results.length === 0 ? (
             <Text style={styles.emptyText}>Нічого не знайдено</Text>
           ) : (
             results.map(product => (
