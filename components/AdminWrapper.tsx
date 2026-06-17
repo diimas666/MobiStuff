@@ -113,6 +113,9 @@ export default function AdminWrapper({
           <Link href="/admin/products" className="text-blue-600 hover:underline">
             📋 Товари
           </Link>
+          <Link href="/admin/promotions" className="text-blue-600 hover:underline">
+            🎯 Акції
+          </Link>
           <Link href="/admin/orders" className="text-blue-600 hover:underline">
             📦 Замовлення
           </Link>

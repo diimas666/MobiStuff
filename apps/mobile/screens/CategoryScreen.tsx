@@ -120,7 +120,7 @@ export function CategoryScreen({ route, navigation }: Props) {
   },
 }));
 
-  const { category, subcategorySlug, subcategoryTitle } = route.params;
+  const { category, subcategorySlug, subcategoryTitle, onSaleOnly } = route.params;
   const catalogSubcategories = useMemo(
     () => getCatalogSubcategories(category.id),
     [category.id],
@@ -141,7 +141,7 @@ export function CategoryScreen({ route, navigation }: Props) {
     isLoadingMore,
     loadMore,
     error,
-  } = useCategoryProducts(category.id, category.title, subcategorySlug);
+  } = useCategoryProducts(category.id, category.title, subcategorySlug, onSaleOnly);
 
   const selectedSubcategorySlug = filters.subcategories[0] ?? null;
 

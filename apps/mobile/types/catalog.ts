@@ -72,42 +72,6 @@ export type ProductDetail = {
   brand?: string;
 };
 
-export type HomeBanner = {
-  id: string;
-  title: string;
-  subtitle: string;
-  cta: string;
-  color: string;
-  emoji: string;
-};
-
-export const homeBanners: HomeBanner[] = [
-  {
-    id: '1',
-    title: 'Знижки до -30%',
-    subtitle: 'На зарядні пристрої',
-    cta: 'До покупок',
-    color: '#E91E8C',
-    emoji: '🔌',
-  },
-  {
-    id: '2',
-    title: 'Новинки',
-    subtitle: 'Чохли для iPhone',
-    cta: 'Дивитись',
-    color: '#7C3AED',
-    emoji: '📱',
-  },
-  {
-    id: '3',
-    title: 'Акція тижня',
-    subtitle: 'Навушники зі знижкою',
-    cta: 'До покупок',
-    color: '#2563EB',
-    emoji: '🎧',
-  },
-];
-
 export function formatPrice(value: number) {
   return `${value.toLocaleString('uk-UA')} ₴`;
 }

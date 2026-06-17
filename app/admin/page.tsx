@@ -85,6 +85,11 @@ export default function AdminPage() {
           Всі товари
         </button>
       </Link>
+      <Link href="/admin/promotions">
+        <button className="bg-gray-200 text-black px-4 py-2 rounded ml-2 cursor-pointer">
+          Акції
+        </button>
+      </Link>
       <Link href="/admin/import">
         <button className="bg-gray-200 text-black px-4 py-2 rounded ml-2 cursor-pointer">
           Import товарів

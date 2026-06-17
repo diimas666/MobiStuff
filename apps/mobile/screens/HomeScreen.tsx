@@ -18,12 +18,12 @@ import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { showErrorToast } from '../context/ToastContext';
 import { useHomeData } from '../hooks/useHomeData';
+import { usePromotions } from '../hooks/usePromotions';
 import type { RootStackParamList, TabParamList } from '../navigation/types';
 import type { HomeProduct } from '../types/catalog';
-import { homeBanners } from '../types/catalog';
+import type { PromoBanner } from '../types/promotion';
 import { useSettings } from '../context/SettingsContext';
 import { addHomeProductToCart } from '../utils/addProductToCart';
-import { openCategoryFlow } from '../utils/openCategoryFlow';
 import { errorMessages } from '../utils/errors';
 
 type HomeNavigationProp = CompositeNavigationProp<
@@ -35,12 +35,31 @@ export function HomeScreen() {
   const { settings } = useSettings();
   const navigation = useNavigation<HomeNavigationProp>();
   const { categories, trending, popular, isLoading, error } = useHomeData();
+  const { promotions } = usePromotions(settings.promoNotifications);
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addToCart, items } = useCart();
 
   const openProduct = (product: HomeProduct) => {
     navigation.navigate('Product', { product });
   };
+
+  const handlePromoPress = useCallback(
+    (banner: PromoBanner) => {
+      navigation.navigate('Categories', {
+        screen: 'Category',
+        params: {
+          category: {
+            id: banner.categorySlug,
+            title: banner.categoryTitle,
+          },
+          subcategorySlug: banner.subcategorySlug,
+          subcategoryTitle: banner.subcategoryTitle,
+          onSaleOnly: banner.linkType === 'on_sale',
+        },
+      });
+    },
+    [navigation],
+  );
 
   const handleAddToCart = useCallback(
     async (product: HomeProduct) => {
@@ -70,22 +89,20 @@ export function HomeScreen() {
           contentContainerStyle={styles.content}>
           <HomeHeader onCartPress={() => navigation.navigate('Cart')} />
           <HomeSearchBar onProductPress={openProduct} />
-          <PromoBannerCarousel
-            items={homeBanners}
-            visible={settings.promoNotifications}
-          />
           <TrendingSlider items={trending} onProductPress={openProduct} />
+          <PromoBannerCarousel
+            items={promotions}
+            visible={settings.promoNotifications}
+            onBannerPress={handlePromoPress}
+          />
           <CategoriesSection
             items={categories}
             onSeeAll={() => navigation.navigate('Categories')}
             onCategoryPress={category =>
-              openCategoryFlow(
-                {
-                  navigate: (screen, params) =>
-                    navigation.navigate('Categories', { screen, params }),
-                },
-                category,
-              )
+              navigation.navigate('Categories', {
+                screen: 'Category',
+                params: { category },
+              })
             }
           />
           <PopularProductsSection

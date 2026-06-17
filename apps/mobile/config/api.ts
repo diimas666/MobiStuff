@@ -37,6 +37,7 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
+  promotions: () => request('/api/promotions'),
 };
 
 export { baseUrl };

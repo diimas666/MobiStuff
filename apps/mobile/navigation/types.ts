@@ -8,6 +8,7 @@ export type CategoriesStackParamList = {
     category: HomeCategory;
     subcategorySlug?: string;
     subcategoryTitle?: string;
+    onSaleOnly?: boolean;
   };
 };
 

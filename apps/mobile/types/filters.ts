@@ -12,6 +12,7 @@ export type CategoryProductFilters = {
   variants: string[];
   priceMin: number | null;
   priceMax: number | null;
+  onSaleOnly?: boolean;
 };
 
 export const defaultCategoryFilters: CategoryProductFilters = {

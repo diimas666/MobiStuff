@@ -158,6 +158,14 @@ export function applyCategoryFilters(
     items = items.filter(({ product }) => product.price <= filters.priceMax!);
   }
 
+  if (filters.onSaleOnly) {
+    items = items.filter(
+      ({ product }) =>
+        (product.discountPercent != null && product.discountPercent > 0) ||
+        (product.oldPrice != null && product.oldPrice > product.price),
+    );
+  }
+
   items.sort((left, right) => {
     switch (filters.sort) {
       case 'oldest':
@@ -197,6 +205,10 @@ export function countActiveFilters(filters: CategoryProductFilters): number {
   }
 
   if (filters.priceMin != null || filters.priceMax != null) {
+    count += 1;
+  }
+
+  if (filters.onSaleOnly) {
     count += 1;
   }
 

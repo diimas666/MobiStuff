@@ -49,6 +49,7 @@ export function useCategoryProducts(
   categoryId: string,
   categoryTitle?: string,
   initialSubcategorySlug?: string,
+  initialOnSaleOnly?: boolean,
 ): CategoryProductsData {
   const cacheKey = `category:v2:${categoryId}`;
   const cachedProducts = getCached<ApiProduct[]>(cacheKey);
@@ -57,6 +58,7 @@ export function useCategoryProducts(
   const [filters, setFilters] = useState<CategoryProductFilters>(() => ({
     ...defaultCategoryFilters,
     subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
+    onSaleOnly: initialOnSaleOnly ?? false,
   }));
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isLoading, setIsLoading] = useState(!cachedProducts);
@@ -72,6 +74,7 @@ export function useCategoryProducts(
       setFilters({
         ...defaultCategoryFilters,
         subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
+        onSaleOnly: initialOnSaleOnly ?? false,
       });
       setVisibleCount(PAGE_SIZE);
       setIsLoading(false);
@@ -110,7 +113,7 @@ export function useCategoryProducts(
     return () => {
       cancelled = true;
     };
-  }, [cacheKey, categoryId, categoryTitle, initialSubcategorySlug]);
+  }, [cacheKey, categoryId, categoryTitle, initialSubcategorySlug, initialOnSaleOnly]);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);

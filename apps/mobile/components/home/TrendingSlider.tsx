@@ -17,6 +17,7 @@ import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const { width: screenWidth } = Dimensions.get('window');
 const slideWidth = screenWidth - spacing.screen * 2;
+const SLIDE_HEIGHT = 168;
 
 type Props = {
   items: HomeProduct[];
@@ -27,6 +28,7 @@ export function TrendingSlider({ items, onProductPress }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
   wrapper: {
     marginBottom: 28,
+    overflow: 'hidden',
   },
   heading: {
     fontSize: 20,
@@ -35,7 +37,7 @@ export function TrendingSlider({ items, onProductPress }: Props) {
     marginBottom: 12,
   },
   slide: {
-    minHeight: 168,
+    height: SLIDE_HEIGHT,
     borderRadius: radius.lg,
     padding: 16,
     flexDirection: 'row',
