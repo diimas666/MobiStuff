@@ -2,8 +2,9 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Linking, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import type { RootStackParamList } from '../navigation/types';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 const privacyPolicyMeta = {
   lastUpdated: '17 червня 2026 року',
@@ -81,8 +82,77 @@ const privacyPolicySections: PrivacySection[] = [
 type Props = NativeStackScreenProps<RootStackParamList, 'PrivacyPolicy'>;
 
 export function PrivacyPolicyScreen({ navigation }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 12,
+    gap: 12,
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: 17,
+    fontWeight: '700',
+    color: c.textOnDark,
+    textAlign: 'center',
+  },
+  headerSpacer: {
+    width: 40,
+  },
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 32,
+    gap: 14,
+  },
+  updated: {
+    fontSize: 13,
+    color: c.textOnDarkMuted,
+    marginBottom: 4,
+  },
+  sectionCard: {
+    backgroundColor: c.card,
+    borderRadius: radius.lg,
+    padding: 16,
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.text,
+  },
+  paragraph: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: c.text,
+  },
+  bulletList: {
+    gap: 4,
+    paddingLeft: 4,
+  },
+  bulletItem: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: c.text,
+  },
+  contactLink: {
+    marginTop: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  contactText: {
+    fontSize: 14,
+    color: c.price,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+}));
+
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
@@ -129,71 +199,3 @@ export function PrivacyPolicyScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 12,
-    gap: 12,
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    textAlign: 'center',
-  },
-  headerSpacer: {
-    width: 40,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-    gap: 14,
-  },
-  updated: {
-    fontSize: 13,
-    color: colors.textOnDarkMuted,
-    marginBottom: 4,
-  },
-  sectionCard: {
-    backgroundColor: colors.card,
-    borderRadius: radius.lg,
-    padding: 16,
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  paragraph: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: colors.text,
-  },
-  bulletList: {
-    gap: 4,
-    paddingLeft: 4,
-  },
-  bulletItem: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: colors.text,
-  },
-  contactLink: {
-    marginTop: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  contactText: {
-    fontSize: 14,
-    color: colors.price,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  pressed: {
-    opacity: 0.85,
-  },
-});

@@ -1,16 +1,51 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import { useProductSearch } from '../../hooks/useProductSearch';
 import type { HomeProduct } from '../../types/catalog';
 import { HomeSearchResultItem } from './HomeSearchResultItem';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   onProductPress?: (product: HomeProduct) => void;
 };
 
 export function HomeSearchBar({ onProductPress }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  wrapper: {
+    marginBottom: 20,
+  },
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: c.homeSearch,
+    borderRadius: radius.pill,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    color: c.textOnDark,
+    paddingVertical: 4,
+  },
+  results: {
+    marginTop: 8,
+    backgroundColor: c.card,
+    borderRadius: radius.md,
+    overflow: 'hidden',
+  },
+  emptyText: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 14,
+    color: c.textMuted,
+    textAlign: 'center',
+  },
+}));
+
   const [query, setQuery] = useState('');
   const { results, isSearching } = useProductSearch(query);
   const showResults = query.trim().length > 0;
@@ -66,36 +101,3 @@ export function HomeSearchBar({ onProductPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    marginBottom: 20,
-  },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    backgroundColor: colors.homeSearch,
-    borderRadius: radius.pill,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  input: {
-    flex: 1,
-    fontSize: 15,
-    color: colors.textOnDark,
-    paddingVertical: 4,
-  },
-  results: {
-    marginTop: 8,
-    backgroundColor: colors.card,
-    borderRadius: radius.md,
-    overflow: 'hidden',
-  },
-  emptyText: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 14,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-});

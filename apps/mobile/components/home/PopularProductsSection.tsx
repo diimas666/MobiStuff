@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { RelatedProductCard } from '../product/RelatedProductCard';
-import { colors } from '../../constants/theme';
 import type { HomeProduct } from '../../types/catalog';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   items: HomeProduct[];
@@ -20,6 +20,22 @@ export function PopularProductsSection({
   isFavorite,
   isInCart,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  section: {
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.textOnDark,
+    marginBottom: 16,
+  },
+  list: {
+    gap: 12,
+    paddingRight: 4,
+  },
+}));
+
   if (items.length === 0) {
     return null;
   }
@@ -47,18 +63,3 @@ export function PopularProductsSection({
   );
 }
 
-const styles = StyleSheet.create({
-  section: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 16,
-  },
-  list: {
-    gap: 12,
-    paddingRight: 4,
-  },
-});

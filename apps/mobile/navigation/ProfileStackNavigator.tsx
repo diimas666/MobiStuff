@@ -4,6 +4,7 @@ import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PaymentMethodsScreen } from '../screens/PaymentMethodsScreen';
 import { ProfileOrdersScreen } from '../screens/ProfileOrdersScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
 import { ViewedProductsScreen } from '../screens/ViewedProductsScreen';
 import type { ProfileStackParamList } from './types';
 
@@ -23,6 +24,7 @@ export function ProfileStackNavigator() {
       <Stack.Screen name="DeliveryAddresses" component={DeliveryAddressesScreen} />
       <Stack.Screen name="PaymentMethods" component={PaymentMethodsScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 }

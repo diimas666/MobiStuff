@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import type { ProductSort } from '../../types/filters';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const CONTROL_SIZE = 44;
 const CONTROL_BORDER = 'rgba(255, 255, 255, 0.2)';
@@ -27,6 +28,64 @@ export function CategoryFilterBar({
   onSortChange,
   onOpenFilters,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  bar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  control: {
+    minWidth: CONTROL_SIZE,
+    height: CONTROL_SIZE,
+    borderRadius: radius.md,
+    backgroundColor: c.homeSurface,
+    borderWidth: 1,
+    borderColor: CONTROL_BORDER,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+  },
+  controlActive: {
+    backgroundColor: c.primary,
+    borderColor: c.primary,
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: c.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  toggles: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginLeft: 'auto',
+  },
+  controlText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: c.textOnDarkMuted,
+  },
+  controlTextActive: {
+    color: c.textOnDark,
+    fontWeight: '600',
+  },
+}));
+
   const dateActive = isDateSort(activeSort);
   const priceActive = isPriceSort(activeSort);
 
@@ -83,60 +142,3 @@ export function CategoryFilterBar({
   );
 }
 
-const styles = StyleSheet.create({
-  bar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-  },
-  control: {
-    minWidth: CONTROL_SIZE,
-    height: CONTROL_SIZE,
-    borderRadius: radius.md,
-    backgroundColor: colors.homeSurface,
-    borderWidth: 1,
-    borderColor: CONTROL_BORDER,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  controlActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  pressed: {
-    opacity: 0.85,
-  },
-  badge: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  toggles: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginLeft: 'auto',
-  },
-  controlText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: colors.textOnDarkMuted,
-  },
-  controlTextActive: {
-    color: colors.textOnDark,
-    fontWeight: '600',
-  },
-});

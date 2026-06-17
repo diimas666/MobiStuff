@@ -7,7 +7,8 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const AUTO_CLOSE_MS = 4000;
 
@@ -17,6 +18,53 @@ type Props = {
 };
 
 export function OrderSuccessModal({ visible, onClose }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: '28%',
+    paddingHorizontal: 32,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 320,
+    backgroundColor: c.card,
+    borderRadius: radius.lg,
+    paddingHorizontal: 28,
+    paddingVertical: 32,
+    alignItems: 'center',
+    gap: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 10,
+  },
+  iconWrap: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: c.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: c.text,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: c.textMuted,
+    textAlign: 'center',
+  },
+}));
+
   const scale = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const textOpacity = useRef(new Animated.Value(0)).current;
@@ -82,49 +130,3 @@ export function OrderSuccessModal({ visible, onClose }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.45)',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingTop: '28%',
-    paddingHorizontal: 32,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 320,
-    backgroundColor: colors.card,
-    borderRadius: radius.lg,
-    paddingHorizontal: 28,
-    paddingVertical: 32,
-    alignItems: 'center',
-    gap: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
-    elevation: 10,
-  },
-  iconWrap: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    lineHeight: 22,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-});

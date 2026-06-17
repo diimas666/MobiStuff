@@ -10,6 +10,7 @@ import {
 import { mergeCartItem, matchesCartLine, removeCartLine } from '../services/cart';
 import { clearStoredCart, loadCart, saveCart } from '../services/cartStorage';
 import type { CartItem, CartItemInput } from '../types/cart';
+import { triggerAddToCartHaptic } from '../utils/hapticFeedback';
 
 export type { CartItem, CartItemInput };
 
@@ -79,6 +80,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch {
       // Кошик у пам'яті залишається, навіть якщо збереження недоступне
     }
+
+    void triggerAddToCartHaptic();
   }, [updateItems]);
 
   const removeFromCart = useCallback(async (productId: string, variant?: string) => {
@@ -97,6 +100,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       ),
     );
     await saveCart(nextItems);
+    void triggerAddToCartHaptic();
   }, [updateItems]);
 
   const decrement = useCallback(async (productId: string, variant?: string) => {

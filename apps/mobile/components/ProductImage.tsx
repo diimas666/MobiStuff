@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { colors, radius } from '../constants/theme';
+import { radius } from '../constants/theme';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type Props = {
   uri?: string;
@@ -16,15 +17,33 @@ export function ProductImage({
   size = 72,
   rounded = radius.md,
   resizeMode = 'cover',
-  backgroundColor = colors.screen,
+  backgroundColor,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  image: {
+    backgroundColor: c.screen,
+  },
+  placeholder: {
+    backgroundColor: c.screen,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeholderText: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: c.textMuted,
+  },
+}));
+
+  const resolvedBackground = backgroundColor ?? colors.screen;
+
   if (uri) {
     return (
       <Image
         source={{ uri }}
         style={[
           styles.image,
-          { width: size, height: size, borderRadius: rounded, backgroundColor },
+          { width: size, height: size, borderRadius: rounded, backgroundColor: resolvedBackground },
         ]}
         resizeMode={resizeMode}
       />
@@ -35,25 +54,10 @@ export function ProductImage({
     <View
       style={[
         styles.placeholder,
-        { width: size, height: size, borderRadius: rounded, backgroundColor },
+        { width: size, height: size, borderRadius: rounded, backgroundColor: resolvedBackground },
       ]}>
       <Text style={styles.placeholderText}>{label.slice(0, 1).toUpperCase()}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  image: {
-    backgroundColor: colors.screen,
-  },
-  placeholder: {
-    backgroundColor: colors.screen,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  placeholderText: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textMuted,
-  },
-});

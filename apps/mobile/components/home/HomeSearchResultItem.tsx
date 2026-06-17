@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ProductImage } from '../ProductImage';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import { formatPrice, type SearchProduct } from '../../types/catalog';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   product: SearchProduct;
@@ -9,6 +10,39 @@ type Props = {
 };
 
 export function HomeSearchResultItem({ product, onPress }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  pressed: {
+    backgroundColor: c.screen,
+  },
+  content: {
+    flex: 1,
+    gap: 2,
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: c.text,
+  },
+  description: {
+    fontSize: 12,
+    color: c.textMuted,
+    lineHeight: 16,
+  },
+  price: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: c.primary,
+    marginTop: 2,
+  },
+}));
+
   return (
     <Pressable
       onPress={onPress}
@@ -29,35 +63,3 @@ export function HomeSearchResultItem({ product, onPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  pressed: {
-    backgroundColor: colors.screen,
-  },
-  content: {
-    flex: 1,
-    gap: 2,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  description: {
-    fontSize: 12,
-    color: colors.textMuted,
-    lineHeight: 16,
-  },
-  price: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.primary,
-    marginTop: 2,
-  },
-});

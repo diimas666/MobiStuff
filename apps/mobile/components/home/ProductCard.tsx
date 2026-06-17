@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ProductImage } from '../ProductImage';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useSettings } from '../../context/SettingsContext';
 import { formatPrice, type HomeProduct } from '../../types/catalog';
 
 type Props = {
@@ -10,15 +11,17 @@ type Props = {
 };
 
 export function ProductCard({ product, onFavoritePress }: Props) {
+  const { colors } = useSettings();
+
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.card }]}>
       <ProductImage uri={product.image} label={product.title} size={72} />
 
       <View style={styles.info}>
-        <Text style={styles.title} numberOfLines={2}>
+        <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
           {product.title}
         </Text>
-        <Text style={styles.price}>{formatPrice(product.price)}</Text>
+        <Text style={[styles.price, { color: colors.price }]}>{formatPrice(product.price)}</Text>
       </View>
 
       <Pressable
@@ -36,7 +39,6 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.card,
     borderRadius: radius.lg,
     padding: 12,
     marginBottom: 12,
@@ -49,14 +51,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontWeight: '600',
-    color: colors.text,
     marginBottom: 8,
     lineHeight: 20,
   },
   price: {
     fontSize: 17,
     fontWeight: '700',
-    color: colors.price,
   },
   favoriteButton: {
     alignSelf: 'flex-start',

@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import { ProductImage } from '../ProductImage';
 import { ProductBadges } from './ProductBadges';
-import { colors, radius, spacing } from '../../constants/theme';
+import { radius, spacing } from '../../constants/theme';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const { width: screenWidth } = Dimensions.get('window');
 const CARD_PADDING = 24;
@@ -31,6 +32,42 @@ export function ProductImageCard({
   isTrending,
   isFeatured,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  card: {
+    backgroundColor: c.card,
+    borderRadius: radius.lg,
+    paddingVertical: CARD_PADDING,
+    paddingHorizontal: CARD_PADDING,
+    marginBottom: 24,
+    overflow: 'hidden',
+  },
+  carousel: {
+    width: slideWidth,
+    alignSelf: 'center',
+  },
+  slide: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: IMAGE_SIZE,
+  },
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 16,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(17, 24, 39, 0.2)',
+  },
+  dotActive: {
+    width: 18,
+    backgroundColor: c.primary,
+  },
+}));
+
   const [activeIndex, setActiveIndex] = useState(0);
   const imageList = useMemo(
     () => (images.length > 0 ? images : [undefined as string | undefined]),
@@ -90,38 +127,3 @@ export function ProductImageCard({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.card,
-    borderRadius: radius.lg,
-    paddingVertical: CARD_PADDING,
-    paddingHorizontal: CARD_PADDING,
-    marginBottom: 24,
-    overflow: 'hidden',
-  },
-  carousel: {
-    width: slideWidth,
-    alignSelf: 'center',
-  },
-  slide: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: IMAGE_SIZE,
-  },
-  dots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 6,
-    marginTop: 16,
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(17, 24, 39, 0.2)',
-  },
-  dotActive: {
-    width: 18,
-    backgroundColor: colors.primary,
-  },
-});

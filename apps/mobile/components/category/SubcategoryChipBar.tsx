@@ -1,6 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import type { CatalogSubcategory } from '../../utils/catalogTree';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   subcategories: CatalogSubcategory[];
@@ -9,6 +10,37 @@ type Props = {
 };
 
 export function SubcategoryChipBar({ subcategories, selectedSlug, onSelect }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  wrap: {
+    marginBottom: 12,
+  },
+  content: {
+    gap: 8,
+    paddingRight: 4,
+  },
+  chip: {
+    maxWidth: 220,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: radius.pill,
+    backgroundColor: c.homeSurface,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.18)',
+  },
+  chipActive: {
+    backgroundColor: c.primary,
+    borderColor: c.primary,
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+  },
+  chipTextActive: {
+    color: c.textOnDark,
+  },
+}));
+
   if (subcategories.length === 0) {
     return null;
   }
@@ -48,33 +80,3 @@ export function SubcategoryChipBar({ subcategories, selectedSlug, onSelect }: Pr
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: {
-    marginBottom: 12,
-  },
-  content: {
-    gap: 8,
-    paddingRight: 4,
-  },
-  chip: {
-    maxWidth: 220,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: radius.pill,
-    backgroundColor: colors.homeSurface,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
-  },
-  chipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  chipText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-  },
-  chipTextActive: {
-    color: colors.textOnDark,
-  },
-});

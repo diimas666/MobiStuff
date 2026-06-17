@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import { formatPrice } from '../../types/catalog';
 import { StockStatusBadge } from './StockStatusBadge';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
+import { useSettings } from '../../context/SettingsContext';
 
 type Props = {
   price: number;
@@ -18,14 +20,62 @@ export function ProductPriceBlock({
   inStock,
   lowStock,
 }: Props) {
-  const hasDiscount = oldPrice != null && oldPrice > price;
+  const { settings } = useSettings();
+  const showDiscount = settings.showDiscountPrices;
+
+  const { styles, colors } = useThemedStyles(c => ({
+  block: {
+    marginBottom: 20,
+  },
+  discountBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: c.homeSurface,
+    borderRadius: radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginBottom: 10,
+  },
+  discountBadgeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: c.priceLight,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  prices: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    flexWrap: 'wrap',
+    gap: 10,
+    flex: 1,
+  },
+  price: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: c.priceLight,
+  },
+  oldPrice: {
+    fontSize: 18,
+    color: c.textOnDarkMuted,
+    textDecorationLine: 'line-through',
+  },
+}));
+
+  const hasDiscount = showDiscount && oldPrice != null && oldPrice > price;
   const percent =
-    discountPercent ??
-    (hasDiscount ? Math.round((1 - price / oldPrice) * 100) : undefined);
+    showDiscount && discountPercent != null
+      ? discountPercent
+      : showDiscount && hasDiscount && oldPrice != null
+        ? Math.round((1 - price / oldPrice) * 100)
+        : undefined;
 
   return (
     <View style={styles.block}>
-      {percent && percent > 0 ? (
+      {showDiscount && percent && percent > 0 ? (
         <View style={styles.discountBadge}>
           <Text style={styles.discountBadgeText}>-{percent}%</Text>
         </View>
@@ -45,44 +95,3 @@ export function ProductPriceBlock({
   );
 }
 
-const styles = StyleSheet.create({
-  block: {
-    marginBottom: 20,
-  },
-  discountBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.homeSurface,
-    borderRadius: radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginBottom: 10,
-  },
-  discountBadgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.priceLight,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  prices: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    flexWrap: 'wrap',
-    gap: 10,
-    flex: 1,
-  },
-  price: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.priceLight,
-  },
-  oldPrice: {
-    fontSize: 18,
-    color: colors.textOnDarkMuted,
-    textDecorationLine: 'line-through',
-  },
-});

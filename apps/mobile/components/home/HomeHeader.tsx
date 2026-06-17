@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { colors } from '../../constants/theme';
 
 type Props = {
@@ -7,6 +8,46 @@ type Props = {
 };
 
 export function HomeHeader({ onCartPress }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  textBlock: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  greeting: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: c.textOnDark,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: c.textOnDarkMuted,
+  },
+  cartButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: c.homeSurface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: c.danger,
+  },
+}));
+
   return (
     <View style={styles.row}>
       <View style={styles.textBlock}>
@@ -26,42 +67,3 @@ export function HomeHeader({ onCartPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  textBlock: {
-    flex: 1,
-    paddingRight: 12,
-  },
-  greeting: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: colors.textOnDarkMuted,
-  },
-  cartButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: colors.homeSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.danger,
-  },
-});

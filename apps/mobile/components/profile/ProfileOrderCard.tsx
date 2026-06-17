@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import type { ComponentProps } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ProductImage } from '../ProductImage';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import {
   formatOrderDate,
   formatOrderPaymentMethod,
@@ -11,21 +11,23 @@ import {
   type StoredOrder,
 } from '../../types/order';
 import { formatPrice } from '../../types/catalog';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
+import type { AppColorPalette } from '../../constants/themePalettes';
 
-type Props = {
-  order: StoredOrder;
-};
-
-type IconName = ComponentProps<typeof Ionicons>['name'];
+type CardStyles = ReturnType<typeof useThemedStyles>['styles'];
 
 function OrderMetaRow({
   icon,
   label,
   value,
+  styles,
+  colors,
 }: {
   icon: IconName;
   label: string;
   value: string;
+  styles: CardStyles;
+  colors: AppColorPalette;
 }) {
   return (
     <View style={styles.metaRow}>
@@ -42,7 +44,189 @@ function OrderMetaRow({
   );
 }
 
+type Props = {
+  order: StoredOrder;
+};
+
+type IconName = ComponentProps<typeof Ionicons>['name'];
+
 export function ProfileOrderCard({ order }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  card: {
+    backgroundColor: c.homeSearch,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    overflow: 'hidden',
+  },
+  topSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 14,
+    gap: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  headerLeft: {
+    flex: 1,
+    gap: 2,
+  },
+  orderLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  orderId: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: radius.pill,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  date: {
+    fontSize: 13,
+    color: c.textOnDarkMuted,
+    flex: 1,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  productsSection: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 10,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  imagesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  imageWrap: {
+    position: 'relative',
+    borderRadius: radius.sm,
+    overflow: 'hidden',
+    backgroundColor: c.card,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+  },
+  qtyBadge: {
+    position: 'absolute',
+    right: 4,
+    bottom: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.72)',
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  qtyText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  moreBadge: {
+    width: 64,
+    height: 64,
+    borderRadius: radius.sm,
+    backgroundColor: c.homeSurface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  moreText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  itemsCount: {
+    fontSize: 13,
+    color: c.textOnDarkMuted,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(45, 184, 75, 0.1)',
+    gap: 12,
+  },
+  totalLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+  },
+  totalValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.priceLight,
+  },
+  detailsSection: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  metaIconWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: c.homeSurface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  metaContent: {
+    flex: 1,
+    gap: 2,
+    paddingTop: 1,
+  },
+  metaLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  metaValue: {
+    fontSize: 14,
+    color: c.textOnDark,
+    lineHeight: 20,
+  },
+}));
+
   const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
   const previewItems = order.items.slice(0, 3);
   const customerName = [order.name, order.lastName].filter(Boolean).join(' ');
@@ -124,17 +308,23 @@ export function ProfileOrderCard({ order }: Props) {
           icon="location-outline"
           label="Доставка"
           value={`${order.city} · ${order.warehouse}`}
+          styles={styles}
+          colors={colors}
         />
         <OrderMetaRow
           icon="card-outline"
           label="Оплата"
           value={formatOrderPaymentMethod(order.paymentMethod)}
+          styles={styles}
+          colors={colors}
         />
         {customerName ? (
           <OrderMetaRow
             icon="person-outline"
             label="Отримувач"
             value={`${customerName} · ${order.phone}`}
+            styles={styles}
+            colors={colors}
           />
         ) : null}
       </View>
@@ -142,178 +332,3 @@ export function ProfileOrderCard({ order }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.homeSearch,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    overflow: 'hidden',
-  },
-  topSection: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 14,
-    gap: 10,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  headerLeft: {
-    flex: 1,
-    gap: 2,
-  },
-  orderLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-  },
-  orderId: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: radius.pill,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  dateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  date: {
-    fontSize: 13,
-    color: colors.textOnDarkMuted,
-    flex: 1,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  productsSection: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 10,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-  },
-  imagesRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  imageWrap: {
-    position: 'relative',
-    borderRadius: radius.sm,
-    overflow: 'hidden',
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
-  },
-  qtyBadge: {
-    position: 'absolute',
-    right: 4,
-    bottom: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.72)',
-    borderRadius: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  qtyText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  moreBadge: {
-    width: 64,
-    height: 64,
-    borderRadius: radius.sm,
-    backgroundColor: colors.homeSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  moreText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  itemsCount: {
-    fontSize: 13,
-    color: colors.textOnDarkMuted,
-  },
-  totalRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'rgba(45, 184, 75, 0.1)',
-    gap: 12,
-  },
-  totalLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-  },
-  totalValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.priceLight,
-  },
-  detailsSection: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  metaIconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: colors.homeSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  metaContent: {
-    flex: 1,
-    gap: 2,
-    paddingTop: 1,
-  },
-  metaLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-  },
-  metaValue: {
-    fontSize: 14,
-    color: colors.textOnDark,
-    lineHeight: 20,
-  },
-});

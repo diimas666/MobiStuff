@@ -25,17 +25,67 @@ import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useViewedProducts } from '../context/ViewedProductsContext';
 import { showErrorToast, showToast } from '../context/ToastContext';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import { useProductScreen } from '../hooks/useProductScreen';
 import type { RootStackParamList } from '../navigation/types';
 import type { HomeProduct } from '../types/catalog';
 import { errorMessages } from '../utils/errors';
 import { previewToProductDetail } from '../utils/productPreview';
 import { addHomeProductToCart } from '../utils/addProductToCart';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Product'>;
 
 export function ProductScreen({ route, navigation }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  layout: {
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
+  pressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.96 }],
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: c.textOnDark,
+    lineHeight: 28,
+    marginBottom: 12,
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 24,
+  },
+  favoriteButton: {
+    flex: 1,
+    minHeight: 48,
+    borderRadius: radius.pill,
+    backgroundColor: c.card,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 12,
+  },
+  favoriteButtonActive: {
+    backgroundColor: c.primary,
+  },
+  favoriteText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: c.text,
+  },
+  favoriteTextActive: {
+    color: c.textOnDark,
+  },
+}));
+
   const { product: preview } = route.params;
   const { product, related, isLoading, error } = useProductScreen(preview.handle);
   const displayProduct = product ?? previewToProductDetail(preview);
@@ -132,7 +182,7 @@ export function ProductScreen({ route, navigation }: Props) {
   const productInCart = isInCart(displayProduct.id, variantKey);
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
       <ProductScreenHeader
         onBack={() => navigation.goBack()}
@@ -224,51 +274,3 @@ export function ProductScreen({ route, navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  layout: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  pressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.96 }],
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    lineHeight: 28,
-    marginBottom: 12,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 24,
-  },
-  favoriteButton: {
-    flex: 1,
-    minHeight: 48,
-    borderRadius: radius.pill,
-    backgroundColor: colors.card,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 12,
-  },
-  favoriteButtonActive: {
-    backgroundColor: colors.primary,
-  },
-  favoriteText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  favoriteTextActive: {
-    color: colors.textOnDark,
-  },
-});

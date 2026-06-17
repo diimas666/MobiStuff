@@ -1,6 +1,7 @@
 import { StyleSheet, TextInput, type TextInputProps } from 'react-native';
-import { colors } from '../../constants/theme';
 import { CheckoutInputShell } from './CheckoutInputShell';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
+import { colors } from '../../constants/theme';
 
 type Props = TextInputProps & {
   label: string;
@@ -20,6 +21,24 @@ export function CheckoutField({
   multiline,
   ...inputProps
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: c.text,
+    paddingVertical: 12,
+    minHeight: 24,
+  },
+  inputMultiline: {
+    width: '100%',
+    minHeight: 80,
+    paddingVertical: 0,
+    fontSize: 15,
+    lineHeight: 22,
+    textAlignVertical: 'top',
+  },
+}));
+
   return (
     <CheckoutInputShell
       label={label}
@@ -48,20 +67,3 @@ export function CheckoutField({
   );
 }
 
-const styles = StyleSheet.create({
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: colors.text,
-    paddingVertical: 12,
-    minHeight: 24,
-  },
-  inputMultiline: {
-    width: '100%',
-    minHeight: 80,
-    paddingVertical: 0,
-    fontSize: 15,
-    lineHeight: 22,
-    textAlignVertical: 'top',
-  },
-});

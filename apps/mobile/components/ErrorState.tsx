@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../constants/theme';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type Props = {
   message?: string;
@@ -8,15 +8,7 @@ type Props = {
 export function ErrorState({
   message = 'Не вдалося завантажити дані. Перевірте інтернет і спробуйте ще раз.',
 }: Props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Помилка</Text>
-      <Text style={styles.message}>{message}</Text>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
+  const { styles, colors } = useThemedStyles(c => ({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -27,12 +19,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: colors.textOnDark,
+    color: c.textOnDark,
   },
   message: {
     fontSize: 14,
-    color: colors.textOnDarkMuted,
+    color: c.textOnDarkMuted,
     textAlign: 'center',
     lineHeight: 20,
   },
-});
+}));
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Помилка</Text>
+      <Text style={styles.message}>{message}</Text>
+    </View>
+  );
+}
+

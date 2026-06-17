@@ -28,7 +28,7 @@ import { OrderSuccessModal } from '../components/checkout/OrderSuccessModal';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { paymentCardNumber } from '../config/payment';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useDeliveryAddresses } from '../context/DeliveryAddressesContext';
 import { useOrders } from '../context/OrdersContext';
@@ -50,10 +50,158 @@ import {
 import { generateOrderId, type StoredOrder } from '../types/order';
 import { getCartTotals } from '../utils/cartTotals';
 import { normalizePhone } from '../utils/checkoutValidation';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Checkout'>;
 
 export function CheckoutScreen({ navigation }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 12,
+    gap: 12,
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '700',
+    color: c.textOnDark,
+    textAlign: 'center',
+  },
+  headerSpacer: {
+    width: 40,
+  },
+  layout: {
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 16,
+    gap: 24,
+  },
+  cardBlock: {
+    padding: 14,
+    borderRadius: radius.sm,
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+    gap: 6,
+  },
+  cardLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: c.textMuted,
+  },
+  cardNumber: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.text,
+    letterSpacing: 1,
+  },
+  cardHint: {
+    fontSize: 12,
+    color: c.textMuted,
+    lineHeight: 17,
+  },
+  selectedPaymentCard: {
+    padding: 14,
+    borderRadius: radius.sm,
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+    gap: 4,
+  },
+  selectedPaymentLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: c.textMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  selectedPaymentValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.text,
+  },
+  selectedPaymentHint: {
+    fontSize: 13,
+    color: c.textMuted,
+    lineHeight: 18,
+  },
+  totalsCard: {
+    backgroundColor: c.card,
+    borderRadius: radius.lg,
+    padding: 18,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  totalLabel: {
+    fontSize: 14,
+    color: c.textMuted,
+  },
+  totalValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: c.text,
+  },
+  grandTotalRow: {
+    marginTop: 4,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: c.screen,
+  },
+  grandTotalLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.text,
+  },
+  grandTotalValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.text,
+  },
+  footer: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: c.homeBackground,
+  },
+  submitButton: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    backgroundColor: c.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 20,
+  },
+  submitDisabled: {
+    opacity: 0.7,
+  },
+  submitText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  pressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.98 }],
+  },
+}));
+
   const insets = useSafeAreaInsets();
   const { items, totalQuantity, clearCart } = useCart();
   const { addOrder } = useOrders();
@@ -309,7 +457,7 @@ export function CheckoutScreen({ navigation }: Props) {
   );
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
@@ -542,149 +690,3 @@ export function CheckoutScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 12,
-    gap: 12,
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    textAlign: 'center',
-  },
-  headerSpacer: {
-    width: 40,
-  },
-  layout: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 16,
-    gap: 24,
-  },
-  cardBlock: {
-    padding: 14,
-    borderRadius: radius.sm,
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1,
-    borderColor: '#BBF7D0',
-    gap: 6,
-  },
-  cardLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.textMuted,
-  },
-  cardNumber: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-    letterSpacing: 1,
-  },
-  cardHint: {
-    fontSize: 12,
-    color: colors.textMuted,
-    lineHeight: 17,
-  },
-  selectedPaymentCard: {
-    padding: 14,
-    borderRadius: radius.sm,
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1,
-    borderColor: '#BBF7D0',
-    gap: 4,
-  },
-  selectedPaymentLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-  },
-  selectedPaymentValue: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  selectedPaymentHint: {
-    fontSize: 13,
-    color: colors.textMuted,
-    lineHeight: 18,
-  },
-  totalsCard: {
-    backgroundColor: colors.card,
-    borderRadius: radius.lg,
-    padding: 18,
-    gap: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  totalRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  totalLabel: {
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-  totalValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  grandTotalRow: {
-    marginTop: 4,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: colors.screen,
-  },
-  grandTotalLabel: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  grandTotalValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  footer: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
-    backgroundColor: colors.homeBackground,
-  },
-  submitButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 20,
-  },
-  submitDisabled: {
-    opacity: 0.7,
-  },
-  submitText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  pressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.98 }],
-  },
-});

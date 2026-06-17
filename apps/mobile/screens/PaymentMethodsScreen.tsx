@@ -14,12 +14,13 @@ import { LoadingState } from '../components/LoadingState';
 import { BackButton } from '../components/navigation/BackButton';
 import { PaymentMethodOptionCard } from '../components/payment/PaymentMethodOptionCard';
 import { Screen } from '../components/Screen';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import { usePaymentMethods } from '../context/PaymentMethodsContext';
 import { showToast } from '../context/ToastContext';
 import type { ProfileStackParamList } from '../navigation/types';
 import type { PaymentMethodType } from '../types/paymentMethods';
 import { PAYMENT_METHOD_META } from '../types/paymentMethods';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'PaymentMethods'>;
 
@@ -32,6 +33,63 @@ const METHOD_ORDER: PaymentMethodType[] = [
 ];
 
 export function PaymentMethodsScreen() {
+  const { styles, colors } = useThemedStyles(c => ({
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 32,
+  },
+  loadingHeader: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  headerRow: {
+    marginBottom: 16,
+  },
+  titleBlock: {
+    marginBottom: 20,
+    gap: 6,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: c.textOnDarkMuted,
+    lineHeight: 20,
+  },
+  section: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  methodList: {
+    gap: 12,
+  },
+  infoCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    padding: 14,
+    borderRadius: radius.md,
+    backgroundColor: c.homeSearch,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  infoText: {
+    flex: 1,
+    fontSize: 13,
+    color: c.textOnDarkMuted,
+    lineHeight: 19,
+  },
+}));
+
   const navigation = useNavigation<NavigationProp>();
   const { defaultMethod, isHydrated, setDefaultMethod } = usePaymentMethods();
 
@@ -50,7 +108,7 @@ export function PaymentMethodsScreen() {
 
   if (!isHydrated) {
     return (
-      <Screen backgroundColor={colors.homeBackground}>
+      <Screen variant="home">
         <StatusBar barStyle="light-content" />
         <View style={styles.loadingHeader}>
           <BackButton onPress={() => navigation.goBack()} />
@@ -61,7 +119,7 @@ export function PaymentMethodsScreen() {
   }
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -105,59 +163,3 @@ export function PaymentMethodsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  headerRow: {
-    marginBottom: 16,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  section: {
-    gap: 12,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  methodList: {
-    gap: 12,
-  },
-  infoCard: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    padding: 14,
-    borderRadius: radius.md,
-    backgroundColor: colors.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  infoText: {
-    flex: 1,
-    fontSize: 13,
-    color: colors.textOnDarkMuted,
-    lineHeight: 19,
-  },
-});

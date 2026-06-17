@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../constants/theme';
 import { getVariantColor } from '../../utils/variantColors';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const LIGHT_COLORS = new Set(['#FFFFFF', '#C0C0C0', '#EAB308']);
 
@@ -11,6 +11,54 @@ type Props = {
 };
 
 export function VariantPicker({ variants, selected, onSelect }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  section: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: c.textOnDarkMuted,
+    marginBottom: 10,
+  },
+  labelValue: {
+    color: c.textOnDark,
+    fontWeight: '600',
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  dotWrap: {
+    padding: 2,
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+  dotRing: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  dotRingSelected: {
+    borderColor: c.primary,
+  },
+  dot: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+  },
+  dotBorder: {
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
+  },
+}));
+
   if (variants.length === 0) {
     return null;
   }
@@ -53,50 +101,3 @@ export function VariantPicker({ variants, selected, onSelect }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  section: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.textOnDarkMuted,
-    marginBottom: 10,
-  },
-  labelValue: {
-    color: colors.textOnDark,
-    fontWeight: '600',
-  },
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  dotWrap: {
-    padding: 2,
-  },
-  pressed: {
-    opacity: 0.85,
-  },
-  dotRing: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  dotRingSelected: {
-    borderColor: colors.primary,
-  },
-  dot: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-  },
-  dotBorder: {
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.35)',
-  },
-});

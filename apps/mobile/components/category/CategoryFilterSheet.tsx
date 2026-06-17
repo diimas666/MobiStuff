@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius, spacing } from '../../constants/theme';
+import { radius, spacing } from '../../constants/theme';
 import {
   defaultCategoryFilters,
   type CategoryProductFilters,
@@ -17,6 +17,10 @@ import {
 import { formatBrandLabel, type FilterOption } from '../../utils/categoryFilters';
 import { FilterAccordion } from './FilterAccordion';
 import { PriceRangeSlider } from './PriceRangeSlider';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
+import type { AppColorPalette } from '../../constants/themePalettes';
+
+type ListStyles = ReturnType<typeof useThemedStyles>['styles'];
 
 type Props = {
   visible: boolean;
@@ -40,10 +44,14 @@ function FilterCheckboxList({
   options,
   selected,
   onToggle,
+  styles,
+  colors,
 }: {
   options: FilterOption[];
   selected: string[];
   onToggle: (value: string) => void;
+  styles: ListStyles;
+  colors: AppColorPalette;
 }) {
   return (
     <>
@@ -54,6 +62,8 @@ function FilterCheckboxList({
           active={selected.includes(option.id)}
           onPress={() => onToggle(option.id)}
           isLast={index === options.length - 1}
+          styles={styles}
+          colors={colors}
         />
       ))}
     </>
@@ -65,11 +75,15 @@ function FilterListOption({
   active,
   onPress,
   isLast,
+  styles,
+  colors,
 }: {
   label: string;
   active: boolean;
   onPress: () => void;
   isLast?: boolean;
+  styles: ListStyles;
+  colors: AppColorPalette;
 }) {
   return (
     <Pressable
@@ -136,6 +150,122 @@ export function CategoryFilterSheet({
   onClose,
   onApply,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  overlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  sheet: {
+    maxHeight: '82%',
+    backgroundColor: c.homeBackground,
+    borderTopLeftRadius: radius.lg,
+    borderTopRightRadius: radius.lg,
+    paddingBottom: 24,
+  },
+  handle: {
+    alignSelf: 'center',
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: c.homeSurface,
+    marginTop: 10,
+    marginBottom: 8,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 12,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 16,
+    gap: 10,
+  },
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  listRowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  listLabel: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '500',
+    color: c.textOnDarkMuted,
+  },
+  listLabelActive: {
+    color: c.textOnDark,
+    fontWeight: '600',
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    borderColor: c.textOnDarkMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxActive: {
+    backgroundColor: c.primary,
+    borderColor: c.primary,
+  },
+  priceBody: {
+    paddingHorizontal: 14,
+    paddingVertical: 16,
+  },
+  footer: {
+    flexDirection: 'row',
+    gap: 12,
+    paddingHorizontal: spacing.screen,
+    paddingTop: 8,
+  },
+  resetButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: radius.pill,
+    backgroundColor: c.homeSurface,
+    alignItems: 'center',
+  },
+  resetText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: c.textOnDark,
+  },
+  applyButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: radius.pill,
+    backgroundColor: c.primary,
+    alignItems: 'center',
+  },
+  applyText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+}));
+
   const [draft, setDraft] = useState<DraftFilters>(() =>
     createDraft(filters, priceBounds),
   );
@@ -216,6 +346,8 @@ export function CategoryFilterSheet({
                   options={brandOptions}
                   selected={draft.brands}
                   onToggle={value => toggleItem('brands', value)}
+                  styles={styles}
+                  colors={colors}
                 />
               </FilterAccordion>
             ) : null}
@@ -228,6 +360,8 @@ export function CategoryFilterSheet({
                   options={subcategoryOptions}
                   selected={draft.subcategories}
                   onToggle={value => toggleItem('subcategories', value)}
+                  styles={styles}
+                  colors={colors}
                 />
               </FilterAccordion>
             ) : null}
@@ -240,6 +374,8 @@ export function CategoryFilterSheet({
                   options={variantFilterOptions}
                   selected={draft.variants}
                   onToggle={value => toggleItem('variants', value)}
+                  styles={styles}
+                  colors={colors}
                 />
               </FilterAccordion>
             ) : null}
@@ -279,118 +415,3 @@ export function CategoryFilterSheet({
   );
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  backdrop: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  sheet: {
-    maxHeight: '82%',
-    backgroundColor: colors.homeBackground,
-    borderTopLeftRadius: radius.lg,
-    borderTopRightRadius: radius.lg,
-    paddingBottom: 24,
-  },
-  handle: {
-    alignSelf: 'center',
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.homeSurface,
-    marginTop: 10,
-    marginBottom: 8,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 12,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 16,
-    gap: 10,
-  },
-  listRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    gap: 12,
-  },
-  listRowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  listLabel: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '500',
-    color: colors.textOnDarkMuted,
-  },
-  listLabelActive: {
-    color: colors.textOnDark,
-    fontWeight: '600',
-  },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 1.5,
-    borderColor: colors.textOnDarkMuted,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkboxActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  priceBody: {
-    paddingHorizontal: 14,
-    paddingVertical: 16,
-  },
-  footer: {
-    flexDirection: 'row',
-    gap: 12,
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-  },
-  resetButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: radius.pill,
-    backgroundColor: colors.homeSurface,
-    alignItems: 'center',
-  },
-  resetText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.textOnDark,
-  },
-  applyButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-  },
-  applyText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  pressed: {
-    opacity: 0.85,
-  },
-});

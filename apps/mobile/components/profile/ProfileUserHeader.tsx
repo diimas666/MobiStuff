@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { colors } from '../../constants/theme';
 
 type Props = {
@@ -31,15 +32,69 @@ export function ProfileUserHeader({
   onGuestPress,
   onSettingsPress,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: 8,
+  },
+  avatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#E5E7EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.textMuted,
+  },
+  info: {
+    flex: 1,
+    gap: 4,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.text,
+  },
+  email: {
+    fontSize: 14,
+    color: c.textMuted,
+  },
+  settingsButton: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pressed: {
+    opacity: 0.72,
+  },
+}));
+
   const content = (
     <>
-      <View style={styles.avatar}>
-        {isGuest ? (
+      {isGuest ? (
+        <View style={styles.avatar}>
           <Ionicons name="person-outline" size={26} color={colors.textMuted} />
-        ) : (
+        </View>
+      ) : onSettingsPress ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Налаштування профілю"
+          onPress={onSettingsPress}
+          style={({ pressed }) => [styles.avatar, pressed && styles.pressed]}>
           <Text style={styles.avatarText}>{getInitials(name)}</Text>
-        )}
-      </View>
+        </Pressable>
+      ) : (
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>{getInitials(name)}</Text>
+        </View>
+      )}
 
       <View style={styles.info}>
         {isGuest ? (
@@ -81,46 +136,3 @@ export function ProfileUserHeader({
   return <View style={styles.header}>{content}</View>;
 }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    marginBottom: 8,
-  },
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#E5E7EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textMuted,
-  },
-  info: {
-    flex: 1,
-    gap: 4,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  email: {
-    fontSize: 14,
-    color: colors.textMuted,
-  },
-  settingsButton: {
-    width: 36,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pressed: {
-    opacity: 0.72,
-  },
-});

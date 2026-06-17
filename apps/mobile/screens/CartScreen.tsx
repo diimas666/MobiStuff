@@ -12,11 +12,12 @@ import { CartListItem } from '../components/cart/CartListItem';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { useCart } from '../context/CartContext';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import type { RootStackParamList, TabParamList } from '../navigation/types';
 import type { CartItem } from '../types/cart';
 import { formatPrice } from '../types/catalog';
 import { getCartTotals } from '../utils/cartTotals';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type CartNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList, 'Cart'>,
@@ -26,6 +27,85 @@ type CartNavigationProp = CompositeNavigationProp<
 type CartRouteProp = RouteProp<TabParamList, 'Cart'>;
 
 export function CartScreen() {
+  const { styles, colors } = useThemedStyles(c => ({
+  layout: {
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 24,
+  },
+  header: {
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: c.textOnDark,
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: c.textOnDarkMuted,
+    marginBottom: 20,
+    lineHeight: 20,
+  },
+  subtitleBold: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: c.textOnDark,
+    marginBottom: 20,
+    lineHeight: 20,
+  },
+  subtitlePrice: {
+    fontWeight: '700',
+    color: c.priceLight,
+  },
+  footer: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: 12,
+    paddingBottom: 24,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: c.homeBackground,
+    gap: 12,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+  },
+  totalValue: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: c.priceLight,
+  },
+  checkoutButton: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    backgroundColor: c.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 20,
+  },
+  checkoutButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  pressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.98 }],
+  },
+}));
+
   const navigation = useNavigation<CartNavigationProp>();
   const route = useRoute<CartRouteProp>();
   const { items, totalQuantity, increment, decrement, removeFromCart } = useCart();
@@ -124,7 +204,7 @@ export function CartScreen() {
   );
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <View style={styles.layout}>
         <FlashList
           data={items}
@@ -159,81 +239,3 @@ export function CartScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  layout: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 24,
-  },
-  header: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    marginBottom: 20,
-    lineHeight: 20,
-  },
-  subtitleBold: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 20,
-    lineHeight: 20,
-  },
-  subtitlePrice: {
-    fontWeight: '700',
-    color: colors.priceLight,
-  },
-  footer: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 12,
-    paddingBottom: 24,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
-    backgroundColor: colors.homeBackground,
-    gap: 12,
-  },
-  totalRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  totalLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-  },
-  totalValue: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: colors.priceLight,
-  },
-  checkoutButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 20,
-  },
-  checkoutButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  pressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.98 }],
-  },
-});

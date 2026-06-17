@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { colors } from '../../constants/theme';
 
 type Badge = {
@@ -19,6 +20,31 @@ export function ProductBadges({
   isTrending,
   isFeatured,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  row: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    zIndex: 2,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    maxWidth: '70%',
+  },
+  badge: {
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: c.textOnDark,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+}));
+
   const badges: Badge[] = [];
 
   if (isNew) {
@@ -68,27 +94,3 @@ export function ProductBadges({
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    position: 'absolute',
-    top: 12,
-    left: 12,
-    zIndex: 2,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    maxWidth: '70%',
-  },
-  badge: {
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
-  },
-});

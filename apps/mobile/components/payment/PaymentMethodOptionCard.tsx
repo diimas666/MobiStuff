@@ -1,8 +1,9 @@
 import type { ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import { PAYMENT_METHOD_META, type PaymentMethodType } from '../../types/paymentMethods';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -19,6 +20,91 @@ export function PaymentMethodOptionCard({
   onPress,
   hidden = false,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 16,
+    borderRadius: radius.lg,
+    backgroundColor: c.card,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardSelected: {
+    borderColor: c.primary,
+    backgroundColor: '#F0FDF4',
+  },
+  pressed: {
+    opacity: 0.88,
+  },
+  iconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: c.screen,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapSelected: {
+    backgroundColor: 'rgba(45, 184, 75, 0.12)',
+  },
+  content: {
+    flex: 1,
+    gap: 4,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.text,
+  },
+  soonBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: radius.pill,
+    backgroundColor: 'rgba(245, 158, 11, 0.14)',
+  },
+  soonBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#D97706',
+  },
+  description: {
+    fontSize: 13,
+    color: c.textMuted,
+    lineHeight: 18,
+  },
+  radio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioSelected: {
+    borderColor: c.primary,
+  },
+  radioDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: c.primary,
+  },
+}));
+
   if (hidden) {
     return null;
   }
@@ -63,87 +149,3 @@ export function PaymentMethodOptionCard({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    padding: 16,
-    borderRadius: radius.lg,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: 'transparent',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  cardSelected: {
-    borderColor: colors.primary,
-    backgroundColor: '#F0FDF4',
-  },
-  pressed: {
-    opacity: 0.88,
-  },
-  iconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: colors.screen,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconWrapSelected: {
-    backgroundColor: 'rgba(45, 184, 75, 0.12)',
-  },
-  content: {
-    flex: 1,
-    gap: 4,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  soonBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(245, 158, 11, 0.14)',
-  },
-  soonBadgeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#D97706',
-  },
-  description: {
-    fontSize: 13,
-    color: colors.textMuted,
-    lineHeight: 18,
-  },
-  radio: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioSelected: {
-    borderColor: colors.primary,
-  },
-  radioDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: colors.primary,
-  },
-});

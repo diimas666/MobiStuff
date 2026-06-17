@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors } from '../constants/theme';
+import { useSettings } from '../context/SettingsContext';
 import { useCart } from '../context/CartContext';
 import { CartScreen } from '../screens/CartScreen';
 import { FavoritesScreen } from '../screens/FavoritesScreen';
@@ -23,10 +23,12 @@ const screenComponents = {
 
 export function TabNavigator() {
   const { totalQuantity } = useCart();
+  const { colors } = useSettings();
   const hasCartItems = totalQuantity > 0;
 
   return (
     <Tab.Navigator
+      sceneContainerStyle={{ backgroundColor: colors.homeBackground }}
       screenOptions={({ route }) => ({
         headerShown: false,
         lazy: true,
@@ -41,8 +43,6 @@ export function TabNavigator() {
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopWidth: 0,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
           height: 72,
           paddingTop: 8,
           elevation: 12,
@@ -67,7 +67,7 @@ export function TabNavigator() {
           return (
             <View style={styles.iconWrap}>
               {icon}
-              <View style={styles.cartBadge} />
+              <View style={[styles.cartBadge, { backgroundColor: colors.danger, borderColor: colors.background }]} />
             </View>
           );
         },
@@ -98,8 +98,6 @@ const styles = StyleSheet.create({
     width: 9,
     height: 9,
     borderRadius: 5,
-    backgroundColor: colors.danger,
     borderWidth: 1.5,
-    borderColor: colors.background,
   },
 });

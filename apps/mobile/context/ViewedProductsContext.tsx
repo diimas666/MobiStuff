@@ -11,6 +11,7 @@ import {
   loadViewedProducts,
   saveViewedProducts,
 } from '../services/viewedProductsStorage';
+import { getSettingsSnapshot } from '../services/settingsStorage';
 import {
   toViewedProductItem,
   type ViewedProductInput,
@@ -67,6 +68,12 @@ export function ViewedProductsProvider({ children }: { children: ReactNode }) {
 
   const addViewedProduct = useCallback(
     async (product: ViewedProductInput) => {
+      const settings = await getSettingsSnapshot();
+
+      if (!settings.saveViewedHistory) {
+        return;
+      }
+
       const nextItem = toViewedProductItem(product);
 
       setItems(current => {

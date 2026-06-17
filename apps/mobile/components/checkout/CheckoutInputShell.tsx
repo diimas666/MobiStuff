@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   label: string;
@@ -28,6 +29,72 @@ export function CheckoutInputShell({
   multiline = false,
   children,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  wrap: {
+    gap: 8,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: c.text,
+    letterSpacing: -0.2,
+  },
+  optional: {
+    fontWeight: '400',
+    color: c.textMuted,
+  },
+  optionalOnly: {
+    fontSize: 13,
+    color: c.textMuted,
+  },
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 52,
+    paddingHorizontal: 14,
+    borderRadius: radius.sm,
+    backgroundColor: '#F3F4F6',
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    gap: 10,
+  },
+  inputBoxMultiline: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    minHeight: 108,
+  },
+  inputBoxFocused: {
+    backgroundColor: '#FFFFFF',
+    borderColor: c.primary,
+  },
+  inputBoxError: {
+    borderColor: c.danger,
+    backgroundColor: '#FEF2F2',
+  },
+  icon: {
+    marginTop: 1,
+  },
+  helperRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  helper: {
+    flex: 1,
+    fontSize: 13,
+    color: c.primaryDark,
+    fontWeight: '500',
+    lineHeight: 18,
+  },
+  error: {
+    fontSize: 13,
+    color: c.danger,
+    lineHeight: 18,
+  },
+}));
+
   const [focused, setFocused] = useState(false);
 
   return (
@@ -75,68 +142,3 @@ export function CheckoutInputShell({
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: {
-    gap: 8,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-    letterSpacing: -0.2,
-  },
-  optional: {
-    fontWeight: '400',
-    color: colors.textMuted,
-  },
-  optionalOnly: {
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-  inputBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: 52,
-    paddingHorizontal: 14,
-    borderRadius: radius.sm,
-    backgroundColor: '#F3F4F6',
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
-    gap: 10,
-  },
-  inputBoxMultiline: {
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    minHeight: 108,
-  },
-  inputBoxFocused: {
-    backgroundColor: '#FFFFFF',
-    borderColor: colors.primary,
-  },
-  inputBoxError: {
-    borderColor: colors.danger,
-    backgroundColor: '#FEF2F2',
-  },
-  icon: {
-    marginTop: 1,
-  },
-  helperRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  helper: {
-    flex: 1,
-    fontSize: 13,
-    color: colors.primaryDark,
-    fontWeight: '500',
-    lineHeight: 18,
-  },
-  error: {
-    fontSize: 13,
-    color: colors.danger,
-    lineHeight: 18,
-  },
-});

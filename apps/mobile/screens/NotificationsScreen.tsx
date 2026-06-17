@@ -9,11 +9,12 @@ import { LoadingState } from '../components/LoadingState';
 import { BackButton } from '../components/navigation/BackButton';
 import { NotificationListItem } from '../components/notification/NotificationListItem';
 import { Screen } from '../components/Screen';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import { useNotifications } from '../context/NotificationsContext';
 import type { ProfileStackParamList, RootStackParamList, TabParamList } from '../navigation/types';
 import type { NotificationItem } from '../types/notification';
 import { groupNotificationsByDate } from '../utils/groupNotificationsByDate';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type NavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<ProfileStackParamList, 'Notifications'>,
@@ -24,6 +25,91 @@ type NavigationProp = CompositeNavigationProp<
 >;
 
 export function NotificationsScreen() {
+  const { styles, colors } = useThemedStyles(c => ({
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 32,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  markAllButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: radius.pill,
+    backgroundColor: c.homeSearch,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  markAllText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: c.textOnDark,
+  },
+  titleBlock: {
+    marginBottom: 20,
+    gap: 6,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: c.textOnDarkMuted,
+    lineHeight: 20,
+  },
+  groups: {
+    gap: 20,
+  },
+  group: {
+    gap: 12,
+  },
+  groupLabel: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  groupList: {
+    gap: 12,
+  },
+  emptyCard: {
+    backgroundColor: c.card,
+    borderRadius: radius.lg,
+    padding: 24,
+    alignItems: 'center',
+    gap: 10,
+  },
+  emptyIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#F0FDF4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: c.text,
+    textAlign: 'center',
+  },
+  emptyText: {
+    fontSize: 14,
+    color: c.textMuted,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+  pressed: {
+    opacity: 0.88,
+  },
+}));
+
   const navigation = useNavigation<NavigationProp>();
   const {
     items,
@@ -68,7 +154,7 @@ export function NotificationsScreen() {
   );
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
       <ScrollView
@@ -133,87 +219,3 @@ export function NotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  markAllButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: radius.pill,
-    backgroundColor: colors.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  markAllText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.textOnDark,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  groups: {
-    gap: 20,
-  },
-  group: {
-    gap: 12,
-  },
-  groupLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  groupList: {
-    gap: 12,
-  },
-  emptyCard: {
-    backgroundColor: colors.card,
-    borderRadius: radius.lg,
-    padding: 24,
-    alignItems: 'center',
-    gap: 10,
-  },
-  emptyIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#F0FDF4',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text,
-    textAlign: 'center',
-  },
-  emptyText: {
-    fontSize: 14,
-    color: colors.textMuted,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-  pressed: {
-    opacity: 0.88,
-  },
-});

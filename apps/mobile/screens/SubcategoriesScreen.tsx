@@ -5,8 +5,9 @@ import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import type { CategoriesStackParamList } from '../navigation/types';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 import {
   getCatalogSubcategories,
   type CatalogSubcategory,
@@ -15,6 +16,87 @@ import {
 type Props = NativeStackScreenProps<CategoriesStackParamList, 'Subcategories'>;
 
 export function SubcategoriesScreen({ route, navigation }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 12,
+  },
+  headerText: {
+    flex: 1,
+    paddingTop: 2,
+  },
+  eyebrow: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginBottom: 4,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: c.textOnDark,
+    lineHeight: 30,
+  },
+  allRow: {
+    marginHorizontal: spacing.screen,
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: radius.md,
+    backgroundColor: c.homeSurface,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  allTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: c.textOnDarkMuted,
+    marginBottom: 8,
+    paddingHorizontal: spacing.screen,
+  },
+  list: {
+    paddingBottom: 24,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    paddingVertical: 14,
+    paddingHorizontal: spacing.screen,
+  },
+  rowTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+    color: c.textOnDark,
+    lineHeight: 22,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: c.homeSurface,
+    marginLeft: spacing.screen,
+    marginRight: spacing.screen,
+  },
+  pressed: {
+    opacity: 0.88,
+  },
+}));
+
   const { category } = route.params;
   const subcategories = getCatalogSubcategories(category.id);
 
@@ -49,7 +131,7 @@ export function SubcategoriesScreen({ route, navigation }: Props) {
   const itemSeparator = useCallback(() => <View style={styles.separator} />, []);
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
@@ -85,83 +167,3 @@ export function SubcategoriesScreen({ route, navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 12,
-  },
-  headerText: {
-    flex: 1,
-    paddingTop: 2,
-  },
-  eyebrow: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-    marginBottom: 4,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    lineHeight: 30,
-  },
-  allRow: {
-    marginHorizontal: spacing.screen,
-    marginBottom: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: radius.md,
-    backgroundColor: colors.homeSurface,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  allTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.textOnDarkMuted,
-    marginBottom: 8,
-    paddingHorizontal: spacing.screen,
-  },
-  list: {
-    paddingBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: spacing.screen,
-  },
-  rowTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-    color: colors.textOnDark,
-    lineHeight: 22,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: colors.homeSurface,
-    marginLeft: spacing.screen,
-    marginRight: spacing.screen,
-  },
-  pressed: {
-    opacity: 0.88,
-  },
-});

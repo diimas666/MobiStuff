@@ -19,7 +19,7 @@ import { CategoryFilterBar } from '../components/category/CategoryFilterBar';
 import { CategoryFilterSheet } from '../components/category/CategoryFilterSheet';
 import { SubcategoryChipBar } from '../components/category/SubcategoryChipBar';
 import { RelatedProductCard } from '../components/product/RelatedProductCard';
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { showErrorToast } from '../context/ToastContext';
@@ -30,6 +30,7 @@ import { addHomeProductToCart } from '../utils/addProductToCart';
 import { countActiveFilters } from '../utils/categoryFilters';
 import { getCatalogSubcategories } from '../utils/catalogTree';
 import { errorMessages } from '../utils/errors';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type CategoryNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<CategoriesStackParamList, 'Category'>,
@@ -77,6 +78,48 @@ const CategoryProductCard = memo(function CategoryProductCard({
 });
 
 export function CategoryScreen({ route, navigation }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  list: {
+    paddingHorizontal: spacing.screen - GRID_GAP / 2,
+    paddingBottom: 32,
+  },
+  headerBody: {
+    paddingHorizontal: GRID_GAP / 2,
+  },
+  gridItem: {
+    flex: 1,
+    paddingHorizontal: GRID_GAP / 2,
+    marginBottom: GRID_GAP,
+  },
+  count: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: c.textOnDarkMuted,
+    marginBottom: 12,
+  },
+  listFooter: {
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  empty: {
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+    gap: 8,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: c.textOnDarkMuted,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+}));
+
   const { category, subcategorySlug, subcategoryTitle } = route.params;
   const catalogSubcategories = useMemo(
     () => getCatalogSubcategories(category.id),
@@ -222,7 +265,7 @@ export function CategoryScreen({ route, navigation }: Props) {
   );
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
       {isLoading && displayedProducts.length === 0 ? (
         <LoadingState label="Завантаження товарів..." />
@@ -261,44 +304,3 @@ export function CategoryScreen({ route, navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    paddingHorizontal: spacing.screen - GRID_GAP / 2,
-    paddingBottom: 32,
-  },
-  headerBody: {
-    paddingHorizontal: GRID_GAP / 2,
-  },
-  gridItem: {
-    flex: 1,
-    paddingHorizontal: GRID_GAP / 2,
-    marginBottom: GRID_GAP,
-  },
-  count: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.textOnDarkMuted,
-    marginBottom: 12,
-  },
-  listFooter: {
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-  empty: {
-    alignItems: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 24,
-    gap: 8,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-});

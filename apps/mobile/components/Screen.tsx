@@ -1,24 +1,30 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../constants/theme';
+import { useSettings } from '../context/SettingsContext';
 
 type Props = {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
   backgroundColor?: string;
+  variant?: 'home' | 'default';
 };
 
 /** Базовая оболочка экрана: safe area сверху + фон. Паддинги — внутри экрана (ScrollView). */
 export function Screen({
   children,
   style,
-  backgroundColor = colors.screen,
+  backgroundColor,
+  variant = 'default',
 }: Props) {
+  const { colors } = useSettings();
+  const resolvedBackground =
+    backgroundColor ?? (variant === 'home' ? colors.homeBackground : colors.screen);
+
   return (
     <SafeAreaView
       edges={['top']}
-      style={[styles.screen, { backgroundColor }, style]}>
+      style={[styles.screen, { backgroundColor: resolvedBackground }, style]}>
       {children}
     </SafeAreaView>
   );

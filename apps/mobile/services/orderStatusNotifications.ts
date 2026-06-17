@@ -1,4 +1,5 @@
 import { appendNotification, loadNotifications } from './notificationsStorage';
+import { getSettingsSnapshot } from '../services/settingsStorage';
 import { getOrderStatusLabel, normalizeOrderStatus, type StoredOrder } from '../types/order';
 import type { OrderStatus } from '../types/order';
 
@@ -35,6 +36,12 @@ export async function notifyOrderStatusChanges(
   before: StoredOrder[],
   after: StoredOrder[],
 ): Promise<void> {
+  const settings = await getSettingsSnapshot();
+
+  if (!settings.orderStatusNotifications) {
+    return;
+  }
+
   const beforeById = new Map(before.map(order => [order.id, order]));
 
   for (const order of after) {

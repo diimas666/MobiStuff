@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   title: string;
@@ -16,6 +17,54 @@ export function FilterAccordion({
   defaultExpanded = false,
   children,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  accordion: {
+    borderRadius: radius.md,
+    backgroundColor: c.homeSurface,
+    overflow: 'hidden',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    gap: 12,
+  },
+  title: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
+    color: c.textOnDark,
+  },
+  meta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  badge: {
+    minWidth: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: c.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  body: {
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+}));
+
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
@@ -48,50 +97,3 @@ export function FilterAccordion({
   );
 }
 
-const styles = StyleSheet.create({
-  accordion: {
-    borderRadius: radius.md,
-    backgroundColor: colors.homeSurface,
-    overflow: 'hidden',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    gap: 12,
-  },
-  title: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.textOnDark,
-  },
-  meta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  badge: {
-    minWidth: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 6,
-  },
-  badgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  body: {
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  pressed: {
-    opacity: 0.85,
-  },
-});

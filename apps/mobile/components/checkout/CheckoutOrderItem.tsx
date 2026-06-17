@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { ProductImage } from '../ProductImage';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import type { CartItem } from '../../types/cart';
 import { formatPrice } from '../../types/catalog';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const IMAGE_SIZE = 72;
 
@@ -12,6 +13,59 @@ type Props = {
 };
 
 export function CheckoutOrderItem({ item, isLast = false }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+    paddingBottom: 14,
+  },
+  rowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+    marginBottom: 14,
+  },
+  imageWrap: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: radius.sm,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  content: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: 'space-between',
+    paddingVertical: 2,
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: c.text,
+    lineHeight: 20,
+  },
+  variant: {
+    fontSize: 13,
+    color: c.textMuted,
+    marginTop: 2,
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  qty: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: c.textMuted,
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.text,
+  },
+}));
+
   const lineTotal = item.price * item.quantity;
 
   return (
@@ -40,55 +94,3 @@ export function CheckoutOrderItem({ item, isLast = false }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    gap: 12,
-    paddingBottom: 14,
-  },
-  rowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-    marginBottom: 14,
-  },
-  imageWrap: {
-    backgroundColor: '#F3F4F6',
-    borderRadius: radius.sm,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  content: {
-    flex: 1,
-    minWidth: 0,
-    justifyContent: 'space-between',
-    paddingVertical: 2,
-  },
-  title: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.text,
-    lineHeight: 20,
-  },
-  variant: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginTop: 2,
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 8,
-  },
-  qty: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.textMuted,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-  },
-});

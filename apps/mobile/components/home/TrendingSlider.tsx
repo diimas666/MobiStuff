@@ -11,8 +11,9 @@ import {
   View,
 } from 'react-native';
 import { ProductImage } from '../ProductImage';
-import { colors, radius, spacing } from '../../constants/theme';
+import { radius, spacing } from '../../constants/theme';
 import { formatPrice, type HomeProduct } from '../../types/catalog';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const { width: screenWidth } = Dimensions.get('window');
 const slideWidth = screenWidth - spacing.screen * 2;
@@ -23,6 +24,107 @@ type Props = {
 };
 
 export function TrendingSlider({ items, onProductPress }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  wrapper: {
+    marginBottom: 28,
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.textOnDark,
+    marginBottom: 12,
+  },
+  slide: {
+    minHeight: 168,
+    borderRadius: radius.lg,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    backgroundColor: c.homeSearch,
+    overflow: 'hidden',
+  },
+  wave: {
+    position: 'absolute',
+    left: -40,
+    right: -40,
+    top: -40,
+    bottom: -40,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderRadius: 999,
+    transform: [{ scaleX: 1.4 }],
+  },
+  imageBox: {
+    width: 120,
+    height: 120,
+    borderRadius: radius.md,
+    backgroundColor: c.card,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    flex: 1,
+  },
+  badge: {
+    alignSelf: 'flex-start',
+    fontSize: 11,
+    fontWeight: '700',
+    color: c.textOnDark,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.textOnDark,
+    marginBottom: 6,
+    lineHeight: 21,
+  },
+  price: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.priceLight,
+    marginBottom: 12,
+  },
+  cta: {
+    alignSelf: 'flex-start',
+    backgroundColor: c.card,
+    borderRadius: radius.pill,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  ctaPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.95 }],
+  },
+  ctaText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: c.text,
+  },
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 12,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,0.35)',
+  },
+  dotActive: {
+    width: 18,
+    backgroundColor: c.textOnDark,
+  },
+}));
+
   const [activeIndex, setActiveIndex] = useState(0);
   const listRef = useRef<FlashListRef<HomeProduct>>(null);
   const isJumping = useRef(false);
@@ -210,103 +312,3 @@ export function TrendingSlider({ items, onProductPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    marginBottom: 28,
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 12,
-  },
-  slide: {
-    minHeight: 168,
-    borderRadius: radius.lg,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    backgroundColor: colors.homeSearch,
-    overflow: 'hidden',
-  },
-  wave: {
-    position: 'absolute',
-    left: -40,
-    right: -40,
-    top: -40,
-    bottom: -40,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 999,
-    transform: [{ scaleX: 1.4 }],
-  },
-  imageBox: {
-    width: 120,
-    height: 120,
-    borderRadius: radius.md,
-    backgroundColor: colors.card,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-    flex: 1,
-  },
-  badge: {
-    alignSelf: 'flex-start',
-    fontSize: 11,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: radius.pill,
-    marginBottom: 8,
-    overflow: 'hidden',
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 6,
-    lineHeight: 21,
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.priceLight,
-    marginBottom: 12,
-  },
-  cta: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.card,
-    borderRadius: radius.pill,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  ctaPressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.95 }],
-  },
-  ctaText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  dots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 6,
-    marginTop: 12,
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.35)',
-  },
-  dotActive: {
-    width: 18,
-    backgroundColor: colors.textOnDark,
-  },
-});

@@ -1,22 +1,15 @@
-export const colors = {
-  primary: '#2DB84B',
-  primaryDark: '#1F8F3A',
-  text: '#111827',
-  textMuted: '#9CA3AF',
-  textOnDark: '#FFFFFF',
-  textOnDarkMuted: 'rgba(255, 255, 255, 0.72)',
-  background: '#FFFFFF',
-  screen: '#F9FAFB',
-  homeBackground: '#1B4332',
-  homeSurface: 'rgba(255, 255, 255, 0.12)',
-  homeSearch: 'rgba(0, 0, 0, 0.22)',
-  card: '#FFFFFF',
-  price: '#6EE7A0',
-  priceLight: '#86EFAC',
-  danger: '#EF4444',
-  bannerStart: '#E91E8C',
-  bannerEnd: '#7C3AED',
-};
+import type { AppColorPalette } from './themePalettes';
+import { lightColors } from './themePalettes';
+
+export type { AppColorPalette };
+
+export const colors: Record<keyof AppColorPalette, string> = { ...lightColors };
+
+export function applyThemePalette(palette: AppColorPalette): void {
+  (Object.keys(palette) as Array<keyof AppColorPalette>).forEach(key => {
+    colors[key] = palette[key];
+  });
+}
 
 export const spacing = {
   screen: 16,

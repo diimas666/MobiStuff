@@ -20,13 +20,14 @@ import { DeliveryAddressCard } from '../components/delivery/DeliveryAddressCard'
 import { LoadingState } from '../components/LoadingState';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import { useDeliveryAddresses } from '../context/DeliveryAddressesContext';
 import { showToast } from '../context/ToastContext';
 import { useNovaPoshtaCities } from '../hooks/useNovaPoshtaCities';
 import { useNovaPoshtaWarehouses } from '../hooks/useNovaPoshtaWarehouses';
 import type { ProfileStackParamList } from '../navigation/types';
 import { useNavigation } from '@react-navigation/native';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'DeliveryAddresses'>;
 
@@ -39,6 +40,108 @@ const EMPTY_FORM = {
 };
 
 export function DeliveryAddressesScreen() {
+  const { styles, colors } = useThemedStyles(c => ({
+  layout: {
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: 32,
+  },
+  loadingHeader: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  headerRow: {
+    marginBottom: 16,
+  },
+  titleBlock: {
+    marginBottom: 20,
+    gap: 6,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: c.textOnDarkMuted,
+    lineHeight: 20,
+  },
+  section: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  addressList: {
+    gap: 12,
+  },
+  formCard: {
+    backgroundColor: c.card,
+    borderRadius: radius.lg,
+    padding: 16,
+    gap: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 4,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: c.card,
+  },
+  checkboxChecked: {
+    backgroundColor: c.primary,
+    borderColor: c.primary,
+  },
+  checkboxLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: c.text,
+  },
+  saveButton: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    backgroundColor: c.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 20,
+    marginTop: 4,
+  },
+  saveDisabled: {
+    opacity: 0.7,
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  pressed: {
+    opacity: 0.88,
+  },
+}));
+
   const navigation = useNavigation<NavigationProp>();
   const {
     addresses,
@@ -159,7 +262,7 @@ export function DeliveryAddressesScreen() {
 
   if (!isHydrated) {
     return (
-      <Screen backgroundColor={colors.homeBackground}>
+      <Screen variant="home">
         <StatusBar barStyle="light-content" />
         <View style={styles.loadingHeader}>
           <BackButton onPress={() => navigation.goBack()} />
@@ -170,7 +273,7 @@ export function DeliveryAddressesScreen() {
   }
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
       <KeyboardAvoidingView
@@ -289,104 +392,3 @@ export function DeliveryAddressesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  layout: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.screen,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  headerRow: {
-    marginBottom: 16,
-  },
-  titleBlock: {
-    marginBottom: 20,
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    lineHeight: 20,
-  },
-  section: {
-    gap: 12,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  addressList: {
-    gap: 12,
-  },
-  formCard: {
-    backgroundColor: colors.card,
-    borderRadius: radius.lg,
-    padding: 16,
-    gap: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 4,
-  },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.card,
-  },
-  checkboxChecked: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  checkboxLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  saveButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 20,
-    marginTop: 4,
-  },
-  saveDisabled: {
-    opacity: 0.7,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  pressed: {
-    opacity: 0.88,
-  },
-});

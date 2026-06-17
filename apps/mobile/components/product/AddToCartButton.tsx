@@ -7,7 +7,8 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const ADDED_FEEDBACK_MS = 1500;
 
@@ -26,6 +27,38 @@ export function AddToCartButton({
   onRemove,
   style,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  button: {
+    flex: 1.4,
+    minHeight: 48,
+    borderRadius: radius.pill,
+    backgroundColor: c.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
+  buttonInCart: {
+    backgroundColor: c.primaryDark,
+  },
+  pressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.96 }],
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  text: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+}));
+
   const [isLoading, setIsLoading] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
 
@@ -93,34 +126,3 @@ export function AddToCartButton({
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    flex: 1.4,
-    minHeight: 48,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-  },
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-  buttonInCart: {
-    backgroundColor: colors.primaryDark,
-  },
-  pressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.96 }],
-  },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  text: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-});

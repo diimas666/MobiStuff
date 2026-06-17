@@ -1,5 +1,7 @@
-import { Pressable, StyleSheet, Text, View, type ReactNode } from 'react-native';
-import { colors, radius } from '../../constants/theme';
+import type { ReactNode } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { radius } from '../../constants/theme';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   label: string;
@@ -18,6 +20,59 @@ export function CheckoutRadioRow({
   leading,
   trailing,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    minHeight: 64,
+    borderRadius: radius.sm,
+    borderWidth: 1.5,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
+  },
+  rowSelected: {
+    borderColor: c.primary,
+    backgroundColor: '#F0FDF4',
+  },
+  pressed: {
+    opacity: 0.92,
+  },
+  content: {
+    flex: 1,
+    gap: 2,
+  },
+  label: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: c.text,
+  },
+  hint: {
+    fontSize: 13,
+    color: c.textMuted,
+  },
+  radio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioSelected: {
+    borderColor: c.primary,
+  },
+  radioDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: c.primary,
+  },
+}));
+
   return (
     <Pressable
       accessibilityRole="radio"
@@ -41,55 +96,3 @@ export function CheckoutRadioRow({
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    minHeight: 64,
-    borderRadius: radius.sm,
-    borderWidth: 1.5,
-    borderColor: '#E5E7EB',
-    backgroundColor: '#F9FAFB',
-  },
-  rowSelected: {
-    borderColor: colors.primary,
-    backgroundColor: '#F0FDF4',
-  },
-  pressed: {
-    opacity: 0.92,
-  },
-  content: {
-    flex: 1,
-    gap: 2,
-  },
-  label: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  hint: {
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-  radio: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioSelected: {
-    borderColor: colors.primary,
-  },
-  radioDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: colors.primary,
-  },
-});

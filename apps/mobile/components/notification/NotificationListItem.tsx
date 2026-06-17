@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import {
   getOrderStatusLabel,
   getOrderStatusLightBadge,
@@ -9,6 +9,7 @@ import {
   ORDER_STATUS_LABELS,
 } from '../../types/order';
 import { getNotificationIcon, type NotificationItem } from '../../types/notification';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   item: NotificationItem;
@@ -40,7 +41,13 @@ function resolveOrderStatus(item: NotificationItem) {
   return entry ? normalizeOrderStatus(entry[0]) : 'processing';
 }
 
-function NotificationBody({ item }: { item: NotificationItem }) {
+function NotificationBody({
+  item,
+  styles,
+}: {
+  item: NotificationItem;
+  styles: ReturnType<typeof useThemedStyles>['styles'];
+}) {
   if (item.type !== 'order_status') {
     return (
       <Text style={styles.body} numberOfLines={3}>
@@ -65,44 +72,12 @@ function NotificationBody({ item }: { item: NotificationItem }) {
 }
 
 export function NotificationListItem({ item, onPress }: Props) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.card,
-        !item.read && styles.cardUnread,
-        pressed && styles.pressed,
-      ]}>
-      <View style={[styles.iconWrap, !item.read && styles.iconWrapUnread]}>
-        <Ionicons
-          name={getNotificationIcon(item.type)}
-          size={20}
-          color={item.read ? colors.textMuted : colors.primary}
-        />
-      </View>
-
-      <View style={styles.content}>
-        <View style={styles.titleRow}>
-          <Text style={[styles.title, !item.read && styles.titleUnread]} numberOfLines={1}>
-            {item.title}
-          </Text>
-          <Text style={styles.time}>{formatNotificationTime(item.createdAt)}</Text>
-        </View>
-        <NotificationBody item={item} />
-      </View>
-
-      {!item.read ? <View style={styles.unreadDot} /> : null}
-    </Pressable>
-  );
-}
-
-const styles = StyleSheet.create({
+  const { styles, colors } = useThemedStyles(c => ({
   card: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 12,
-    backgroundColor: colors.card,
+    backgroundColor: c.card,
     borderRadius: radius.lg,
     padding: 14,
     shadowColor: '#000',
@@ -143,14 +118,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '600',
-    color: colors.text,
+    color: c.text,
   },
   titleUnread: {
     fontWeight: '700',
   },
   time: {
     fontSize: 12,
-    color: colors.textMuted,
+    color: c.textMuted,
   },
   bodyRow: {
     flexDirection: 'row',
@@ -160,7 +135,7 @@ const styles = StyleSheet.create({
   },
   body: {
     fontSize: 14,
-    color: colors.textMuted,
+    color: c.textMuted,
     lineHeight: 20,
   },
   statusBadge: {
@@ -179,7 +154,40 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: colors.primary,
+    backgroundColor: c.primary,
     marginTop: 6,
   },
-});
+}));
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.card,
+        !item.read && styles.cardUnread,
+        pressed && styles.pressed,
+      ]}>
+      <View style={[styles.iconWrap, !item.read && styles.iconWrapUnread]}>
+        <Ionicons
+          name={getNotificationIcon(item.type)}
+          size={20}
+          color={item.read ? colors.textMuted : colors.primary}
+        />
+      </View>
+
+      <View style={styles.content}>
+        <View style={styles.titleRow}>
+          <Text style={[styles.title, !item.read && styles.titleUnread]} numberOfLines={1}>
+            {item.title}
+          </Text>
+          <Text style={styles.time}>{formatNotificationTime(item.createdAt)}</Text>
+        </View>
+        <NotificationBody item={item} styles={styles} />
+      </View>
+
+      {!item.read ? <View style={styles.unreadDot} /> : null}
+    </Pressable>
+  );
+}
+

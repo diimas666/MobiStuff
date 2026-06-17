@@ -1,6 +1,7 @@
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { baseUrl } from '../../config/api';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const PRIVACY_POLICY_URL = `${baseUrl}/privacy`;
 
@@ -17,6 +18,61 @@ export function CheckoutConsentCheckbox({
   onOpenPolicy,
   showError,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  wrapper: {
+    gap: 6,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    padding: 14,
+    borderRadius: radius.sm,
+    backgroundColor: c.card,
+  },
+  checkboxHit: {
+    paddingTop: 1,
+  },
+  pressed: {
+    opacity: 0.92,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    borderColor: c.primary,
+    backgroundColor: c.primary,
+  },
+  checkmark: {
+    color: c.textOnDark,
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 16,
+  },
+  text: {
+    flex: 1,
+    fontSize: 13,
+    lineHeight: 19,
+    color: c.text,
+  },
+  link: {
+    color: c.primary,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
+  error: {
+    fontSize: 12,
+    color: c.danger,
+    paddingHorizontal: 4,
+  },
+}));
+
   const openPrivacyPolicy = () => {
     if (onOpenPolicy) {
       onOpenPolicy();
@@ -57,57 +113,3 @@ export function CheckoutConsentCheckbox({
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    gap: 6,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    padding: 14,
-    borderRadius: radius.sm,
-    backgroundColor: colors.card,
-  },
-  checkboxHit: {
-    paddingTop: 1,
-  },
-  pressed: {
-    opacity: 0.92,
-  },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#D1D5DB',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkboxChecked: {
-    borderColor: colors.primary,
-    backgroundColor: colors.primary,
-  },
-  checkmark: {
-    color: colors.textOnDark,
-    fontSize: 14,
-    fontWeight: '700',
-    lineHeight: 16,
-  },
-  text: {
-    flex: 1,
-    fontSize: 13,
-    lineHeight: 19,
-    color: colors.text,
-  },
-  link: {
-    color: colors.primary,
-    fontWeight: '600',
-    textDecorationLine: 'underline',
-  },
-  error: {
-    fontSize: 12,
-    color: colors.danger,
-    paddingHorizontal: 4,
-  },
-});

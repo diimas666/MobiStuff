@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { CompositeNavigationProp } from '@react-navigation/native';
-import { ScrollView, StatusBar, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { Screen } from '../components/Screen';
@@ -12,13 +12,16 @@ import { HomeHeader } from '../components/home/HomeHeader';
 import { HomeSearchBar } from '../components/home/HomeSearchBar';
 import { PopularProductsSection } from '../components/home/PopularProductsSection';
 import { TrendingSlider } from '../components/home/TrendingSlider';
-import { colors, spacing } from '../constants/theme';
+import { PromoBannerCarousel } from '../components/home/PromoBannerCarousel';
+import { spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { showErrorToast } from '../context/ToastContext';
 import { useHomeData } from '../hooks/useHomeData';
 import type { RootStackParamList, TabParamList } from '../navigation/types';
 import type { HomeProduct } from '../types/catalog';
+import { homeBanners } from '../types/catalog';
+import { useSettings } from '../context/SettingsContext';
 import { addHomeProductToCart } from '../utils/addProductToCart';
 import { openCategoryFlow } from '../utils/openCategoryFlow';
 import { errorMessages } from '../utils/errors';
@@ -29,6 +32,7 @@ type HomeNavigationProp = CompositeNavigationProp<
 >;
 
 export function HomeScreen() {
+  const { settings } = useSettings();
   const navigation = useNavigation<HomeNavigationProp>();
   const { categories, trending, popular, isLoading, error } = useHomeData();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -55,8 +59,7 @@ export function HomeScreen() {
   );
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
-      <StatusBar barStyle="light-content" />
+    <Screen variant="home">
       {isLoading ? (
         <LoadingState />
       ) : error ? (
@@ -67,6 +70,10 @@ export function HomeScreen() {
           contentContainerStyle={styles.content}>
           <HomeHeader onCartPress={() => navigation.navigate('Cart')} />
           <HomeSearchBar onProductPress={openProduct} />
+          <PromoBannerCarousel
+            items={homeBanners}
+            visible={settings.promoNotifications}
+          />
           <TrendingSlider items={trending} onProductPress={openProduct} />
           <CategoriesSection
             items={categories}

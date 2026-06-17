@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 import {
   LayoutChangeEvent,
   PanResponder,
@@ -7,7 +8,6 @@ import {
   View,
   type PanResponderGestureState,
 } from 'react-native';
-import { colors } from '../../constants/theme';
 
 const THUMB_SIZE = 24;
 const TRACK_HEIGHT = 4;
@@ -33,6 +33,47 @@ export function PriceRangeSlider({
   onChange,
   step = 50,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  wrapper: {
+    gap: 16,
+  },
+  labels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  priceLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: c.textOnDarkMuted,
+  },
+  trackContainer: {
+    height: THUMB_SIZE,
+    justifyContent: 'center',
+  },
+  track: {
+    height: TRACK_HEIGHT,
+    borderRadius: TRACK_HEIGHT / 2,
+    backgroundColor: c.homeSurface,
+  },
+  range: {
+    position: 'absolute',
+    height: TRACK_HEIGHT,
+    borderRadius: TRACK_HEIGHT / 2,
+    backgroundColor: c.primary,
+  },
+  thumb: {
+    position: 'absolute',
+    width: THUMB_SIZE,
+    height: THUMB_SIZE,
+    borderRadius: THUMB_SIZE / 2,
+    backgroundColor: c.textOnDark,
+    borderWidth: 2,
+    borderColor: c.primary,
+    top: 0,
+  },
+}));
+
   const trackWidthRef = useRef(0);
   const [trackWidth, setTrackWidth] = useState(0);
   const valuesRef = useRef({ from, to, min, max });
@@ -135,43 +176,3 @@ export function PriceRangeSlider({
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    gap: 16,
-  },
-  labels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  priceLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.textOnDarkMuted,
-  },
-  trackContainer: {
-    height: THUMB_SIZE,
-    justifyContent: 'center',
-  },
-  track: {
-    height: TRACK_HEIGHT,
-    borderRadius: TRACK_HEIGHT / 2,
-    backgroundColor: colors.homeSurface,
-  },
-  range: {
-    position: 'absolute',
-    height: TRACK_HEIGHT,
-    borderRadius: TRACK_HEIGHT / 2,
-    backgroundColor: colors.primary,
-  },
-  thumb: {
-    position: 'absolute',
-    width: THUMB_SIZE,
-    height: THUMB_SIZE,
-    borderRadius: THUMB_SIZE / 2,
-    backgroundColor: colors.textOnDark,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    top: 0,
-  },
-});

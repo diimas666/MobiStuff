@@ -2,8 +2,9 @@ import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, radius } from '../constants/theme';
+import { radius } from '../constants/theme';
 import type { ToastPayload } from '../context/ToastContext';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type Props = {
   toast: ToastPayload | null;
@@ -15,13 +16,47 @@ const iconByType = {
   success: 'checkmark-circle',
 } as const;
 
-const accentByType = {
-  error: colors.danger,
-  info: colors.priceLight,
-  success: colors.primary,
-} as const;
-
 export function Toast({ toast }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  host: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    zIndex: 9999,
+    elevation: 12,
+  },
+  toast: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#102A20',
+    borderRadius: radius.md,
+    borderLeftWidth: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+  },
+  icon: {
+    marginTop: 1,
+    marginRight: 10,
+  },
+  message: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '500',
+    color: c.textOnDark,
+  },
+}));
+
+  const accentByType = {
+    error: colors.danger,
+    info: colors.priceLight,
+    success: colors.primary,
+  } as const;
+
   const insets = useSafeAreaInsets();
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(12)).current;
@@ -72,36 +107,3 @@ export function Toast({ toast }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  host: {
-    position: 'absolute',
-    left: 16,
-    right: 16,
-    zIndex: 9999,
-    elevation: 12,
-  },
-  toast: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: '#102A20',
-    borderRadius: radius.md,
-    borderLeftWidth: 4,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-  },
-  icon: {
-    marginTop: 1,
-    marginRight: 10,
-  },
-  message: {
-    flex: 1,
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: '500',
-    color: colors.textOnDark,
-  },
-});

@@ -1,7 +1,8 @@
 import type { ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useSettings } from '../../context/SettingsContext';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -20,6 +21,8 @@ export function ProfileMenuItem({
   badge,
   showChevron = true,
 }: Props) {
+  const { colors } = useSettings();
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -29,11 +32,11 @@ export function ProfileMenuItem({
         <Ionicons name={icon} size={22} color={colors.textMuted} />
       </View>
 
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
 
       {badge != null ? (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{badge}</Text>
+        <View style={[styles.badge, { backgroundColor: colors.primary }]}>
+          <Text style={[styles.badgeText, { color: colors.textOnDark }]}>{badge}</Text>
         </View>
       ) : showChevron ? (
         <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
@@ -60,13 +63,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: '500',
-    color: colors.text,
   },
   badge: {
     minWidth: 24,
     height: 24,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 7,
@@ -74,6 +75,5 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 12,
     fontWeight: '700',
-    color: colors.textOnDark,
   },
 });

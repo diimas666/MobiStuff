@@ -7,12 +7,14 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileMenuItem } from '../components/profile/ProfileMenuItem';
 import { ProfileUserHeader } from '../components/profile/ProfileUserHeader';
 import { Screen } from '../components/Screen';
-import { colors, radius, spacing } from '../constants/theme';
+import { radius, spacing } from '../constants/theme';
 import { useNotifications } from '../context/NotificationsContext';
 import { useOrders } from '../context/OrdersContext';
+import { useSettings } from '../context/SettingsContext';
 import { showToast } from '../context/ToastContext';
 import type { ProfileStackParamList, TabParamList } from '../navigation/types';
 import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type ProfileNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<ProfileStackParamList, 'ProfileMain'>,
@@ -20,9 +22,64 @@ type ProfileNavigationProp = CompositeNavigationProp<
 >;
 
 export function ProfileScreen() {
+  const { styles, colors } = useThemedStyles(c => ({
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.screen,
+    paddingTop: 8,
+    paddingBottom: 32,
+  },
+  card: {
+    borderRadius: 28,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 4,
+  },
+  menu: {
+    marginTop: 12,
+    marginBottom: 20,
+  },
+  logoutButton: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  loginButton: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    backgroundColor: c.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: c.danger,
+  },
+  loginText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  pressed: {
+    opacity: 0.82,
+  },
+}));
+
   const navigation = useNavigation<ProfileNavigationProp>();
   const { unreadCount, refreshNotifications } = useNotifications();
   const { refreshOrders } = useOrders();
+  const { colors: themeColors } = useSettings();
   const [displayName, setDisplayName] = useState('');
   const [displayEmail, setDisplayEmail] = useState('');
   const [hasProfile, setHasProfile] = useState(false);
@@ -66,8 +123,8 @@ export function ProfileScreen() {
   }, []);
 
   const openSettings = useCallback(() => {
-    showToast('Налаштування незабаром будуть доступні', 'info');
-  }, []);
+    navigation.navigate('Settings');
+  }, [navigation]);
 
   const openOrders = useCallback(() => {
     navigation.navigate('ProfileOrders');
@@ -104,13 +161,13 @@ export function ProfileScreen() {
   }, []);
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-        <View style={styles.card}>
+        <View style={[styles.card, { backgroundColor: themeColors.card }]}>
           <ProfileUserHeader
             isGuest={!hasProfile}
             name={displayName}
@@ -158,7 +215,7 @@ export function ProfileScreen() {
               onPress={openSettings}
             />
             <ProfileMenuItem
-              icon="settings-outline"
+              icon="chatbubble-ellipses-outline"
               label="Підтримка"
               showChevron={false}
               onPress={() => openComingSoon('Підтримка')}
@@ -186,57 +243,3 @@ export function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 32,
-  },
-  card: {
-    backgroundColor: colors.card,
-    borderRadius: 28,
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-  menu: {
-    marginTop: 12,
-    marginBottom: 20,
-  },
-  logoutButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  loginButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.danger,
-  },
-  loginText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  pressed: {
-    opacity: 0.82,
-  },
-});

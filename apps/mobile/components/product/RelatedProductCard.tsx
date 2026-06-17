@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ProductImage } from '../ProductImage';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
+import { useSettings } from '../../context/SettingsContext';
 import { formatPrice, type HomeProduct } from '../../types/catalog';
 
 const DEFAULT_CARD_WIDTH = 156;
@@ -27,10 +28,12 @@ export function RelatedProductCard({
   isFavorite = false,
   isInCart = false,
 }: Props) {
+  const { colors } = useSettings();
   const imageSize = Math.round(width * 0.85);
+
   return (
-    <View style={[styles.card, { width }, style]}>
-      <View style={styles.imageWrap}>
+    <View style={[styles.card, { width, backgroundColor: colors.homeSearch }, style]}>
+      <View style={[styles.imageWrap, { backgroundColor: colors.card }]}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={product.title}
@@ -50,7 +53,11 @@ export function RelatedProductCard({
           accessibilityRole="button"
           accessibilityLabel={isFavorite ? 'Видалити з обраного' : 'Додати в обране'}
           onPress={() => onFavoritePress?.(product)}
-          style={({ pressed }) => [styles.favoriteButton, pressed && styles.favoriteButtonPressed]}
+          style={({ pressed }) => [
+            styles.favoriteButton,
+            { backgroundColor: colors.card },
+            pressed && styles.favoriteButtonPressed,
+          ]}
           hitSlop={8}>
           <Ionicons
             name={isFavorite ? 'heart' : 'heart-outline'}
@@ -65,18 +72,22 @@ export function RelatedProductCard({
         accessibilityLabel={product.title}
         onPress={onPress}
         style={({ pressed }) => [pressed && styles.titlePressed]}>
-        <Text style={styles.title} numberOfLines={2}>
+        <Text style={[styles.title, { color: colors.textOnDark }]} numberOfLines={2}>
           {product.title}
         </Text>
       </Pressable>
 
       <View style={styles.footer}>
-        <Text style={styles.price}>{formatPrice(product.price)}</Text>
+        <Text style={[styles.price, { color: colors.priceLight }]}>{formatPrice(product.price)}</Text>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={isInCart ? 'Товар у кошику' : 'Додати в кошик'}
           onPress={() => onAddToCartPress?.(product)}
-          style={({ pressed }) => [styles.cartButton, pressed && styles.cartButtonPressed]}
+          style={({ pressed }) => [
+            styles.cartButton,
+            { backgroundColor: colors.primary },
+            pressed && styles.cartButtonPressed,
+          ]}
           hitSlop={8}>
           <Ionicons
             name={isInCart ? 'checkmark' : 'cart-outline'}
@@ -93,13 +104,11 @@ export const relatedProductCardWidth = DEFAULT_CARD_WIDTH;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.homeSearch,
     borderRadius: radius.lg,
     padding: 10,
   },
   imageWrap: {
     position: 'relative',
-    backgroundColor: colors.card,
     borderRadius: radius.md,
     padding: 8,
     alignItems: 'center',
@@ -120,7 +129,6 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -139,7 +147,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.textOnDark,
     lineHeight: 18,
     minHeight: 36,
     marginBottom: 8,
@@ -153,14 +160,12 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 15,
     fontWeight: '700',
-    color: colors.priceLight,
     flex: 1,
   },
   cartButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,

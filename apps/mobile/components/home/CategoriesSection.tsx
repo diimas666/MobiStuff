@@ -1,7 +1,8 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ProductImage } from '../ProductImage';
-import { colors, radius } from '../../constants/theme';
+import { radius } from '../../constants/theme';
 import type { HomeCategory } from '../../types/catalog';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 type Props = {
   items: HomeCategory[];
@@ -14,6 +15,53 @@ export function CategoriesSection({
   onSeeAll,
   onCategoryPress,
 }: Props) {
+  const { styles, colors } = useThemedStyles(c => ({
+  section: {
+    marginBottom: 28,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: c.textOnDark,
+  },
+  link: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: c.textOnDarkMuted,
+  },
+  list: {
+    gap: 12,
+    paddingRight: 4,
+  },
+  card: {
+    width: 88,
+    alignItems: 'center',
+  },
+  imageBox: {
+    width: 72,
+    height: 72,
+    borderRadius: radius.md,
+    backgroundColor: c.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  label: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: c.textOnDark,
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+}));
+
   return (
     <View style={styles.section}>
       <View style={styles.header}>
@@ -50,49 +98,3 @@ export function CategoriesSection({
   );
 }
 
-const styles = StyleSheet.create({
-  section: {
-    marginBottom: 28,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  link: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.textOnDarkMuted,
-  },
-  list: {
-    gap: 12,
-    paddingRight: 4,
-  },
-  card: {
-    width: 88,
-    alignItems: 'center',
-  },
-  imageBox: {
-    width: 72,
-    height: 72,
-    borderRadius: radius.md,
-    backgroundColor: colors.card,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-    overflow: 'hidden',
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: colors.textOnDark,
-    textAlign: 'center',
-    lineHeight: 16,
-  },
-});

@@ -10,7 +10,7 @@ import { Screen } from '../components/Screen';
 import { FavoritesEmptyState } from '../components/favorites/FavoritesEmptyState';
 import { BackButton } from '../components/navigation/BackButton';
 import { RelatedProductCard } from '../components/product/RelatedProductCard';
-import { colors, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { showErrorToast } from '../context/ToastContext';
@@ -19,6 +19,7 @@ import { formatPrice, type HomeProduct } from '../types/catalog';
 import type { FavoriteItem } from '../types/favorites';
 import { addHomeProductToCart } from '../utils/addProductToCart';
 import { errorMessages } from '../utils/errors';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type FavoritesNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList, 'Favorites'>,
@@ -44,6 +45,68 @@ function toHomeProduct(item: FavoriteItem): HomeProduct {
 }
 
 export function FavoritesScreen() {
+  const { styles, colors } = useThemedStyles(c => ({
+  list: {
+    paddingHorizontal: spacing.screen - GRID_GAP / 2,
+    paddingBottom: 32,
+  },
+  loadingHeader: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  header: {
+    paddingHorizontal: GRID_GAP / 2,
+    paddingTop: 8,
+    paddingBottom: 16,
+  },
+  backRow: {
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: c.textOnDark,
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: c.textOnDarkMuted,
+    lineHeight: 20,
+    marginBottom: 14,
+  },
+  summaryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 16,
+    backgroundColor: c.homeSearch,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    marginBottom: 8,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: c.textOnDarkMuted,
+  },
+  summaryValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: c.priceLight,
+  },
+  gridItem: {
+    flex: 1,
+    paddingHorizontal: GRID_GAP / 2,
+    marginBottom: GRID_GAP,
+  },
+  emptyWrap: {
+    paddingHorizontal: GRID_GAP / 2,
+    paddingTop: 8,
+  },
+}));
+
   const navigation = useNavigation<FavoritesNavigationProp>();
   const route = useRoute<FavoritesRouteProp>();
   const { items, isHydrated, isFavorite, toggleFavorite } = useFavorites();
@@ -166,7 +229,7 @@ export function FavoritesScreen() {
 
   if (!isHydrated) {
     return (
-      <Screen backgroundColor={colors.homeBackground}>
+      <Screen variant="home">
         <StatusBar barStyle="light-content" />
         {showBackButton ? (
           <View style={styles.loadingHeader}>
@@ -179,7 +242,7 @@ export function FavoritesScreen() {
   }
 
   return (
-    <Screen backgroundColor={colors.homeBackground}>
+    <Screen variant="home">
       <StatusBar barStyle="light-content" />
       <FlashList
         data={items}
@@ -195,64 +258,3 @@ export function FavoritesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  list: {
-    paddingHorizontal: spacing.screen - GRID_GAP / 2,
-    paddingBottom: 32,
-  },
-  loadingHeader: {
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  header: {
-    paddingHorizontal: GRID_GAP / 2,
-    paddingTop: 8,
-    paddingBottom: 16,
-  },
-  backRow: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    lineHeight: 20,
-    marginBottom: 14,
-  },
-  summaryCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderRadius: 16,
-    backgroundColor: colors.homeSearch,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    marginBottom: 8,
-  },
-  summaryLabel: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-  },
-  summaryValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.priceLight,
-  },
-  gridItem: {
-    flex: 1,
-    paddingHorizontal: GRID_GAP / 2,
-    marginBottom: GRID_GAP,
-  },
-  emptyWrap: {
-    paddingHorizontal: GRID_GAP / 2,
-    paddingTop: 8,
-  },
-});
