@@ -23,6 +23,7 @@ import { VariantPicker } from '../components/product/VariantPicker';
 import { Screen } from '../components/Screen';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
+import { useViewedProducts } from '../context/ViewedProductsContext';
 import { showErrorToast, showToast } from '../context/ToastContext';
 import { colors, radius, spacing } from '../constants/theme';
 import { useProductScreen } from '../hooks/useProductScreen';
@@ -40,8 +41,19 @@ export function ProductScreen({ route, navigation }: Props) {
   const displayProduct = product ?? previewToProductDetail(preview);
   const showBlockingLoader = isLoading && !product;
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { addViewedProduct } = useViewedProducts();
   const { totalQuantity, addToCart, removeFromCart, isInCart, items } = useCart();
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+
+  useEffect(() => {
+    void addViewedProduct({
+      id: preview.id,
+      handle: preview.handle,
+      title: preview.title,
+      price: preview.price,
+      image: preview.image,
+    });
+  }, [addViewedProduct, preview.id]);
 
   useEffect(() => {
     if (product?.variants.length) {

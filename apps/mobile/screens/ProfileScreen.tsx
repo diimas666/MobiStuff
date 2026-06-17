@@ -69,7 +69,13 @@ export function ProfileScreen() {
   }, [navigation]);
 
   const openFavorites = useCallback(() => {
-    navigation.navigate('Favorites');
+    navigation.navigate('Favorites', {
+      returnTo: { tab: 'Profile', screen: 'ProfileMain' },
+    });
+  }, [navigation]);
+
+  const openViewedProducts = useCallback(() => {
+    navigation.navigate('ViewedProducts');
   }, [navigation]);
 
   const openComingSoon = useCallback((label: string) => {
@@ -110,7 +116,7 @@ export function ProfileScreen() {
             <ProfileMenuItem
               icon="eye-outline"
               label="Переглянуті товари"
-              onPress={() => openComingSoon('Переглянуті товари')}
+              onPress={openViewedProducts}
             />
             <ProfileMenuItem
               icon="location-outline"

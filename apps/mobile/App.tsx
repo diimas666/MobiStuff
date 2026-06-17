@@ -6,6 +6,7 @@ import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { OrdersProvider } from './context/OrdersContext';
 import { ToastProvider } from './context/ToastContext';
+import { ViewedProductsProvider } from './context/ViewedProductsContext';
 import { RootNavigator } from './navigation/RootNavigator';
 
 enableScreens(true);
@@ -16,7 +17,8 @@ function App() {
   return (
     <SafeAreaProvider>
       <ToastProvider>
-        <FavoritesProvider>
+        <ViewedProductsProvider>
+          <FavoritesProvider>
           <OrdersProvider>
             <CartProvider>
               <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
@@ -25,7 +27,8 @@ function App() {
               </NavigationContainer>
             </CartProvider>
           </OrdersProvider>
-        </FavoritesProvider>
+          </FavoritesProvider>
+        </ViewedProductsProvider>
       </ToastProvider>
     </SafeAreaProvider>
   );

@@ -1,5 +1,5 @@
-import type { CompositeNavigationProp } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+import type { CompositeNavigationProp, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlashList } from '@shopify/flash-list';
@@ -8,6 +8,7 @@ import { Dimensions, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { LoadingState } from '../components/LoadingState';
 import { Screen } from '../components/Screen';
 import { FavoritesEmptyState } from '../components/favorites/FavoritesEmptyState';
+import { BackButton } from '../components/navigation/BackButton';
 import { RelatedProductCard } from '../components/product/RelatedProductCard';
 import { colors, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
@@ -23,6 +24,8 @@ type FavoritesNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList, 'Favorites'>,
   NativeStackNavigationProp<RootStackParamList>
 >;
+
+type FavoritesRouteProp = RouteProp<TabParamList, 'Favorites'>;
 
 const { width: screenWidth } = Dimensions.get('window');
 const GRID_GAP = 12;
@@ -42,8 +45,26 @@ function toHomeProduct(item: FavoriteItem): HomeProduct {
 
 export function FavoritesScreen() {
   const navigation = useNavigation<FavoritesNavigationProp>();
+  const route = useRoute<FavoritesRouteProp>();
   const { items, isHydrated, isFavorite, toggleFavorite } = useFavorites();
   const { addToCart, items: cartItems } = useCart();
+  const showBackButton = Boolean(route.params?.returnTo);
+
+  const handleBack = useCallback(() => {
+    const returnTo = route.params?.returnTo;
+
+    if (returnTo?.tab === 'Profile') {
+      navigation.setParams({ returnTo: undefined });
+      navigation.navigate('Profile', {
+        screen: returnTo.screen ?? 'ProfileMain',
+      });
+      return;
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }, [navigation, route.params?.returnTo]);
 
   const totalValue = useMemo(
     () => items.reduce((sum, item) => sum + item.price, 0),
@@ -105,6 +126,11 @@ export function FavoritesScreen() {
   const listHeader = useCallback(
     () => (
       <View style={styles.header}>
+        {showBackButton ? (
+          <View style={styles.backRow}>
+            <BackButton onPress={handleBack} />
+          </View>
+        ) : null}
         <Text style={styles.title}>Обране</Text>
         {items.length > 0 ? (
           <>
@@ -126,7 +152,7 @@ export function FavoritesScreen() {
         )}
       </View>
     ),
-    [items.length, totalValue],
+    [handleBack, items.length, showBackButton, totalValue],
   );
 
   const listEmpty = useCallback(
@@ -142,6 +168,11 @@ export function FavoritesScreen() {
     return (
       <Screen backgroundColor={colors.homeBackground}>
         <StatusBar barStyle="light-content" />
+        {showBackButton ? (
+          <View style={styles.loadingHeader}>
+            <BackButton onPress={handleBack} />
+          </View>
+        ) : null}
         <LoadingState label="Завантаження обраного..." />
       </Screen>
     );
@@ -169,10 +200,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.screen - GRID_GAP / 2,
     paddingBottom: 32,
   },
+  loadingHeader: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
   header: {
     paddingHorizontal: GRID_GAP / 2,
     paddingTop: 8,
     paddingBottom: 16,
+  },
+  backRow: {
+    marginBottom: 16,
   },
   title: {
     fontSize: 28,

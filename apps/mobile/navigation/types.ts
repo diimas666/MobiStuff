@@ -14,6 +14,7 @@ export type CategoriesStackParamList = {
 export type ProfileStackParamList = {
   ProfileMain: undefined;
   ProfileOrders: undefined;
+  ViewedProducts: undefined;
 };
 
 export type RootStackParamList = {
@@ -34,6 +35,13 @@ export type TabParamList = {
         };
       }
     | undefined;
-  Favorites: undefined;
+  Favorites:
+    | {
+        returnTo?: {
+          tab: 'Profile';
+          screen?: keyof ProfileStackParamList;
+        };
+      }
+    | undefined;
   Profile: NavigatorScreenParams<ProfileStackParamList> | undefined;
 };
