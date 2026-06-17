@@ -17,6 +17,7 @@ import {
   CheckoutAutocompleteField,
   type AutocompleteSuggestion,
 } from '../components/checkout/CheckoutAutocompleteField';
+import { CheckoutAddressPicker } from '../components/checkout/CheckoutAddressPicker';
 import { CheckoutConsentCheckbox } from '../components/checkout/CheckoutConsentCheckbox';
 import { CheckoutField } from '../components/checkout/CheckoutField';
 import { CheckoutOrderItem } from '../components/checkout/CheckoutOrderItem';
@@ -29,6 +30,7 @@ import { Screen } from '../components/Screen';
 import { paymentCardNumber } from '../config/payment';
 import { colors, radius, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
+import { useDeliveryAddresses } from '../context/DeliveryAddressesContext';
 import { useOrders } from '../context/OrdersContext';
 import { showErrorToast, showToast } from '../context/ToastContext';
 import { useCheckoutForm } from '../hooks/useCheckoutForm';
@@ -37,6 +39,7 @@ import { useNovaPoshtaWarehouses } from '../hooks/useNovaPoshtaWarehouses';
 import type { RootStackParamList } from '../navigation/types';
 import { submitCheckout } from '../services/checkout';
 import { formatPrice } from '../types/catalog';
+import type { DeliveryAddress } from '../types/deliveryAddress';
 import { generateOrderId, type StoredOrder } from '../types/order';
 import { getCartTotals } from '../utils/cartTotals';
 import { normalizePhone } from '../utils/checkoutValidation';
@@ -47,8 +50,12 @@ export function CheckoutScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const { items, totalQuantity, clearCart } = useCart();
   const { addOrder } = useOrders();
+  const { addresses, isHydrated: addressesHydrated, getDefaultAddress } = useDeliveryAddresses();
   const cartTotals = useMemo(() => getCartTotals(items), [items]);
   const { total } = cartTotals;
+
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [addressInitialized, setAddressInitialized] = useState(false);
 
   const {
     name,
@@ -73,6 +80,7 @@ export function CheckoutScreen({ navigation }: Props) {
     validateForSubmit,
     persistProfile,
     getFieldError,
+    isProfileLoaded,
   } = useCheckoutForm();
 
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
@@ -105,6 +113,38 @@ export function CheckoutScreen({ navigation }: Props) {
       navigation.goBack();
     }
   }, [items.length, isOrderComplete, showSuccessModal, navigation]);
+
+  const applyAddress = useCallback(
+    (address: DeliveryAddress) => {
+      setCity(address.city);
+      setCityRef(address.cityRef);
+      setWarehouse(address.warehouse);
+      setWarehouseRef(address.warehouseRef);
+      setShowCitySuggestions(false);
+      setShowWarehouseSuggestions(false);
+    },
+    [setCity, setCityRef, setWarehouse, setWarehouseRef],
+  );
+
+  useEffect(() => {
+    if (!addressesHydrated || !isProfileLoaded || addressInitialized) {
+      return;
+    }
+
+    const defaultAddress = getDefaultAddress();
+    if (defaultAddress) {
+      applyAddress(defaultAddress);
+      setSelectedAddressId(defaultAddress.id);
+    }
+
+    setAddressInitialized(true);
+  }, [
+    addressInitialized,
+    addressesHydrated,
+    applyAddress,
+    getDefaultAddress,
+    isProfileLoaded,
+  ]);
 
   const handleSuccessClose = useCallback(() => {
     setShowSuccessModal(false);
@@ -183,6 +223,7 @@ export function CheckoutScreen({ navigation }: Props) {
   };
 
   const handleCityChange = (text: string) => {
+    setSelectedAddressId(null);
     setCity(text);
     setCityRef('');
     setWarehouse('');
@@ -201,6 +242,7 @@ export function CheckoutScreen({ navigation }: Props) {
   };
 
   const handleWarehouseChange = (text: string) => {
+    setSelectedAddressId(null);
     setWarehouse(text);
     setWarehouseRef('');
     setShowWarehouseSuggestions(true);
@@ -216,6 +258,7 @@ export function CheckoutScreen({ navigation }: Props) {
   const cityFieldError = getFieldError('city') ?? citySearchError ?? undefined;
   const warehouseFieldError =
     getFieldError('warehouse') ?? warehouseSearchError ?? undefined;
+  const showManualDeliveryFields = !selectedAddressId;
 
   return (
     <Screen backgroundColor={colors.homeBackground}>
@@ -287,47 +330,66 @@ export function CheckoutScreen({ navigation }: Props) {
               onPress={() => setNovaPoshtaSelected(true)}
               leading={<NovaPoshtaBadge />}
             />
-            <CheckoutAutocompleteField
-              label="Місто"
-              icon="location-outline"
-              value={city}
-              onChangeText={handleCityChange}
-              onFocus={() => setShowCitySuggestions(true)}
-              onBlur={() => blurField('city')}
-              placeholder="Почніть вводити місто"
-              suggestions={citySuggestions}
-              isLoading={isCityLoading}
-              showSuggestions={showCitySuggestions && !cityRef}
-              onSelect={handleCitySelect}
-              helperText={cityRef && !getFieldError('city') ? `Обрано: ${city}` : undefined}
-              errorText={cityFieldError}
-            />
-            <CheckoutAutocompleteField
-              label="Відділення або поштомат"
-              icon="cube-outline"
-              value={warehouse}
-              onChangeText={handleWarehouseChange}
-              onFocus={() => {
-                if (cityRef) {
-                  setShowWarehouseSuggestions(true);
-                } else {
-                  blurField('warehouse');
-                }
+            <CheckoutAddressPicker
+              addresses={addresses}
+              selectedId={selectedAddressId}
+              onSelect={address => {
+                setSelectedAddressId(address.id);
+                applyAddress(address);
               }}
-              onBlur={() => blurField('warehouse')}
-              placeholder={cityRef ? '№ відділення або вулиця' : 'Спочатку оберіть місто'}
-              editable={Boolean(cityRef)}
-              suggestions={warehouseSuggestions}
-              isLoading={isWarehouseLoading}
-              showSuggestions={showWarehouseSuggestions && !warehouseRef}
-              onSelect={handleWarehouseSelect}
-              helperText={
-                warehouseRef && !getFieldError('warehouse')
-                  ? 'Відділення обрано'
-                  : undefined
-              }
-              errorText={warehouseFieldError}
+              onClear={() => {
+                setSelectedAddressId(null);
+                setCity('');
+                setCityRef('');
+                setWarehouse('');
+                setWarehouseRef('');
+              }}
             />
+            {showManualDeliveryFields ? (
+              <>
+                <CheckoutAutocompleteField
+                  label="Місто"
+                  icon="location-outline"
+                  value={city}
+                  onChangeText={handleCityChange}
+                  onFocus={() => setShowCitySuggestions(true)}
+                  onBlur={() => blurField('city')}
+                  placeholder="Почніть вводити місто"
+                  suggestions={citySuggestions}
+                  isLoading={isCityLoading}
+                  showSuggestions={showCitySuggestions && !cityRef}
+                  onSelect={handleCitySelect}
+                  helperText={cityRef && !getFieldError('city') ? `Обрано: ${city}` : undefined}
+                  errorText={cityFieldError}
+                />
+                <CheckoutAutocompleteField
+                  label="Відділення або поштомат"
+                  icon="cube-outline"
+                  value={warehouse}
+                  onChangeText={handleWarehouseChange}
+                  onFocus={() => {
+                    if (cityRef) {
+                      setShowWarehouseSuggestions(true);
+                    } else {
+                      blurField('warehouse');
+                    }
+                  }}
+                  onBlur={() => blurField('warehouse')}
+                  placeholder={cityRef ? '№ відділення або вулиця' : 'Спочатку оберіть місто'}
+                  editable={Boolean(cityRef)}
+                  suggestions={warehouseSuggestions}
+                  isLoading={isWarehouseLoading}
+                  showSuggestions={showWarehouseSuggestions && !warehouseRef}
+                  onSelect={handleWarehouseSelect}
+                  helperText={
+                    warehouseRef && !getFieldError('warehouse')
+                      ? 'Відділення обрано'
+                      : undefined
+                  }
+                  errorText={warehouseFieldError}
+                />
+              </>
+            ) : null}
           </CheckoutSection>
 
           <CheckoutSection title="Коментар до замовлення">

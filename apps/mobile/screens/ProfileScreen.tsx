@@ -78,6 +78,10 @@ export function ProfileScreen() {
     navigation.navigate('ViewedProducts');
   }, [navigation]);
 
+  const openDeliveryAddresses = useCallback(() => {
+    navigation.navigate('DeliveryAddresses');
+  }, [navigation]);
+
   const openComingSoon = useCallback((label: string) => {
     showToast(`${label} — розділ у розробці`, 'info');
   }, []);
@@ -121,7 +125,7 @@ export function ProfileScreen() {
             <ProfileMenuItem
               icon="location-outline"
               label="Адреси доставки"
-              onPress={() => openComingSoon('Адреси доставки')}
+              onPress={openDeliveryAddresses}
             />
             <ProfileMenuItem
               icon="card-outline"

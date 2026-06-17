@@ -171,5 +171,6 @@ export function useCheckoutForm() {
     validateForSubmit,
     persistProfile,
     getFieldError,
+    isProfileLoaded,
   };
 }

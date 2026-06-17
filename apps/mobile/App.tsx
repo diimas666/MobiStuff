@@ -3,6 +3,7 @@ import { StatusBar, useColorScheme } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CartProvider } from './context/CartContext';
+import { DeliveryAddressesProvider } from './context/DeliveryAddressesContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { OrdersProvider } from './context/OrdersContext';
 import { ToastProvider } from './context/ToastContext';
@@ -18,6 +19,7 @@ function App() {
     <SafeAreaProvider>
       <ToastProvider>
         <ViewedProductsProvider>
+          <DeliveryAddressesProvider>
           <FavoritesProvider>
           <OrdersProvider>
             <CartProvider>
@@ -28,6 +30,7 @@ function App() {
             </CartProvider>
           </OrdersProvider>
           </FavoritesProvider>
+          </DeliveryAddressesProvider>
         </ViewedProductsProvider>
       </ToastProvider>
     </SafeAreaProvider>

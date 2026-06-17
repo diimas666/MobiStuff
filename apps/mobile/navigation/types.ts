@@ -15,6 +15,7 @@ export type ProfileStackParamList = {
   ProfileMain: undefined;
   ProfileOrders: undefined;
   ViewedProducts: undefined;
+  DeliveryAddresses: undefined;
 };
 
 export type RootStackParamList = {
