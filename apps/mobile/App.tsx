@@ -6,6 +6,7 @@ import { CartProvider } from './context/CartContext';
 import { DeliveryAddressesProvider } from './context/DeliveryAddressesContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { OrdersProvider } from './context/OrdersContext';
+import { PaymentMethodsProvider } from './context/PaymentMethodsContext';
 import { ToastProvider } from './context/ToastContext';
 import { ViewedProductsProvider } from './context/ViewedProductsContext';
 import { RootNavigator } from './navigation/RootNavigator';
@@ -20,6 +21,7 @@ function App() {
       <ToastProvider>
         <ViewedProductsProvider>
           <DeliveryAddressesProvider>
+          <PaymentMethodsProvider>
           <FavoritesProvider>
           <OrdersProvider>
             <CartProvider>
@@ -30,6 +32,7 @@ function App() {
             </CartProvider>
           </OrdersProvider>
           </FavoritesProvider>
+          </PaymentMethodsProvider>
           </DeliveryAddressesProvider>
         </ViewedProductsProvider>
       </ToastProvider>

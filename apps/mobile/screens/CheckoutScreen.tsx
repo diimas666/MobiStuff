@@ -32,6 +32,7 @@ import { colors, radius, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useDeliveryAddresses } from '../context/DeliveryAddressesContext';
 import { useOrders } from '../context/OrdersContext';
+import { usePaymentMethods } from '../context/PaymentMethodsContext';
 import { showErrorToast, showToast } from '../context/ToastContext';
 import { useCheckoutForm } from '../hooks/useCheckoutForm';
 import { useNovaPoshtaCities } from '../hooks/useNovaPoshtaCities';
@@ -40,6 +41,12 @@ import type { RootStackParamList } from '../navigation/types';
 import { submitCheckout } from '../services/checkout';
 import { formatPrice } from '../types/catalog';
 import type { DeliveryAddress } from '../types/deliveryAddress';
+import {
+  mapPaymentMethodToCheckout,
+  mapPaymentMethodToOrder,
+  PAYMENT_METHOD_META,
+  type PaymentMethodType,
+} from '../types/paymentMethods';
 import { generateOrderId, type StoredOrder } from '../types/order';
 import { getCartTotals } from '../utils/cartTotals';
 import { normalizePhone } from '../utils/checkoutValidation';
@@ -51,11 +58,15 @@ export function CheckoutScreen({ navigation }: Props) {
   const { items, totalQuantity, clearCart } = useCart();
   const { addOrder } = useOrders();
   const { addresses, isHydrated: addressesHydrated, getDefaultAddress } = useDeliveryAddresses();
+  const { defaultMethod, isHydrated: paymentMethodsHydrated } = usePaymentMethods();
   const cartTotals = useMemo(() => getCartTotals(items), [items]);
   const { total } = cartTotals;
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [addressInitialized, setAddressInitialized] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentMethodType>('card_transfer');
+  const [paymentInitialized, setPaymentInitialized] = useState(false);
 
   const {
     name,
@@ -127,6 +138,22 @@ export function CheckoutScreen({ navigation }: Props) {
   );
 
   useEffect(() => {
+    if (!paymentMethodsHydrated || !isProfileLoaded || paymentInitialized) {
+      return;
+    }
+
+    setSelectedPaymentMethod(defaultMethod);
+    setPaymentMethod(mapPaymentMethodToCheckout(defaultMethod));
+    setPaymentInitialized(true);
+  }, [
+    defaultMethod,
+    isProfileLoaded,
+    paymentInitialized,
+    paymentMethodsHydrated,
+    setPaymentMethod,
+  ]);
+
+  useEffect(() => {
     if (!addressesHydrated || !isProfileLoaded || addressInitialized) {
       return;
     }
@@ -163,6 +190,11 @@ export function CheckoutScreen({ navigation }: Props) {
       return;
     }
 
+    if (!PAYMENT_METHOD_META[selectedPaymentMethod].available) {
+      showToast('Оберіть доступний спосіб оплати', 'info');
+      return;
+    }
+
     if (!validateForSubmit()) {
       showToast('Перевірте правильність заповнення форми', 'info');
       return;
@@ -184,7 +216,7 @@ export function CheckoutScreen({ navigation }: Props) {
       phone: trimmedPhone,
       email: email.trim() || undefined,
       comment: comment.trim() || undefined,
-      paymentMethod: paymentMethod === 'card' ? 'card_online' : 'cod',
+      paymentMethod: mapPaymentMethodToOrder(selectedPaymentMethod),
       city: trimmedCity,
       cityRef,
       warehouse: trimmedWarehouse,
@@ -259,6 +291,22 @@ export function CheckoutScreen({ navigation }: Props) {
   const warehouseFieldError =
     getFieldError('warehouse') ?? warehouseSearchError ?? undefined;
   const showManualDeliveryFields = !selectedAddressId;
+  const selectedPaymentMeta = PAYMENT_METHOD_META[selectedPaymentMethod];
+
+  const selectCheckoutPayment = useCallback(
+    (method: PaymentMethodType) => {
+      const meta = PAYMENT_METHOD_META[method];
+
+      if (!meta.available) {
+        showToast(`${meta.title} незабаром буде доступний`, 'info');
+        return;
+      }
+
+      setSelectedPaymentMethod(method);
+      setPaymentMethod(mapPaymentMethodToCheckout(method));
+    },
+    [setPaymentMethod],
+  );
 
   return (
     <Screen backgroundColor={colors.homeBackground}>
@@ -406,19 +454,26 @@ export function CheckoutScreen({ navigation }: Props) {
           </CheckoutSection>
 
           <CheckoutSection title="Оплата">
+            <View style={styles.selectedPaymentCard}>
+              <Text style={styles.selectedPaymentLabel}>Обраний спосіб</Text>
+              <Text style={styles.selectedPaymentValue}>{selectedPaymentMeta.title}</Text>
+              <Text style={styles.selectedPaymentHint}>{selectedPaymentMeta.description}</Text>
+            </View>
+
             <CheckoutRadioRow
-              label="Онлайн оплата карткою"
-              selected={paymentMethod === 'card'}
-              onPress={() => setPaymentMethod('card')}
+              label={PAYMENT_METHOD_META.card_transfer.title}
+              hint={PAYMENT_METHOD_META.card_transfer.description}
+              selected={selectedPaymentMethod === 'card_transfer'}
+              onPress={() => selectCheckoutPayment('card_transfer')}
             />
             <CheckoutRadioRow
-              label="Оплата при отриманні"
-              hint="Накладений платіж"
-              selected={paymentMethod === 'cod'}
-              onPress={() => setPaymentMethod('cod')}
+              label={PAYMENT_METHOD_META.cod.title}
+              hint={PAYMENT_METHOD_META.cod.description}
+              selected={selectedPaymentMethod === 'cod'}
+              onPress={() => selectCheckoutPayment('cod')}
             />
 
-            {paymentMethod === 'card' ? (
+            {selectedPaymentMethod === 'card_transfer' ? (
               <View style={styles.cardBlock}>
                 <Text style={styles.cardLabel}>Номер картки для оплати</Text>
                 <Text style={styles.cardNumber} selectable>
@@ -471,7 +526,9 @@ export function CheckoutScreen({ navigation }: Props) {
             ) : (
               <>
                 <Text style={styles.submitText}>
-                  {paymentMethod === 'card' ? 'Підтвердити замовлення' : 'Оформити замовлення'}
+                  {selectedPaymentMethod === 'cod'
+                    ? 'Оформити замовлення'
+                    : 'Підтвердити замовлення'}
                 </Text>
                 <Ionicons name="arrow-forward" size={18} color={colors.textOnDark} />
               </>
@@ -534,6 +591,31 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textMuted,
     lineHeight: 17,
+  },
+  selectedPaymentCard: {
+    padding: 14,
+    borderRadius: radius.sm,
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
+    gap: 4,
+  },
+  selectedPaymentLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  selectedPaymentValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  selectedPaymentHint: {
+    fontSize: 13,
+    color: colors.textMuted,
+    lineHeight: 18,
   },
   totalsCard: {
     backgroundColor: colors.card,

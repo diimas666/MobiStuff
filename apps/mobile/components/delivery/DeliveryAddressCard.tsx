@@ -52,14 +52,16 @@ export function DeliveryAddressCard({
       </View>
 
       {onDelete ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Видалити адресу"
-          onPress={onDelete}
-          style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
-          <Ionicons name="trash-outline" size={16} color={colors.danger} />
-          <Text style={styles.deleteText}>Видалити</Text>
-        </Pressable>
+        <View style={styles.footer}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Видалити адресу"
+            onPress={onDelete}
+            style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
+            <Ionicons name="trash-outline" size={16} color={colors.danger} />
+            <Text style={styles.deleteText}>Видалити</Text>
+          </Pressable>
+        </View>
       ) : null}
     </Pressable>
   );
@@ -152,8 +154,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: colors.primary,
   },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
   deleteButton: {
-    alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,

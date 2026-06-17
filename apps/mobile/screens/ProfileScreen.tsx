@@ -82,6 +82,10 @@ export function ProfileScreen() {
     navigation.navigate('DeliveryAddresses');
   }, [navigation]);
 
+  const openPaymentMethods = useCallback(() => {
+    navigation.navigate('PaymentMethods');
+  }, [navigation]);
+
   const openComingSoon = useCallback((label: string) => {
     showToast(`${label} — розділ у розробці`, 'info');
   }, []);
@@ -130,7 +134,7 @@ export function ProfileScreen() {
             <ProfileMenuItem
               icon="card-outline"
               label="Способи оплати"
-              onPress={() => openComingSoon('Способи оплати')}
+              onPress={openPaymentMethods}
             />
             <ProfileMenuItem
               icon="notifications-outline"

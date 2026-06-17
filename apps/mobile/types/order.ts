@@ -94,6 +94,18 @@ export function formatOrderPaymentMethod(method: string): string {
     return 'Онлайн оплата карткою';
   }
 
+  if (method === 'stripe') {
+    return 'Stripe';
+  }
+
+  if (method === 'google_pay') {
+    return 'Google Pay';
+  }
+
+  if (method === 'apple_pay') {
+    return 'Apple Pay';
+  }
+
   if (method === 'cod') {
     return 'Оплата при отриманні';
   }

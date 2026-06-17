@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useMemo } from 'react';
-import { Dimensions, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { LoadingState } from '../components/LoadingState';
 import { BackButton } from '../components/navigation/BackButton';
 import { RelatedProductCard } from '../components/product/RelatedProductCard';
@@ -29,16 +29,9 @@ type NavigationProp = CompositeNavigationProp<
   >
 >;
 
-const { width: screenWidth } = Dimensions.get('window');
 const GRID_GAP = 12;
 const NUM_COLUMNS = 2;
 const GROUP_PADDING = 14;
-const GRID_CARD_WIDTH =
-  (screenWidth -
-    spacing.screen * 2 -
-    GROUP_PADDING * 2 -
-    GRID_GAP * (NUM_COLUMNS - 1)) /
-  NUM_COLUMNS;
 
 function toHomeProduct(item: ViewedProductItem): HomeProduct {
   return {
@@ -50,13 +43,35 @@ function toHomeProduct(item: ViewedProductItem): HomeProduct {
   };
 }
 
+function chunkItems<T>(items: T[], size: number): T[][] {
+  const rows: T[][] = [];
+
+  for (let index = 0; index < items.length; index += size) {
+    rows.push(items.slice(index, index + size));
+  }
+
+  return rows;
+}
+
 export function ViewedProductsScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const { width: windowWidth } = useWindowDimensions();
   const { items, isHydrated } = useViewedProducts();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addToCart, items: cartItems } = useCart();
 
   const groupedItems = useMemo(() => groupViewedProductsByDate(items), [items]);
+  const cardWidth = useMemo(
+    () =>
+      Math.floor(
+        (windowWidth -
+          spacing.screen * 2 -
+          GROUP_PADDING * 2 -
+          GRID_GAP * (NUM_COLUMNS - 1)) /
+          NUM_COLUMNS,
+      ),
+    [windowWidth],
+  );
 
   const openProduct = useCallback(
     (product: HomeProduct) => {
@@ -142,29 +157,37 @@ export function ViewedProductsScreen() {
                 </View>
 
                 <View style={styles.grid}>
-                  {group.items.map(item => {
-                    const product = toHomeProduct(item);
+                  {chunkItems(group.items, NUM_COLUMNS).map((row, rowIndex) => (
+                    <View
+                      key={`${group.dateKey}-row-${rowIndex}`}
+                      style={[styles.gridRow, row.length === 1 && styles.gridRowSingle]}>
+                      {row.map(item => {
+                        const product = toHomeProduct(item);
 
-                    return (
-                      <View key={`${group.dateKey}-${item.productId}`} style={styles.gridItem}>
-                        <RelatedProductCard
-                          product={product}
-                          width={GRID_CARD_WIDTH}
-                          onPress={() => openProduct(product)}
-                          onFavoritePress={() => void toggleFavorite(product)}
-                          onAddToCartPress={() => void handleAddToCart(product)}
-                          isFavorite={isFavorite(product.id)}
-                          isInCart={isProductInCart(product.id)}
-                        />
-                        <Text style={styles.viewedTime}>
-                          {new Date(item.viewedAt).toLocaleTimeString('uk-UA', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </Text>
-                      </View>
-                    );
-                  })}
+                        return (
+                          <View
+                            key={`${group.dateKey}-${item.productId}`}
+                            style={[styles.gridItem, { width: cardWidth }]}>
+                            <RelatedProductCard
+                              product={product}
+                              width={cardWidth}
+                              onPress={() => openProduct(product)}
+                              onFavoritePress={() => void toggleFavorite(product)}
+                              onAddToCartPress={() => void handleAddToCart(product)}
+                              isFavorite={isFavorite(product.id)}
+                              isInCart={isProductInCart(product.id)}
+                            />
+                            <Text style={styles.viewedTime}>
+                              {new Date(item.viewedAt).toLocaleTimeString('uk-UA', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </Text>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  ))}
                 </View>
 
                 <View style={styles.groupSummary}>
@@ -236,13 +259,17 @@ const styles = StyleSheet.create({
     color: colors.textOnDarkMuted,
   },
   grid: {
+    gap: GRID_GAP,
+  },
+  gridRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    columnGap: GRID_GAP,
-    rowGap: GRID_GAP,
+    justifyContent: 'space-between',
+  },
+  gridRowSingle: {
+    justifyContent: 'flex-start',
   },
   gridItem: {
-    width: GRID_CARD_WIDTH,
+    gap: 6,
   },
   viewedTime: {
     fontSize: 12,
