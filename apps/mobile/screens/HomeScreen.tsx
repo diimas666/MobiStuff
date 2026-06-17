@@ -20,6 +20,7 @@ import { useHomeData } from '../hooks/useHomeData';
 import type { RootStackParamList, TabParamList } from '../navigation/types';
 import type { HomeProduct } from '../types/catalog';
 import { addHomeProductToCart } from '../utils/addProductToCart';
+import { openCategoryFlow } from '../utils/openCategoryFlow';
 import { errorMessages } from '../utils/errors';
 
 type HomeNavigationProp = CompositeNavigationProp<
@@ -71,10 +72,13 @@ export function HomeScreen() {
             items={categories}
             onSeeAll={() => navigation.navigate('Categories')}
             onCategoryPress={category =>
-              navigation.navigate('Categories', {
-                screen: 'Category',
-                params: { category },
-              })
+              openCategoryFlow(
+                {
+                  navigate: (screen, params) =>
+                    navigation.navigate('Categories', { screen, params }),
+                },
+                category,
+              )
             }
           />
           <PopularProductsSection

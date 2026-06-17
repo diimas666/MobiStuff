@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CategoriesScreen } from '../screens/CategoriesScreen';
 import { CategoryScreen } from '../screens/CategoryScreen';
+import { SubcategoriesScreen } from '../screens/SubcategoriesScreen';
 import type { CategoriesStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<CategoriesStackParamList>();
@@ -14,6 +15,7 @@ export function CategoriesStackNavigator() {
         freezeOnBlur: true,
       }}>
       <Stack.Screen name="CategoriesList" component={CategoriesScreen} />
+      <Stack.Screen name="Subcategories" component={SubcategoriesScreen} />
       <Stack.Screen name="Category" component={CategoryScreen} />
     </Stack.Navigator>
   );

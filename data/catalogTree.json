@@ -1,0 +1,424 @@
+[
+  {
+    "title": "Чохли",
+    "slug": "category-chehli",
+    "subcategories": [
+      {
+        "title": "Чохли для телефонів",
+        "slug": "category-chehli-dlya-telefonov"
+      },
+      {
+        "title": "Apple",
+        "slug": "category-apple"
+      },
+      {
+        "title": "Samsung",
+        "slug": "category-samsung"
+      },
+      {
+        "title": "Xiaomi",
+        "slug": "category-xiaomi"
+      },
+      {
+        "title": "ZTE",
+        "slug": "category-zte"
+      },
+      {
+        "title": "VIVO",
+        "slug": "category-vivo"
+      },
+      {
+        "title": "Tecno",
+        "slug": "category-tecno"
+      },
+      {
+        "title": "Realme",
+        "slug": "category-realme"
+      },
+      {
+        "title": "Poco",
+        "slug": "category-poco"
+      },
+      {
+        "title": "OPPO",
+        "slug": "category-oppo"
+      },
+      {
+        "title": "ONE PLUS",
+        "slug": "category-one-plus"
+      },
+      {
+        "title": "Motorola",
+        "slug": "category-motorola"
+      },
+      {
+        "title": "Meizu",
+        "slug": "category-meizu"
+      },
+      {
+        "title": "Infinix",
+        "slug": "category-infinix"
+      },
+      {
+        "title": "Huawei",
+        "slug": "category-huawei"
+      },
+      {
+        "title": "Honor",
+        "slug": "category-honor"
+      },
+      {
+        "title": "Универсальные",
+        "slug": "category-universalynie"
+      },
+      {
+        "title": "Чохли для планшетів та ноутбуків",
+        "slug": "category-chehli-dlya-planshetov-i-noutbukov"
+      },
+      {
+        "title": "Чохли для Airpods та iн.",
+        "slug": "category-chehli-dlya-airpods-i-dr"
+      },
+      {
+        "title": "Pop Socket та настільні підставки",
+        "slug": "category-pop-socket-i-nastolynie-podstavki"
+      },
+      {
+        "title": "Муляжі для телефонів",
+        "slug": "category-mulyazhi-dlya-telefonov"
+      }
+    ]
+  },
+  {
+    "title": "Захист екрану",
+    "slug": "category-zashtita-ekrana",
+    "subcategories": [
+      {
+        "title": "Плотери",
+        "slug": "category-plotteri"
+      },
+      {
+        "title": "Плівки для плотера",
+        "slug": "category-plenki-dlya-plottera"
+      },
+      {
+        "title": "Захисне скло",
+        "slug": "category-zashtitnie-stekla"
+      },
+      {
+        "title": "Аксесуари для плотерів",
+        "slug": "category-aksessuari-dlya-plotterov"
+      }
+    ]
+  },
+  {
+    "title": "Акумулятори та powerbank",
+    "slug": "category-akkumulyatori-i-powerbank",
+    "subcategories": [
+      {
+        "title": "Акумулятор для ноутбука",
+        "slug": "category-akkumulyator-dlya-noutbuka"
+      },
+      {
+        "title": "Лужні батарейки",
+        "slug": "category-shtelochnie-batareyki"
+      },
+      {
+        "title": "Портативні батареї",
+        "slug": "category-portativnie-batarei"
+      },
+      {
+        "title": "Зарядні станції",
+        "slug": "category-zaryadnie-stantsii"
+      },
+      {
+        "title": "Акумулятори для телефонів",
+        "slug": "category-akkumulyatori-dlya-telefonov"
+      },
+      {
+        "title": "Акумулятори для планшета",
+        "slug": "category-akkumulyatori-dlya-plansheta"
+      },
+      {
+        "title": "Акумулятори внутрішні з проводами",
+        "slug": "category-akkumulyatori-vnutrennie-s-provodami"
+      },
+      {
+        "title": "Акумуляторні батарейки",
+        "slug": "category-akkumulyatornie-batareyki"
+      },
+      {
+        "title": "Акумулятори внутрішні зі шлейфом",
+        "slug": "category-akkumulyatori-vnutrennie-so-shleyfom"
+      }
+    ]
+  },
+  {
+    "title": "Автомобiльна тематика",
+    "slug": "category-avtomobilynaya-tematika",
+    "subcategories": [
+      {
+        "title": "Відео реєстратори",
+        "slug": "category-video-registratori"
+      },
+      {
+        "title": "Аксесуари для авто",
+        "slug": "category-aksessuari-dlya-avto"
+      },
+      {
+        "title": "Брелоки",
+        "slug": "category-breloki"
+      },
+      {
+        "title": "Автомобільні зарядні пристрої",
+        "slug": "category-avtomobilynie-zaryadnie-ustroystva"
+      },
+      {
+        "title": "Автомобільні тримачi",
+        "slug": "category-avtomobilynie-derzhateli"
+      },
+      {
+        "title": "FM модулятори",
+        "slug": "category-fm-modulyatori"
+      }
+    ]
+  },
+  {
+    "title": "Гаджети",
+    "slug": "category-gadzheti",
+    "subcategories": [
+      {
+        "title": "Розумні годинники і фітнес трекери",
+        "slug": "category-umnie-chasi-i-fitnes-trekeri"
+      },
+      {
+        "title": "Настільні Led лампи",
+        "slug": "category-nastolynie-led-lampi"
+      },
+      {
+        "title": "Аксесуари для розумних годинникiв і фітнес трекерів",
+        "slug": "category-aksessuari-dlya-umnih-chasov-i-fitnes-trekerov"
+      },
+      {
+        "title": "Моноподи",
+        "slug": "category-monopodi"
+      },
+      {
+        "title": "Мікрофони",
+        "slug": "category-mikrofoni"
+      },
+      {
+        "title": "Iншi гаджети",
+        "slug": "category-drugie-gadzheti"
+      },
+      {
+        "title": "Кiльцевi лампи",
+        "slug": "category-kolytsevie-lampi"
+      }
+    ]
+  },
+  {
+    "title": "Зарядки та кабелі",
+    "slug": "category-zaryadki-i-kabeli",
+    "subcategories": [
+      {
+        "title": "Мережеві зарядні пристрої",
+        "slug": "category-setevie-zaryadnie-ustroystva"
+      },
+      {
+        "title": "Мережеві Подовжувачі",
+        "slug": "category-testeri-dlya-zaryadok"
+      },
+      {
+        "title": "Мережеві перехідники",
+        "slug": "category-setevie-perehodniki"
+      },
+      {
+        "title": "Бездротові зарядні пристрої",
+        "slug": "category-besprovodnie-zaryadnie-ustroystva"
+      },
+      {
+        "title": "Зарядні для ноутбуків",
+        "slug": "category-zaryadki-dlya-noutbukov"
+      },
+      {
+        "title": "Кабелі USB",
+        "slug": "category-kabeli-usb"
+      },
+      {
+        "title": "Мульти",
+        "slug": "category-mulyti"
+      },
+      {
+        "title": "Type-c to Type-c",
+        "slug": "category-type-c-to-type-c"
+      },
+      {
+        "title": "Type-C to MagSafe",
+        "slug": "category-type-c-to-magsafe"
+      },
+      {
+        "title": "Type-c to Lightning",
+        "slug": "category-type-c-to-lightning"
+      },
+      {
+        "title": "Type-C",
+        "slug": "category-type-c"
+      },
+      {
+        "title": "Mini-usb",
+        "slug": "category-mini-usb"
+      },
+      {
+        "title": "Micro-usb",
+        "slug": "category-micro-usb"
+      },
+      {
+        "title": "Lightning",
+        "slug": "category-lightning"
+      },
+      {
+        "title": "30 pin (samsung)",
+        "slug": "category-30-pin-samsung"
+      },
+      {
+        "title": "Кабелі AUX і HDMI",
+        "slug": "category-kabeli-aux-i-hdmi"
+      },
+      {
+        "title": "Хаби, перехідники, мережеві шнури",
+        "slug": "category-habi-perehodniki-udliniteli"
+      }
+    ]
+  },
+  {
+    "title": "Комп'ютерна периферія",
+    "slug": "category-kompyyuternaya-periferiya",
+    "subcategories": [
+      {
+        "title": "Пiдставки для ноутбукiв",
+        "slug": "category-podstavki-dlya-noutbukov"
+      },
+      {
+        "title": "Миші",
+        "slug": "category-mishi"
+      },
+      {
+        "title": "Кишені для накопичувачів",
+        "slug": "category-karmani-dlya-nakopiteley"
+      },
+      {
+        "title": "Клавіатури",
+        "slug": "category-klaviaturi"
+      },
+      {
+        "title": "Карти пам'яті",
+        "slug": "category-karti-pamyati"
+      },
+      {
+        "title": "Usb накопичувачі",
+        "slug": "category-usb-nakopiteli"
+      },
+      {
+        "title": "Ігрові поверхні",
+        "slug": "category-igrovie-poverhnosti"
+      },
+      {
+        "title": "Зовнішні Жорсткі Диски",
+        "slug": "category-vneshnie-zhestkie-diski"
+      },
+      {
+        "title": "Веб камери",
+        "slug": "category-veb-kameri"
+      },
+      {
+        "title": "SSD",
+        "slug": "category-ssd"
+      },
+      {
+        "title": "Bluetoоth адаптери і кардрідери",
+        "slug": "category-bluetooth-adapteri-i-kardrideri"
+      }
+    ]
+  },
+  {
+    "title": "Комп'ютерні меблі",
+    "slug": "category-kompyyuternaya-mebely",
+    "subcategories": [
+      {
+        "title": "Комп'ютерні столи",
+        "slug": "category-kompyyuternie-stoli"
+      },
+      {
+        "title": "Комп'ютерні крісла",
+        "slug": "category-kompyyuternie-kresla"
+      }
+    ]
+  },
+  {
+    "title": "Навушники",
+    "slug": "category-naushniki",
+    "subcategories": [
+      {
+        "title": "Навушники для телефона",
+        "slug": "category-naushniki-dlya-telefona"
+      },
+      {
+        "title": "Гарнітури для ПК",
+        "slug": "category-garnituri-dlya-pk"
+      },
+      {
+        "title": "Bluetooth стерео гарнітури TWS",
+        "slug": "category-bluetooth-stereo-garnituri-tws"
+      },
+      {
+        "title": "Bluetooth стерео гарнітури",
+        "slug": "category-bluetooth-stereo-garnituri"
+      },
+      {
+        "title": "Bluetooth моно гарнітури",
+        "slug": "category-bluetooth-mono-garnituri"
+      }
+    ]
+  },
+  {
+    "title": "Аудіо та відео",
+    "slug": "category-audio-i-video",
+    "subcategories": [
+      {
+        "title": "ТВ приставки",
+        "slug": "category-tv-pristavki"
+      },
+      {
+        "title": "Портативні колонки",
+        "slug": "category-portativnie-kolonki"
+      },
+      {
+        "title": "Аварійне радіо для виживання",
+        "slug": "category-avariynoe-radio-dlya-vizhivaniya"
+      },
+      {
+        "title": "Геймпади",
+        "slug": "category-geympadi"
+      },
+      {
+        "title": "Комп'ютерна акустика",
+        "slug": "category-kompyyuternaya-akustika"
+      }
+    ]
+  },
+  {
+    "title": "Корисні аксесуари",
+    "slug": "category-poleznie-aksessuari",
+    "subcategories": [
+      {
+        "title": "Упаковка",
+        "slug": "category-upakovka"
+      },
+      {
+        "title": "Інструменти",
+        "slug": "category-instrumenti"
+      }
+    ]
+  }
+]

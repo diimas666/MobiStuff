@@ -6,12 +6,13 @@ import type { HomeCategory } from '../../types/catalog';
 
 type Props = {
   category: HomeCategory;
+  subtitle?: string;
   onBack?: () => void;
 };
 
 const IMAGE_HEIGHT = 140;
 
-export function CategoryBanner({ category, onBack }: Props) {
+export function CategoryBanner({ category, subtitle, onBack }: Props) {
   return (
     <View style={styles.wrapper}>
       <View style={styles.card}>
@@ -45,6 +46,7 @@ export function CategoryBanner({ category, onBack }: Props) {
 
         <View style={styles.titleStrip}>
           <Text style={styles.title}>{category.title}</Text>
+          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
         </View>
       </View>
     </View>
@@ -92,5 +94,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     color: colors.text,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.textMuted,
   },
 });

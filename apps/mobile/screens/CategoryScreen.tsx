@@ -17,6 +17,7 @@ import { Screen } from '../components/Screen';
 import { CategoryBanner } from '../components/category/CategoryBanner';
 import { CategoryFilterBar } from '../components/category/CategoryFilterBar';
 import { CategoryFilterSheet } from '../components/category/CategoryFilterSheet';
+import { SubcategoryChipBar } from '../components/category/SubcategoryChipBar';
 import { RelatedProductCard } from '../components/product/RelatedProductCard';
 import { colors, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
@@ -27,6 +28,7 @@ import type { CategoriesStackParamList, RootStackParamList } from '../navigation
 import { mapProduct, type ApiProduct, type HomeProduct } from '../types/catalog';
 import { addHomeProductToCart } from '../utils/addProductToCart';
 import { countActiveFilters } from '../utils/categoryFilters';
+import { getCatalogSubcategories } from '../utils/catalogTree';
 import { errorMessages } from '../utils/errors';
 
 type CategoryNavigationProp = CompositeNavigationProp<
@@ -75,7 +77,11 @@ const CategoryProductCard = memo(function CategoryProductCard({
 });
 
 export function CategoryScreen({ route, navigation }: Props) {
-  const { category } = route.params;
+  const { category, subcategorySlug, subcategoryTitle } = route.params;
+  const catalogSubcategories = useMemo(
+    () => getCatalogSubcategories(category.id),
+    [category.id],
+  );
   const [sheetVisible, setSheetVisible] = useState(false);
   const { isFavorite, toggleFavorite, favorites } = useFavorites();
   const { addToCart, items } = useCart();
@@ -92,7 +98,19 @@ export function CategoryScreen({ route, navigation }: Props) {
     isLoadingMore,
     loadMore,
     error,
-  } = useCategoryProducts(category.id, category.title);
+  } = useCategoryProducts(category.id, category.title, subcategorySlug);
+
+  const selectedSubcategorySlug = filters.subcategories[0] ?? null;
+
+  const handleSubcategorySelect = useCallback(
+    (slug: string | null) => {
+      setFilters(current => ({
+        ...current,
+        subcategories: slug ? [slug] : [],
+      }));
+    },
+    [setFilters],
+  );
 
   const openProduct = useCallback(
     (product: HomeProduct) => {
@@ -136,8 +154,19 @@ export function CategoryScreen({ route, navigation }: Props) {
   const listHeader = useCallback(
     () => (
       <>
-        <CategoryBanner category={category} onBack={() => navigation.goBack()} />
+        <CategoryBanner
+          category={category}
+          subtitle={subcategoryTitle}
+          onBack={() => navigation.goBack()}
+        />
         <View style={styles.headerBody}>
+          {catalogSubcategories.length > 0 ? (
+            <SubcategoryChipBar
+              subcategories={catalogSubcategories}
+              selectedSlug={selectedSubcategorySlug}
+              onSelect={handleSubcategorySelect}
+            />
+          ) : null}
           <CategoryFilterBar
             activeSort={filters.sort}
             activeFiltersCount={countActiveFilters(filters)}
@@ -150,7 +179,17 @@ export function CategoryScreen({ route, navigation }: Props) {
         </View>
       </>
     ),
-    [category, filters, navigation, setFilters, totalCount],
+    [
+      catalogSubcategories,
+      category,
+      filters,
+      handleSubcategorySelect,
+      navigation,
+      selectedSubcategorySlug,
+      setFilters,
+      subcategoryTitle,
+      totalCount,
+    ],
   );
 
   const listFooter = useCallback(() => {

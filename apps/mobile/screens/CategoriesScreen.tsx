@@ -11,6 +11,7 @@ import { colors, spacing } from '../constants/theme';
 import { useCategories } from '../hooks/useCategories';
 import type { CategoriesStackParamList } from '../navigation/types';
 import type { HomeCategory } from '../types/catalog';
+import { openCategoryFlow } from '../utils/openCategoryFlow';
 
 type CategoriesNavigationProp = NativeStackNavigationProp<
   CategoriesStackParamList,
@@ -23,7 +24,7 @@ export function CategoriesScreen() {
 
   const openCategory = useCallback(
     (category: HomeCategory) => {
-      navigation.navigate('Category', { category });
+      openCategoryFlow(navigation, category);
     },
     [navigation],
   );

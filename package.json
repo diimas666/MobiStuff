@@ -21,7 +21,8 @@
     "mobile:android": "npm run android --workspace=MobistuffMobile",
     "mobile:lint": "npm run lint --workspace=MobistuffMobile",
     "mobile:pod-install": "cd apps/mobile/ios && bundle exec pod install",
-    "mobile:icons": "node scripts/generate-app-icons.mjs"
+    "mobile:icons": "node scripts/generate-app-icons.mjs",
+    "export-catalog-tree": "npx tsx scripts/exportCatalogTree.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^15.5.19",

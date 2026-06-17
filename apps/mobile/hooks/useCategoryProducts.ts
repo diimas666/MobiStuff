@@ -48,12 +48,16 @@ type CategoryProductsData = {
 export function useCategoryProducts(
   categoryId: string,
   categoryTitle?: string,
+  initialSubcategorySlug?: string,
 ): CategoryProductsData {
   const cacheKey = `category:v2:${categoryId}`;
   const cachedProducts = getCached<ApiProduct[]>(cacheKey);
 
   const [products, setProducts] = useState<ApiProduct[]>(cachedProducts ?? []);
-  const [filters, setFilters] = useState(defaultCategoryFilters);
+  const [filters, setFilters] = useState<CategoryProductFilters>(() => ({
+    ...defaultCategoryFilters,
+    subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
+  }));
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isLoading, setIsLoading] = useState(!cachedProducts);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -65,7 +69,10 @@ export function useCategoryProducts(
 
     if (cached) {
       setProducts(cached);
-      setFilters(defaultCategoryFilters);
+      setFilters({
+        ...defaultCategoryFilters,
+        subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
+      });
       setVisibleCount(PAGE_SIZE);
       setIsLoading(false);
     } else {
@@ -81,7 +88,10 @@ export function useCategoryProducts(
         }
 
         setProducts(data);
-        setFilters(defaultCategoryFilters);
+        setFilters({
+          ...defaultCategoryFilters,
+          subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
+        });
         setVisibleCount(PAGE_SIZE);
         setError(null);
       } catch (loadError) {
@@ -100,7 +110,7 @@ export function useCategoryProducts(
     return () => {
       cancelled = true;
     };
-  }, [cacheKey, categoryId, categoryTitle]);
+  }, [cacheKey, categoryId, categoryTitle, initialSubcategorySlug]);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);

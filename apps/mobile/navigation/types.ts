@@ -3,7 +3,12 @@ import type { HomeCategory, HomeProduct } from '../types/catalog';
 
 export type CategoriesStackParamList = {
   CategoriesList: undefined;
-  Category: { category: HomeCategory };
+  Subcategories: { category: HomeCategory };
+  Category: {
+    category: HomeCategory;
+    subcategorySlug?: string;
+    subcategoryTitle?: string;
+  };
 };
 
 export type RootStackParamList = {
