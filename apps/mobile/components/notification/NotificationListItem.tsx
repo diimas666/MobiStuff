@@ -1,6 +1,13 @@
+import type { ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors, radius } from '../../constants/theme';
+import {
+  getOrderStatusLabel,
+  getOrderStatusLightBadge,
+  normalizeOrderStatus,
+  ORDER_STATUS_LABELS,
+} from '../../types/order';
 import { getNotificationIcon, type NotificationItem } from '../../types/notification';
 
 type Props = {
@@ -8,11 +15,53 @@ type Props = {
   onPress: () => void;
 };
 
+type IconName = ComponentProps<typeof Ionicons>['name'];
+
 function formatNotificationTime(iso: string): string {
   return new Date(iso).toLocaleTimeString('uk-UA', {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+function parseStatusLabelFromBody(body: string): string | null {
+  const match = body.match(/«([^»]+)»/);
+  return match?.[1] ?? null;
+}
+
+function resolveOrderStatus(item: NotificationItem) {
+  if (item.orderStatus) {
+    return normalizeOrderStatus(item.orderStatus);
+  }
+
+  const label = parseStatusLabelFromBody(item.body);
+  const entry = Object.entries(ORDER_STATUS_LABELS).find(([, value]) => value === label);
+
+  return entry ? normalizeOrderStatus(entry[0]) : 'processing';
+}
+
+function NotificationBody({ item }: { item: NotificationItem }) {
+  if (item.type !== 'order_status') {
+    return (
+      <Text style={styles.body} numberOfLines={3}>
+        {item.body}
+      </Text>
+    );
+  }
+
+  const status = resolveOrderStatus(item);
+  const statusLabel = getOrderStatusLabel(status);
+  const badge = getOrderStatusLightBadge(status);
+
+  return (
+    <View style={styles.bodyRow}>
+      <Text style={styles.body}>Статус змінено на</Text>
+      <View style={[styles.statusBadge, { backgroundColor: badge.bg }]}>
+        <Ionicons name={badge.icon as IconName} size={13} color={badge.text} />
+        <Text style={[styles.statusBadgeText, { color: badge.text }]}>{statusLabel}</Text>
+      </View>
+    </View>
+  );
 }
 
 export function NotificationListItem({ item, onPress }: Props) {
@@ -40,9 +89,7 @@ export function NotificationListItem({ item, onPress }: Props) {
           </Text>
           <Text style={styles.time}>{formatNotificationTime(item.createdAt)}</Text>
         </View>
-        <Text style={styles.body} numberOfLines={3}>
-          {item.body}
-        </Text>
+        <NotificationBody item={item} />
       </View>
 
       {!item.read ? <View style={styles.unreadDot} /> : null}
@@ -85,7 +132,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    gap: 4,
+    gap: 6,
   },
   titleRow: {
     flexDirection: 'row',
@@ -105,10 +152,28 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textMuted,
   },
+  bodyRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 6,
+  },
   body: {
     fontSize: 14,
     color: colors.textMuted,
     lineHeight: 20,
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: radius.pill,
+  },
+  statusBadgeText: {
+    fontSize: 13,
+    fontWeight: '700',
   },
   unreadDot: {
     width: 8,

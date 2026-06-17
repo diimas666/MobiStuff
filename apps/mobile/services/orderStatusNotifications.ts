@@ -27,6 +27,7 @@ async function notifyOrderStatus(orderId: string, status: OrderStatus): Promise<
     title: `Замовлення ${orderId}`,
     body: `Статус змінено на «${getOrderStatusLabel(status)}»`,
     orderId,
+    orderStatus: status,
   });
 }
 

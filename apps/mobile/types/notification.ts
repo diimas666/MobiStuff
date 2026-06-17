@@ -8,6 +8,7 @@ export type NotificationItem = {
   createdAt: string;
   read: boolean;
   orderId?: string;
+  orderStatus?: string;
   productId?: string;
   productHandle?: string;
 };

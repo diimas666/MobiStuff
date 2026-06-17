@@ -98,6 +98,29 @@ export function getOrderStatusStyle(status: OrderStatus | string): {
   }
 }
 
+export function getOrderStatusLightBadge(status: OrderStatus | string): {
+  bg: string;
+  text: string;
+  icon: string;
+} {
+  const normalized = normalizeOrderStatus(status);
+  const base = getOrderStatusStyle(normalized);
+
+  switch (normalized) {
+    case 'in_progress':
+      return { bg: '#DBEAFE', text: '#1D4ED8', icon: base.icon };
+    case 'shipped':
+      return { bg: '#EDE9FE', text: '#6D28D9', icon: base.icon };
+    case 'completed':
+      return { bg: '#DCFCE7', text: '#15803D', icon: base.icon };
+    case 'cancelled':
+      return { bg: '#FEE2E2', text: '#B91C1C', icon: base.icon };
+    case 'processing':
+    default:
+      return { bg: '#FEF3C7', text: '#B45309', icon: base.icon };
+  }
+}
+
 export function formatOrderPaymentMethod(method: string): string {
   if (method === 'card_online') {
     return 'Онлайн оплата карткою';
