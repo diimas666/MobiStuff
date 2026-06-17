@@ -51,6 +51,11 @@ export const api = {
       body: JSON.stringify(body),
     }),
   promotions: () => request('/api/promotions'),
+  support: (body: unknown) =>
+    request('/api/support', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
 };
 
 export { baseUrl };

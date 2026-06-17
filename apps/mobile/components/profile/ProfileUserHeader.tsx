@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
-import { colors } from '../../constants/theme';
 
 type Props = {
   isGuest: boolean;
@@ -33,68 +32,65 @@ export function ProfileUserHeader({
   onSettingsPress,
 }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    marginBottom: 8,
-  },
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#E5E7EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: c.textMuted,
-  },
-  info: {
-    flex: 1,
-    gap: 4,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: c.text,
-  },
-  email: {
-    fontSize: 14,
-    color: c.textMuted,
-  },
-  settingsButton: {
-    width: 36,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pressed: {
-    opacity: 0.72,
-  },
-}));
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 14,
+      paddingVertical: 4,
+    },
+    avatar: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      backgroundColor: c.homeSurface,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.18)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    avatarText: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    info: {
+      flex: 1,
+      gap: 4,
+    },
+    name: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    email: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: c.textOnDarkMuted,
+    },
+    settingsButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: c.homeSurface,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.12)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    pressed: {
+      opacity: 0.72,
+    },
+  }));
 
   const content = (
     <>
-      {isGuest ? (
-        <View style={styles.avatar}>
-          <Ionicons name="person-outline" size={26} color={colors.textMuted} />
-        </View>
-      ) : onSettingsPress ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Налаштування профілю"
-          onPress={onSettingsPress}
-          style={({ pressed }) => [styles.avatar, pressed && styles.pressed]}>
+      <View style={styles.avatar}>
+        {isGuest ? (
+          <Ionicons name="person-outline" size={28} color={colors.textOnDarkMuted} />
+        ) : (
           <Text style={styles.avatarText}>{getInitials(name)}</Text>
-        </Pressable>
-      ) : (
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{getInitials(name)}</Text>
-        </View>
-      )}
+        )}
+      </View>
 
       <View style={styles.info}>
         {isGuest ? (
@@ -116,7 +112,7 @@ export function ProfileUserHeader({
           accessibilityLabel="Налаштування"
           onPress={onSettingsPress}
           style={({ pressed }) => [styles.settingsButton, pressed && styles.pressed]}>
-          <Ionicons name="settings-outline" size={22} color={colors.textMuted} />
+          <Ionicons name="settings-outline" size={20} color={colors.textOnDark} />
         </Pressable>
       ) : null}
     </>
@@ -135,4 +131,3 @@ export function ProfileUserHeader({
 
   return <View style={styles.header}>{content}</View>;
 }
-

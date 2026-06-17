@@ -27,9 +27,13 @@ export function ProfileMenuItem({
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
-      style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
-      <View style={styles.iconWrap}>
-        <Ionicons name={icon} size={22} color={colors.textMuted} />
+      style={({ pressed }) => [
+        styles.row,
+        { backgroundColor: colors.card },
+        pressed && styles.pressed,
+      ]}>
+      <View style={[styles.iconWrap, { backgroundColor: `${colors.primary}18` }]}>
+        <Ionicons name={icon} size={18} color={colors.primary} />
       </View>
 
       <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
@@ -49,20 +53,26 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 52,
-    gap: 14,
+    gap: 12,
+    minHeight: 58,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: radius.md,
   },
   pressed: {
-    opacity: 0.72,
+    opacity: 0.88,
   },
   iconWrap: {
-    width: 28,
+    width: 34,
+    height: 34,
+    borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   label: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 15,
+    fontWeight: '600',
   },
   badge: {
     minWidth: 24,

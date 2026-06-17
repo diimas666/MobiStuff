@@ -29,7 +29,7 @@ export function TabNavigator() {
 
   return (
     <Tab.Navigator
-      sceneContainerStyle={{ backgroundColor: colors.homeBackground }}
+      sceneContainerStyle={{ backgroundColor: 'transparent' }}
       screenOptions={({ route }) => ({
         headerShown: false,
         lazy: true,

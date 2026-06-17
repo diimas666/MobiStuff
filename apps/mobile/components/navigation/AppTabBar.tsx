@@ -15,7 +15,7 @@ type Props = {
 export function AppTabBar({ activeTab }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
   barContainer: {
-    backgroundColor: c.homeBackground,
+    backgroundColor: c.homeBackgroundBottom,
   },
   bar: {
     flexDirection: 'row',

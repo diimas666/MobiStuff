@@ -285,12 +285,17 @@ export default function PromotionsAdminPage() {
               onChange={e => setForm({ ...form, subtitle: e.target.value })}
               className="border p-2 rounded"
             />
-            <input
-              placeholder="Текст кнопки"
-              value={form.cta}
-              onChange={e => setForm({ ...form, cta: e.target.value })}
-              className="border p-2 rounded"
-            />
+            <label className="block">
+              <span className="mb-1 block text-sm text-gray-600">
+                Текст кнопки (кнопка на банері в додатку)
+              </span>
+              <input
+                placeholder="До покупок"
+                value={form.cta}
+                onChange={e => setForm({ ...form, cta: e.target.value })}
+                className="w-full border p-2 rounded"
+              />
+            </label>
             <input
               placeholder="Емодзі (якщо без картинки)"
               value={form.emoji}

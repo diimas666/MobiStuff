@@ -20,6 +20,7 @@ export type ProfileStackParamList = {
   PaymentMethods: undefined;
   Notifications: undefined;
   Settings: undefined;
+  Support: undefined;
 };
 
 export type RootStackParamList = {

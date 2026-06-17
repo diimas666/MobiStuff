@@ -1,16 +1,16 @@
 import { useCallback, useState } from 'react';
-import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StatusBar, Text, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileMenuItem } from '../components/profile/ProfileMenuItem';
 import { ProfileUserHeader } from '../components/profile/ProfileUserHeader';
+import { SettingsSection } from '../components/settings/SettingsSection';
 import { Screen } from '../components/Screen';
-import { radius, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
 import { useNotifications } from '../context/NotificationsContext';
 import { useOrders } from '../context/OrdersContext';
-import { useSettings } from '../context/SettingsContext';
 import { showToast } from '../context/ToastContext';
 import type { ProfileStackParamList, TabParamList } from '../navigation/types';
 import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
@@ -22,64 +22,31 @@ type ProfileNavigationProp = CompositeNavigationProp<
 >;
 
 export function ProfileScreen() {
-  const { styles, colors } = useThemedStyles(c => ({
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: spacing.screen,
-    paddingTop: 8,
-    paddingBottom: 32,
-  },
-  card: {
-    borderRadius: 28,
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-  menu: {
-    marginTop: 12,
-    marginBottom: 20,
-  },
-  logoutButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  loginButton: {
-    minHeight: 52,
-    borderRadius: radius.pill,
-    backgroundColor: c.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: c.danger,
-  },
-  loginText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  pressed: {
-    opacity: 0.82,
-  },
-}));
+  const { styles } = useThemedStyles(c => ({
+    content: {
+      flexGrow: 1,
+      paddingHorizontal: spacing.screen,
+      paddingTop: 8,
+      paddingBottom: 32,
+    },
+    headerBlock: {
+      marginBottom: 8,
+      gap: 18,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    group: {
+      gap: 10,
+      marginBottom: 18,
+    },
+  }));
 
   const navigation = useNavigation<ProfileNavigationProp>();
   const { unreadCount, refreshNotifications } = useNotifications();
   const { refreshOrders } = useOrders();
-  const { colors: themeColors } = useSettings();
   const [displayName, setDisplayName] = useState('');
   const [displayEmail, setDisplayEmail] = useState('');
   const [hasProfile, setHasProfile] = useState(false);
@@ -152,13 +119,9 @@ export function ProfileScreen() {
     navigation.navigate('Notifications');
   }, [navigation]);
 
-  const openComingSoon = useCallback((label: string) => {
-    showToast(`${label} — розділ у розробці`, 'info');
-  }, []);
-
-  const handleLogout = useCallback(() => {
-    showToast('Вихід з акаунту незабаром буде доступний', 'info');
-  }, []);
+  const openSupport = useCallback(() => {
+    navigation.navigate('Support');
+  }, [navigation]);
 
   return (
     <Screen variant="home">
@@ -167,7 +130,8 @@ export function ProfileScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-        <View style={[styles.card, { backgroundColor: themeColors.card }]}>
+        <View style={styles.headerBlock}>
+          <Text style={styles.title}>Профіль</Text>
           <ProfileUserHeader
             isGuest={!hasProfile}
             name={displayName}
@@ -175,73 +139,63 @@ export function ProfileScreen() {
             onGuestPress={openLogin}
             onSettingsPress={openSettings}
           />
+        </View>
 
-          <View style={styles.menu}>
-            <ProfileMenuItem
-              icon="person-outline"
-              label="Мої замовлення"
-              onPress={openOrders}
-            />
-            <ProfileMenuItem
-              icon="heart-outline"
-              label="Обране"
-              onPress={openFavorites}
-            />
-            <ProfileMenuItem
-              icon="eye-outline"
-              label="Переглянуті товари"
-              onPress={openViewedProducts}
-            />
-            <ProfileMenuItem
-              icon="location-outline"
-              label="Адреси доставки"
-              onPress={openDeliveryAddresses}
-            />
-            <ProfileMenuItem
-              icon="card-outline"
-              label="Способи оплати"
-              onPress={openPaymentMethods}
-            />
-            <ProfileMenuItem
-              icon="notifications-outline"
-              label="Повідомлення"
-              badge={unreadCount > 0 ? unreadCount : undefined}
-              showChevron={false}
-              onPress={openNotifications}
-            />
-            <ProfileMenuItem
-              icon="settings-outline"
-              label="Налаштування"
-              onPress={openSettings}
-            />
-            <ProfileMenuItem
-              icon="chatbubble-ellipses-outline"
-              label="Підтримка"
-              showChevron={false}
-              onPress={() => openComingSoon('Підтримка')}
-            />
-          </View>
+        <SettingsSection title="Покупки" icon="bag-handle-outline" />
+        <View style={styles.group}>
+          <ProfileMenuItem
+            icon="person-outline"
+            label="Мої замовлення"
+            onPress={openOrders}
+          />
+          <ProfileMenuItem
+            icon="heart-outline"
+            label="Обране"
+            onPress={openFavorites}
+          />
+          <ProfileMenuItem
+            icon="eye-outline"
+            label="Переглянуті товари"
+            onPress={openViewedProducts}
+          />
+        </View>
 
-          {/* Реєстрація/вхід ще не реалізовані — кнопки тимчасово приховані
-          {hasProfile ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={handleLogout}
-              style={({ pressed }) => [styles.logoutButton, pressed && styles.pressed]}>
-              <Text style={styles.logoutText}>Вийти</Text>
-            </Pressable>
-          ) : (
-            <Pressable
-              accessibilityRole="button"
-              onPress={openLogin}
-              style={({ pressed }) => [styles.loginButton, pressed && styles.pressed]}>
-              <Text style={styles.loginText}>Увійти</Text>
-            </Pressable>
-          )}
-          */}
+        <SettingsSection title="Доставка та оплата" icon="location-outline" />
+        <View style={styles.group}>
+          <ProfileMenuItem
+            icon="location-outline"
+            label="Адреси доставки"
+            onPress={openDeliveryAddresses}
+          />
+          <ProfileMenuItem
+            icon="card-outline"
+            label="Способи оплати"
+            onPress={openPaymentMethods}
+          />
+        </View>
+
+        <SettingsSection title="Додаток" icon="apps-outline" />
+        <View style={styles.group}>
+          <ProfileMenuItem
+            icon="notifications-outline"
+            label="Повідомлення"
+            badge={unreadCount > 0 ? unreadCount : undefined}
+            showChevron={false}
+            onPress={openNotifications}
+          />
+          <ProfileMenuItem
+            icon="settings-outline"
+            label="Налаштування"
+            onPress={openSettings}
+          />
+          <ProfileMenuItem
+            icon="chatbubble-ellipses-outline"
+            label="Підтримка"
+            showChevron={false}
+            onPress={openSupport}
+          />
         </View>
       </ScrollView>
     </Screen>
   );
 }
-
