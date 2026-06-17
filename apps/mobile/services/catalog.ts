@@ -274,14 +274,18 @@ export async function searchProductsByQuery(
     }));
 }
 
+export async function fetchApiProductsByBrand(brand: string): Promise<ApiProduct[]> {
+  return cachedFetch(`brand:api:${brand}`, CACHE_TTL.medium, async () =>
+    loadProducts(`brand=${encodeURIComponent(brand)}`),
+  );
+}
+
 export async function fetchProductsByBrand(
   brand: string,
   limit = 20,
 ): Promise<HomeProduct[]> {
-  return cachedFetch(`brand:${brand}:${limit}`, CACHE_TTL.medium, async () => {
-    const products = await loadProducts(`brand=${encodeURIComponent(brand)}`);
-    return products.slice(0, limit).map(mapProduct);
-  });
+  const products = await fetchApiProductsByBrand(brand);
+  return products.slice(0, limit).map(mapProduct);
 }
 
 export async function fetchHomeCatalog() {

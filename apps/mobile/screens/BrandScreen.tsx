@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { BrandCategoryFilterSheet } from '../components/brand/BrandCategoryFilterSheet';
+import { AppTabBar } from '../components/navigation/AppTabBar';
 import { BackButton } from '../components/navigation/BackButton';
 import { RelatedProductCard } from '../components/product/RelatedProductCard';
 import { Screen } from '../components/Screen';
@@ -21,9 +23,13 @@ import { useFavorites } from '../context/FavoritesContext';
 import { showErrorToast } from '../context/ToastContext';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 import type { RootStackParamList } from '../navigation/types';
-import { fetchProductsByBrand } from '../services/catalog';
-import type { HomeProduct } from '../types/catalog';
+import { fetchApiProductsByBrand } from '../services/catalog';
+import { mapProduct, type ApiProduct, type HomeProduct } from '../types/catalog';
 import { addHomeProductToCart } from '../utils/addProductToCart';
+import {
+  filterBrandProductsByCategory,
+  getBrandCategories,
+} from '../utils/brandCategories';
 import { errorMessages } from '../utils/errors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Brand'>;
@@ -31,9 +37,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Brand'>;
 export function BrandScreen({ route, navigation }: Props) {
   const { brand } = route.params;
   const { styles, colors } = useThemedStyles(c => ({
+    layout: {
+      flex: 1,
+    },
     content: {
       paddingHorizontal: spacing.screen,
-      paddingBottom: 32,
+      paddingBottom: 16,
     },
     headerRow: {
       marginBottom: 16,
@@ -100,10 +109,46 @@ export function BrandScreen({ route, navigation }: Props) {
       marginTop: 24,
       gap: 14,
     },
+    productsHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 12,
+    },
     productsTitle: {
+      flex: 1,
       fontSize: 20,
       fontWeight: '700',
       color: c.textOnDark,
+    },
+    filterButton: {
+      width: 44,
+      height: 44,
+      borderRadius: radius.md,
+      backgroundColor: c.homeSurface,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.2)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    filterButtonActive: {
+      backgroundColor: c.primary,
+      borderColor: c.primary,
+    },
+    filterBadge: {
+      position: 'absolute',
+      top: -4,
+      right: -4,
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: c.danger,
+      borderWidth: 1.5,
+      borderColor: c.homeBackgroundBottom,
+    },
+    selectedCategory: {
+      fontSize: 13,
+      color: c.textOnDarkMuted,
     },
     productsRow: {
       gap: 12,
@@ -124,15 +169,17 @@ export function BrandScreen({ route, navigation }: Props) {
 
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addToCart, items } = useCart();
-  const [products, setProducts] = useState<HomeProduct[]>([]);
+  const [products, setProducts] = useState<ApiProduct[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [selectedCategorySlug, setSelectedCategorySlug] = useState<string | null>(null);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     setIsLoadingProducts(true);
 
-    fetchProductsByBrand(brand.title)
+    fetchApiProductsByBrand(brand.title)
       .then(nextProducts => {
         if (!cancelled) {
           setProducts(nextProducts);
@@ -153,6 +200,20 @@ export function BrandScreen({ route, navigation }: Props) {
       cancelled = true;
     };
   }, [brand.title]);
+
+  const categories = useMemo(() => getBrandCategories(products), [products]);
+  const filteredProducts = useMemo(
+    () => filterBrandProductsByCategory(products, selectedCategorySlug),
+    [products, selectedCategorySlug],
+  );
+  const visibleProducts = useMemo(
+    () => filteredProducts.map(mapProduct),
+    [filteredProducts],
+  );
+  const selectedCategoryTitle = useMemo(
+    () => categories.find(category => category.slug === selectedCategorySlug)?.title,
+    [categories, selectedCategorySlug],
+  );
 
   const openWebsite = useCallback(() => {
     void Linking.openURL(`${baseUrl}/brand/${brand.handle}`);
@@ -185,83 +246,122 @@ export function BrandScreen({ route, navigation }: Props) {
     <Screen variant="home">
       <StatusBar barStyle="light-content" />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
-        <View style={styles.headerRow}>
-          <BackButton onPress={() => navigation.goBack()} />
-        </View>
+      <View style={styles.layout}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.content}>
+          <View style={styles.headerRow}>
+            <BackButton onPress={() => navigation.goBack()} />
+          </View>
 
-        <Text style={styles.title}>{brand.title}</Text>
+          <Text style={styles.title}>{brand.title}</Text>
 
-        <View style={styles.heroCard}>
-          <Image
-            source={{ uri: brand.imageFull || brand.image }}
-            style={styles.heroImage}
-            resizeMode="contain"
-          />
-          <View style={styles.heroBody}>
-            <Text style={styles.cardTitle}>Про бренд {brand.title}</Text>
+          <View style={styles.heroCard}>
+            <Image
+              source={{ uri: brand.imageFull || brand.image }}
+              style={styles.heroImage}
+              resizeMode="contain"
+            />
+            <View style={styles.heroBody}>
+              <Text style={styles.cardTitle}>Про бренд {brand.title}</Text>
 
-            {brand.description.map((paragraph, index) => (
-              <Text key={`${index}-${paragraph.slice(0, 12)}`} style={styles.paragraph}>
-                {paragraph}
-              </Text>
-            ))}
+              {brand.description.map((paragraph, index) => (
+                <Text key={`${index}-${paragraph.slice(0, 12)}`} style={styles.paragraph}>
+                  {paragraph}
+                </Text>
+              ))}
 
-            {brand.products.length > 0 ? (
-              <View style={{ gap: 6 }}>
-                {brand.products.map((item, index) => (
-                  <Text key={`${index}-${item.slice(0, 12)}`} style={styles.bullet}>
-                    • {item}
-                  </Text>
-                ))}
+              {brand.products.length > 0 ? (
+                <View style={{ gap: 6 }}>
+                  {brand.products.map((item, index) => (
+                    <Text key={`${index}-${item.slice(0, 12)}`} style={styles.bullet}>
+                      • {item}
+                    </Text>
+                  ))}
+                </View>
+              ) : null}
+
+              <View style={styles.actions}>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={openWebsite}
+                  style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}>
+                  <Ionicons name="globe-outline" size={16} color={colors.textOnDark} />
+                  <Text style={styles.actionText}>Читати на сайті</Text>
+                </Pressable>
               </View>
-            ) : null}
-
-            <View style={styles.actions}>
-              <Pressable
-                accessibilityRole="button"
-                onPress={openWebsite}
-                style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}>
-                <Ionicons name="globe-outline" size={16} color={colors.textOnDark} />
-                <Text style={styles.actionText}>Читати на сайті</Text>
-              </Pressable>
             </View>
           </View>
-        </View>
 
-        <View style={styles.productsSection}>
-          <Text style={styles.productsTitle}>Товари бренду</Text>
+          <View style={styles.productsSection}>
+            <View style={styles.productsHeader}>
+              <Text style={styles.productsTitle}>Товари бренду</Text>
 
-          {isLoadingProducts ? (
-            <View style={styles.loader}>
-              <ActivityIndicator color={colors.textOnDark} />
+              {categories.length > 0 ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Фільтр за категорією"
+                  onPress={() => setIsFilterVisible(true)}
+                  style={({ pressed }) => [
+                    styles.filterButton,
+                    selectedCategorySlug && styles.filterButtonActive,
+                    pressed && styles.pressed,
+                  ]}>
+                  <Ionicons
+                    name="options-outline"
+                    size={20}
+                    color={selectedCategorySlug ? colors.textOnDark : colors.textOnDark}
+                  />
+                  {selectedCategorySlug ? <View style={styles.filterBadge} /> : null}
+                </Pressable>
+              ) : null}
             </View>
-          ) : products.length > 0 ? (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.productsRow}>
-              {products.map(product => (
-                <RelatedProductCard
-                  key={product.id}
-                  product={product}
-                  onPress={() => openProduct(product)}
-                  onFavoritePress={() => void toggleFavorite(product)}
-                  onAddToCartPress={() => void handleAddToCart(product)}
-                  isFavorite={isFavorite(product.id)}
-                  isInCart={isProductInCart(product.id)}
-                />
-              ))}
-            </ScrollView>
-          ) : (
-            <Text style={styles.emptyText}>
-              Товари цього бренду зараз недоступні в додатку. Перегляньте каталог на сайті.
-            </Text>
-          )}
-        </View>
-      </ScrollView>
+
+            {selectedCategoryTitle ? (
+              <Text style={styles.selectedCategory}>{selectedCategoryTitle}</Text>
+            ) : null}
+
+            {isLoadingProducts ? (
+              <View style={styles.loader}>
+                <ActivityIndicator color={colors.textOnDark} />
+              </View>
+            ) : visibleProducts.length > 0 ? (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.productsRow}>
+                {visibleProducts.map(product => (
+                  <RelatedProductCard
+                    key={product.id}
+                    product={product}
+                    onPress={() => openProduct(product)}
+                    onFavoritePress={() => void toggleFavorite(product)}
+                    onAddToCartPress={() => void handleAddToCart(product)}
+                    isFavorite={isFavorite(product.id)}
+                    isInCart={isProductInCart(product.id)}
+                  />
+                ))}
+              </ScrollView>
+            ) : (
+              <Text style={styles.emptyText}>
+                {selectedCategorySlug
+                  ? 'У цій категорії поки немає товарів цього бренду.'
+                  : 'Товари цього бренду зараз недоступні в додатку. Перегляньте каталог на сайті.'}
+              </Text>
+            )}
+          </View>
+        </ScrollView>
+
+        <AppTabBar />
+      </View>
+
+      <BrandCategoryFilterSheet
+        visible={isFilterVisible}
+        categories={categories}
+        selectedSlug={selectedCategorySlug}
+        onClose={() => setIsFilterVisible(false)}
+        onSelect={setSelectedCategorySlug}
+      />
     </Screen>
   );
 }
