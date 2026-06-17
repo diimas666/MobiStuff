@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TabNavigator } from './TabNavigator';
 import { CheckoutScreen } from '../screens/CheckoutScreen';
+import { PrivacyPolicyScreen } from '../screens/PrivacyPolicyScreen';
 import { ProductScreen } from '../screens/ProductScreen';
 import type { RootStackParamList } from './types';
 
@@ -23,6 +24,11 @@ export function RootNavigator() {
       <Stack.Screen
         name="Checkout"
         component={CheckoutScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicyScreen}
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>

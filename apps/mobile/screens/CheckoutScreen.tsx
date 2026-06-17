@@ -17,6 +17,7 @@ import {
   CheckoutAutocompleteField,
   type AutocompleteSuggestion,
 } from '../components/checkout/CheckoutAutocompleteField';
+import { CheckoutConsentCheckbox } from '../components/checkout/CheckoutConsentCheckbox';
 import { CheckoutField } from '../components/checkout/CheckoutField';
 import { CheckoutOrderItem } from '../components/checkout/CheckoutOrderItem';
 import { CheckoutRadioRow } from '../components/checkout/CheckoutRadioRow';
@@ -80,6 +81,8 @@ export function CheckoutScreen({ navigation }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isOrderComplete, setIsOrderComplete] = useState(false);
+  const [personalDataConsent, setPersonalDataConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
   const {
     suggestions: citySuggestions,
@@ -114,10 +117,18 @@ export function CheckoutScreen({ navigation }: Props) {
       return;
     }
 
+    if (!personalDataConsent) {
+      setConsentError(true);
+      showToast('Потрібна згода на обробку персональних даних', 'info');
+      return;
+    }
+
     if (!validateForSubmit()) {
       showToast('Перевірте правильність заповнення форми', 'info');
       return;
     }
+
+    setConsentError(false);
 
     const trimmedName = name.trim();
     const trimmedPhone = normalizePhone(phone);
@@ -358,6 +369,16 @@ export function CheckoutScreen({ navigation }: Props) {
               </View>
             ) : null}
           </CheckoutSection>
+
+          <CheckoutConsentCheckbox
+            checked={personalDataConsent}
+            onToggle={() => {
+              setPersonalDataConsent(current => !current);
+              setConsentError(false);
+            }}
+            onOpenPolicy={() => navigation.navigate('PrivacyPolicy')}
+            showError={consentError}
+          />
 
           <View style={styles.totalsCard}>
             <View style={styles.totalRow}>

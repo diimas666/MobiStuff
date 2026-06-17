@@ -7,6 +7,7 @@ import { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { CartDiscountBanner } from '../components/cart/CartDiscountBanner';
+import { CartEmptyState } from '../components/cart/CartEmptyState';
 import { CartListItem } from '../components/cart/CartListItem';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
@@ -58,6 +59,16 @@ export function CartScreen() {
     navigation.navigate('Checkout');
   }, [navigation]);
 
+  const openCatalog = useCallback(() => {
+    navigation.navigate('Categories');
+  }, [navigation]);
+
+  const openHome = useCallback(() => {
+    navigation.navigate('Home');
+  }, [navigation]);
+
+  const showBackButton = items.length > 0 || Boolean(route.params?.returnTo);
+
   const renderItem = useCallback(
     ({ item }: { item: CartItem }) => (
       <CartListItem
@@ -73,9 +84,11 @@ export function CartScreen() {
   const listHeader = useCallback(
     () => (
       <>
-        <View style={styles.header}>
-          <BackButton onPress={handleBack} />
-        </View>
+        {showBackButton ? (
+          <View style={styles.header}>
+            <BackButton onPress={handleBack} />
+          </View>
+        ) : null}
 
         <Text style={styles.title}>Кошик</Text>
         {items.length > 0 ? (
@@ -90,24 +103,24 @@ export function CartScreen() {
           </Text>
         ) : (
           <Text style={styles.subtitle}>
-            Додайте товари з каталогу, щоб оформити замовлення
+            Додайте аксесуари з каталогу — оформлення займе лише хвилину
           </Text>
         )}
 
         {items.length === 0 ? (
-          <View style={styles.emptyState}>
-            <View style={styles.emptyIcon}>
-              <Ionicons name="cart-outline" size={32} color={colors.primary} />
-            </View>
-            <Text style={styles.emptyTitle}>Кошик порожній</Text>
-            <Text style={styles.emptyText}>
-              Оберіть аксесуари в каталозі та додайте їх у кошик.
-            </Text>
-          </View>
+          <CartEmptyState onBrowseCatalog={openCatalog} onGoHome={openHome} />
         ) : null}
       </>
     ),
-    [handleBack, items.length, total, totalQuantity],
+    [
+      handleBack,
+      items.length,
+      openCatalog,
+      openHome,
+      showBackButton,
+      total,
+      totalQuantity,
+    ],
   );
 
   return (
@@ -179,32 +192,6 @@ const styles = StyleSheet.create({
   subtitlePrice: {
     fontWeight: '700',
     color: colors.priceLight,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 48,
-    paddingHorizontal: 16,
-  },
-  emptyIcon: {
-    width: 72,
-    height: 72,
-    borderRadius: radius.lg,
-    backgroundColor: colors.homeSurface,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 8,
-  },
-  emptyText: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    textAlign: 'center',
-    lineHeight: 20,
   },
   footer: {
     paddingHorizontal: spacing.screen,

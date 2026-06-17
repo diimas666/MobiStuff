@@ -8,6 +8,7 @@ const navLinks = [
   { href: '/about', label: 'Про нас' },
   { href: '/delivery', label: 'Доставка і оплата' },
   { href: '/returns', label: 'Повернення' },
+  { href: '/privacy', label: 'Політика конфіденційності' },
   { href: '/contacts', label: 'Контакти' },
 ];
 

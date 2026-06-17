@@ -10,6 +10,7 @@ export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList>;
   Product: { product: HomeProduct };
   Checkout: undefined;
+  PrivacyPolicy: undefined;
 };
 
 export type TabParamList = {

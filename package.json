@@ -20,7 +20,8 @@
     "mobile:ios": "npm run ios --workspace=MobistuffMobile",
     "mobile:android": "npm run android --workspace=MobistuffMobile",
     "mobile:lint": "npm run lint --workspace=MobistuffMobile",
-    "mobile:pod-install": "cd apps/mobile/ios && bundle exec pod install"
+    "mobile:pod-install": "cd apps/mobile/ios && bundle exec pod install",
+    "mobile:icons": "node scripts/generate-app-icons.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^15.5.19",

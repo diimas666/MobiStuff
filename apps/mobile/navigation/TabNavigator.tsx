@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { StyleSheet, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../constants/theme';
+import { useCart } from '../context/CartContext';
 import { CartScreen } from '../screens/CartScreen';
 import { FavoritesScreen } from '../screens/FavoritesScreen';
 import { CategoriesStackNavigator } from './CategoriesStackNavigator';
@@ -20,6 +22,9 @@ const screenComponents = {
 } as const;
 
 export function TabNavigator() {
+  const { totalQuantity } = useCart();
+  const hasCartItems = totalQuantity > 0;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -53,7 +58,18 @@ export function TabNavigator() {
               ? tab.icons.active
               : tab.icons.inactive
             : 'ellipse-outline';
-          return <Ionicons name={iconName} size={size} color={color} />;
+          const icon = <Ionicons name={iconName} size={size} color={color} />;
+
+          if (route.name !== 'Cart' || !hasCartItems) {
+            return icon;
+          }
+
+          return (
+            <View style={styles.iconWrap}>
+              {icon}
+              <View style={styles.cartBadge} />
+            </View>
+          );
         },
       })}>
       {tabItems.map(tab => (
@@ -67,3 +83,23 @@ export function TabNavigator() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  iconWrap: {
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    backgroundColor: colors.danger,
+    borderWidth: 1.5,
+    borderColor: colors.background,
+  },
+});

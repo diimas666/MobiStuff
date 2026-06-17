@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import HomeSectionTitle from '@/components/HomeSectionTitle';
 import NovaPoshtaDelivery, { type NovaPoshtaSelection } from '@/components/NovaPoshtaDelivery';
+import CheckoutConsentCheckbox from '@/components/CheckoutConsentCheckbox';
 import PaymentRulesNote from '@/components/PaymentRulesNote';
 import ProductImage from '@/components/ProductImage';
 import { ArrowLeft, ArrowRight, CreditCard, Loader2, Package } from 'lucide-react';
@@ -32,6 +33,8 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [personalDataConsent, setPersonalDataConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
   const cardOnlyRequired = total >= CARD_ONLY_FROM;
 
   const [delivery, setDelivery] = useState<NovaPoshtaSelection>({
@@ -86,6 +89,15 @@ export default function CheckoutPage() {
       setIsLoading(false);
       return;
     }
+
+    if (!personalDataConsent) {
+      setConsentError(true);
+      alert('❌ Потрібна згода на обробку персональних даних');
+      setIsLoading(false);
+      return;
+    }
+
+    setConsentError(false);
 
     const order = {
       orderId: generateOrderId(),
@@ -311,6 +323,19 @@ export default function CheckoutPage() {
 
             <div className="mt-4">
               <PaymentRulesNote />
+            </div>
+
+            <div className="mt-4">
+              <CheckoutConsentCheckbox
+                checked={personalDataConsent}
+                onChange={(checked) => {
+                  setPersonalDataConsent(checked);
+                  if (checked) {
+                    setConsentError(false);
+                  }
+                }}
+                showError={consentError}
+              />
             </div>
 
             <button

@@ -62,6 +62,11 @@ export default function ContactsPage() {
                 Про нас →
               </Link>
             </li>
+            <li>
+              <Link href="/privacy" className="text-green-600 hover:underline">
+                Політика конфіденційності →
+              </Link>
+            </li>
           </ul>
         </InfoCard>
       </div>
