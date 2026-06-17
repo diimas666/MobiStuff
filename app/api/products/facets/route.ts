@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
 import { filterCatalogProducts } from '@/lib/productCategoryRules';
-import {
-  GLASS_SUBCATEGORY_SLUG,
-  getPhoneModelsFromTitles,
-  titleMatchesPhoneModel,
-} from '@/lib/glassPhoneFilter';
+import { GLASS_SUBCATEGORY_SLUG, getPhoneModelsFromTitles } from '@/lib/glassPhoneFilter';
 
 export async function GET(req: Request) {
   try {

@@ -6,8 +6,8 @@ import Product from '@/app/api/models/Product';
 import { slugify } from 'transliteration'; // npm i transliteration
 
 export async function POST(req: NextRequest) {
-  const formData = await req.formData();
-  const file = formData.get('file') as File;
+  const formData = (await req.formData()) as unknown as globalThis.FormData;
+  const file = formData.get('file') as File | null;
   if (!file)
     return NextResponse.json({ error: 'Файл не знайдено' }, { status: 400 });
 
