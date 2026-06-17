@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TabNavigator } from './TabNavigator';
+import { BrandScreen } from '../screens/BrandScreen';
 import { CheckoutScreen } from '../screens/CheckoutScreen';
 import { PrivacyPolicyScreen } from '../screens/PrivacyPolicyScreen';
 import { ProductScreen } from '../screens/ProductScreen';
@@ -19,6 +20,11 @@ export function RootNavigator() {
       <Stack.Screen
         name="Product"
         component={ProductScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="Brand"
+        component={BrandScreen}
         options={{ animation: 'slide_from_right' }}
       />
       <Stack.Screen

@@ -8,20 +8,25 @@ import { LoadingState } from '../components/LoadingState';
 import { ErrorState } from '../components/ErrorState';
 import { OfflineState } from '../components/OfflineState';
 import { Screen } from '../components/Screen';
+import { BrandsSection } from '../components/home/BrandsSection';
 import { CategoriesSection } from '../components/home/CategoriesSection';
 import { HomeHeader } from '../components/home/HomeHeader';
 import { HomeSearchBar } from '../components/home/HomeSearchBar';
 import { PopularProductsSection } from '../components/home/PopularProductsSection';
+import { RecentlyViewedSection } from '../components/home/RecentlyViewedSection';
 import { TrendingSlider } from '../components/home/TrendingSlider';
 import { PromoBannerCarousel } from '../components/home/PromoBannerCarousel';
 import { spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
+import { useViewedProducts } from '../context/ViewedProductsContext';
 import { showErrorToast } from '../context/ToastContext';
+import { useBrands } from '../hooks/useBrands';
 import { useHomeData } from '../hooks/useHomeData';
 import { usePromotions } from '../hooks/usePromotions';
 import { openPromoCategory } from '../navigation/categoriesTabListeners';
 import type { RootStackParamList, TabParamList } from '../navigation/types';
+import type { BrandItem } from '../types/brand';
 import type { HomeProduct } from '../types/catalog';
 import type { PromoBanner } from '../types/promotion';
 import { useSettings } from '../context/SettingsContext';
@@ -39,7 +44,9 @@ export function HomeScreen() {
   const { isOffline } = useNetwork();
   const navigation = useNavigation<HomeNavigationProp>();
   const { categories, trending, popular, isLoading, error, retry } = useHomeData();
+  const { items: brands, isLoading: isBrandsLoading } = useBrands();
   const { promotions } = usePromotions(settings.promoNotifications);
+  const { items: viewedProducts } = useViewedProducts();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addToCart, items } = useCart();
 
@@ -90,6 +97,17 @@ export function HomeScreen() {
     [addToCart],
   );
 
+  const openBrand = useCallback(
+    (brand: BrandItem) => {
+      navigation.navigate('Brand', { brand });
+    },
+    [navigation],
+  );
+
+  const openViewedProducts = useCallback(() => {
+    navigation.navigate('Profile', { screen: 'ViewedProducts' });
+  }, [navigation]);
+
   const isProductInCart = useCallback(
     (productId: string) => items.some(item => item.productId === productId),
     [items],
@@ -136,6 +154,16 @@ export function HomeScreen() {
             onAddToCartPress={handleAddToCart}
             isFavorite={isFavorite}
             isInCart={isProductInCart}
+          />
+          <RecentlyViewedSection
+            items={viewedProducts}
+            onProductPress={openProduct}
+            onSeeAll={openViewedProducts}
+          />
+          <BrandsSection
+            items={brands}
+            isLoading={isBrandsLoading && brands.length === 0}
+            onBrandPress={openBrand}
           />
         </ScrollView>
       )}

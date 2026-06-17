@@ -274,6 +274,16 @@ export async function searchProductsByQuery(
     }));
 }
 
+export async function fetchProductsByBrand(
+  brand: string,
+  limit = 20,
+): Promise<HomeProduct[]> {
+  return cachedFetch(`brand:${brand}:${limit}`, CACHE_TTL.medium, async () => {
+    const products = await loadProducts(`brand=${encodeURIComponent(brand)}`);
+    return products.slice(0, limit).map(mapProduct);
+  });
+}
+
 export async function fetchHomeCatalog() {
   return cachedFetch('home:catalog', CACHE_TTL.medium, async () => {
     const [products, trending] = await Promise.all([

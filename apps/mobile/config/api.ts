@@ -51,6 +51,7 @@ export const api = {
       body: JSON.stringify(body),
     }),
   promotions: () => request('/api/promotions'),
+  brands: () => request('/api/brands'),
   support: (body: unknown) =>
     request('/api/support', {
       method: 'POST',

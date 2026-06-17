@@ -1,4 +1,5 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
+import type { BrandItem } from '../types/brand';
 import type { HomeCategory, HomeProduct } from '../types/catalog';
 
 export type CategoriesStackParamList = {
@@ -26,6 +27,7 @@ export type ProfileStackParamList = {
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList>;
   Product: { product: HomeProduct };
+  Brand: { brand: BrandItem };
   Checkout: undefined;
   PrivacyPolicy: undefined;
 };
