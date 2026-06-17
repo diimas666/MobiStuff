@@ -84,7 +84,7 @@ export function HomeScreen() {
           <PopularProductsSection
             items={popular}
             onProductPress={openProduct}
-            onFavoritePress={product => toggleFavorite(product.id)}
+            onFavoritePress={product => void toggleFavorite(product)}
             onAddToCartPress={handleAddToCart}
             isFavorite={isFavorite}
             isInCart={isProductInCart}

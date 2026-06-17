@@ -1,21 +1,84 @@
-import { useCallback } from 'react';
-import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { LoadingState } from '../components/LoadingState';
-import { ProfileOrderCard } from '../components/profile/ProfileOrderCard';
+import { useCallback, useState } from 'react';
+import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { CompositeNavigationProp } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ProfileMenuItem } from '../components/profile/ProfileMenuItem';
+import { ProfileUserHeader } from '../components/profile/ProfileUserHeader';
 import { Screen } from '../components/Screen';
 import { colors, radius, spacing } from '../constants/theme';
-import { useOrders } from '../context/OrdersContext';
+import { showToast } from '../context/ToastContext';
+import type { ProfileStackParamList, TabParamList } from '../navigation/types';
+import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
+
+type ProfileNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<ProfileStackParamList, 'ProfileMain'>,
+  BottomTabNavigationProp<TabParamList>
+>;
+
+const NOTIFICATIONS_COUNT = 3;
 
 export function ProfileScreen() {
-  const { orders, isHydrated, isSyncing, refreshOrders } = useOrders();
+  const navigation = useNavigation<ProfileNavigationProp>();
+  const [displayName, setDisplayName] = useState('');
+  const [displayEmail, setDisplayEmail] = useState('');
+  const [hasProfile, setHasProfile] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      void refreshOrders();
-    }, [refreshOrders]),
+      let isMounted = true;
+
+      loadCheckoutProfile().then(profile => {
+        if (!isMounted) {
+          return;
+        }
+
+        if (!profile) {
+          setHasProfile(false);
+          setDisplayName('');
+          setDisplayEmail('');
+          return;
+        }
+
+        const name = profile.name.trim();
+        const email = profile.email.trim();
+        const profileExists = Boolean(name || email);
+
+        setHasProfile(profileExists);
+        setDisplayName(name);
+        setDisplayEmail(email);
+      });
+
+      return () => {
+        isMounted = false;
+      };
+    }, []),
   );
+
+  const openLogin = useCallback(() => {
+    showToast('Вхід в акаунт незабаром буде доступний', 'info');
+  }, []);
+
+  const openSettings = useCallback(() => {
+    showToast('Налаштування незабаром будуть доступні', 'info');
+  }, []);
+
+  const openOrders = useCallback(() => {
+    navigation.navigate('ProfileOrders');
+  }, [navigation]);
+
+  const openFavorites = useCallback(() => {
+    navigation.navigate('Favorites');
+  }, [navigation]);
+
+  const openComingSoon = useCallback((label: string) => {
+    showToast(`${label} — розділ у розробці`, 'info');
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    showToast('Вихід з акаунту незабаром буде доступний', 'info');
+  }, []);
 
   return (
     <Screen backgroundColor={colors.homeBackground}>
@@ -24,35 +87,75 @@ export function ProfileScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Профіль</Text>
-        <Text style={styles.subtitle}>Ваші замовлення та налаштування</Text>
+        <View style={styles.card}>
+          <ProfileUserHeader
+            isGuest={!hasProfile}
+            name={displayName}
+            email={displayEmail}
+            onGuestPress={openLogin}
+            onSettingsPress={openSettings}
+          />
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Мої замовлення</Text>
-            {isSyncing ? (
-              <Text style={styles.syncHint}>Оновлення статусів...</Text>
-            ) : null}
+          <View style={styles.menu}>
+            <ProfileMenuItem
+              icon="person-outline"
+              label="Мої замовлення"
+              onPress={openOrders}
+            />
+            <ProfileMenuItem
+              icon="heart-outline"
+              label="Обране"
+              onPress={openFavorites}
+            />
+            <ProfileMenuItem
+              icon="eye-outline"
+              label="Переглянуті товари"
+              onPress={() => openComingSoon('Переглянуті товари')}
+            />
+            <ProfileMenuItem
+              icon="location-outline"
+              label="Адреси доставки"
+              onPress={() => openComingSoon('Адреси доставки')}
+            />
+            <ProfileMenuItem
+              icon="card-outline"
+              label="Способи оплати"
+              onPress={() => openComingSoon('Способи оплати')}
+            />
+            <ProfileMenuItem
+              icon="notifications-outline"
+              label="Повідомлення"
+              badge={NOTIFICATIONS_COUNT}
+              showChevron={false}
+              onPress={() => openComingSoon('Повідомлення')}
+            />
+            <ProfileMenuItem
+              icon="settings-outline"
+              label="Налаштування"
+              onPress={openSettings}
+            />
+            <ProfileMenuItem
+              icon="settings-outline"
+              label="Підтримка"
+              showChevron={false}
+              onPress={() => openComingSoon('Підтримка')}
+            />
           </View>
 
-          {!isHydrated ? (
-            <LoadingState label="Завантаження замовлень..." />
-          ) : orders.length === 0 ? (
-            <View style={styles.emptyState}>
-              <View style={styles.emptyIcon}>
-                <Ionicons name="receipt-outline" size={28} color={colors.primary} />
-              </View>
-              <Text style={styles.emptyTitle}>Замовлень ще немає</Text>
-              <Text style={styles.emptyText}>
-                Оформіть покупку в каталозі — і вона з&apos;явиться тут
-              </Text>
-            </View>
+          {hasProfile ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={handleLogout}
+              style={({ pressed }) => [styles.logoutButton, pressed && styles.pressed]}>
+              <Text style={styles.logoutText}>Вийти</Text>
+            </Pressable>
           ) : (
-            <View style={styles.ordersList}>
-              {orders.map(order => (
-                <ProfileOrderCard key={order.id} order={order} />
-              ))}
-            </View>
+            <Pressable
+              accessibilityRole="button"
+              onPress={openLogin}
+              style={({ pressed }) => [styles.loginButton, pressed && styles.pressed]}>
+              <Text style={styles.loginText}>Увійти</Text>
+            </Pressable>
           )}
         </View>
       </ScrollView>
@@ -62,68 +165,55 @@ export function ProfileScreen() {
 
 const styles = StyleSheet.create({
   content: {
+    flexGrow: 1,
     paddingHorizontal: spacing.screen,
+    paddingTop: 8,
     paddingBottom: 32,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.textOnDark,
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    marginBottom: 24,
-    lineHeight: 20,
-  },
-  section: {
-    gap: 14,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  syncHint: {
-    fontSize: 12,
-    color: colors.textOnDarkMuted,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textOnDark,
-  },
-  ordersList: {
-    gap: 12,
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 40,
+  card: {
+    backgroundColor: colors.card,
+    borderRadius: 28,
     paddingHorizontal: 20,
-    backgroundColor: colors.homeSearch,
-    borderRadius: radius.lg,
-    gap: 10,
+    paddingTop: 24,
+    paddingBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 4,
   },
-  emptyIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: radius.md,
-    backgroundColor: colors.homeSurface,
+  menu: {
+    marginTop: 12,
+    marginBottom: 20,
+  },
+  logoutButton: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+    paddingHorizontal: 20,
   },
-  emptyTitle: {
-    fontSize: 18,
+  loginButton: {
+    minHeight: 52,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.danger,
+  },
+  loginText: {
+    fontSize: 16,
     fontWeight: '700',
     color: colors.textOnDark,
   },
-  emptyText: {
-    fontSize: 14,
-    color: colors.textOnDarkMuted,
-    textAlign: 'center',
-    lineHeight: 20,
+  pressed: {
+    opacity: 0.82,
   },
 });

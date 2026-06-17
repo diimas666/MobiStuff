@@ -11,6 +11,11 @@ export type CategoriesStackParamList = {
   };
 };
 
+export type ProfileStackParamList = {
+  ProfileMain: undefined;
+  ProfileOrders: undefined;
+};
+
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList>;
   Product: { product: HomeProduct };
@@ -30,5 +35,5 @@ export type TabParamList = {
       }
     | undefined;
   Favorites: undefined;
-  Profile: undefined;
+  Profile: NavigatorScreenParams<ProfileStackParamList> | undefined;
 };

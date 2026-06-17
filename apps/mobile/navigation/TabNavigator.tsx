@@ -7,7 +7,7 @@ import { CartScreen } from '../screens/CartScreen';
 import { FavoritesScreen } from '../screens/FavoritesScreen';
 import { CategoriesStackNavigator } from './CategoriesStackNavigator';
 import { HomeScreen } from '../screens/HomeScreen';
-import { ProfileScreen } from '../screens/ProfileScreen';
+import { ProfileStackNavigator } from './ProfileStackNavigator';
 import { tabItems } from './tabConfig';
 import type { TabParamList } from './types';
 
@@ -18,7 +18,7 @@ const screenComponents = {
   Categories: CategoriesStackNavigator,
   Cart: CartScreen,
   Favorites: FavoritesScreen,
-  Profile: ProfileScreen,
+  Profile: ProfileStackNavigator,
 } as const;
 
 export function TabNavigator() {

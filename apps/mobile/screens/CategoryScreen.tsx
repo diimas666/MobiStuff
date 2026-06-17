@@ -83,7 +83,7 @@ export function CategoryScreen({ route, navigation }: Props) {
     [category.id],
   );
   const [sheetVisible, setSheetVisible] = useState(false);
-  const { isFavorite, toggleFavorite, favorites } = useFavorites();
+  const { isFavorite, toggleFavorite, items: favoriteItems } = useFavorites();
   const { addToCart, items } = useCart();
   const {
     displayedProducts,
@@ -141,7 +141,7 @@ export function CategoryScreen({ route, navigation }: Props) {
         <CategoryProductCard
           product={item}
           onPress={openProduct}
-          onFavoritePress={product => toggleFavorite(product.id)}
+          onFavoritePress={product => void toggleFavorite(product)}
           onAddToCartPress={handleAddToCart}
           isFavorite={isFavorite(item._id)}
           isInCart={isProductInCart(item._id)}
@@ -217,8 +217,8 @@ export function CategoryScreen({ route, navigation }: Props) {
   );
 
   const extraData = useMemo(
-    () => ({ filters, favorites, cartSize: items.length }),
-    [filters, favorites, items.length],
+    () => ({ filters, favoriteCount: favoriteItems.length, cartSize: items.length }),
+    [favoriteItems.length, filters, items.length],
   );
 
   return (

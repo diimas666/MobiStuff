@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../../constants/theme';
+import { useCart } from '../../context/CartContext';
 import { tabItems } from '../../navigation/tabConfig';
 import type { TabParamList } from '../../navigation/types';
 
@@ -13,6 +14,8 @@ type Props = {
 export function AppTabBar({ activeTab }: Props) {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const { totalQuantity } = useCart();
+  const hasCartItems = totalQuantity > 0;
 
   const navigateTo = (screen: keyof TabParamList) => {
     navigation.dispatch(
@@ -41,7 +44,12 @@ export function AppTabBar({ activeTab }: Props) {
             accessibilityLabel={tab.label}
             onPress={() => navigateTo(tab.name)}
             style={({ pressed }) => [styles.tab, pressed && styles.pressed]}>
-            <Ionicons name={iconName} size={24} color={color} />
+            <View style={styles.iconWrap}>
+              <Ionicons name={iconName} size={24} color={color} />
+              {tab.name === 'Cart' && hasCartItems ? (
+                <View style={styles.cartBadge} />
+              ) : null}
+            </View>
             <Text style={[styles.label, { color }]}>{tab.label}</Text>
           </Pressable>
         );
@@ -69,6 +77,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,
+  },
+  iconWrap: {
+    width: 28,
+    height: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    backgroundColor: colors.danger,
+    borderWidth: 1.5,
+    borderColor: colors.background,
   },
   label: {
     fontSize: 11,

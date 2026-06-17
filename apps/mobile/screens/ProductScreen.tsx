@@ -167,7 +167,7 @@ export function ProductScreen({ route, navigation }: Props) {
 
             <View style={styles.actions}>
               <Pressable
-                onPress={() => toggleFavorite(displayProduct.id)}
+                onPress={() => void toggleFavorite(displayProduct)}
                 style={({ pressed }) => [
                   styles.favoriteButton,
                   isFavorite(displayProduct.id) && styles.favoriteButtonActive,
@@ -198,7 +198,7 @@ export function ProductScreen({ route, navigation }: Props) {
             <RelatedProductsSection
               items={related}
               onProductPress={openRelatedProduct}
-              onFavoritePress={item => toggleFavorite(item.id)}
+              onFavoritePress={item => void toggleFavorite(item)}
               onAddToCartPress={handleAddRelatedToCart}
               isFavorite={isFavorite}
               isInCart={isRelatedInCart}
