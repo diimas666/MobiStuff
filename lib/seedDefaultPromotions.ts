@@ -2,6 +2,18 @@ import Promotion from '@/app/api/models/Promotion';
 import PromotionMeta from '@/app/api/models/PromotionMeta';
 import { defaultPromotions } from '@/lib/defaultPromotions';
 
+type PromotionMetaRecord = {
+  defaultsSeeded?: boolean;
+};
+
+function asPromotionMeta(value: unknown): PromotionMetaRecord | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  return value as PromotionMetaRecord;
+}
+
 export async function ensureDefaultPromotions() {
   const totalCount = await Promotion.countDocuments();
 
@@ -14,7 +26,7 @@ export async function ensureDefaultPromotions() {
     return;
   }
 
-  const meta = await PromotionMeta.findOne().lean();
+  const meta = asPromotionMeta(await PromotionMeta.findOne().lean());
   if (meta?.defaultsSeeded) {
     return;
   }

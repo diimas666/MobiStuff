@@ -4,7 +4,7 @@ import { checkAdminAuth } from '@/lib/adminAuth';
 import Promotion from '@/app/api/models/Promotion';
 import PromotionAsset from '@/app/api/models/PromotionAsset';
 import PromotionMeta from '@/app/api/models/PromotionMeta';
-import { resolvePromotionImageUrl } from '@/lib/promotionMedia';
+import { resolvePromotionImageUrl, getPromotionImageAssetId } from '@/lib/promotionMedia';
 
 async function markPromotionsInitialized() {
   await PromotionMeta.findOneAndUpdate(
@@ -94,12 +94,13 @@ export async function DELETE(req: NextRequest) {
     }
 
     const promotion = await Promotion.findById(id).lean();
-    if (!promotion) {
+    if (!promotion || Array.isArray(promotion)) {
       return NextResponse.json({ error: 'Promotion not found' }, { status: 404 });
     }
 
-    if (promotion.imageAssetId) {
-      await PromotionAsset.findByIdAndDelete(promotion.imageAssetId);
+    const imageAssetId = getPromotionImageAssetId(promotion);
+    if (imageAssetId) {
+      await PromotionAsset.findByIdAndDelete(imageAssetId);
     }
 
     await Promotion.findByIdAndDelete(id);

@@ -12,18 +12,44 @@ export function getPromotionMediaUrl(assetId: string): string {
   return `${getPublicBaseUrl()}/api/promotions/media/${assetId}`;
 }
 
-export function resolvePromotionImageUrl(item: {
+type PromotionImageSource = {
   imageUrl?: string | null;
   imageAssetId?: { toString(): string } | string | null;
-}): string | undefined {
-  if (item.imageAssetId) {
+};
+
+function asPromotionImageSource(item: unknown): PromotionImageSource | null {
+  if (!item || typeof item !== 'object') {
+    return null;
+  }
+
+  return item as PromotionImageSource;
+}
+
+export function getPromotionImageAssetId(item: unknown): string | null {
+  const promotion = asPromotionImageSource(item);
+  if (!promotion?.imageAssetId) {
+    return null;
+  }
+
+  return typeof promotion.imageAssetId === 'string'
+    ? promotion.imageAssetId
+    : promotion.imageAssetId.toString();
+}
+
+export function resolvePromotionImageUrl(item: unknown): string | undefined {
+  const promotion = asPromotionImageSource(item);
+  if (!promotion) {
+    return undefined;
+  }
+
+  if (promotion.imageAssetId) {
     const id =
-      typeof item.imageAssetId === 'string'
-        ? item.imageAssetId
-        : item.imageAssetId.toString();
+      typeof promotion.imageAssetId === 'string'
+        ? promotion.imageAssetId
+        : promotion.imageAssetId.toString();
     return getPromotionMediaUrl(id);
   }
 
-  const external = item.imageUrl?.trim();
+  const external = promotion.imageUrl?.trim();
   return external || undefined;
 }

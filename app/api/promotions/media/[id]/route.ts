@@ -6,6 +6,19 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
+type PromotionAssetRecord = {
+  data?: Buffer;
+  mimeType?: string;
+};
+
+function asPromotionAsset(value: unknown): PromotionAssetRecord | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  return value as PromotionAssetRecord;
+}
+
 export async function GET(_req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
@@ -15,7 +28,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
     }
 
     await dbConnect();
-    const asset = await PromotionAsset.findById(id).lean();
+    const asset = asPromotionAsset(await PromotionAsset.findById(id).lean());
 
     if (!asset?.data) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
