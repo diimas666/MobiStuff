@@ -14,6 +14,7 @@ type Promotion = {
   color: string;
   emoji: string;
   imageUrl?: string;
+  imageAssetId?: string;
   linkType: 'category' | 'on_sale';
   categorySlug: string;
   categoryTitle: string;
@@ -30,6 +31,8 @@ const emptyForm = {
   color: '#3D4F5C',
   emoji: '🛍️',
   imageUrl: '',
+  imageAssetId: '',
+  imagePreviewUrl: '',
   linkType: 'category' as 'category' | 'on_sale',
   categorySlug: '',
   categoryTitle: '',
@@ -51,6 +54,8 @@ export default function PromotionsAdminPage() {
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
 
@@ -102,6 +107,49 @@ export default function PromotionsAdminPage() {
     }));
   };
 
+  const handleImageUpload = async (file: File | null) => {
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const token = localStorage.getItem('admin_access');
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/admin/promotions/upload', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Помилка завантаження');
+
+      setForm(current => ({
+        ...current,
+        imageAssetId: data.assetId,
+        imagePreviewUrl: data.url,
+        imageUrl: '',
+      }));
+      toast.success('Картинку завантажено');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Помилка завантаження');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const clearImage = () => {
+    setForm(current => ({
+      ...current,
+      imageAssetId: '',
+      imagePreviewUrl: '',
+      imageUrl: '',
+    }));
+  };
+
+  const previewImageUrl = form.imagePreviewUrl || form.imageUrl;
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -113,11 +161,20 @@ export default function PromotionsAdminPage() {
     setSaving(true);
     try {
       const payload = {
-        ...form,
+        title: form.title,
+        subtitle: form.subtitle,
+        cta: form.cta,
+        color: form.color,
+        emoji: form.emoji,
+        linkType: form.linkType,
+        categorySlug: form.categorySlug,
+        categoryTitle: form.categoryTitle,
         subcategorySlug: form.subcategorySlug || undefined,
         subcategoryTitle: form.subcategoryTitle || undefined,
-        imageUrl: form.imageUrl.trim() || undefined,
+        imageAssetId: form.imageAssetId || null,
+        imageUrl: form.imageAssetId ? null : form.imageUrl.trim() || null,
         sortOrder: Number(form.sortOrder) || 0,
+        isActive: form.isActive,
       };
 
       const res = await fetch('/api/admin/promotions', {
@@ -147,7 +204,9 @@ export default function PromotionsAdminPage() {
       cta: promotion.cta,
       color: promotion.color,
       emoji: promotion.emoji,
-      imageUrl: promotion.imageUrl ?? '',
+      imageUrl: promotion.imageAssetId ? '' : promotion.imageUrl ?? '',
+      imageAssetId: promotion.imageAssetId ? String(promotion.imageAssetId) : '',
+      imagePreviewUrl: promotion.imageUrl ?? '',
       linkType: promotion.linkType,
       categorySlug: promotion.categorySlug,
       categoryTitle: promotion.categoryTitle,
@@ -172,21 +231,28 @@ export default function PromotionsAdminPage() {
     }
   };
 
-  const deletePromotion = async (id: string) => {
-    if (!confirm('Видалити цю акцію?')) return;
+  const deletePromotion = async (promotion: Promotion) => {
+    const confirmed = confirm(
+      `Видалити акцію «${promotion.title}»?\n\nВона зникне з додатку без можливості відновлення.`,
+    );
+    if (!confirmed) return;
 
+    setDeletingId(promotion._id);
     try {
       const res = await fetch('/api/admin/promotions', {
         method: 'DELETE',
         headers: adminHeaders(),
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id: promotion._id }),
       });
-      if (!res.ok) throw new Error('Помилка видалення');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Помилка видалення');
       toast.success('Акцію видалено');
-      if (editingId === id) resetForm();
+      if (editingId === promotion._id) resetForm();
       await loadPromotions();
-    } catch {
-      toast.error('Не вдалося видалити');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Не вдалося видалити');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -233,23 +299,58 @@ export default function PromotionsAdminPage() {
             />
           </div>
 
-          <div>
-            <input
-              placeholder="URL картинки (https://...) — як у товарів"
-              value={form.imageUrl}
-              onChange={e => setForm({ ...form, imageUrl: e.target.value })}
-              className="border p-2 rounded w-full"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Вставте пряме посилання на зображення (PNG/JPG/WebP). Якщо порожньо — показується емодзі.
+          <div className="space-y-3 rounded-xl border border-dashed border-gray-300 p-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-black px-4 py-2 text-sm text-white hover:bg-gray-800">
+                {uploadingImage ? 'Завантаження...' : 'Завантажити картинку'}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  disabled={uploadingImage}
+                  onChange={e => {
+                    const file = e.target.files?.[0] ?? null;
+                    void handleImageUpload(file);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+              {previewImageUrl ? (
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className="rounded-lg bg-gray-200 px-3 py-2 text-sm"
+                >
+                  Прибрати картинку
+                </button>
+              ) : null}
+            </div>
+            <p className="text-xs text-gray-500">
+              JPG, PNG або WebP до 5 МБ. Файл зберігається на сервері і показується в додатку.
             </p>
-            {form.imageUrl ? (
+            {previewImageUrl ? (
               <img
-                src={form.imageUrl}
-                alt="Превʼю"
-                className="mt-2 h-24 w-24 object-contain rounded-lg bg-gray-100"
+                src={previewImageUrl}
+                alt="Превʼю банера"
+                className="h-28 w-28 rounded-lg bg-gray-100 object-contain"
               />
             ) : null}
+            <div>
+              <input
+                placeholder="Або вставте зовнішнє посилання (https://...)"
+                value={form.imageUrl}
+                onChange={e =>
+                  setForm({
+                    ...form,
+                    imageUrl: e.target.value,
+                    imageAssetId: '',
+                    imagePreviewUrl: '',
+                  })
+                }
+                disabled={Boolean(form.imageAssetId)}
+                className="w-full rounded border p-2 disabled:bg-gray-100"
+              />
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4">
@@ -347,11 +448,11 @@ export default function PromotionsAdminPage() {
               </div>
             </div>
             <div className="text-5xl">
-              {form.imageUrl ? (
+              {previewImageUrl ? (
                 <img
-                  src={form.imageUrl}
+                  src={previewImageUrl}
                   alt=""
-                  className="w-20 h-20 object-contain"
+                  className="h-20 w-20 object-contain"
                 />
               ) : (
                 form.emoji
@@ -408,10 +509,18 @@ export default function PromotionsAdminPage() {
                     <td className="p-3">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl text-white"
+                          className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl text-2xl text-white"
                           style={{ backgroundColor: promotion.color }}
                         >
-                          {promotion.emoji}
+                          {promotion.imageUrl ? (
+                            <img
+                              src={promotion.imageUrl}
+                              alt=""
+                              className="h-full w-full object-contain"
+                            />
+                          ) : (
+                            promotion.emoji
+                          )}
                         </div>
                         <div>
                           <div className="font-semibold">{promotion.title}</div>
@@ -450,10 +559,11 @@ export default function PromotionsAdminPage() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => void deletePromotion(promotion._id)}
-                          className="text-red-600 hover:underline"
+                          onClick={() => void deletePromotion(promotion)}
+                          disabled={deletingId === promotion._id}
+                          className="text-red-600 hover:underline disabled:opacity-50"
                         >
-                          Видалити
+                          {deletingId === promotion._id ? 'Видалення...' : 'Видалити'}
                         </button>
                       </div>
                     </td>

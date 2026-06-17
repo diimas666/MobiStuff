@@ -10,6 +10,7 @@ const PromotionSchema = new mongoose.Schema(
     color: { type: String, default: '#3D4F5C' },
     emoji: { type: String, default: '🛍️' },
     imageUrl: String,
+    imageAssetId: { type: mongoose.Schema.Types.ObjectId, ref: 'PromotionAsset' },
     linkType: {
       type: String,
       enum: ['category', 'on_sale'],
