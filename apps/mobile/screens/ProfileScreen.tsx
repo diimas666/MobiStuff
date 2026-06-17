@@ -8,6 +8,8 @@ import { ProfileMenuItem } from '../components/profile/ProfileMenuItem';
 import { ProfileUserHeader } from '../components/profile/ProfileUserHeader';
 import { Screen } from '../components/Screen';
 import { colors, radius, spacing } from '../constants/theme';
+import { useNotifications } from '../context/NotificationsContext';
+import { useOrders } from '../context/OrdersContext';
 import { showToast } from '../context/ToastContext';
 import type { ProfileStackParamList, TabParamList } from '../navigation/types';
 import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
@@ -17,10 +19,10 @@ type ProfileNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList>
 >;
 
-const NOTIFICATIONS_COUNT = 3;
-
 export function ProfileScreen() {
   const navigation = useNavigation<ProfileNavigationProp>();
+  const { unreadCount, refreshNotifications } = useNotifications();
+  const { refreshOrders } = useOrders();
   const [displayName, setDisplayName] = useState('');
   const [displayEmail, setDisplayEmail] = useState('');
   const [hasProfile, setHasProfile] = useState(false);
@@ -28,6 +30,9 @@ export function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       let isMounted = true;
+
+      void refreshNotifications();
+      void refreshOrders();
 
       loadCheckoutProfile().then(profile => {
         if (!isMounted) {
@@ -53,7 +58,7 @@ export function ProfileScreen() {
       return () => {
         isMounted = false;
       };
-    }, []),
+    }, [refreshNotifications, refreshOrders]),
   );
 
   const openLogin = useCallback(() => {
@@ -84,6 +89,10 @@ export function ProfileScreen() {
 
   const openPaymentMethods = useCallback(() => {
     navigation.navigate('PaymentMethods');
+  }, [navigation]);
+
+  const openNotifications = useCallback(() => {
+    navigation.navigate('Notifications');
   }, [navigation]);
 
   const openComingSoon = useCallback((label: string) => {
@@ -139,9 +148,9 @@ export function ProfileScreen() {
             <ProfileMenuItem
               icon="notifications-outline"
               label="Повідомлення"
-              badge={NOTIFICATIONS_COUNT}
+              badge={unreadCount > 0 ? unreadCount : undefined}
               showChevron={false}
-              onPress={() => openComingSoon('Повідомлення')}
+              onPress={openNotifications}
             />
             <ProfileMenuItem
               icon="settings-outline"

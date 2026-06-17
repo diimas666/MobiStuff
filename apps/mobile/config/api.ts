@@ -32,6 +32,11 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
+  listOrders: (body: unknown) =>
+    request('/api/orders/list', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
 };
 
 export { baseUrl };

@@ -16,9 +16,12 @@ export type CheckoutOrder = {
   createdAt: string;
 };
 
-export async function submitCheckout(order: CheckoutOrder): Promise<boolean> {
+export async function submitCheckout(order: CheckoutOrder & { id?: string }): Promise<boolean> {
   try {
-    const response = await api.checkout(order);
+    const response = await api.checkout({
+      ...order,
+      orderId: order.id,
+    });
     return response.ok;
   } catch {
     return false;

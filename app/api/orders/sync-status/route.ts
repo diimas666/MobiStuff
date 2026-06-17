@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../../models/Order';
 import { normalizeOrderStatus } from '@/lib/orderStatus';
+import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 
 type SyncItem = {
   orderId?: string;
@@ -23,11 +24,15 @@ export async function POST(req: NextRequest) {
     await Promise.all(
       items.map(async (item) => {
         const orderId = item.orderId?.trim();
-        const phone = item.phone?.trim();
+        const phone = normalizeUkrainianPhone(item.phone?.trim() ?? '');
 
         if (!orderId || !phone) return;
 
-        const order = await Order.findOne({ orderId, phone }).select('status orderId');
+        const phoneVariants = [phone, phone.replace(/^\+/, '')];
+        const order = await Order.findOne({
+          orderId,
+          phone: { $in: phoneVariants },
+        }).select('status orderId');
 
         if (order) {
           statuses[orderId] = normalizeOrderStatus(order.status);

@@ -7,13 +7,18 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
+import { notifyOrderStatusChanges } from '../services/orderStatusNotifications';
 import { loadOrders, saveOrders } from '../services/orderStorage';
 import {
   applySyncedStatuses,
   fetchOrderStatuses,
-  ordersStatusChanged,
+  fetchOrdersByPhone,
+  mergeOrders,
+  ordersDataChanged,
 } from '../services/orderSync';
 import type { StoredOrder } from '../types/order';
+import { normalizePhone } from '../utils/checkoutValidation';
 
 type OrdersContextValue = {
   orders: StoredOrder[];
@@ -37,15 +42,24 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
   const [isSyncing, setIsSyncing] = useState(false);
 
   const syncOrders = useCallback(async (stored: StoredOrder[]) => {
-    if (!stored.length) return stored;
-
     setIsSyncing(true);
 
     try {
-      const statuses = await fetchOrderStatuses(stored);
-      const synced = applySyncedStatuses(stored, statuses);
+      const profile = await loadCheckoutProfile();
+      const phone = profile?.phone ? normalizePhone(profile.phone) : '';
 
-      if (ordersStatusChanged(stored, synced)) {
+      let merged = stored;
+
+      if (phone) {
+        const serverOrders = await fetchOrdersByPhone(phone);
+        merged = mergeOrders(stored, serverOrders);
+      }
+
+      const statuses = await fetchOrderStatuses(merged);
+      const synced = applySyncedStatuses(merged, statuses);
+
+      if (ordersDataChanged(stored, synced)) {
+        await notifyOrderStatusChanges(stored, synced);
         await saveOrders(synced);
       }
 
@@ -89,7 +103,7 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
 
   const addOrder = useCallback(async (order: StoredOrder) => {
     const stored = await loadOrders();
-    const nextOrders = [order, ...stored];
+    const nextOrders = [order, ...stored.filter(item => item.id !== order.id)];
     setOrders(sortOrders(nextOrders));
     await saveOrders(nextOrders);
   }, []);

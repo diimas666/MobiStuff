@@ -30,7 +30,7 @@ export function ProfileOrdersScreen() {
   const { orders, isHydrated, isSyncing, refreshOrders } = useOrders();
 
   const activeOrdersCount = useMemo(
-    () => orders.filter(order => order.status !== 'completed').length,
+    () => orders.filter(order => order.status !== 'completed' && order.status !== 'cancelled').length,
     [orders],
   );
 

@@ -3,6 +3,7 @@ export const ORDER_STATUSES = [
   'in_progress',
   'shipped',
   'completed',
+  'cancelled',
 ] as const;
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
@@ -14,6 +15,7 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   in_progress: 'В роботі',
   shipped: 'Відправлено',
   completed: 'Виконано',
+  cancelled: 'Скасовано',
 };
 
 export const ORDER_STATUS_COLORS: Record<
@@ -39,6 +41,11 @@ export const ORDER_STATUS_COLORS: Record<
     bg: 'bg-green-50',
     text: 'text-green-800',
     ring: 'ring-green-200',
+  },
+  cancelled: {
+    bg: 'bg-red-50',
+    text: 'text-red-800',
+    ring: 'ring-red-200',
   },
 };
 

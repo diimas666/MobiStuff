@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { DeliveryAddressesScreen } from '../screens/DeliveryAddressesScreen';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PaymentMethodsScreen } from '../screens/PaymentMethodsScreen';
 import { ProfileOrdersScreen } from '../screens/ProfileOrdersScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
@@ -21,6 +22,7 @@ export function ProfileStackNavigator() {
       <Stack.Screen name="ViewedProducts" component={ViewedProductsScreen} />
       <Stack.Screen name="DeliveryAddresses" component={DeliveryAddressesScreen} />
       <Stack.Screen name="PaymentMethods" component={PaymentMethodsScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
     </Stack.Navigator>
   );
 }

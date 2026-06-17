@@ -22,6 +22,7 @@ type FavoritesContextValue = {
   isFavorite: (productId: string) => boolean;
   toggleFavorite: (product: FavoriteProductInput) => Promise<void>;
   removeFavorite: (productId: string) => Promise<void>;
+  updateFavoritePrices: (updates: Array<{ productId: string; price: number }>) => Promise<void>;
 };
 
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
@@ -94,6 +95,29 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     [items, persistItems],
   );
 
+  const updateFavoritePrices = useCallback(
+    async (updates: Array<{ productId: string; price: number }>) => {
+      if (!updates.length) {
+        return;
+      }
+
+      const priceById = new Map(updates.map(update => [update.productId, update.price]));
+      const nextItems = items.map(item => {
+        const nextPrice = priceById.get(item.productId);
+
+        if (nextPrice == null) {
+          return item;
+        }
+
+        return { ...item, price: nextPrice };
+      });
+
+      setItems(nextItems);
+      await persistItems(nextItems);
+    },
+    [items, persistItems],
+  );
+
   const favorites = useMemo(() => items.map(item => item.productId), [items]);
 
   const value = useMemo(
@@ -104,8 +128,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       isFavorite,
       toggleFavorite,
       removeFavorite,
+      updateFavoritePrices,
     }),
-    [favorites, isFavorite, isHydrated, items, removeFavorite, toggleFavorite],
+    [favorites, isFavorite, isHydrated, items, removeFavorite, toggleFavorite, updateFavoritePrices],
   );
 
   return (
