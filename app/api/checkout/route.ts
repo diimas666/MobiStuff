@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
+import { normalizeOrderPayload } from '@/lib/normalizeOrderPayload';
 
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const order = await req.json();
+    const raw = await req.json();
+    const order = normalizeOrderPayload(raw);
 
-    // Сохраняем заказ в MongoDB
     const newOrder = new Order(order);
     await newOrder.save();
 

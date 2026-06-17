@@ -2,6 +2,9 @@
   "name": "mobistuff",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,7 +15,12 @@
     "sync-mma": "node scripts/syncMmaProducts.mjs",
     "recalc-mma-prices": "node scripts/recalcMmaPrices.mjs",
     "recalc-glass-prices": "MMA_RECALC_GLASS=1 node scripts/recalcMmaPrices.mjs",
-    "normalize-brands": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/normalizeBrands.ts"
+    "normalize-brands": "dotenv -e .env.local -- ts-node --compiler-options '{\"module\":\"commonjs\"}' scripts/normalizeBrands.ts",
+    "mobile:start": "npm run start --workspace=MobistuffMobile",
+    "mobile:ios": "npm run ios --workspace=MobistuffMobile",
+    "mobile:android": "npm run android --workspace=MobistuffMobile",
+    "mobile:lint": "npm run lint --workspace=MobistuffMobile",
+    "mobile:pod-install": "cd apps/mobile/ios && bundle exec pod install"
   },
   "dependencies": {
     "@next/third-parties": "^15.5.19",

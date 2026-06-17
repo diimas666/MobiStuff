@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { CARD_ONLY_FROM, storePolicies } from '@/data/storePolicies';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
+import { generateOrderId } from '@/lib/orderStatus';
 import { trackBeginCheckout } from '@/lib/analytics';
 
 const inputClass =
@@ -87,6 +88,7 @@ export default function CheckoutPage() {
     }
 
     const order = {
+      orderId: generateOrderId(),
       name,
       lastName,
       phone: normalizedPhone,

@@ -1,7 +1,13 @@
 import mongoose from 'mongoose';
+import { DEFAULT_ORDER_STATUS } from '@/lib/orderStatus';
 
 const OrderSchema = new mongoose.Schema(
   {
+    orderId: String,
+    status: {
+      type: String,
+      default: DEFAULT_ORDER_STATUS,
+    },
     name: String,
     lastName: String,
     phone: String,
