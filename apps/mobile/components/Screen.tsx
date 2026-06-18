@@ -10,6 +10,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   backgroundColor?: string;
   variant?: 'home' | 'default';
+  testID?: string;
 };
 
 /** Базовая оболочка экрана: safe area сверху + фон. Паддинги — внутри экрана (ScrollView). */
@@ -18,6 +19,7 @@ export function Screen({
   style,
   backgroundColor,
   variant = 'default',
+  testID,
 }: Props) {
   const { colors } = useSettings();
   const { width, height } = useWindowDimensions();
@@ -35,6 +37,7 @@ export function Screen({
 
   return (
     <SafeAreaView
+      testID={testID}
       edges={['top']}
       style={[styles.screen, { backgroundColor: resolvedBackground }, style]}>
       {background}

@@ -51,7 +51,7 @@ export function HomeHeader({ onCartPress }: Props) {
   return (
     <View style={styles.row}>
       <View style={styles.textBlock}>
-        <Text style={styles.greeting}>Привіт! 👋</Text>
+        <Text testID="home-greeting" style={styles.greeting}>Привіт! 👋</Text>
         <Text style={styles.subtitle}>Знайди свої аксесуари</Text>
       </View>
 

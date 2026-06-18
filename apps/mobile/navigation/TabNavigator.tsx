@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { PlatformPressable } from '@react-navigation/elements';
 import { StyleSheet, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSettings } from '../context/SettingsContext';
@@ -34,6 +35,9 @@ export function TabNavigator() {
         headerShown: false,
         lazy: true,
         freezeOnBlur: true,
+        tabBarButton: props => (
+          <PlatformPressable {...props} testID={`tab-${route.name}`} />
+        ),
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: {

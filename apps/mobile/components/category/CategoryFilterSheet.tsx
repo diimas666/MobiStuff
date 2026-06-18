@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -316,6 +316,10 @@ export function CategoryFilterSheet({
 
   const priceSelected = isPriceActive(draft, priceBounds) ? 1 : 0;
 
+  const handlePriceChange = useCallback((priceFrom: number, priceTo: number) => {
+    setDraft(current => ({ ...current, priceFrom, priceTo }));
+  }, []);
+
   return (
     <Modal
       visible={visible}
@@ -325,12 +329,12 @@ export function CategoryFilterSheet({
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
 
-        <View style={styles.sheet}>
+        <View style={styles.sheet} testID="category-filter-sheet">
           <View style={styles.handle} />
 
           <View style={styles.header}>
             <Text style={styles.title}>Фільтри</Text>
-            <Pressable onPress={onClose} accessibilityLabel="Закрити">
+            <Pressable onPress={onClose} accessibilityLabel="Закрити" testID="category-filter-close">
               <Ionicons name="close" size={24} color={colors.textOnDark} />
             </Pressable>
           </View>
@@ -383,14 +387,11 @@ export function CategoryFilterSheet({
             <FilterAccordion title="Ціна" selectedCount={priceSelected}>
               <View style={styles.priceBody}>
                 <PriceRangeSlider
-                  key={`${draft.priceFrom}-${draft.priceTo}`}
                   min={priceBounds.min}
                   max={priceBounds.max}
                   from={draft.priceFrom}
                   to={draft.priceTo}
-                  onChange={(priceFrom, priceTo) =>
-                    setDraft(current => ({ ...current, priceFrom, priceTo }))
-                  }
+                  onChange={handlePriceChange}
                 />
               </View>
             </FilterAccordion>
@@ -399,11 +400,13 @@ export function CategoryFilterSheet({
           <View style={styles.footer}>
             <Pressable
               accessibilityRole="button"
+              testID="category-filter-reset"
               onPress={handleReset}
               style={({ pressed }) => [styles.resetButton, pressed && styles.pressed]}>
               <Text style={styles.resetText}>Скинути</Text>
             </Pressable>
             <Pressable
+              testID="category-filter-apply"
               onPress={handleApply}
               style={({ pressed }) => [styles.applyButton, pressed && styles.pressed]}>
               <Text style={styles.applyText}>Застосувати</Text>

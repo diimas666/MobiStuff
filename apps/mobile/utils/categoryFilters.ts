@@ -1,5 +1,9 @@
 import type { ApiProduct } from '../types/catalog';
 import type { CategoryProductFilters, PriceBounds } from '../types/filters';
+import {
+  getCatalogSubcategoryTitle,
+  getCatalogSubcategoryTitleBySlug,
+} from './catalogTree';
 import { formatSubcategoryLabel } from './subcategoryLabel';
 
 type IndexedProduct = {
@@ -53,21 +57,33 @@ export function extractBrands(products: ApiProduct[]): string[] {
   return Array.from(brands).sort((a, b) => a.localeCompare(b, 'uk'));
 }
 
-export function extractSubcategoryOptions(products: ApiProduct[]): FilterOption[] {
-  const slugs = new Set<string>();
+export function extractSubcategoryOptions(
+  products: ApiProduct[],
+  categorySlug?: string,
+): FilterOption[] {
+  const options = new Map<string, string>();
 
   for (const product of products) {
     const slug = getProductSubcategorySlug(product);
-    if (slug) {
-      slugs.add(slug);
+    if (!slug) {
+      continue;
+    }
+
+    const titleFromProduct = product.subcategory?.trim();
+    const titleFromCatalog =
+      (categorySlug ? getCatalogSubcategoryTitle(categorySlug, slug) : undefined) ||
+      getCatalogSubcategoryTitleBySlug(slug);
+    const label =
+      titleFromProduct || titleFromCatalog || formatSubcategoryLabel(slug);
+
+    const existing = options.get(slug);
+    if (!existing || titleFromProduct) {
+      options.set(slug, label);
     }
   }
 
-  return Array.from(slugs)
-    .map(slug => ({
-      id: slug,
-      label: formatSubcategoryLabel(slug),
-    }))
+  return Array.from(options.entries())
+    .map(([id, label]) => ({ id, label }))
     .sort((a, b) => a.label.localeCompare(b.label, 'uk'));
 }
 

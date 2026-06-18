@@ -128,6 +128,7 @@ export function ProfileScreen() {
       <StatusBar barStyle="light-content" />
 
       <ScrollView
+        testID="screen-profile"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
         <View style={styles.headerBlock}>

@@ -120,12 +120,13 @@ export function HomeScreen() {
     <Screen variant="home">
       {isOffline && !hasData ? (
         <OfflineState onRetry={retry} />
-      ) : isLoading ? (
+      ) : isLoading && !hasData ? (
         <LoadingState />
-      ) : error ? (
+      ) : error && !hasData ? (
         <ErrorState message={error} onRetry={retry} />
       ) : (
         <ScrollView
+          testID="screen-home"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.content}
         >

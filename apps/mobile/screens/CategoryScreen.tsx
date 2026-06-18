@@ -309,11 +309,12 @@ export function CategoryScreen({ route, navigation }: Props) {
         <OfflineState onRetry={retry} />
       ) : isLoading && displayedProducts.length === 0 ? (
         <LoadingState label="Завантаження товарів..." />
-      ) : error ? (
+      ) : error && products.length === 0 ? (
         <ErrorState message={error} onRetry={retry} />
       ) : (
         <>
           <FlashList
+            testID="screen-category"
             data={displayedProducts}
             numColumns={NUM_COLUMNS}
             keyExtractor={item => item._id}

@@ -107,6 +107,7 @@ export function CategoryFilterBar({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Відкрити фільтри"
+        testID="category-open-filters"
         onPress={onOpenFilters}
         style={({ pressed }) => [styles.control, pressed && styles.pressed]}>
         <Ionicons name="options-outline" size={20} color={colors.textOnDark} />

@@ -1,0 +1,43 @@
+appId: org.reactjs.native.example.EscapeMobile
+---
+- launchApp
+- tapOn:
+    id: tab-Categories
+- extendedWaitUntil:
+    visible:
+      id: screen-categories
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      text: "Акумулятори та powerbank"
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    text: "Акумулятори та powerbank"
+- extendedWaitUntil:
+    visible:
+      id: screen-subcategories
+    timeout: 30000
+- tapOn:
+    id: subcategories-all-products
+- extendedWaitUntil:
+    visible:
+      id: screen-category
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: category-open-filters
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    id: category-open-filters
+- extendedWaitUntil:
+    visible:
+      id: category-filter-sheet
+    timeout: 15000
+- assertVisible:
+    text: "Фільтри"
+- tapOn:
+    id: category-filter-close
+- assertNotVisible:
+    id: category-filter-sheet

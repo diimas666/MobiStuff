@@ -77,6 +77,12 @@ export function PriceRangeSlider({
   const trackWidthRef = useRef(0);
   const [trackWidth, setTrackWidth] = useState(0);
   const valuesRef = useRef({ from, to, min, max });
+  const dragRef = useRef<{
+    thumb: 'from' | 'to';
+    startX: number;
+    startFrom: number;
+    startTo: number;
+  } | null>(null);
   valuesRef.current = { from, to, min, max };
 
   const clamp = (value: number) => Math.min(max, Math.max(min, value));
@@ -111,34 +117,56 @@ export function PriceRangeSlider({
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: () => {
+        const width = trackWidthRef.current;
+        const { from: currentFrom, to: currentTo } = valuesRef.current;
+        dragRef.current = {
+          thumb,
+          startX: valueToX(
+            thumb === 'from' ? currentFrom : currentTo,
+            width,
+          ),
+          startFrom: currentFrom,
+          startTo: currentTo,
+        };
+      },
       onPanResponderMove: (
         _event,
         gestureState: PanResponderGestureState,
       ) => {
+        const drag = dragRef.current;
+        if (!drag || drag.thumb !== thumb) {
+          return;
+        }
+
         const width = trackWidthRef.current;
-        const {
-          from: currentFrom,
-          to: currentTo,
-        } = valuesRef.current;
-        const startX = valueToX(
-          thumb === 'from' ? currentFrom : currentTo,
-          width,
-        );
-        const nextValue = xToValue(startX + gestureState.dx, width);
+        const nextValue = xToValue(drag.startX + gestureState.dx, width);
 
         if (thumb === 'from') {
-          onChange(Math.min(nextValue, currentTo), currentTo);
+          onChange(Math.min(nextValue, drag.startTo), drag.startTo);
         } else {
-          onChange(currentFrom, Math.max(nextValue, currentFrom));
+          onChange(drag.startFrom, Math.max(nextValue, drag.startFrom));
         }
+      },
+      onPanResponderRelease: () => {
+        dragRef.current = null;
+      },
+      onPanResponderTerminate: () => {
+        dragRef.current = null;
       },
     });
 
   const fromResponder = useMemo(
     () => makeResponder('from'),
-    [onChange],
+    [min, max, onChange, step],
   );
-  const toResponder = useMemo(() => makeResponder('to'), [onChange]);
+  const toResponder = useMemo(
+    () => makeResponder('to'),
+    [min, max, onChange, step],
+  );
 
   const handleLayout = (event: LayoutChangeEvent) => {
     const width = event.nativeEvent.layout.width;

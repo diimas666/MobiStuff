@@ -129,10 +129,21 @@ export function useNetwork() {
 
 export function useNetworkReconnectEffect(effect: () => void) {
   const { reconnectCount } = useNetwork();
+  const effectRef = useRef(effect);
+
+  effectRef.current = effect;
 
   useEffect(() => {
-    if (reconnectCount > 0) {
-      effect();
+    if (reconnectCount === 0) {
+      return;
     }
-  }, [reconnectCount, effect]);
+
+    const timer = setTimeout(() => {
+      effectRef.current();
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [reconnectCount]);
 }

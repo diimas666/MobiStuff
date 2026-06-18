@@ -41,19 +41,15 @@ export function HomeSearchBar({ onProductPress }: Props) {
       borderRadius: radius.md,
       overflow: 'hidden',
     },
-    emptyText: {
-      paddingHorizontal: 16,
-      paddingVertical: 14,
-      fontSize: 14,
-      color: c.textMuted,
-      textAlign: 'center',
-    },
   }));
 
   const [query, setQuery] = useState('');
   const { results, isSearching } = useProductSearch(query);
   const trimmedQuery = query.trim();
-  const showResults = trimmedQuery.length > 0 && !isSearching;
+  const hasNoResults =
+    trimmedQuery.length > 0 && !isSearching && results.length === 0;
+  const showResults =
+    trimmedQuery.length > 0 && !isSearching && results.length > 0;
 
   const handleProductPress = (product: HomeProduct) => {
     setQuery('');
@@ -76,7 +72,10 @@ export function HomeSearchBar({ onProductPress }: Props) {
         />
         {isSearching ? (
           <Text style={styles.searchingText}>Пошук...</Text>
-        ) : query.length > 0 ? (
+        ) : hasNoResults ? (
+          <Text style={styles.searchingText}>Нічого не знайдено</Text>
+        ) : null}
+        {!isSearching && query.length > 0 ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Очистити пошук"
@@ -89,17 +88,13 @@ export function HomeSearchBar({ onProductPress }: Props) {
 
       {showResults ? (
         <View style={styles.results}>
-          {results.length === 0 ? (
-            <Text style={styles.emptyText}>Нічого не знайдено</Text>
-          ) : (
-            results.map(product => (
-              <HomeSearchResultItem
-                key={product.id}
-                product={product}
-                onPress={() => handleProductPress(product)}
-              />
-            ))
-          )}
+          {results.map(product => (
+            <HomeSearchResultItem
+              key={product.id}
+              product={product}
+              onPress={() => handleProductPress(product)}
+            />
+          ))}
         </View>
       ) : null}
     </View>

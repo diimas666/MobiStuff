@@ -203,7 +203,7 @@ export function ProductScreen({ route, navigation }: Props) {
       ) : error && !product ? (
         <ErrorState message={error ?? 'Товар не знайдено'} onRetry={retry} />
       ) : (
-        <View style={styles.layout}>
+        <View style={styles.layout} testID="screen-product">
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.content}

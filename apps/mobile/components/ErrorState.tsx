@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { OfflineState } from './OfflineState';
 import { useNetwork } from '../context/NetworkContext';
 import { useThemedStyles } from '../hooks/useThemedStyles';
+import { radius } from '../constants/theme';
 
 type Props = {
   message?: string;
@@ -13,13 +14,13 @@ export function ErrorState({
   onRetry,
 }: Props) {
   const { isOffline } = useNetwork();
-  const { styles } = useThemedStyles(c => ({
+  const { styles, colors } = useThemedStyles(c => ({
     container: {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
       padding: 24,
-      gap: 8,
+      gap: 16,
     },
     title: {
       fontSize: 18,
@@ -32,6 +33,22 @@ export function ErrorState({
       textAlign: 'center',
       lineHeight: 20,
     },
+    retryButton: {
+      minHeight: 48,
+      paddingHorizontal: 24,
+      borderRadius: radius.pill,
+      backgroundColor: c.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    retryText: {
+      fontSize: 15,
+      fontWeight: '700',
+      color: c.textOnDark,
+    },
+    pressed: {
+      opacity: 0.86,
+    },
   }));
 
   if (isOffline) {
@@ -42,6 +59,14 @@ export function ErrorState({
     <View style={styles.container}>
       <Text style={styles.title}>Помилка</Text>
       <Text style={styles.message}>{message}</Text>
+      {onRetry ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={onRetry}
+          style={({ pressed }) => [styles.retryButton, pressed && styles.pressed]}>
+          <Text style={styles.retryText}>Спробувати знову</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

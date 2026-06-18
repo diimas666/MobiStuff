@@ -31,7 +31,7 @@ export function setCached<T>(key: string, data: T, ttlMs: number): void {
 
 export async function cachedFetch<T>(
   key: string,
-  ttlMs: number,
+  ttlMs: number | ((data: T) => number),
   fetcher: () => Promise<T>,
 ): Promise<T> {
   const cached = getCached<T>(key);
@@ -48,7 +48,8 @@ export async function cachedFetch<T>(
 
   const promise = fetcher()
     .then(data => {
-      setCached(key, data, ttlMs);
+      const resolvedTtl = typeof ttlMs === 'function' ? ttlMs(data) : ttlMs;
+      setCached(key, data, resolvedTtl);
       inflight.delete(key);
       return data;
     })

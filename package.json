@@ -19,7 +19,8 @@
     "mobile:start": "npm run start --workspace=MobistuffMobile",
     "mobile:ios": "npm run ios --workspace=MobistuffMobile",
     "mobile:android": "npm run android --workspace=MobistuffMobile",
-    "mobile:lint": "npm run lint --workspace=MobistuffMobile",
+    "mobile:test": "npm run test --workspace=MobistuffMobile",
+    "mobile:test:e2e": "npm run test:e2e --workspace=MobistuffMobile",
     "mobile:pod-install": "cd apps/mobile/ios && bundle exec pod install",
     "mobile:icons": "node scripts/generate-app-icons.mjs",
     "export-catalog-tree": "npx tsx scripts/exportCatalogTree.mjs"

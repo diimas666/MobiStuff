@@ -1,0 +1,25 @@
+appId: org.reactjs.native.example.EscapeMobile
+---
+- launchApp
+- assertVisible:
+    id: screen-home
+- tapOn:
+    id: tab-Categories
+- assertVisible:
+    id: screen-categories
+- tapOn:
+    id: tab-Cart
+- assertVisible:
+    id: screen-cart
+- tapOn:
+    id: tab-Favorites
+- assertVisible:
+    id: screen-favorites
+- tapOn:
+    id: tab-Profile
+- assertVisible:
+    id: screen-profile
+- tapOn:
+    id: tab-Home
+- assertVisible:
+    id: screen-home

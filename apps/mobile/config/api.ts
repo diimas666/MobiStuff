@@ -8,6 +8,18 @@ const jsonHeaders = {
   'Content-Type': 'application/json',
 };
 
+function isLikelyNetworkError(error: unknown) {
+  if (error instanceof TypeError) {
+    return true;
+  }
+
+  if (error instanceof Error) {
+    return /network|fetch|failed|internet/i.test(error.message);
+  }
+
+  return false;
+}
+
 function request(path: string, init?: RequestInit) {
   if (isNetworkOffline()) {
     return Promise.reject(new TypeError('Network request failed'));
@@ -25,7 +37,9 @@ function request(path: string, init?: RequestInit) {
       return response;
     })
     .catch(error => {
-      setNetworkOffline(true);
+      if (isLikelyNetworkError(error)) {
+        setNetworkOffline(true);
+      }
       throw error;
     });
 }

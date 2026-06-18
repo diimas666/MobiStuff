@@ -23,13 +23,10 @@ async function loadBrandsFromApi(): Promise<BrandItem[]> {
 
 export function useBrands() {
   const [items, setItems] = useState<BrandItem[]>(() => resolveBrandItems(baseUrl));
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
 
   const retry = useCallback(() => {
-    setIsLoading(true);
-    setError(null);
     setReloadToken(token => token + 1);
   }, []);
 
@@ -37,17 +34,17 @@ export function useBrands() {
     let cancelled = false;
 
     async function fetchBrands() {
+      setIsLoading(items.length === 0);
+
       try {
         const brands = await cachedFetch('brands:list', CACHE_TTL.long, loadBrandsFromApi);
 
         if (!cancelled) {
           setItems(brands);
-          setError(null);
         }
       } catch {
         if (!cancelled) {
           setItems(resolveBrandItems(baseUrl));
-          setError(null);
         }
       } finally {
         if (!cancelled) {
@@ -67,5 +64,5 @@ export function useBrands() {
     retry();
   });
 
-  return { items, isLoading, error, retry };
+  return { items, isLoading, retry };
 }

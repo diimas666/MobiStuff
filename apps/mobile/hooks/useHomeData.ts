@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchHomeCatalog } from '../services/catalog';
 import { getCached } from '../services/apiCache';
 import { useNetworkReconnectEffect } from '../context/NetworkContext';
@@ -34,6 +34,14 @@ function mapHomeCatalog(data: HomeCatalogCache) {
   };
 }
 
+function hasHomeData(
+  categories: HomeCategory[],
+  trending: HomeProduct[],
+  popular: HomeProduct[],
+) {
+  return categories.length > 0 || trending.length > 0 || popular.length > 0;
+}
+
 export function useHomeData(): HomeData {
   const cachedCatalog = getCached<HomeCatalogCache>('home:catalog');
   const initial = cachedCatalog ? mapHomeCatalog(cachedCatalog) : null;
@@ -46,9 +54,25 @@ export function useHomeData(): HomeData {
   const [isLoading, setIsLoading] = useState(!initial);
   const [error, setError] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
+  const snapshotRef = useRef({
+    categories: initial?.categories ?? [],
+    trending: initial?.trending ?? [],
+    popular: initial?.popular ?? [],
+  });
+
+  snapshotRef.current = { categories, trending, popular };
 
   const retry = useCallback(() => {
-    setIsLoading(true);
+    const hasData = hasHomeData(
+      snapshotRef.current.categories,
+      snapshotRef.current.trending,
+      snapshotRef.current.popular,
+    );
+
+    if (!hasData) {
+      setIsLoading(true);
+    }
+
     setError(null);
     setReloadToken(token => token + 1);
   }, []);
@@ -57,6 +81,12 @@ export function useHomeData(): HomeData {
     let cancelled = false;
 
     async function load() {
+      const hadData = hasHomeData(
+        snapshotRef.current.categories,
+        snapshotRef.current.trending,
+        snapshotRef.current.popular,
+      );
+
       try {
         const data = await fetchHomeCatalog();
 
@@ -69,7 +99,7 @@ export function useHomeData(): HomeData {
         setPopular(data.popular.map(mapProduct));
         setError(null);
       } catch (loadError) {
-        if (!cancelled) {
+        if (!cancelled && !hadData) {
           setError(reportLoadError(loadError, errorMessages.loadData));
         }
       } finally {

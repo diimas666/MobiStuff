@@ -254,6 +254,7 @@ export function FavoritesScreen() {
     <Screen variant="home">
       <StatusBar barStyle="light-content" />
       <FlashList
+        testID="screen-favorites"
         data={items}
         numColumns={NUM_COLUMNS}
         keyExtractor={item => item.productId}

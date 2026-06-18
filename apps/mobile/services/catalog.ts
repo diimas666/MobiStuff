@@ -138,9 +138,13 @@ async function loadProductsByCategory(
       : []),
   ];
 
+  let lastError: unknown = null;
+  let hadSuccessfulRequest = false;
+
   for (const query of queryVariants) {
     try {
       const products = await loadProducts(query);
+      hadSuccessfulRequest = true;
       const filtered = filterCategoryProducts(products, categoryId, categoryTitle);
 
       if (filtered.length === 0) {
@@ -148,12 +152,27 @@ async function loadProductsByCategory(
       }
 
       return filtered;
-    } catch {
-      // пробуємо наступний варіант запиту
+    } catch (error) {
+      lastError = error;
     }
   }
 
+  if (!hadSuccessfulRequest && lastError) {
+    throw lastError;
+  }
+
   return [];
+}
+
+export async function fetchProductsByCategory(
+  categoryId: string,
+  categoryTitle?: string,
+): Promise<ApiProduct[]> {
+  return cachedFetch(
+    `category:v2:${categoryId}`,
+    data => (data.length === 0 ? CACHE_TTL.short : CACHE_TTL.medium),
+    () => loadProductsByCategory(categoryId, categoryTitle),
+  );
 }
 
 export async function fetchProducts(limit = PRODUCTS_LIST_LIMIT): Promise<ApiProduct[]> {
@@ -187,17 +206,6 @@ export async function fetchRelatedProducts(
     .filter(product => product.handle !== excludeHandle)
     .slice(0, limit)
     .map(mapProduct);
-}
-
-export async function fetchProductsByCategory(
-  categoryId: string,
-  categoryTitle?: string,
-): Promise<ApiProduct[]> {
-  return cachedFetch(
-    `category:v2:${categoryId}`,
-    CACHE_TTL.medium,
-    () => loadProductsByCategory(categoryId, categoryTitle),
-  );
 }
 
 /** Спроба /api/categories, інакше — з товарів */

@@ -205,8 +205,9 @@ export function CartScreen() {
 
   return (
     <Screen variant="home">
-      <View style={styles.layout}>
+      <View style={styles.layout} testID="screen-cart">
         <FlashList
+          testID="screen-cart-list"
           data={items}
           keyExtractor={item => `${item.productId}-${item.variant ?? 'default'}`}
           renderItem={renderItem}

@@ -83,10 +83,11 @@ export function CategoriesScreen() {
         <OfflineState onRetry={retry} />
       ) : isLoading && categories.length === 0 ? (
         <LoadingState label="Завантаження категорій..." />
-      ) : error ? (
+      ) : error && categories.length === 0 ? (
         <ErrorState message={error} onRetry={retry} />
       ) : (
         <FlashList
+          testID="screen-categories"
           data={categories}
           keyExtractor={item => item.id}
           renderItem={renderItem}

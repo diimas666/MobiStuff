@@ -1,0 +1,7 @@
+appId: org.reactjs.native.example.EscapeMobile
+---
+- launchApp
+- assertVisible:
+    id: screen-home
+- assertVisible:
+    id: home-greeting

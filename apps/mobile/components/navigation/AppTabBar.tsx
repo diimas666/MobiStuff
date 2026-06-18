@@ -94,6 +94,7 @@ export function AppTabBar({ activeTab }: Props) {
             key={tab.name}
             accessibilityRole="button"
             accessibilityLabel={tab.label}
+            testID={`tab-${tab.name}`}
             onPress={() => navigateTo(tab.name)}
             style={({ pressed }) => [styles.tab, pressed && styles.pressed]}>
             <View style={styles.iconWrap}>

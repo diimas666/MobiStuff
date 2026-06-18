@@ -131,7 +131,7 @@ export function SubcategoriesScreen({ route, navigation }: Props) {
   const itemSeparator = useCallback(() => <View style={styles.separator} />, []);
 
   return (
-    <Screen variant="home">
+    <Screen variant="home" testID="screen-subcategories">
       <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
@@ -146,6 +146,7 @@ export function SubcategoriesScreen({ route, navigation }: Props) {
 
       <Pressable
         accessibilityRole="button"
+        testID="subcategories-all-products"
         onPress={openAllProducts}
         style={({ pressed }) => [styles.allRow, pressed && styles.pressed]}>
         <Text style={styles.allTitle}>Усі товари категорії</Text>

@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
 import { fetchPromotions } from '../services/promotions';
+import { getCached } from '../services/apiCache';
+import { useNetworkReconnectEffect } from '../context/NetworkContext';
 import type { PromoBanner } from '../types/promotion';
 
+const PROMOTIONS_CACHE_KEY = 'promotions:active';
+
 export function usePromotions(enabled: boolean) {
-  const [promotions, setPromotions] = useState<PromoBanner[]>([]);
-  const [isLoading, setIsLoading] = useState(enabled);
+  const cached = enabled ? getCached<PromoBanner[]>(PROMOTIONS_CACHE_KEY) : null;
+  const [promotions, setPromotions] = useState<PromoBanner[]>(cached ?? []);
+  const [isLoading, setIsLoading] = useState(enabled && !cached);
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     if (!enabled) {
@@ -14,7 +20,11 @@ export function usePromotions(enabled: boolean) {
     }
 
     let cancelled = false;
-    setIsLoading(true);
+    const hadData = (getCached<PromoBanner[]>(PROMOTIONS_CACHE_KEY) ?? []).length > 0;
+
+    if (!hadData) {
+      setIsLoading(true);
+    }
 
     fetchPromotions()
       .then(items => {
@@ -23,7 +33,7 @@ export function usePromotions(enabled: boolean) {
         }
       })
       .catch(() => {
-        if (!cancelled) {
+        if (!cancelled && !hadData) {
           setPromotions([]);
         }
       })
@@ -36,7 +46,13 @@ export function usePromotions(enabled: boolean) {
     return () => {
       cancelled = true;
     };
-  }, [enabled]);
+  }, [enabled, reloadToken]);
+
+  useNetworkReconnectEffect(() => {
+    if (enabled) {
+      setReloadToken(token => token + 1);
+    }
+  });
 
   return { promotions, isLoading };
 }

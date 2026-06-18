@@ -27,3 +27,16 @@ export function getCatalogSubcategoryTitle(
 ): string | undefined {
   return getCatalogSubcategories(categorySlug).find(sub => sub.slug === subcategorySlug)?.title;
 }
+
+export function getCatalogSubcategoryTitleBySlug(
+  subcategorySlug: string,
+): string | undefined {
+  for (const category of tree) {
+    const match = category.subcategories.find(sub => sub.slug === subcategorySlug);
+    if (match) {
+      return match.title;
+    }
+  }
+
+  return undefined;
+}

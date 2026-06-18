@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchCategories } from '../services/catalog';
 import { getCached } from '../services/apiCache';
 import { useNetworkReconnectEffect } from '../context/NetworkContext';
@@ -19,9 +19,15 @@ export function useCategories(): CategoriesData {
   const [isLoading, setIsLoading] = useState(!cached);
   const [error, setError] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
+  const snapshotRef = useRef(cached ?? []);
+
+  snapshotRef.current = categories;
 
   const retry = useCallback(() => {
-    setIsLoading(true);
+    if (snapshotRef.current.length === 0) {
+      setIsLoading(true);
+    }
+
     setError(null);
     setReloadToken(token => token + 1);
   }, []);
@@ -30,6 +36,8 @@ export function useCategories(): CategoriesData {
     let cancelled = false;
 
     async function load() {
+      const hadData = snapshotRef.current.length > 0;
+
       try {
         const data = await fetchCategories();
 
@@ -40,7 +48,7 @@ export function useCategories(): CategoriesData {
         setCategories(data);
         setError(null);
       } catch (loadError) {
-        if (!cancelled) {
+        if (!cancelled && !hadData) {
           setError(reportLoadError(loadError, errorMessages.loadCategories));
         }
       } finally {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -27,9 +27,15 @@ export function useProductScreen(handle: string): ProductScreenData {
   );
   const [error, setError] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
+  const snapshotRef = useRef<ProductDetail | null>(product);
+
+  snapshotRef.current = product;
 
   const retry = useCallback(() => {
-    setIsLoading(true);
+    if (!snapshotRef.current) {
+      setIsLoading(true);
+    }
+
     setError(null);
     setReloadToken(token => token + 1);
   }, []);
@@ -37,6 +43,7 @@ export function useProductScreen(handle: string): ProductScreenData {
   useEffect(() => {
     let cancelled = false;
     const cached = getCached<ProductDetail>(`product:${handle}`);
+    const hadProduct = Boolean(snapshotRef.current ?? cached);
 
     if (cached) {
       setProduct(cached);
@@ -70,7 +77,7 @@ export function useProductScreen(handle: string): ProductScreenData {
           }
         }
       } catch (loadError) {
-        if (!cancelled) {
+        if (!cancelled && !hadProduct) {
           setError(reportLoadError(loadError, errorMessages.loadProduct));
           setIsLoading(false);
         }

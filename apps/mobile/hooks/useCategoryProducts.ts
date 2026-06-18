@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -47,6 +48,17 @@ type CategoryProductsData = {
   retry: () => void;
 };
 
+function buildInitialFilters(
+  initialSubcategorySlug?: string,
+  initialOnSaleOnly?: boolean,
+): CategoryProductFilters {
+  return {
+    ...defaultCategoryFilters,
+    subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
+    onSaleOnly: initialOnSaleOnly ?? false,
+  };
+}
+
 export function useCategoryProducts(
   categoryId: string,
   categoryTitle?: string,
@@ -57,41 +69,46 @@ export function useCategoryProducts(
   const cachedProducts = getCached<ApiProduct[]>(cacheKey);
 
   const [products, setProducts] = useState<ApiProduct[]>(cachedProducts ?? []);
-  const [filters, setFilters] = useState<CategoryProductFilters>(() => ({
-    ...defaultCategoryFilters,
-    subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
-    onSaleOnly: initialOnSaleOnly ?? false,
-  }));
+  const [filters, setFilters] = useState<CategoryProductFilters>(() =>
+    buildInitialFilters(initialSubcategorySlug, initialOnSaleOnly),
+  );
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isLoading, setIsLoading] = useState(!cachedProducts);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
+  const snapshotRef = useRef(cachedProducts ?? []);
+
+  snapshotRef.current = products;
 
   const retry = useCallback(() => {
-    setIsLoading(true);
+    if (snapshotRef.current.length === 0) {
+      setIsLoading(true);
+    }
+
     setError(null);
     setReloadToken(token => token + 1);
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    const cached = getCached<ApiProduct[]>(cacheKey);
+    setFilters(buildInitialFilters(initialSubcategorySlug, initialOnSaleOnly));
+    setVisibleCount(PAGE_SIZE);
 
+    const cached = getCached<ApiProduct[]>(cacheKey);
     if (cached) {
       setProducts(cached);
-      setFilters({
-        ...defaultCategoryFilters,
-        subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
-        onSaleOnly: initialOnSaleOnly ?? false,
-      });
-      setVisibleCount(PAGE_SIZE);
       setIsLoading(false);
     } else {
       setIsLoading(true);
     }
+  }, [cacheKey, categoryId, initialOnSaleOnly, initialSubcategorySlug]);
+
+  useEffect(() => {
+    let cancelled = false;
 
     async function load() {
+      const hadData = snapshotRef.current.length > 0;
+
       try {
         const data = await fetchProductsByCategory(categoryId, categoryTitle);
 
@@ -100,15 +117,9 @@ export function useCategoryProducts(
         }
 
         setProducts(data);
-        setFilters({
-          ...defaultCategoryFilters,
-          subcategories: initialSubcategorySlug ? [initialSubcategorySlug] : [],
-          onSaleOnly: initialOnSaleOnly ?? false,
-        });
-        setVisibleCount(PAGE_SIZE);
         setError(null);
       } catch (loadError) {
-        if (!cancelled) {
+        if (!cancelled && !hadData) {
           setError(reportLoadError(loadError, errorMessages.loadCategoryProducts));
         }
       } finally {
@@ -118,12 +129,12 @@ export function useCategoryProducts(
       }
     }
 
-    load();
+    void load();
 
     return () => {
       cancelled = true;
     };
-  }, [cacheKey, categoryId, categoryTitle, initialSubcategorySlug, initialOnSaleOnly, reloadToken]);
+  }, [cacheKey, categoryId, categoryTitle, reloadToken]);
 
   useNetworkReconnectEffect(() => {
     retry();
@@ -135,8 +146,8 @@ export function useCategoryProducts(
 
   const brands = useMemo(() => extractBrands(products), [products]);
   const subcategoryOptions = useMemo(
-    () => extractSubcategoryOptions(products),
-    [products],
+    () => extractSubcategoryOptions(products, categoryId),
+    [products, categoryId],
   );
   const variantOptions = useMemo(
     () => extractVariantOptions(products),
@@ -186,4 +197,4 @@ export function useCategoryProducts(
     error,
     retry,
   };
-};
+}

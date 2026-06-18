@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { spacing } from '../../constants/theme';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -14,9 +14,6 @@ export function ProductScreenHeader({ onBack, onCartPress, cartCount = 0 }: Prop
   container: {
     paddingHorizontal: spacing.screen,
     paddingBottom: 12,
-    backgroundColor: c.homeBackground,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
   },
   row: {
     flexDirection: 'row',
@@ -52,6 +49,7 @@ export function ProductScreenHeader({ onBack, onCartPress, cartCount = 0 }: Prop
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Назад"
+        testID="product-header-back"
         onPress={onBack}
         style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
         <Ionicons name="arrow-back" size={22} color={colors.textOnDark} />
@@ -60,10 +58,11 @@ export function ProductScreenHeader({ onBack, onCartPress, cartCount = 0 }: Prop
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Кошик"
+        testID="product-header-cart"
         onPress={onCartPress}
         style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
         <Ionicons name="bag-outline" size={22} color={colors.textOnDark} />
-        {cartCount > 0 ? <View style={styles.cartBadge} /> : null}
+        {cartCount > 0 ? <View testID="product-header-cart-badge" style={styles.cartBadge} /> : null}
       </Pressable>
       </View>
     </View>
