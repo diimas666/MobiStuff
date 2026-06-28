@@ -72,6 +72,16 @@ const iosSizes = {
   'Icon-60@2x.png': 120,
   'Icon-60@3x.png': 180,
   'Icon-1024.png': 1024,
+  // iPad (required when TARGETED_DEVICE_FAMILY includes iPad)
+  'Icon-20~ipad.png': 20,
+  'Icon-20~ipad@2x.png': 40,
+  'Icon-29~ipad.png': 29,
+  'Icon-29~ipad@2x.png': 58,
+  'Icon-40~ipad.png': 40,
+  'Icon-40~ipad@2x.png': 80,
+  'Icon-76~ipad.png': 76,
+  'Icon-76~ipad@2x.png': 152,
+  'Icon-83.5~ipad@2x.png': 167,
 };
 
 const androidSizes = {
