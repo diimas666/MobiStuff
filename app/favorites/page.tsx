@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Heart, Trash2 } from 'lucide-react';
-import CategoryList from '@/components/CategoryList';
+import { Heart } from 'lucide-react';
 import ProductList from '@/components/ProductList';
-import HomeSectionTitle from '@/components/HomeSectionTitle';
+import ProductGridSkeleton from '@/components/ProductGridSkeleton';
+import { plural, productForms } from '@/lib/format';
 import { Product } from '@/interface/product';
 import { fetchProductsByIds } from '@/lib/fetchProductsByIds';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -48,120 +48,63 @@ export default function FavoritesPage() {
     });
   }, [favorites, setFavorites]);
 
+  if (!loading && products.length === 0) {
+    return (
+      <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-16 text-center sm:py-24">
+        <Heart className="mb-6 h-14 w-14 text-ink-3" strokeWidth={1.25} />
+        <h1 className="display-lg">Тут буде ваше обране.</h1>
+        <p className="lead mt-4">Натисніть на сердечко на картці товару, щоб зберегти його й повернутися пізніше.</p>
+        <Link href="/catalog" className="btn-primary btn-lg mt-8">
+          Перейти до каталогу
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="pb-10">
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 text-white px-5 py-8 sm:px-8 sm:py-10 mb-6">
-        <div className="absolute -top-16 -right-16 w-48 h-48 bg-green-500/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-green-400/10 rounded-full blur-2xl" />
-        <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <span className="inline-flex items-center gap-1.5 mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-wide bg-green-500/20 text-green-300 rounded-full border border-green-500/30">
-              <Heart className="w-3.5 h-3.5" />
-              Обране
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-bold leading-tight">Ваші улюблені товари</h1>
-            <p className="text-gray-300 text-sm sm:text-base mt-2">
-              {favorites.length > 0
-                ? `${products.length} ${products.length === 1 ? 'товар' : products.length < 5 ? 'товари' : 'товарів'} у списку обраного`
-                : 'Додавайте товари в обране, щоб не втратити їх'}
+      <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="display-lg">Обране.</h1>
+          {!loading && (
+            <p className="mt-2 text-[15px] text-ink-2">
+              {products.length} {plural(products.length, productForms)}
             </p>
-          </div>
-          {favorites.length > 0 && (
-            <button
-              type="button"
-              onClick={clearFavorites}
-              className="inline-flex items-center justify-center gap-2 shrink-0 px-4 py-2.5 rounded-xl border border-red-400/40 bg-red-500/10 text-red-200 text-sm font-medium hover:bg-red-500/20 transition"
-            >
-              <Trash2 className="w-4 h-4" />
-              Очистити обране
-            </button>
           )}
         </div>
-      </section>
+        {favorites.length > 0 && (
+          <button type="button" onClick={clearFavorites} className="link-more text-[15px]">
+            Очистити список
+          </button>
+        )}
+      </header>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <aside className="hidden md:block w-[300px] shrink-0 px-4 py-4 rounded-2xl border border-gray-100 bg-white shadow-sm h-fit sticky top-[88px] z-30">
-          <HomeSectionTitle title="Каталог" />
-          <CategoryList />
-        </aside>
+      {loading ? (
+        <ProductGridSkeleton count={8} />
+      ) : (
+        <ProductList products={paginatedProducts} colVariant="2" wide />
+      )}
 
-        <section className="flex-1 min-w-0 rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm">
-          {loading ? (
-            <div className="space-y-4">
-              <div className="h-6 w-40 bg-gray-100 rounded-lg animate-pulse" />
-              <div className="grid gap-4 grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-80 bg-gray-100 rounded-xl animate-pulse" />
-                ))}
-              </div>
-            </div>
-          ) : products.length > 0 ? (
-            <>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
-                <HomeSectionTitle
-                  title="Список обраного"
-                  subtitle={`Сторінка ${currentPage} з ${totalPages}`}
-                />
-              </div>
-              <ProductList products={paginatedProducts} colVariant="2" />
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center text-center py-12 sm:py-16 px-4">
-              <div className="w-16 h-16 rounded-2xl bg-green-50 text-green-500 flex items-center justify-center mb-5">
-                <Heart className="w-8 h-8" />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Обране порожнє</h2>
-              <p className="text-gray-500 text-sm max-w-sm mb-6">
-                Натисніть на сердечко на картці товару — і він з&apos;явиться тут.
-              </p>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition"
-              >
-                Перейти до каталогу
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          )}
-
-          {totalPages > 1 && (
-            <div className="mt-8 flex flex-wrap justify-center items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setCurrentPage((p) => p - 1)}
-                disabled={currentPage === 1}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition"
-              >
-                ← Попередня
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setCurrentPage(p)}
-                  className={`min-w-[40px] px-3 py-2 text-sm border rounded-xl transition ${
-                    p === currentPage
-                      ? 'bg-gray-900 text-white border-gray-900'
-                      : 'border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-
-              <button
-                type="button"
-                onClick={() => setCurrentPage((p) => p + 1)}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition"
-              >
-                Наступна →
-              </button>
-            </div>
-          )}
-        </section>
-      </div>
+      {totalPages > 1 && (
+        <nav aria-label="Сторінки" className="mt-10 flex flex-wrap items-center justify-center gap-1.5">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => {
+                setCurrentPage(p);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              aria-current={p === currentPage ? 'page' : undefined}
+              className={`h-11 min-w-11 rounded-full px-3 text-[15px] font-medium transition-colors ${
+                p === currentPage ? 'bg-ink text-white' : 'bg-white hover:bg-line-soft'
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </nav>
+      )}
     </div>
   );
 }

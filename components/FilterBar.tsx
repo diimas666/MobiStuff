@@ -94,22 +94,22 @@ export default function FilterBar({
   const isDark = variant === 'dark';
   const selectClass = isDark
     ? 'appearance-none border border-white/15 bg-white/10 text-white rounded-xl px-3 py-2.5 text-sm w-full pr-10 focus:outline-none focus:ring-2 focus:ring-green-500/40 focus:border-green-500/30'
-    : 'appearance-none border border-gray-300 rounded-md px-3 py-2 text-sm w-full pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500';
-  const labelClass = isDark ? 'text-sm text-gray-400 mb-1' : 'text-sm text-gray-600 mb-1';
-  const sectionLabelClass = isDark ? 'text-sm text-gray-400' : 'text-sm text-gray-600';
+    : 'field appearance-none cursor-pointer pr-10';
+  const labelClass = isDark ? 'text-sm text-gray-400 mb-1' : 'field-label';
+  const sectionLabelClass = isDark ? 'text-sm text-gray-400' : 'field-label';
   const checkboxLabelClass = isDark
     ? 'flex items-center gap-2 text-sm cursor-pointer text-gray-300'
-    : 'flex items-center gap-2 text-sm cursor-pointer';
+    : 'flex items-center gap-3 text-[15px] cursor-pointer py-1';
   const checkboxClass = isDark
     ? 'rounded border-white/20 bg-white/10 text-green-500 focus:ring-green-500/40'
-    : 'rounded border-gray-300 text-green-500 focus:ring-green-500';
+    : 'h-5 w-5 rounded-md accent-[#138a47] cursor-pointer';
   const submitClass = isDark
     ? 'w-full bg-green-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-600 transition shadow-lg'
-    : 'w-full bg-black text-white px-5 py-2.5 rounded-md text-sm hover:bg-gray-800 transition shadow';
+    : 'btn-primary w-full';
   const resetClass = isDark
     ? 'inline-block mt-3 text-sm text-green-400 hover:text-green-300 transition'
-    : 'inline-block mt-3 text-sm text-green-600 hover:underline';
-  const chevronClass = isDark ? 'text-gray-500' : 'text-gray-400';
+    : 'link-more mt-4 text-sm';
+  const chevronClass = isDark ? 'text-gray-500' : 'text-ink-3';
 
   return (
     <>
@@ -132,7 +132,7 @@ export default function FilterBar({
             <option value="newest">Спочатку новинки</option>
             <option value="title-asc">За назвою А–Я</option>
           </select>
-          <div className={`pointer-events-none absolute right-3 bottom-2.5 ${chevronClass}`}>
+          <div className={`pointer-events-none absolute right-3.5 ${isDark ? "bottom-2.5" : "bottom-[17px]"} ${chevronClass}`}>
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function FilterBar({
               </option>
             ))}
           </select>
-          <div className={`pointer-events-none absolute right-3 bottom-2.5 ${chevronClass}`}>
+          <div className={`pointer-events-none absolute right-3.5 ${isDark ? "bottom-2.5" : "bottom-[17px]"} ${chevronClass}`}>
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
@@ -167,14 +167,14 @@ export default function FilterBar({
                 </optgroup>
               ))}
             </select>
-            <div className={`pointer-events-none absolute right-3 bottom-2.5 ${chevronClass}`}>
+            <div className={`pointer-events-none absolute right-3.5 ${isDark ? "bottom-2.5" : "bottom-[17px]"} ${chevronClass}`}>
               <ChevronDown className="w-4 h-4" />
             </div>
           </div>
         )}
 
         <div className="flex flex-col">
-          <label className={isDark ? 'text-sm text-gray-400 mb-2' : 'text-sm text-gray-600 mb-2'}>
+          <label className={isDark ? 'text-sm text-gray-400 mb-2' : 'field-label mb-3'}>
             Ціна, грн
           </label>
           <PriceRangeSlider

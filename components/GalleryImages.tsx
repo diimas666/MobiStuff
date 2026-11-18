@@ -1,7 +1,7 @@
 'use client';
 
 import ProductImage from '@/components/ProductImage';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface GalleryImagesProps {
   images: string[];
@@ -9,55 +9,85 @@ interface GalleryImagesProps {
 }
 
 export default function GalleryImages({ images, title }: GalleryImagesProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [active, setActive] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const list = (images ?? []).filter(Boolean);
 
-  if (!images || images.length === 0) return null;
+  // синхронізація свайпу (мобільний) з активною мініатюрою
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const i = Math.round(el.scrollLeft / el.clientWidth);
+      setActive((prev) => (prev === i ? prev : i));
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
+  if (list.length === 0) return null;
+
+  const goTo = (i: number) => {
+    setActive(i);
+    const el = trackRef.current;
+    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+  };
 
   return (
     <div className="w-full">
-      {/* Главное изображение */}
-      <div className="relative w-full rounded-xl overflow-hidden mb-4 bg-white border border-gray-100 shadow-sm">
-        <ProductImage
-          src={images[activeIndex]}
-          alt={`${title} зображення ${activeIndex + 1}`}
-          width={600}
-          height={400}
-          sizes="(max-width: 768px) 100vw, 600px"
-          className="w-full h-auto object-contain transition-transform duration-200 hover:scale-110"
-          priority
-        />
+      <div className="panel relative overflow-hidden">
+        <div ref={trackRef} className="shelf aspect-square">
+          {list.map((src, i) => (
+            <div key={`${src}-${i}`} className="relative h-full w-full shrink-0 p-8 sm:p-14">
+              <div className="relative h-full w-full">
+                <ProductImage
+                  src={src}
+                  alt={`${title} — фото ${i + 1}`}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                  className="object-contain"
+                  priority={i === 0}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {list.length > 1 && (
+          <div className="absolute inset-x-0 bottom-4 flex justify-center gap-1.5 lg:hidden">
+            {list.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === active ? 'w-5 bg-ink' : 'w-1.5 bg-ink/20'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Превьюшки */}
-      <div className="flex gap-2 overflow-x-auto scrollbar-thin py-1">
-        {images.map((image, index) => {
-          const isActive = activeIndex === index;
-          return (
+      {list.length > 1 && (
+        <div className="no-scrollbar mt-3 hidden gap-2 overflow-x-auto lg:flex">
+          {list.map((src, i) => (
             <button
-              key={index}
+              key={`${src}-thumb-${i}`}
               type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Показати зображення ${index + 1}`}
-              aria-pressed={isActive}
-              className={`flex-shrink-0 rounded-lg overflow-hidden w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 transition-all duration-200 box-border ${
-                isActive
-                  ? 'border-2 border-green-500 opacity-100'
-                  : 'border-2 border-transparent opacity-60 hover:opacity-90'
+              onClick={() => goTo(i)}
+              aria-label={`Показати фото ${i + 1}`}
+              aria-pressed={i === active}
+              className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white p-2 transition ${
+                i === active ? 'ring-2 ring-ink' : 'opacity-60 hover:opacity-100'
               }`}
             >
-              <ProductImage
-                src={image}
-                alt={`${title} превью ${index + 1}`}
-                width={96}
-                height={96}
-                sizes="96px"
-                loading="lazy"
-                className="object-cover w-full h-full"
-              />
+              <span className="relative block h-full w-full">
+                <ProductImage src={src} alt="" fill sizes="80px" loading="lazy" className="object-contain" />
+              </span>
             </button>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

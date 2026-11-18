@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import { MobileSidebarProvider } from '@/context/MobileSidebarContext';
-import { Roboto } from 'next/font/google';
+import { Onest } from 'next/font/google';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import { CartProvider } from '@/context/CartContext';
 import Header from '@/components/Header';
@@ -15,11 +13,10 @@ import NavigationProgress from '@/components/NavigationProgress';
 import AnalyticsPageView from '@/components/AnalyticsPageView';
 import GoogleTags from '@/components/GoogleTags';
 
-const roboto = Roboto({
+const onest = Onest({
   subsets: ['latin', 'cyrillic'],
-  weight: ['400', '700'],
   display: 'swap',
-  variable: '--font-roboto',
+  variable: '--font-onest',
   preload: true,
 });
 
@@ -32,6 +29,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  themeColor: '#111827',
 };
 
 export default function RootLayout({
@@ -45,7 +43,7 @@ export default function RootLayout({
         <GoogleTags />
       </head>
       <body
-        className={`${roboto.variable} antialiased min-h-screen flex flex-col site-page-bg`}
+        className={`${onest.variable} antialiased min-h-screen flex flex-col site-page-bg`}
       >
         <FavoritesProvider>
           <CartProvider>
@@ -55,9 +53,9 @@ export default function RootLayout({
                 <NavigationProgress />
                 <AnalyticsPageView />
               </Suspense>
-              <div className="mt-[80px] flex-1">
+              <main className="mt-[68px] flex-1 pt-5 sm:pt-8">
                 <Container>{children}</Container>
-              </div>
+              </main>
               <Footer />
             </MobileSidebarProvider>
           </CartProvider>

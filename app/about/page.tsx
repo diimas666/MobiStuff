@@ -56,8 +56,8 @@ export default function AboutPage() {
         </InfoCard>
       </div>
 
-      <section className="rounded-2xl bg-gray-900 text-white px-6 py-8 sm:px-10 sm:py-10">
-        <h2 className="text-xl font-bold mb-3">Наша місія</h2>
+      <section className="rounded-[28px] bg-ink text-white px-6 py-12 sm:px-12 sm:py-16">
+        <h2 className="display-md mb-4">Наша місія</h2>
         <p className="text-gray-300 leading-relaxed max-w-3xl">
           Зробити сучасні технології доступними кожному. Ми віримо, що правильний аксесуар —
           це не лише захист техніки, а й стиль, зручність і впевненість у щоденному житті.

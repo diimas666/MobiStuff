@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { formatPrice } from '@/lib/format';
 import { trackPurchase } from '@/lib/analytics';
 import { CartItem } from '@/context/CartContext';
 
-const REDIRECT_SECONDS = 5;
+const REDIRECT_SECONDS = 15;
 
 export default function ThankYouPage() {
   const router = useRouter();
@@ -83,57 +84,50 @@ export default function ThankYouPage() {
 
   if (isSaving || !order) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-[50vh] gap-4">
-        <Loader2 className="w-10 h-10 text-green-500 animate-spin" />
-        <p className="text-gray-500 text-sm">Обробка замовлення...</p>
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-ink-3" />
+        <p className="text-[15px] text-ink-2">Оформлюємо замовлення…</p>
       </div>
     );
   }
 
   return (
-    <div className="pb-12 flex justify-center">
-      <div className="w-full max-w-lg">
-        <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-10 shadow-sm text-center">
-          <div className="mx-auto w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-6">
-            <CheckCircle2 className="w-12 h-12 text-green-500" strokeWidth={1.75} />
-          </div>
+    <div className="mx-auto max-w-xl py-8 text-center sm:py-16">
+      <svg viewBox="0 0 80 80" className="mx-auto mb-8 h-20 w-20 text-accent" aria-hidden>
+        <circle className="draw-circle" cx="40" cy="40" r="36" fill="none" stroke="currentColor" strokeWidth="3" />
+        <path className="draw-check" d="M25 41 l10 10 l20 -22" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-            Замовлення оформлено!
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-2">
-            Дякуємо, що обрали MobiStuff. Ваше замовлення прийнято та незабаром буде оброблене.
-          </p>
-          <p className="text-gray-500 text-sm mb-6">
-            Дякуємо, що користуєтесь нашим асортиментом — сподіваємось побачити вас знову!
-          </p>
+      <h1 className="display-lg rise" style={{ '--d': '300ms' } as React.CSSProperties}>
+        Дякуємо! Замовлення прийнято.
+      </h1>
+      <p className="lead rise mt-4" style={{ '--d': '420ms' } as React.CSSProperties}>
+        Зателефонуємо найближчим часом, щоб підтвердити деталі. Відправляємо Новою Поштою за 1–3 дні.
+      </p>
 
-          <div className="rounded-xl bg-gray-50 border border-gray-100 p-4 text-left text-sm space-y-2 mb-6">
-            <p>
-              <span className="text-gray-500">Сума:</span>{' '}
-              <strong className="text-green-600">{order.total} грн</strong>
-            </p>
-            <p>
-              <span className="text-gray-500">Доставка:</span> {order.city}
-            </p>
-            <p className="line-clamp-2">
-              <span className="text-gray-500">Відділення:</span> {order.warehouse}
-            </p>
-          </div>
+      <dl className="panel rise mt-10 divide-y divide-line-soft px-6 text-left text-[15px]" style={{ '--d': '540ms' } as React.CSSProperties}>
+        <div className="flex justify-between gap-4 py-4">
+          <dt className="text-ink-2">Сума</dt>
+          <dd className="font-semibold">{formatPrice(order.total)}</dd>
+        </div>
+        <div className="flex justify-between gap-4 py-4">
+          <dt className="shrink-0 text-ink-2">Місто</dt>
+          <dd className="text-right">{order.city}</dd>
+        </div>
+        <div className="flex justify-between gap-4 py-4">
+          <dt className="shrink-0 text-ink-2">Відділення</dt>
+          <dd className="line-clamp-2 text-right">{order.warehouse}</dd>
+        </div>
+        <div className="flex justify-between gap-4 py-4">
+          <dt className="shrink-0 text-ink-2">Оплата</dt>
+          <dd className="text-right">{order.paymentMethod === 'card' ? 'Карткою' : 'При отриманні'}</dd>
+        </div>
+      </dl>
 
-          <p className="text-xs text-gray-400 mb-4">
-            Перехід на головну через {secondsLeft} сек…
-          </p>
-
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl transition"
-          >
-            На головну зараз
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </section>
-      </div>
+      <Link href="/" className="btn-primary btn-lg mt-8">
+        Продовжити покупки
+      </Link>
+      <p className="mt-4 text-[13px] text-ink-3">Повернемося на головну через {secondsLeft} с</p>
     </div>
   );
 }

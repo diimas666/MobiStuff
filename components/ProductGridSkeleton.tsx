@@ -3,32 +3,19 @@ interface ProductGridSkeletonProps {
   cols?: 1 | 2;
 }
 
-export default function ProductGridSkeleton({
-  count = 8,
-  cols = 2,
-}: ProductGridSkeletonProps) {
-  const gridClass =
-    cols === 2
-      ? 'grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]'
-      : 'grid-cols-1';
-
+export default function ProductGridSkeleton({ count = 8 }: ProductGridSkeletonProps) {
   return (
-    <div className={`grid gap-4 ${gridClass}`}>
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className="border rounded-xl overflow-hidden shadow-sm animate-pulse"
-        >
-          <div className="aspect-square bg-gray-200" />
-          <div className="p-3 sm:p-4 bg-gray-800 space-y-2">
-            <div className="h-4 bg-gray-600 rounded w-full" />
-            <div className="h-3 bg-gray-600 rounded w-4/5" />
-            <div className="flex justify-between pt-2">
-              <div className="h-6 bg-gray-600 rounded w-20" />
-              <div className="flex gap-2">
-                <div className="h-9 w-9 bg-gray-600 rounded-full" />
-                <div className="h-9 w-9 bg-gray-600 rounded-full" />
-              </div>
+        <div key={i} className="tile animate-pulse overflow-hidden">
+          <div className="m-5 aspect-square rounded-2xl bg-canvas" />
+          <div className="space-y-2 px-5 pb-5">
+            <div className="h-3 w-1/3 rounded-full bg-canvas" />
+            <div className="h-4 w-full rounded-full bg-canvas" />
+            <div className="h-4 w-2/3 rounded-full bg-canvas" />
+            <div className="flex items-center justify-between pt-3">
+              <div className="h-5 w-20 rounded-full bg-canvas" />
+              <div className="h-10 w-10 rounded-full bg-canvas" />
             </div>
           </div>
         </div>

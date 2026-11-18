@@ -25,19 +25,19 @@ export default function DeliveryPage() {
         <PaymentRulesNote />
       </div>
 
-      <div className="rounded-2xl bg-green-50 border border-green-100 px-6 py-5 mb-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <Gift className="w-8 h-8 text-green-600 shrink-0" />
+      <div className="rounded-2xl bg-accent-soft border border-transparent px-6 py-5 mb-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <Gift className="w-8 h-8 text-accent shrink-0" />
         <div>
           <p className="font-semibold text-green-800 text-lg">
             Безкоштовна доставка від {FREE_DELIVERY_FROM} грн
           </p>
-          <p className="text-green-700 text-sm mt-1">
+          <p className="text-accent text-sm mt-1">
             Нова Пошта та Укрпошта — на відділення по всій Україні
           </p>
         </div>
       </div>
 
-      <h2 className="text-xl font-bold text-gray-900 mb-4">Як ми доставляємо</h2>
+      <h2 className="text-xl font-bold text-ink mb-4">Як ми доставляємо</h2>
       <div className="grid sm:grid-cols-2 gap-4 mb-10">
         <InfoCard icon={<Truck className="w-5 h-5" />} title="Нова Пошта">
           <ul className="space-y-1.5 mt-1">
@@ -56,7 +56,7 @@ export default function DeliveryPage() {
         </InfoCard>
       </div>
 
-      <h2 className="text-xl font-bold text-gray-900 mb-4">Способи оплати</h2>
+      <h2 className="text-xl font-bold text-ink mb-4">Способи оплати</h2>
       <div className="grid sm:grid-cols-2 gap-4 mb-10">
         <InfoCard icon={<CreditCard className="w-5 h-5" />} title="Онлайн-оплата карткою">
           Visa / MasterCard через захищений платіжний сервіс.{' '}
@@ -69,9 +69,9 @@ export default function DeliveryPage() {
         </InfoCard>
       </div>
 
-      <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm mb-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Package className="w-5 h-5 text-green-500" />
+      <section className="panel p-6 sm:p-10 mb-6">
+        <h2 className="text-xl font-bold text-ink mb-6 flex items-center gap-2">
+          <Package className="w-5 h-5 text-accent" />
           Як проходить замовлення
         </h2>
         <div className="space-y-6">
@@ -87,9 +87,9 @@ export default function DeliveryPage() {
         </div>
       </section>
 
-      <p className="text-center text-gray-600 text-sm">
+      <p className="text-center text-ink-2 text-sm">
         Є питання?{' '}
-        <Link href="/contacts" className="text-green-600 font-medium hover:underline">
+        <Link href="/contacts" className="text-accent font-medium hover:underline">
           Зв&apos;яжіться з нами
         </Link>{' '}
         — відповімо протягом робочого дня.

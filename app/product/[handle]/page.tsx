@@ -3,15 +3,17 @@ import type { Metadata } from 'next';
 import GalleryImages from '@/components/GalleryImages';
 import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
+import { brands } from '@/data/brands';
 import VariantSection from '@/components/VariantSection';
 import OffersSection from '@/components/OffersSection.client';
-import HomeSectionTitle from '@/components/HomeSectionTitle';
-import PaymentRulesNote from '@/components/PaymentRulesNote';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import ProductDescription from '@/components/ProductDescription';
 import { stripHtml } from '@/lib/htmlUtils';
 import { getRelatedProducts } from '@/lib/getRelatedProducts';
-import { CARD_ONLY_FROM } from '@/data/storePolicies';
-import { ChevronRight, ShieldCheck, Truck } from 'lucide-react';
+import { CARD_ONLY_FROM, FREE_DELIVERY_FROM } from '@/data/storePolicies';
+import { CreditCard, PackageCheck, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import EcommerceTracker from '@/components/EcommerceTracker';
+import { formatPrice } from '@/lib/format';
 
 export async function generateMetadata({
   params: paramsPromise,
@@ -58,141 +60,144 @@ export default async function ProductPage({
     ? await getRelatedProducts(product.categorySlug, product.handle, 20)
     : [];
 
-  const hasDiscount =
-    product.oldPrice && product.oldPrice > product.price;
+  const hasDiscount = product.oldPrice && product.oldPrice > product.price;
+  const inStock = product.inStock !== false;
+  const brand = product.brand
+    ? brands.find((b) => b.title.toLowerCase() === String(product.brand).toLowerCase())
+    : undefined;
+  const freeDelivery = product.price >= FREE_DELIVERY_FROM;
+  const cardOnly = product.price >= CARD_ONLY_FROM;
+
+  const perks = [
+    {
+      icon: Truck,
+      title: 'Доставка Новою Поштою за 1–3 дні',
+      text: freeDelivery ? 'Для цього товару доставка безкоштовна' : `Безкоштовно для замовлень від ${formatPrice(FREE_DELIVERY_FROM)}`,
+    },
+    {
+      icon: CreditCard,
+      title: cardOnly ? 'Оплата карткою онлайн' : 'Оплата при отриманні або карткою',
+      text: cardOnly ? `Для замовлень від ${formatPrice(CARD_ONLY_FROM)} — повна передоплата` : 'Огляньте товар у відділенні перед оплатою',
+    },
+    { icon: RotateCcw, title: '14 днів на повернення', text: 'Якщо товар не підійшов — повернемо кошти' },
+    { icon: ShieldCheck, title: 'Гарантія якості', text: 'Лише оригінальний товар від офіційних постачальників' },
+  ];
+
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    image: product.images?.length ? product.images : [product.image],
+    description: stripHtml(product.description || '').slice(0, 500),
+    ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'UAH',
+      price: product.price,
+      availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    },
+  };
+
+  const crumbs = [
+    { label: 'Головна', href: '/' },
+    ...(category && subcategory
+      ? [
+          { label: category.title, href: `/category/${category.slug}/${subcategory.slug}` },
+          { label: subcategory.title, href: `/category/${category.slug}/${subcategory.slug}` },
+        ]
+      : []),
+    { label: product.title },
+  ];
 
   return (
     <>
       <EcommerceTracker event="view_item" product={product} />
-      <nav
-        aria-label="Навігація"
-        className="flex flex-wrap items-center gap-1 text-sm text-gray-500 mb-5 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100"
-      >
-        <Link href="/" className="hover:text-green-600 transition">
-          Головна
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-        {category && subcategory && (
-          <>
-            <Link
-              href={`/category/${category.slug}/${subcategory.slug}`}
-              className="hover:text-green-600 transition"
-            >
-              {category.title}
-            </Link>
-            <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-          </>
-        )}
-        <span className="font-medium text-gray-800 line-clamp-1">
-          {product.title}
-        </span>
-      </nav>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
+      <Breadcrumbs items={crumbs} />
 
-      <article className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden mb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2">
-          <div className="p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-white lg:border-r border-gray-100">
-            <GalleryImages images={product.images} title={product.title} />
-          </div>
+      <article className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12">
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <GalleryImages images={product.images?.length ? product.images : [product.image]} title={product.title} />
+        </div>
 
-          <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-5">
-            <div className="flex flex-wrap gap-2">
-              {product.isNew && (
-                <span className="px-2.5 py-0.5 text-xs font-semibold bg-green-500 text-white rounded-full">
-                  Новинка
-                </span>
-              )}
-              {product.discountPercent > 0 && (
-                <span className="px-2.5 py-0.5 text-xs font-semibold bg-red-500 text-white rounded-full">
-                  −{product.discountPercent}%
-                </span>
-              )}
-              {product.inStock === false ? (
-                <span className="px-2.5 py-0.5 text-xs font-semibold bg-gray-400 text-white rounded-full">
-                  Немає в наявності
-                </span>
-              ) : product.lowStock ? (
-                <span className="px-2.5 py-0.5 text-xs font-semibold bg-amber-100 text-amber-800 rounded-full">
-                  Закінчується
-                </span>
-              ) : (
-                <span className="px-2.5 py-0.5 text-xs font-semibold bg-green-100 text-green-700 rounded-full">
-                  В наявності
-                </span>
-              )}
-              {product.brand && (
-                <span className="px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-                  {product.brand}
-                </span>
-              )}
+        <div className="flex flex-col gap-7 lg:pt-4">
+          <header>
+            <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] font-medium">
+              {product.isNew && <span className="text-new">Новинка</span>}
+              {brand ? (
+                <Link href={`/brand/${brand.handle}`} className="text-ink-2 hover:text-ink hover:underline">
+                  {brand.title}
+                </Link>
+              ) : product.brand ? (
+                <span className="text-ink-2">{product.brand}</span>
+              ) : null}
             </div>
-
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-snug">
+            <h1 className="text-[28px] leading-[1.12] font-semibold tracking-[-0.025em] sm:text-[40px]">
               {product.title}
             </h1>
 
-            <div className="rounded-xl bg-gradient-to-r from-gray-900 via-gray-800 to-green-900 text-white px-5 py-4">
-              <p className="text-sm text-gray-300 mb-1">Ціна</p>
-              <div className="flex items-end gap-3 flex-wrap">
-                <span className="text-3xl sm:text-4xl font-bold text-green-400">
-                  {product.price} ₴
-                </span>
-                {hasDiscount && (
-                  <span className="text-lg text-gray-400 line-through pb-1">
-                    {product.oldPrice} ₴
-                  </span>
-                )}
-              </div>
+            <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="text-[28px] font-semibold tracking-tight sm:text-[32px]">{formatPrice(product.price)}</span>
+              {hasDiscount && (
+                <>
+                  <span className="text-lg text-ink-3 line-through">{formatPrice(product.oldPrice)}</span>
+                  {product.discountPercent > 0 && (
+                    <span className="rounded-full bg-sale px-2 py-0.5 text-[13px] font-semibold text-white">
+                      −{product.discountPercent}%
+                    </span>
+                  )}
+                </>
+              )}
             </div>
 
-            <VariantSection variants={product.variants} product={product} />
+            <p className="mt-3 flex items-center gap-2 text-[14px] text-ink-2">
+              <span
+                className={`h-2 w-2 rounded-full ${
+                  !inStock ? 'bg-ink-3' : product.lowStock ? 'bg-amber-500' : 'bg-accent-bright'
+                }`}
+              />
+              {!inStock ? 'Немає в наявності' : product.lowStock ? 'Закінчується — встигніть замовити' : 'В наявності, відправимо сьогодні або завтра'}
+            </p>
+          </header>
 
-            <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
-              <div className="flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-3 py-2.5 text-green-800">
-                <Truck className="w-4 h-4 shrink-0 text-green-600" />
-                Доставка 1–3 дні
-              </div>
-              <div className="flex items-center gap-2 rounded-lg bg-green-50 border border-green-100 px-3 py-2.5 text-green-800">
-                <ShieldCheck className="w-4 h-4 shrink-0 text-green-600" />
-                Гарантія якості
-              </div>
-            </div>
+          <VariantSection variants={product.variants} product={product} />
 
-            {product.price >= CARD_ONLY_FROM && (
-              <PaymentRulesNote />
-            )}
+          <ul className="divide-y divide-line-soft rounded-[22px] bg-white px-5">
+            {perks.map(({ icon: Icon, title, text }) => (
+              <li key={title} className="flex items-start gap-4 py-4">
+                <Icon className="mt-0.5 h-6 w-6 shrink-0 text-ink" strokeWidth={1.5} />
+                <div>
+                  <p className="text-[15px] font-medium">{title}</p>
+                  <p className="mt-0.5 text-[13px] text-ink-2">{text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
 
-            {product.description && (
-              <section className="rounded-xl border border-gray-100 bg-gray-50/80 p-4 sm:p-5">
-                <h2 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <span className="w-1 h-5 rounded-full bg-gradient-to-b from-green-400 to-green-600" />
-                  Опис товару
-                </h2>
-                <div
-                  className="text-gray-600 text-sm leading-relaxed max-h-[320px] overflow-y-auto [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_strong]:font-semibold [&_p]:mb-2"
-                  dangerouslySetInnerHTML={{ __html: product.description }}
-                />
-              </section>
-            )}
-          </div>
+          {product.description && (
+            <section className="panel p-6 sm:p-8">
+              <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold tracking-tight">
+                <PackageCheck className="h-5 w-5 text-accent" strokeWidth={1.75} />
+                Про товар
+              </h2>
+              <ProductDescription html={product.description} />
+            </section>
+          )}
         </div>
       </article>
 
       {relatedProducts.length > 0 && category && (
-        <section className="rounded-2xl border border-gray-100 bg-white p-4 sm:p-6 shadow-sm pb-8">
-          <HomeSectionTitle
-            title={`Також вас можуть зацікавити — ${category.title}`}
-            subtitle="Схожі товари з цієї категорії"
-          />
+        <div className="mt-20 sm:mt-28">
           <OffersSection
-            title=""
+            title="Схожі товари"
+            subtitle={`Ще з категорії «${category.title}».`}
             products={relatedProducts}
             categorySlug={product.categorySlug}
             subcategorySlug={product.subcategorySlug}
-            compact
-            hideLayoutToggle
           />
-        </section>
+        </div>
       )}
+      <div className="h-16 lg:hidden" aria-hidden />
     </>
   );
 }

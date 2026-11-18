@@ -20,7 +20,7 @@ export default function PrivacyPage() {
       ctaLabel="Перейти до каталогу"
       ctaHref="/"
     >
-      <p className="text-sm text-gray-500 mb-8">
+      <p className="text-sm text-ink-3 mb-8">
         Останнє оновлення: {privacyPolicyMeta.lastUpdated}
       </p>
 
@@ -28,13 +28,13 @@ export default function PrivacyPage() {
         {privacyPolicySections.map((section) => (
           <section
             key={section.title}
-            className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm"
+            className="panel p-6 sm:p-10"
           >
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Shield className="w-5 h-5 text-green-500 shrink-0" />
+            <h2 className="text-lg font-bold text-ink mb-4 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-accent shrink-0" />
               {section.title}
             </h2>
-            <div className="space-y-3 text-sm text-gray-700 leading-relaxed">
+            <div className="space-y-3 text-sm text-ink-2 leading-relaxed">
               {section.paragraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -50,16 +50,16 @@ export default function PrivacyPage() {
         ))}
       </div>
 
-      <p className="text-center text-sm text-gray-500 mt-10">
+      <p className="text-center text-sm text-ink-3 mt-10">
         Питання щодо персональних даних?{' '}
         <a
           href={`mailto:${privacyPolicyMeta.email}`}
-          className="text-green-600 hover:underline"
+          className="text-accent hover:underline"
         >
           {privacyPolicyMeta.email}
         </a>
         {' · '}
-        <Link href="/contacts" className="text-green-600 hover:underline">
+        <Link href="/contacts" className="text-accent hover:underline">
           Контакти
         </Link>
       </p>

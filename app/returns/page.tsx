@@ -36,40 +36,40 @@ export default function ReturnsPage() {
         </InfoCard>
       </div>
 
-      <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm mb-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <PackageX className="w-5 h-5 text-green-500" />
+      <section className="panel p-6 sm:p-10 mb-8">
+        <h2 className="text-xl font-bold text-ink mb-4 flex items-center gap-2">
+          <PackageX className="w-5 h-5 text-accent" />
           Умови повернення
         </h2>
-        <ul className="space-y-3 text-sm text-gray-700">
+        <ul className="space-y-3 text-sm text-ink-2">
           <li className="flex gap-2">
-            <span className="text-green-500 font-bold">✓</span>
+            <span className="text-accent font-bold">✓</span>
             Товар у <strong>оригінальній упаковці</strong>, без слідів використання
           </li>
           <li className="flex gap-2">
-            <span className="text-green-500 font-bold">✓</span>
+            <span className="text-accent font-bold">✓</span>
             Повна <strong>комплектація</strong> збережена
           </li>
           <li className="flex gap-2">
-            <span className="text-green-500 font-bold">✓</span>
+            <span className="text-accent font-bold">✓</span>
             Наявність <strong>чека або підтвердження замовлення</strong>
           </li>
           <li className="flex gap-2">
-            <span className="text-green-500 font-bold">✓</span>
+            <span className="text-accent font-bold">✓</span>
             Попереднє погодження з нашою підтримкою обов&apos;язкове
           </li>
         </ul>
       </section>
 
-      <section className="rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm mb-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Mail className="w-5 h-5 text-green-500" />
+      <section className="panel p-6 sm:p-10 mb-8">
+        <h2 className="text-xl font-bold text-ink mb-6 flex items-center gap-2">
+          <Mail className="w-5 h-5 text-accent" />
           Як оформити повернення
         </h2>
         <div className="space-y-6">
           <InfoStep number={1} title="Напишіть нам">
             Email:{' '}
-            <a href="mailto:mobistuffinfo@gmail.com" className="text-green-600 font-medium hover:underline">
+            <a href="mailto:mobistuffinfo@gmail.com" className="text-accent font-medium hover:underline">
               mobistuffinfo@gmail.com
             </a>
             . Вкажіть номер замовлення та причину.
@@ -86,18 +86,18 @@ export default function ReturnsPage() {
         </div>
       </section>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-ink-3">
         Детальніше — в{' '}
         <a
           href="https://zakon.rada.gov.ua/laws/show/1023-12"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-green-600 hover:underline"
+          className="text-accent hover:underline"
         >
           Законі України «Про захист прав споживачів»
         </a>
         . Питання?{' '}
-        <Link href="/contacts" className="text-green-600 hover:underline">
+        <Link href="/contacts" className="text-accent hover:underline">
           Контакти
         </Link>
       </p>

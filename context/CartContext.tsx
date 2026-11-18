@@ -14,6 +14,8 @@ interface CartContextProps {
   increment: (id: string) => void;
   decrement: (id: string) => void;
   clearCart: () => void;
+  /** true, коли кошик уже прочитано з localStorage */
+  isReady: boolean;
 }
 
 const CartContext = createContext<CartContextProps | null>(null);
@@ -26,13 +28,20 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isReady, setIsReady] = useState(false);
   useEffect(() => {
-    const stored = localStorage.getItem('cart');
-    if (stored) setCart(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem('cart');
+      if (stored) setCart(JSON.parse(stored));
+    } catch {
+      // пошкоджені дані — починаємо з порожнього кошика
+    }
+    setIsReady(true);
   }, []);
   useEffect(() => {
+    if (!isReady) return;
     localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
+  }, [cart, isReady]);
 
   const addToCart = (product: Product) => {
     // ✅ Проверка, что всё нужное есть
@@ -107,6 +116,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         decrement,
         increment,
         clearCart,
+        isReady,
       }}
     >
       {children}

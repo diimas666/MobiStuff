@@ -50,3 +50,4 @@ apps/mobile/android/app/build/
 apps/mobile/android/build/
 apps/mobile/android/.cxx/
 apps/mobile/.env
+.playwright-mcp/

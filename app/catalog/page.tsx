@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import CategoryGrid from "@/components/CategoryGrid";
-import HomeSectionTitle from "@/components/HomeSectionTitle";
+import Link from "next/link";
 import { getCatalogSections } from "@/lib/getCatalogCategories";
 
 export const revalidate = 300;
@@ -17,17 +17,30 @@ export default async function CatalogPage() {
 
   return (
     <div className="pb-10">
-      <div className="section-surface mb-8 p-5 sm:p-8">
-        <HomeSectionTitle title="Каталог" subtitle="Усі категорії товарів — оберіть потрібний розділ" />
-      </div>
+      <header className="mb-8 sm:mb-10">
+        <h1 className="display-lg">Каталог.</h1>
+        <p className="lead mt-3 max-w-xl">Усі категорії аксесуарів. Оберіть розділ, щоб побачити товари.</p>
+      </header>
 
-      <div className="space-y-8">
-        {sections.map((section, index) => (
-          <section
-            key={section.slug}
-            className={`p-4 sm:p-6 ${index % 2 === 0 ? 'section-surface' : 'section-surface-alt'}`}
-          >
-            <HomeSectionTitle title={section.title} />
+      <nav aria-label="Розділи каталогу" className="no-scrollbar sticky top-[68px] z-30 -mx-4 mb-10 flex gap-2 overflow-x-auto bg-canvas/85 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6">
+        {sections.map((section) => (
+          <a key={section.slug} href={`#${section.slug}`} className="chip">
+            {section.title}
+          </a>
+        ))}
+      </nav>
+
+      <div className="space-y-14 sm:space-y-20">
+        {sections.map((section) => (
+          <section key={section.slug} id={section.slug} className="scroll-mt-36">
+            <div className="mb-5 flex items-end justify-between gap-4">
+              <h2 className="display-md">{section.title}</h2>
+              {section.items[0] && (
+                <Link href={`/category/${section.items[0].categorySlug}/${section.items[0].subcategorySlug}`} className="link-more shrink-0 text-[15px]">
+                  Дивитися
+                </Link>
+              )}
+            </div>
             <CategoryGrid items={section.items} variant="catalog" />
           </section>
         ))}

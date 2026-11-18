@@ -5,10 +5,13 @@ import ProductList from '@/components/ProductList';
 import FilterBar from '@/components/FilterBar';
 import CategorySeoArticle from '@/components/CategorySeoArticle';
 import CategoryList from '@/components/CategoryList';
-import CategoryPageHeader from '@/components/CategoryPageHeader';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import Pagination from '@/components/Pagination';
+import FilterSheet from '@/components/FilterSheet';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Grid, LayoutList } from 'lucide-react';
+import { LayoutGrid, Square } from 'lucide-react';
+import { plural, productForms } from '@/lib/format';
 // фетч
 import { fetchProducts, fetchProductFacets } from '@/lib/api';
 import EcommerceTracker from '@/components/EcommerceTracker';
@@ -97,6 +100,17 @@ export default async function SubcategoryPage({
   const paginatedProducts = allProducts.slice(startIndex, endIndex);
   const totalPages = Math.ceil(allProducts.length / ITEMS_PER_PAGE);
 
+  const activeCount = [brand, phone, minPrice || maxPrice, isTrending, onSale, sort].filter(Boolean).length;
+  const total = facets?.count ?? allProducts.length;
+  const filterBar = (
+    <FilterBar
+      availableBrands={facets.brands}
+      availablePhoneModels={facets.phoneModels}
+      priceBounds={{ min: facets.minPrice, max: facets.maxPrice }}
+    />
+  );
+  const colsHref = (c: '1' | '2') => `/category/${slug}/${sub}?page=${currentPage}&cols=${c}${queryString}`;
+
   return (
     <div>
       <EcommerceTracker
@@ -105,91 +119,91 @@ export default async function SubcategoryPage({
         listName={subcategory.title}
         listId={`${slug}/${sub}`}
       />
-      <CategoryPageHeader
-        categoryTitle={category.title}
-        subcategoryTitle={subcategory.title}
-        productCount={facets.count}
+
+      <Breadcrumbs
+        items={[
+          { label: 'Головна', href: '/' },
+          { label: 'Каталог', href: '/catalog' },
+          { label: category.title, href: `/category/${slug}/${category.subcategories[0]?.slug ?? sub}` },
+          { label: subcategory.title },
+        ]}
       />
 
-      {/* Переключение количества карточек */}
-      <div className="md:hidden mb-4 flex items-center gap-2">
-        <Link
-          href={`/category/${slug}/${sub}?page=${currentPage}&cols=1`}
-          className={`flex items-center gap-1 px-3 py-1 border rounded shadow-sm text-sm ${
-            colVariant === '1' ? 'bg-black text-white' : 'hover:bg-gray-100'
-          }`}
-        >
-          <LayoutList size={16} />1 в ряд
-        </Link>
-        <Link
-          href={`/category/${slug}/${sub}?page=${currentPage}&cols=2`}
-          className={`flex items-center gap-1 px-3 py-1 border rounded shadow-sm text-sm ${
-            colVariant === '2' ? 'bg-black text-white' : 'hover:bg-gray-100'
-          }`}
-        >
-          <Grid size={16} />2 в ряд
-        </Link>
+      <header className="mb-6 sm:mb-8">
+        <h1 className="display-lg">{subcategory.title}</h1>
+        <p className="mt-2 text-[15px] text-ink-2">
+          {category.title}
+          {total > 0 ? `, ${total} ${plural(total, productForms)}` : ''}
+        </p>
+      </header>
+
+      {/* Підкатегорії */}
+      {category.subcategories.length > 1 && (
+        <nav aria-label="Підкатегорії" className="no-scrollbar -mx-4 mb-6 flex gap-2 overflow-x-auto px-4 sm:-mx-6 sm:px-6">
+          {category.subcategories.map((s) => (
+            <Link
+              key={s.slug}
+              href={`/category/${slug}/${s.slug}`}
+              className={`chip ${s.slug === sub ? 'chip-active' : ''}`}
+              aria-current={s.slug === sub ? 'page' : undefined}
+            >
+              {s.title}
+            </Link>
+          ))}
+        </nav>
+      )}
+
+      {/* Панель інструментів (мобільний) */}
+      <div className="mb-4 flex items-center justify-between gap-2 md:hidden">
+        <FilterSheet activeCount={activeCount}>{filterBar}</FilterSheet>
+        <div className="flex rounded-full bg-white p-1" role="group" aria-label="Вигляд сітки">
+          <Link
+            href={colsHref('1')}
+            aria-label="Один товар у ряд"
+            aria-pressed={colVariant === '1'}
+            className={`flex h-8 w-9 items-center justify-center rounded-full transition ${colVariant === '1' ? 'bg-ink text-white' : 'text-ink-2'}`}
+          >
+            <Square className="h-4 w-4" />
+          </Link>
+          <Link
+            href={colsHref('2')}
+            aria-label="Два товари в ряд"
+            aria-pressed={colVariant === '2'}
+            className={`flex h-8 w-9 items-center justify-center rounded-full transition ${colVariant === '2' ? 'bg-ink text-white' : 'text-ink-2'}`}
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
 
-      {/* Основная сетка */}
-      <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-4">
-        {/* Сайдбар */}
-        <aside className="section-surface hidden md:block px-4 py-4 h-fit z-30 w-full">
-          <h3 className="text-lg font-semibold mb-4">Каталог</h3>
-          <CategoryList />
-
-          <div className="border-t pt-4 mt-4">
-            <h4 className="text-md font-medium mb-2">Фільтри</h4>
-            <FilterBar
-              availableBrands={facets.brands}
-              availablePhoneModels={facets.phoneModels}
-              priceBounds={{ min: facets.minPrice, max: facets.maxPrice }}
-            />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr] lg:gap-8">
+        <aside className="hidden md:block">
+          <div className="sticky top-24 space-y-4">
+            <div className="panel p-5">
+              <h2 className="mb-4 text-lg font-semibold tracking-tight">Фільтри</h2>
+              {filterBar}
+            </div>
+            <details className="panel group p-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] font-semibold">
+                Усі категорії
+                <span className="text-ink-3 transition-transform group-open:rotate-45">+</span>
+              </summary>
+              <div className="mt-4">
+                <CategoryList />
+              </div>
+            </details>
           </div>
         </aside>
 
-        {/* Товары */}
-        <div className="w-full">
+        <div className="min-w-0">
           <ProductList products={paginatedProducts} colVariant={colVariant} />
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            hrefFor={(p) => `/category/${slug}/${sub}?page=${p}&cols=${colVariant}${queryString}`}
+          />
         </div>
       </div>
-      {/* dmmd */}
-      {/* Пагинация */}
-      {totalPages > 1 && (
-        <div className="mt-6 flex flex-wrap justify-center items-center gap-2">
-          {currentPage > 1 && (
-            <Link
-              href={`/category/${slug}/${sub}?page=${
-                currentPage - 1
-              }&cols=${cols}${queryString}`}
-              className="px-3 py-1 border rounded hover:bg-gray-100"
-            >
-              ← Попередня
-            </Link>
-          )}
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <Link
-              key={p}
-              href={`/category/${slug}/${sub}?page=${p}&cols=${colVariant}${queryString}`}
-              className={`px-3 py-1 border rounded hover:bg-gray-100 ${
-                p === currentPage ? 'bg-black text-white' : ''
-              }`}
-            >
-              {p}
-            </Link>
-          ))}
-          {currentPage < totalPages && (
-            <Link
-              href={`/category/${slug}/${sub}?page=${
-                currentPage + 1
-              }&cols=${colVariant}${queryString}`}
-              className="px-3 py-1 border rounded hover:bg-gray-100"
-            >
-              Наступна →
-            </Link>
-          )}
-        </div>
-      )}
 
       {currentPage === 1 && (
         <CategorySeoArticle

@@ -6,36 +6,32 @@ interface VariantSelectorProps {
   setSelected: (variant: string) => void;
 }
 
-export default function VariantSelector({
-  variants,
-  selected,
-  setSelected,
-}: VariantSelectorProps) {
+export default function VariantSelector({ variants, selected, setSelected }: VariantSelectorProps) {
   if (!variants || variants.length === 0) return null;
 
-  const isMany = variants.length >= 3;
-
   return (
-    <div>
-      <ul
-        className={`flex gap-3 flex-wrap ${
-          isMany ? 'flex-col sm:flex-row text-sm' : 'justify-center text-base'
-        }`}
-      >
-        {variants.map((variant, index) => (
-          <li
-            key={index}
-            onClick={() => setSelected(variant)}
-            className={`min-w-[80px] py-2 px-4 rounded-full shadow-sm flex items-center justify-center cursor-pointer transition text-center ${
-              selected === variant
-                ? 'bg-black text-white border border-black'
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-            }`}
-          >
-            {variant}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <fieldset>
+      <legend className="mb-3 text-[15px] font-semibold">
+        Варіант{selected ? <span className="font-normal text-ink-2"> — {selected}</span> : null}
+      </legend>
+      <div className="flex flex-wrap gap-2">
+        {variants.map((variant) => {
+          const isActive = selected === variant;
+          return (
+            <button
+              key={variant}
+              type="button"
+              onClick={() => setSelected(variant)}
+              aria-pressed={isActive}
+              className={`min-w-[88px] rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                isActive ? 'border-accent bg-accent-soft text-ink ring-1 ring-accent' : 'border-line bg-white hover:border-ink-3'
+              }`}
+            >
+              {variant}
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }

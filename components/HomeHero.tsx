@@ -1,61 +1,69 @@
 import Link from 'next/link';
-import { ArrowRight, CreditCard, Gift, ShieldCheck, Truck } from 'lucide-react';
-import { CARD_ONLY_FROM, FREE_DELIVERY_FROM } from '@/data/storePolicies';
-import PaymentRulesNote from '@/components/PaymentRulesNote';
+import { ChevronRight } from 'lucide-react';
+import ProductImage from '@/components/ProductImage';
+import { Product } from '@/interface/product';
 
-export default function HomeHero() {
+const fallback = [
+  '/images/headphones-bg-white.webp',
+  '/images/cifrovoe-ustroistvo-black-power-bank.webp',
+  '/images/usb-koncentratory-cifrovye-ustroistva.webp',
+];
+
+export default function HomeHero({ products = [] }: { products?: Product[] }) {
+  const picks = products.filter((p) => p.image).slice(0, 3);
+  const images = picks.length === 3 ? picks.map((p) => ({ src: p.image, alt: p.title, href: `/product/${p.handle}` })) : fallback.map((src) => ({ src, alt: '', href: '/catalog' }));
+
+  // висота та зсув кожної «картки» товару — ритм, як на вітрині
+  const layout = [
+    'w-[30%] -rotate-[5deg] translate-y-6 sm:translate-y-10',
+    'w-[38%] z-10',
+    'w-[30%] rotate-[5deg] translate-y-6 sm:translate-y-10',
+  ];
+
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-green-900 text-white px-5 py-8 sm:px-10 sm:py-12 mb-6 sm:mb-8">
-      <div className="absolute -top-24 -right-24 w-72 h-72 bg-green-500/20 rounded-full blur-3xl" />
-      <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-green-400/10 rounded-full blur-2xl" />
-
-      <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-        <div className="max-w-2xl">
-          <span className="inline-block mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-wide bg-green-500/20 text-green-300 rounded-full border border-green-500/30">
-            MobiStuff
-          </span>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-3">
-            Аксесуари для ваших гаджетів
-          </h1>
-          <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
-            Навушники, павербанки, кабелі, чохли, зарядки та смарт-годинники — тисячі
-            товарів з доставкою по всій Україні.
-          </p>
-          <Link
-            href="/catalog"
-            className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition text-sm sm:text-base"
-          >
-            Переглянути каталог
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:max-w-lg shrink-0">
-          <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 px-3 py-4 text-center">
-            <Truck className="w-5 h-5 text-green-400 mx-auto mb-2" />
-            <p className="text-xs sm:text-sm font-semibold">1–3 дні</p>
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">доставка</p>
-          </div>
-          <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 px-3 py-4 text-center">
-            <Gift className="w-5 h-5 text-green-400 mx-auto mb-2" />
-            <p className="text-xs sm:text-sm font-semibold">від {FREE_DELIVERY_FROM} ₴</p>
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">доставка безкоштовно</p>
-          </div>
-          <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 px-3 py-4 text-center">
-            <CreditCard className="w-5 h-5 text-green-400 mx-auto mb-2" />
-            <p className="text-xs sm:text-sm font-semibold">від {CARD_ONLY_FROM} ₴</p>
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">оплата карткою</p>
-          </div>
-          <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 px-3 py-4 text-center">
-            <ShieldCheck className="w-5 h-5 text-green-400 mx-auto mb-2" />
-            <p className="text-xs sm:text-sm font-semibold">5000+</p>
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">товарів</p>
-          </div>
-        </div>
+    <section className="panel relative overflow-hidden px-5 pt-12 pb-0 text-center sm:px-10 sm:pt-20">
+      <h1 className="display-xl rise mx-auto max-w-4xl" style={{ '--d': '60ms' } as React.CSSProperties}>
+        Аксесуари, які просто працюють.
+      </h1>
+      <p className="lead rise mx-auto mt-5 max-w-xl" style={{ '--d': '180ms' } as React.CSSProperties}>
+        Навушники, павербанки, кабелі й чохли від перевірених брендів. Відправляємо Новою Поштою за 1–3 дні.
+      </p>
+      <div
+        className="rise mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
+        style={{ '--d': '300ms' } as React.CSSProperties}
+      >
+        <Link href="/catalog" className="btn-primary btn-lg">
+          Перейти до каталогу
+        </Link>
+        <Link href="#hits" className="link-more text-[17px]">
+          Хіти продажу
+          <ChevronRight className="h-4 w-4" />
+        </Link>
       </div>
 
-      <div className="relative mt-6">
-        <PaymentRulesNote variant="dark" />
+      <div className="relative mx-auto mt-12 flex max-w-3xl items-end justify-center gap-2 sm:mt-16 sm:gap-5">
+        {images.map((img, i) => (
+          <Link
+            key={img.src}
+            href={img.href}
+            aria-label={img.alt || 'Каталог'}
+            className={`rise ${layout[i]} shrink-0`}
+            style={{ '--d': `${420 + i * 120}ms` } as React.CSSProperties}
+          >
+            <div className="float-y" style={{ '--fd': `${i * 900}ms` } as React.CSSProperties}>
+              <div className="relative aspect-[3/4] overflow-hidden rounded-t-[28px] bg-canvas shadow-[0_-10px_40px_-20px_rgb(0_0_0/0.25)]">
+                <ProductImage
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 40vw, 300px"
+                  className="object-contain p-4 mix-blend-multiply sm:p-8"
+                />
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   );

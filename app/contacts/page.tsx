@@ -28,7 +28,7 @@ export default function ContactsPage() {
         <InfoCard icon={<Mail className="w-5 h-5" />} title="Email">
           <a
             href="mailto:mobistuffinfo@gmail.com"
-            className="text-green-600 font-semibold hover:underline text-base"
+            className="text-accent font-semibold hover:underline text-base"
           >
             mobistuffinfo@gmail.com
           </a>
@@ -38,7 +38,7 @@ export default function ContactsPage() {
           <p>
             <strong>Пн – Пт:</strong> 9:00 – 18:00
           </p>
-          <p className="mt-1 text-gray-500">Сб – Нд: вихідний</p>
+          <p className="mt-1 text-ink-3">Сб – Нд: вихідний</p>
           <p className="mt-2">Замовлення на сайті — цілодобово.</p>
         </InfoCard>
         <InfoCard icon={<MapPin className="w-5 h-5" />} title="Доставка">
@@ -48,22 +48,22 @@ export default function ContactsPage() {
         <InfoCard icon={<MessageCircle className="w-5 h-5" />} title="Швидкі посилання">
           <ul className="space-y-1.5">
             <li>
-              <Link href="/delivery" className="text-green-600 hover:underline">
+              <Link href="/delivery" className="text-accent hover:underline">
                 Доставка і оплата →
               </Link>
             </li>
             <li>
-              <Link href="/returns" className="text-green-600 hover:underline">
+              <Link href="/returns" className="text-accent hover:underline">
                 Повернення товарів →
               </Link>
             </li>
             <li>
-              <Link href="/about" className="text-green-600 hover:underline">
+              <Link href="/about" className="text-accent hover:underline">
                 Про нас →
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="text-green-600 hover:underline">
+              <Link href="/privacy" className="text-accent hover:underline">
                 Політика конфіденційності →
               </Link>
             </li>
@@ -71,7 +71,7 @@ export default function ContactsPage() {
         </InfoCard>
       </div>
 
-      <section className="rounded-2xl bg-gray-900 text-white px-6 py-8 sm:px-10 text-center">
+      <section className="rounded-[28px] bg-ink text-white px-6 py-12 sm:px-12 text-center">
         <h2 className="text-lg font-bold mb-4">Ми в соцмережах</h2>
         <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
           Слідкуйте за новинками, акціями та знижками на наші сторінки

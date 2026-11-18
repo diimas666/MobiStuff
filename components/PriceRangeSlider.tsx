@@ -34,21 +34,21 @@ export default function PriceRangeSlider({
     <div className="w-full">
       <div
         className={`flex justify-between text-sm font-medium mb-2 ${
-          isDark ? 'text-white' : 'text-gray-800'
+          isDark ? 'text-white' : 'text-ink'
         }`}
       >
-        <span>{minValue} грн</span>
-        <span>{maxValue} грн</span>
+        <span>{minValue} ₴</span>
+        <span>{maxValue} ₴</span>
       </div>
 
       <div className="relative h-6">
         <div
           className={`absolute top-1/2 -translate-y-1/2 w-full h-1.5 rounded-full ${
-            isDark ? 'bg-white/20' : 'bg-gray-200'
+            isDark ? 'bg-white/20' : 'bg-line-soft'
           }`}
         />
         <div
-          className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-green-500 rounded-full"
+          className="absolute top-1/2 -translate-y-1/2 h-1.5 bg-accent rounded-full"
           style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
         />
         <input

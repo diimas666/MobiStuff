@@ -1,19 +1,29 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { popularItems } from '@/data/popularAndTrending';
-import CategoryGrid from '@/components/CategoryGrid';
-import CategoryList from '@/components/CategoryList';
-import TrendingSlider from '@/components/TrendingSlider';
 import BrandList from '@/components/BrandList';
 import OffersSection from '@/components/OffersSection.client';
+import ProductShelf from '@/components/ProductShelf';
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
 import { getTrendingProducts } from '@/lib/getTrendingProducts';
-import PromoSlider from '@/components/PromoSlider';
 import HomeHero from '@/components/HomeHero';
 import HomeSectionTitle from '@/components/HomeSectionTitle';
-import PaymentRulesNote from '@/components/PaymentRulesNote';
-import { storePolicies } from '@/data/storePolicies';
-import { ArrowRight } from 'lucide-react';
+import ProductImage from '@/components/ProductImage';
+import { CARD_ONLY_FROM, FREE_DELIVERY_FROM } from '@/data/storePolicies';
+import { ChevronRight, CreditCard, PackageCheck, RotateCcw, Truck } from 'lucide-react';
+
+const benefits = [
+  { icon: Truck, title: 'Доставка 1–3 дні', text: 'Новою Поштою по всій Україні' },
+  { icon: PackageCheck, title: `Безкоштовно від ${FREE_DELIVERY_FROM} ₴`, text: 'Доставку оплачуємо ми' },
+  { icon: CreditCard, title: 'Оплата при отриманні', text: `Для замовлень до ${CARD_ONLY_FROM} ₴` },
+  { icon: RotateCcw, title: '14 днів на повернення', text: 'Якщо товар не підійшов' },
+];
+
+const banners = [
+  { src: '/images/banners/free-delivery.webp', alt: `Безкоштовна доставка від ${FREE_DELIVERY_FROM} грн`, href: '/delivery' },
+  { src: '/images/banners/borofone-discount.webp', alt: 'Знижка 5% на Borofone', href: '/brand/borofone' },
+];
 
 export const revalidate = 300;
 
@@ -73,176 +83,121 @@ export default async function GeneralPage() {
   ]);
 
   const featuredSections = [
-    {
-      title: 'Навушники',
-      categorySlug: 'category-naushniki',
-      subcategorySlug: 'category-bluetooth-stereo-garnituri-tws',
-      products: headphones,
-    },
-    {
-      title: 'Павербанки',
-      categorySlug: 'category-akkumulyatori-i-powerbank',
-      subcategorySlug: 'category-portativnie-batarei',
-      products: powerbanks,
-    },
-    {
-      title: 'USB кабелі',
-      categorySlug: 'category-zaryadki-i-kabeli',
-      subcategorySlug: 'category-lightning',
-      products: cables,
-    },
-    {
-      title: 'Бездротові зарядні пристрої',
-      categorySlug: 'category-zaryadki-i-kabeli',
-      subcategorySlug: 'category-besprovodnie-zaryadnie-ustroystva',
-      products: chargers,
-    },
-    {
-      title: 'Мишки',
-      categorySlug: 'category-kompyyuternaya-periferiya',
-      subcategorySlug: 'category-mishi',
-      products: mice,
-    },
-    {
-      title: 'Тримачі в авто',
-      categorySlug: 'category-avtomobilynaya-tematika',
-      subcategorySlug: 'category-avtomobilynie-derzhateli',
-      products: holders,
-    },
-    {
-      title: 'Колонки',
-      categorySlug: 'category-audio-i-video',
-      subcategorySlug: 'category-portativnie-kolonki',
-      products: speakers,
-    },
-    {
-      title: 'Смарт-годинники',
-      categorySlug: 'category-gadzheti',
-      subcategorySlug: 'category-umnie-chasi-i-fitnes-trekeri',
-      products: watches,
-    },
-    {
-      title: 'Чохли для iPhone',
-      categorySlug: 'category-chehli',
-      subcategorySlug: 'category-apple',
-      products: cases,
-    },
-    {
-      title: 'Плівки на екран',
-      categorySlug: 'category-zashtita-ekrana',
-      subcategorySlug: 'category-zashtitnie-stekla',
-      products: films,
-    },
+    { title: 'Навушники', subtitle: 'Звук, що завжди з тобою.', categorySlug: 'category-naushniki', subcategorySlug: 'category-bluetooth-stereo-garnituri-tws', products: headphones },
+    { title: 'Павербанки', subtitle: 'Заряд на весь день.', categorySlug: 'category-akkumulyatori-i-powerbank', subcategorySlug: 'category-portativnie-batarei', products: powerbanks },
+    { title: 'Кабелі', subtitle: 'Швидка зарядка і передача даних.', categorySlug: 'category-zaryadki-i-kabeli', subcategorySlug: 'category-lightning', products: cables },
+    { title: 'Бездротова зарядка', subtitle: 'Поклав — і заряджається.', categorySlug: 'category-zaryadki-i-kabeli', subcategorySlug: 'category-besprovodnie-zaryadnie-ustroystva', products: chargers },
+    { title: 'Чохли для iPhone', subtitle: 'Захист, який пасує.', categorySlug: 'category-chehli', subcategorySlug: 'category-apple', products: cases },
+    { title: 'Смарт-годинники', subtitle: 'Сповіщення та здоров’я на зап’ясті.', categorySlug: 'category-gadzheti', subcategorySlug: 'category-umnie-chasi-i-fitnes-trekeri', products: watches },
+    { title: 'Колонки', subtitle: 'Музика будь-де.', categorySlug: 'category-audio-i-video', subcategorySlug: 'category-portativnie-kolonki', products: speakers },
+    { title: 'Тримачі в авто', subtitle: 'Навігація перед очима.', categorySlug: 'category-avtomobilynaya-tematika', subcategorySlug: 'category-avtomobilynie-derzhateli', products: holders },
+    { title: 'Мишки', subtitle: 'Точність у кожному русі.', categorySlug: 'category-kompyyuternaya-periferiya', subcategorySlug: 'category-mishi', products: mice },
+    { title: 'Захисне скло', subtitle: 'Екран без подряпин.', categorySlug: 'category-zashtita-ekrana', subcategorySlug: 'category-zashtitnie-stekla', products: films },
   ];
 
+  const [firstSections, restSections] = [featuredSections.slice(0, 4), featuredSections.slice(4)];
+
   return (
-    <>
-      <HomeHero />
+    <div className="space-y-16 sm:space-y-24">
+      <HomeHero products={trending} />
 
-      <main className="text-md flex flex-col md:flex-row gap-4 section-bottom w-full min-w-0">
-        <aside className="section-surface w-[300px] px-4 py-4 relative hidden md:block shrink-0">
-          <HomeSectionTitle title="Каталог" />
-          <CategoryList />
-        </aside>
-
-        <section className="flex w-full min-w-0 gap-5 items-stretch max-[890px]:flex-col max-[890px]:gap-4 section-bottom flex-1">
-          <div className="section-surface basis-1/2 flex-1 flex flex-col min-h-[360px] min-w-0 max-[890px]:basis-full p-4 sm:p-5">
-            <HomeSectionTitle title="Популярні категорії" />
-            <CategoryGrid items={popularItems} variant="home" className="flex-1" />
-            <div className="sr-only">
-              <h1>Інтернет-магазин мобільних аксесуарів — MobiStuff</h1>
-            </div>
-          </div>
-          <div className="section-surface-alt basis-1/2 flex-1 flex flex-col h-full min-w-0 max-[890px]:basis-full p-4 sm:p-5">
-            <HomeSectionTitle title="Трендові товари" subtitle="Хіти продажів цього сезону" />
-            <div className="flex-1 min-h-[300px] max-[890px]:h-[260px] max-[890px]:flex-none">
-              <TrendingSlider products={trending} />
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <main>
-        <section className="section-bottom section-surface p-4 sm:p-6">
-          <HomeSectionTitle title="Актуальні пропозиції" subtitle="Акції та спеціальні умови" />
-          <PromoSlider />
-        </section>
-
-        <section className="section-bottom">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-50 via-white to-green-50 border border-green-100 px-6 py-8 sm:px-10 sm:py-10 text-center">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-green-200/30 rounded-full blur-2xl" />
-            <p className="relative text-gray-700 max-w-3xl mx-auto text-base sm:text-lg leading-relaxed">
-              <strong className="text-gray-900">MobiStuff</strong> — інтернет-магазин мобільних
-              аксесуарів. Павербанки, зарядні пристрої, навушники, кабелі, чохли, смарт-годинники
-              та інші гаджети з доставкою по всій Україні. Якість, гарантія, швидка доставка.
-            </p>
-            <div className="relative max-w-2xl mx-auto mt-5">
-              <PaymentRulesNote />
-            </div>
-            <div className="relative flex flex-wrap justify-center gap-3 mt-6">
-              <Link
-                href="/delivery"
-                className="text-sm font-medium text-green-700 hover:text-green-800 hover:underline"
-              >
-                Доставка і оплата
-              </Link>
-              <span className="text-gray-300">•</span>
-              <Link
-                href="/returns"
-                className="text-sm font-medium text-green-700 hover:text-green-800 hover:underline"
-              >
-                Повернення
-              </Link>
-              <span className="text-gray-300">•</span>
-              <Link
-                href="/about"
-                className="text-sm font-medium text-green-700 hover:text-green-800 hover:underline"
-              >
-                Про нас
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-bottom section-surface-alt p-4 sm:p-6">
-          <HomeSectionTitle title="Популярні бренди" />
-          <BrandList />
-        </section>
-
-        {featuredSections.map((section, index) => (
-          <section
-            key={section.title}
-            className={`section-bottom p-4 sm:p-6 ${
-              index % 2 === 0 ? 'section-surface' : 'section-surface-alt'
-            }`}
-          >
-            <div className="w-full">
-              <OffersSection
-                title={section.title}
-                products={section.products}
-                categorySlug={section.categorySlug}
-                subcategorySlug={section.subcategorySlug}
-              />
-            </div>
-          </section>
-        ))}
-
-        <section className="section-bottom">
-          <div className="section-surface-dark flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-8 sm:px-10">
+      {/* Переваги магазину */}
+      <section aria-label="Переваги" className="-mt-6 grid grid-cols-2 gap-x-4 gap-y-6 px-1 sm:-mt-12 lg:grid-cols-4">
+        {benefits.map(({ icon: Icon, title, text }) => (
+          <div key={title} className="flex items-start gap-3">
+            <Icon className="mt-0.5 h-6 w-6 shrink-0 text-accent" strokeWidth={1.6} />
             <div>
-              <h2 className="text-lg sm:text-xl font-bold">Знайшли потрібний аксесуар?</h2>
-              <p className="text-gray-300 text-sm mt-1">{storePolicies.paymentSummary}</p>
+              <p className="text-[15px] font-semibold leading-tight">{title}</p>
+              <p className="mt-1 text-[13px] text-ink-2">{text}</p>
             </div>
-            <Link
-              href="/category/category-zaryadki-i-kabeli/category-lightning"
-              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition shrink-0"
-            >
-              До каталогу
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
+        ))}
+      </section>
+
+      {/* Популярні категорії — bento */}
+      <section>
+        <HomeSectionTitle title="Популярне" subtitle="Те, що беруть найчастіше." href="/catalog" linkLabel="Весь каталог" />
+        <div className="grid auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[210px] sm:gap-4 md:grid-cols-4">
+          {popularItems.map((item, i) => (
+            <Link
+              key={item.id}
+              href={`/category/${item.categorySlug}/${item.subcategorySlug}`}
+              className={`group relative overflow-hidden rounded-[22px] bg-ink ${
+                i === 0 ? 'col-span-2 row-span-2' : ''
+              } ${i === 3 ? 'md:col-span-2' : ''}`}
+            >
+              <ProductImage
+                src={item.image}
+                alt={item.title}
+                fill
+                sizes={i === 0 ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 25vw'}
+                className="object-cover opacity-90 transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.06]"
+                priority={i < 2}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/0 to-black/0" />
+              <div className="absolute inset-x-0 top-0 p-4 sm:p-6">
+                <h3 className={`font-semibold tracking-tight text-white ${i === 0 ? 'text-2xl sm:text-4xl' : 'text-lg sm:text-xl'}`}>
+                  {item.title}
+                </h3>
+                <span className="mt-1 inline-flex items-center text-[13px] text-white/80 transition-colors group-hover:text-white sm:text-sm">
+                  Дивитися
+                  <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {trending.length > 0 && (
+        <section id="hits" className="scroll-mt-24">
+          <HomeSectionTitle title="Хіти продажу" subtitle="Найпопулярніше цього сезону." />
+          <ProductShelf products={trending} priorityCount={2} />
         </section>
-      </main>
-    </>
+      )}
+
+      {firstSections.map((section) => (
+        <OffersSection key={section.title} {...section} />
+      ))}
+
+      {/* Акції */}
+      <section>
+        <HomeSectionTitle title="Акції" subtitle="Вигідніше, ніж зазвичай." />
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          {banners.map((b, i) => (
+            <Link key={b.src} href={b.href} className="tile tile-hover relative block aspect-[16/9] overflow-hidden">
+              <Image src={b.src} alt={b.alt} fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" loading={i === 0 ? 'eager' : 'lazy'} />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {restSections.map((section) => (
+        <OffersSection key={section.title} {...section} />
+      ))}
+
+      <section>
+        <HomeSectionTitle title="Бренди" subtitle="Перевірені виробники, офіційний товар." />
+        <BrandList />
+      </section>
+
+      {/* Про магазин + CTA */}
+      <section className="panel overflow-hidden px-6 py-12 text-center sm:px-12 sm:py-20">
+        <h2 className="display-lg mx-auto max-w-3xl">Усе для телефону — в одному місці.</h2>
+        <p className="lead mx-auto mt-5 max-w-2xl">
+          MobiStuff — інтернет-магазин мобільних аксесуарів. Павербанки, зарядні пристрої, навушники, кабелі,
+          чохли та смарт-годинники з доставкою по всій Україні та гарантією якості.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <Link href="/catalog" className="btn-primary btn-lg">
+            Обрати аксесуар
+          </Link>
+          <Link href="/delivery" className="link-more text-[17px]">
+            Доставка і оплата
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

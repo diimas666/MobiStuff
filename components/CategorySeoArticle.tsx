@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import HomeSectionTitle from '@/components/HomeSectionTitle';
 import { getCategorySeoArticle } from '@/lib/getCategorySeoArticle';
 
 interface CategorySeoArticleProps {
@@ -36,34 +35,23 @@ export default function CategorySeoArticle({
   };
 
   return (
-    <section className="mt-10 mb-6">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+    <section className="mt-20 grid gap-10 border-t border-line-soft pt-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      <article className="rounded-2xl border border-gray-100 bg-white p-5 sm:p-8 shadow-sm">
-        <HomeSectionTitle
-          title={article.title}
-          subtitle={`Корисна інформація про ${subcategoryTitle.toLowerCase()}`}
-        />
-
-        <p className="text-gray-600 text-sm sm:text-base leading-relaxed mt-4">
-          {article.intro}
-        </p>
+      <article className="max-w-[68ch]">
+        <h2 className="display-md">{article.title}</h2>
+        <p className="mt-5 text-[16px] leading-relaxed text-ink-2">{article.intro}</p>
 
         {article.sections.map((section) => (
-          <div key={section.heading} className="mt-6">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-              {section.heading}
-            </h3>
+          <div key={section.heading} className="mt-8">
+            <h3 className="mb-2 text-lg font-semibold tracking-tight">{section.heading}</h3>
             {section.paragraphs.map((p) => (
-              <p key={p} className="text-gray-600 text-sm leading-relaxed mb-2">
+              <p key={p} className="mb-3 text-[15px] leading-relaxed text-ink-2">
                 {p}
               </p>
             ))}
             {section.list && section.list.length > 0 && (
-              <ul className="list-disc pl-5 space-y-1.5 text-sm text-gray-600">
+              <ul className="list-disc space-y-1.5 pl-5 text-[15px] text-ink-2 marker:text-ink-3">
                 {section.list.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
@@ -71,48 +59,31 @@ export default function CategorySeoArticle({
             )}
           </div>
         ))}
-
-        {article.faq.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
-              Часті питання
-            </h3>
-            <dl className="space-y-4">
-              {article.faq.map((item) => (
-                <div key={item.question}>
-                  <dt className="font-medium text-gray-900 text-sm sm:text-base">
-                    {item.question}
-                  </dt>
-                  <dd className="text-gray-600 text-sm mt-1 leading-relaxed">{item.answer}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        )}
-
-        <div className="mt-6 flex flex-wrap gap-3 text-sm">
-          <Link
-            href="/delivery"
-            className="text-green-600 hover:text-green-700 font-medium hover:underline"
-          >
-            Доставка і оплата
-          </Link>
-          <span className="text-gray-300">•</span>
-          <Link
-            href="/returns"
-            className="text-green-600 hover:text-green-700 font-medium hover:underline"
-          >
-            Повернення
-          </Link>
-          <span className="text-gray-300">•</span>
-          <Link
-            href="/contacts"
-            className="text-green-600 hover:text-green-700 font-medium hover:underline"
-          >
-            Контакти
-          </Link>
-        </div>
       </article>
+
+      <aside className="lg:sticky lg:top-24 lg:self-start">
+        {article.faq.length > 0 && (
+          <>
+            <h3 className="mb-4 text-xl font-semibold tracking-tight">Часті питання</h3>
+            <div className="divide-y divide-line-soft rounded-[22px] bg-white px-5">
+              {article.faq.map((item) => (
+                <details key={item.question} className="group py-4">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-[15px] font-medium">
+                    {item.question}
+                    <span className="mt-0.5 text-lg leading-none text-ink-3 transition-transform duration-300 group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="mt-2 text-[14px] leading-relaxed text-ink-2">{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </>
+        )}
+        <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <Link href="/delivery" className="link-more">Доставка і оплата</Link>
+          <Link href="/returns" className="link-more">Повернення</Link>
+          <Link href="/contacts" className="link-more">Контакти</Link>
+        </div>
+      </aside>
     </section>
   );
 }
