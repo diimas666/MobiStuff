@@ -7,6 +7,7 @@ interface PriceRangeSliderProps {
   maxValue: number;
   onChange: (min: number, max: number) => void;
   variant?: 'light' | 'dark';
+  hideLabels?: boolean;
 }
 
 export default function PriceRangeSlider({
@@ -16,6 +17,7 @@ export default function PriceRangeSlider({
   maxValue,
   onChange,
   variant = 'light',
+  hideLabels = false,
 }: PriceRangeSliderProps) {
   const isDark = variant === 'dark';
   const range = Math.max(max - min, 1);
@@ -32,14 +34,14 @@ export default function PriceRangeSlider({
 
   return (
     <div className="w-full">
-      <div
+      {!hideLabels && <div
         className={`flex justify-between text-sm font-medium mb-2 ${
           isDark ? 'text-white' : 'text-ink'
         }`}
       >
         <span>{minValue} ₴</span>
         <span>{maxValue} ₴</span>
-      </div>
+      </div>}
 
       <div className="relative h-6">
         <div

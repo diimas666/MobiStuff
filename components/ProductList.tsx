@@ -6,10 +6,13 @@ interface Props {
   products: Product[];
   colVariant?: '1' | '2';
   wide?: boolean;
+  /** Власний порожній стан */
+  empty?: React.ReactNode;
 }
 
-export default function ProductList({ products, colVariant = '2', wide = false }: Props) {
+export default function ProductList({ products, colVariant = '2', wide = false, empty }: Props) {
   if (products.length === 0) {
+    if (empty) return <>{empty}</>;
     return (
       <div className="panel flex flex-col items-center px-6 py-16 text-center">
         <SearchX className="mb-4 h-10 w-10 text-ink-3" strokeWidth={1.5} />

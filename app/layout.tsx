@@ -99,7 +99,7 @@ export default function RootLayout({
                 <NavigationProgress />
                 <AnalyticsPageView />
               </Suspense>
-              <main className="mt-[60px] flex-1 pt-5 sm:mt-[64px] sm:pt-8">
+              <main className="mt-[60px] flex-1 overflow-x-clip pt-5 sm:mt-[64px] sm:pt-8">
                 <Container>{children}</Container>
               </main>
               <Footer />

@@ -565,3 +565,15 @@ body {
 .search-panel input:focus-visible {
   outline: none;
 }
+
+/* Поповери, чипи фільтрів */
+.pop-in {
+  animation: pop-in 0.22s var(--ease-out) both;
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop-in { animation: none; }
+}

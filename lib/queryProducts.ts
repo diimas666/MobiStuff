@@ -71,8 +71,14 @@ export async function queryProductFacets(category: string, subcategory: string) 
   ].sort((a, b) => a.localeCompare(b, 'uk'));
   const prices = products.map((p) => p.price).filter((n) => typeof n === 'number' && n > 0);
 
+  const brandCounts: Record<string, number> = {};
+  products.forEach((p) => {
+    if (p.brand && p.brand.trim()) brandCounts[p.brand] = (brandCounts[p.brand] ?? 0) + 1;
+  });
+
   return {
     brands,
+    brandCounts,
     phoneModels: subcategory === GLASS_SUBCATEGORY_SLUG ? getPhoneModelsFromTitles(products.map((p) => p.title)) : [],
     minPrice: prices.length ? Math.floor(Math.min(...prices)) : 0,
     maxPrice: prices.length ? Math.ceil(Math.max(...prices)) : 5000,

@@ -2,7 +2,10 @@ import { catalogCategory } from '@/data/catalogCategory';
 import { notFound } from 'next/navigation';
 // import ProductCard from '@/components/ProductCard';
 import ProductList from '@/components/ProductList';
-import FilterBar from '@/components/FilterBar';
+import CatalogFilters from '@/components/catalog/CatalogFilters';
+import ActiveFilters, { FilteredEmpty } from '@/components/catalog/ActiveFilters';
+import SortMenu from '@/components/catalog/SortMenu';
+import { FilterProvider, FilterResults } from '@/components/catalog/FilterContext';
 import CategorySeoArticle from '@/components/CategorySeoArticle';
 import CategoryList from '@/components/CategoryList';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -113,15 +116,10 @@ export default async function SubcategoryPage({
   const paginatedProducts = allProducts.slice(startIndex, endIndex);
   const totalPages = Math.ceil(allProducts.length / ITEMS_PER_PAGE);
 
-  const activeCount = [brand, phone, minPrice || maxPrice, isTrending, onSale, sort].filter(Boolean).length;
+  const activeCount = [brand, phone, minPrice || maxPrice, isTrending, onSale].filter(Boolean).length;
   const total = facets?.count ?? allProducts.length;
-  const filterBar = (
-    <FilterBar
-      availableBrands={facets.brands}
-      availablePhoneModels={facets.phoneModels}
-      priceBounds={{ min: facets.minPrice, max: facets.maxPrice }}
-    />
-  );
+  const filterBar = <CatalogFilters facets={facets} />;
+  const found = allProducts.length;
   const colsHref = (c: '1' | '2') => `/category/${slug}/${sub}?page=${currentPage}&cols=${c}${queryString}`;
 
   return (
@@ -166,57 +164,76 @@ export default async function SubcategoryPage({
         </nav>
       )}
 
-      {/* Панель інструментів (мобільний) */}
-      <div className="mb-4 flex items-center justify-between gap-2 md:hidden">
-        <FilterSheet activeCount={activeCount}>{filterBar}</FilterSheet>
-        <div className="flex rounded-full bg-white p-1" role="group" aria-label="Вигляд сітки">
-          <Link
-            href={colsHref('1')}
-            aria-label="Один товар у ряд"
-            aria-pressed={colVariant === '1'}
-            className={`flex h-8 w-9 items-center justify-center rounded-full transition ${colVariant === '1' ? 'bg-ink text-white' : 'text-ink-2'}`}
-          >
-            <Square className="h-4 w-4" />
-          </Link>
-          <Link
-            href={colsHref('2')}
-            aria-label="Два товари в ряд"
-            aria-pressed={colVariant === '2'}
-            className={`flex h-8 w-9 items-center justify-center rounded-full transition ${colVariant === '2' ? 'bg-ink text-white' : 'text-ink-2'}`}
-          >
-            <LayoutGrid className="h-4 w-4" />
-          </Link>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr] lg:gap-8">
-        <aside className="hidden md:block">
-          <div className="sticky top-24 space-y-4">
-            <div className="panel p-5">
-              <h2 className="mb-4 text-lg font-semibold tracking-tight">Фільтри</h2>
-              {filterBar}
+      <FilterProvider>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr] lg:gap-10">
+          <aside className="hidden md:block">
+            <div className="no-scrollbar sticky top-[88px] max-h-[calc(100vh-108px)] space-y-4 overflow-y-auto pb-4">
+              <div className="panel p-5">{filterBar}</div>
+              <details className="panel group p-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] font-semibold">
+                  Усі категорії
+                  <span className="text-ink-3 transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <div className="mt-4">
+                  <CategoryList />
+                </div>
+              </details>
             </div>
-            <details className="panel group p-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] font-semibold">
-                Усі категорії
-                <span className="text-ink-3 transition-transform group-open:rotate-45">+</span>
-              </summary>
-              <div className="mt-4">
-                <CategoryList />
-              </div>
-            </details>
-          </div>
-        </aside>
+          </aside>
 
-        <div className="min-w-0">
-          <ProductList products={paginatedProducts} colVariant={colVariant} />
-          <Pagination
-            page={currentPage}
-            totalPages={totalPages}
-            hrefFor={(p) => `/category/${slug}/${sub}?page=${p}&cols=${colVariant}${queryString}`}
-          />
+          <div className="min-w-0">
+            {/* Панель інструментів */}
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <FilterSheet activeCount={activeCount} resultCount={found}>
+                  {filterBar}
+                </FilterSheet>
+                <p className="hidden text-[15px] text-ink-2 md:block">
+                  {found} {plural(found, productForms)}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <SortMenu />
+                <div className="flex rounded-full bg-white p-1 md:hidden" role="group" aria-label="Вигляд сітки">
+                  <Link
+                    href={colsHref('1')}
+                    scroll={false}
+                    aria-label="Один товар у ряд"
+                    aria-pressed={colVariant === '1'}
+                    className={`flex h-8 w-9 items-center justify-center rounded-full transition ${colVariant === '1' ? 'bg-ink text-white' : 'text-ink-2'}`}
+                  >
+                    <Square className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href={colsHref('2')}
+                    scroll={false}
+                    aria-label="Два товари в ряд"
+                    aria-pressed={colVariant === '2'}
+                    className={`flex h-8 w-9 items-center justify-center rounded-full transition ${colVariant === '2' ? 'bg-ink text-white' : 'text-ink-2'}`}
+                  >
+                    <LayoutGrid className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <ActiveFilters />
+
+            <FilterResults>
+              <ProductList
+                products={paginatedProducts}
+                colVariant={colVariant}
+                empty={<FilteredEmpty hasFilters={activeCount > 0} />}
+              />
+              <Pagination
+                page={currentPage}
+                totalPages={totalPages}
+                hrefFor={(p) => `/category/${slug}/${sub}?page=${p}&cols=${colVariant}${queryString}`}
+              />
+            </FilterResults>
+          </div>
         </div>
-      </div>
+      </FilterProvider>
 
       {currentPage === 1 && (
         <CategorySeoArticle
