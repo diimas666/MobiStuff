@@ -37,17 +37,9 @@ export default function ThankYouPage() {
 
     try {
       const parsed = JSON.parse(stored);
+      // Замовлення вже збережене сервером у /api/checkout — тут лише показуємо підсумок
       setOrder(parsed);
-
-      fetch('/api/saveOrder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parsed),
-      })
-        .catch((err) => {
-          console.error('❌ Помилка збереження замовлення:', err);
-        })
-        .finally(() => setIsSaving(false));
+      setIsSaving(false);
     } catch (err) {
       console.error('❌ JSON parse error:', err);
       setIsSaving(false);
@@ -59,6 +51,7 @@ export default function ThankYouPage() {
     if (!order || purchaseTrackedRef.current || typeof order.total !== 'number') return;
     purchaseTrackedRef.current = true;
     trackPurchase({
+      orderId: typeof order.orderId === 'string' ? order.orderId : undefined,
       createdAt: order.createdAt,
       phone: order.phone,
       total: order.total,
@@ -106,6 +99,12 @@ export default function ThankYouPage() {
       </p>
 
       <dl className="panel rise mt-10 divide-y divide-line-soft px-6 text-left text-[15px]" style={{ '--d': '540ms' } as React.CSSProperties}>
+        {typeof order.orderId === 'string' && order.orderId ? (
+          <div className="flex justify-between gap-4 py-4">
+            <dt className="text-ink-2">Номер замовлення</dt>
+            <dd className="font-semibold tabular-nums">{order.orderId}</dd>
+          </div>
+        ) : null}
         <div className="flex justify-between gap-4 py-4">
           <dt className="text-ink-2">Сума</dt>
           <dd className="font-semibold">{formatPrice(order.total)}</dd>

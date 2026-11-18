@@ -36,6 +36,7 @@ interface Order {
   total: number;
   items?: OrderItem[];
   createdAt: string;
+  utm?: Record<string, string>;
 }
 
 export default function OrdersPage() {
@@ -51,8 +52,9 @@ export default function OrdersPage() {
   const fetchOrders = () => {
     setLoading(true);
     fetch('/api/admin/getOrders')
-      .then((res) => res.json())
-      .then(setOrders)
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setOrders(Array.isArray(data) ? data : []))
+      .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   };
 
@@ -192,6 +194,12 @@ export default function OrdersPage() {
                         <div className="text-gray-600 mt-1">{order.phone}</div>
                         {order.email && (
                           <div className="text-gray-500 text-xs mt-0.5">{order.email}</div>
+                        )}
+                        {order.utm && (
+                          <div className="mt-1 inline-block rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">
+                            📣 {[order.utm.utm_source, order.utm.utm_campaign, order.utm.utm_content].filter(Boolean).join(' / ') ||
+                              (order.utm.fbclid ? 'facebook' : order.utm.gclid ? 'google' : order.utm.ttclid ? 'tiktok' : 'реклама')}
+                          </div>
                         )}
                         {order.comment && (
                           <div className="text-gray-500 text-xs mt-1 italic">

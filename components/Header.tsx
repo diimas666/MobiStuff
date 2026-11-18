@@ -1,97 +1,109 @@
 'use client';
-import { useState } from 'react';
-import { Search, Heart, ShoppingCart } from 'lucide-react';
+
+import { useEffect, useState } from 'react';
+import { Search, Heart, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import SearchBar from './SearchBar';
 import Container from './Container';
 import { useMobileSidebar } from '@/context/MobileSidebarContext';
 import MobileSidebar from './MobileSidebar';
 import FavoritesCountBadge from '@/components/FavoritesCountBadge';
 import { useCart } from '@/context/CartContext';
+import { SITE_NAME } from '@/lib/site';
+
+const NAV = [
+  { label: 'Каталог', href: '/catalog' },
+  { label: 'Навушники', href: '/category/category-naushniki/category-bluetooth-stereo-garnituri-tws' },
+  { label: 'Зарядки', href: '/category/category-zaryadki-i-kabeli/category-besprovodnie-zaryadnie-ustroystva' },
+  { label: 'Павербанки', href: '/category/category-akkumulyatori-i-powerbank/category-portativnie-batarei' },
+  { label: 'Годинники', href: '/category/category-gadzheti/category-umnie-chasi-i-fitnes-trekeri' },
+  { label: 'Колонки', href: '/category/category-audio-i-video/category-portativnie-kolonki' },
+  { label: 'Акції', href: '/sale', accent: true },
+];
+
+function Logo() {
+  const name = SITE_NAME;
+  const split = name === 'MobiStuff' ? ['Mobi', 'Stuff'] : [name, ''];
+  return (
+    <Link href="/" className="shrink-0 text-[21px] font-semibold tracking-[-0.03em] text-ink sm:text-[22px]" aria-label={`${name} — на головну`}>
+      {split[0]}
+      <span className="text-accent">{split[1]}</span>
+    </Link>
+  );
+}
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { open } = useMobileSidebar();
   const { cart } = useCart();
+  const pathname = usePathname();
   const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const showLogo =
-    !isSearchOpen ||
-    (typeof window !== 'undefined' && window.innerWidth >= 768);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Закриваємо пошук при переході між сторінками
+  useEffect(() => setIsSearchOpen(false), [pathname]);
 
   return (
     <>
-      <header className="glass-header">
+      <header className={`site-header ${scrolled || isSearchOpen ? 'is-scrolled' : ''}`}>
         <Container>
-          <div className="flex items-center justify-between py-3.5 relative">
-            <Link
-              className="absolute -bottom-1 left-0 opacity-0 hover:opacity-100 transition-opacity"
-              href="/admin"
-            >
-              <span className="text-[9px] text-gray-500 hover:text-gray-400">
-                admin
-              </span>
-            </Link>
+          <div className="flex h-[60px] items-center justify-between gap-4 sm:h-[64px]">
+            <Logo />
 
-            {showLogo && (
-              <Link href="/" className="shrink-0 group">
-                <span className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                  Mobi
-                  <span className="text-green-400 group-hover:text-green-300 transition-colors">
-                    Stuff
-                  </span>
-                </span>
-              </Link>
-            )}
+            <nav aria-label="Основна навігація" className="hidden flex-1 justify-center lg:flex">
+              <ul className="flex items-center gap-1">
+                {NAV.map((item) => {
+                  const active = pathname === item.href || (item.href !== '/catalog' && pathname.startsWith(item.href));
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className={`rounded-full px-3 py-1.5 text-[13px] transition-colors ${
+                          active ? 'bg-ink/[0.06] text-ink' : item.accent ? 'text-sale hover:bg-sale/[0.06]' : 'text-ink-2 hover:text-ink'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
 
-            <div
-              className={`flex items-center gap-2 ${
-                isSearchOpen ? 'flex-1 justify-between md:justify-end' : ''
-              }`}
-            >
-              {isSearchOpen && (
-                <div className="w-full max-w-[90vw] sm:max-w-[500px] md:max-w-[400px] lg:max-w-[600px] flex-1">
-                  <SearchBar setIsSearchOpen={setIsSearchOpen} />
-                </div>
-              )}
-
+            <div className="flex items-center gap-1 sm:gap-1.5">
               <button
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="glass-icon"
+                type="button"
+                onClick={() => setIsSearchOpen((v) => !v)}
+                className={`hdr-icon ${isSearchOpen ? 'bg-ink/[0.06]' : ''}`}
                 aria-label="Пошук"
+                aria-expanded={isSearchOpen}
               >
-                <Search className="glass-icon-svg min-w-[20px]" />
+                <Search className="h-[19px] w-[19px]" strokeWidth={1.9} />
               </button>
-              <Link
-                href="/favorites"
-                className="relative glass-icon min-w-[40px]"
-                aria-label="Обране"
-              >
-                <Heart className="glass-icon-svg" />
+              <Link href="/favorites" className="hdr-icon relative" aria-label="Обране">
+                <Heart className="h-[19px] w-[19px]" strokeWidth={1.9} />
                 <FavoritesCountBadge />
               </Link>
-              <Link
-                href="/cart"
-                className="relative glass-icon min-w-[40px]"
-                aria-label="Кошик"
-              >
-                <ShoppingCart className="glass-icon-svg" />
-                {totalQuantity > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center px-1 rounded-full z-10 ring-2 ring-gray-900">
-                    {totalQuantity}
-                  </span>
-                )}
+              <Link href="/cart" className="hdr-icon relative" aria-label={`Кошик${totalQuantity ? `, товарів: ${totalQuantity}` : ''}`}>
+                <ShoppingBag className="h-[19px] w-[19px]" strokeWidth={1.9} />
+                {totalQuantity > 0 && <span className="hdr-badge">{totalQuantity}</span>}
               </Link>
-              <button
-                onClick={open}
-                className="md:hidden menu-hamburger"
-                aria-label="Меню"
-              >
-                Menu
+              <button type="button" onClick={open} className="hdr-menu lg:hidden" aria-label="Відкрити меню">
+                Меню
               </button>
             </div>
           </div>
         </Container>
+
+        {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} />}
       </header>
       <MobileSidebar />
     </>

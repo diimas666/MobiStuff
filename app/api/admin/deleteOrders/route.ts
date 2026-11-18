@@ -1,8 +1,10 @@
+import { checkAdminAuth, unauthorizedResponse } from '@/lib/adminAuth';
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../../models/Order';
 
 export async function DELETE(req: NextRequest) {
+  if (!checkAdminAuth(req)) return unauthorizedResponse();
   await dbConnect();
   const { ids } = await req.json();
 

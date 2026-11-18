@@ -1,3 +1,4 @@
+import { revalidateStore } from '@/lib/revalidateStore';
 // ✅ /app/api/admin/deleteProduct/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
@@ -22,6 +23,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Товар не знайдено' }, { status: 404 });
     }
 
+    revalidateStore();
     return NextResponse.json({ message: 'Товар видалено' });
   } catch {
     return NextResponse.json(

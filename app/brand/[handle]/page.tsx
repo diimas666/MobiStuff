@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { absoluteUrl } from '@/lib/site';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -26,11 +27,15 @@ export async function generateMetadata({
     (b) => b.handle.toLowerCase() === handle.toLowerCase()
   );
 
-  if (!brand) return { title: 'Бренд не знайдено' };
+  if (!brand) return { title: 'Бренд не знайдено', robots: { index: false } };
 
+  const url = absoluteUrl(`/brand/${brand.handle}`);
+  const description = (brand.description?.[0] || `Оригінальні аксесуари ${brand.title} з доставкою по Україні.`).slice(0, 160);
   return {
-    title: `${brand.title} – товари бренду | MobiStuff`,
-    description: brand.description?.[0] || `Купити товари ${brand.title} в MobiStuff`,
+    title: `${brand.title} — купити аксесуари бренду`,
+    description,
+    alternates: { canonical: url },
+    openGraph: { url, title: `${brand.title} — аксесуари`, description },
   };
 }
 

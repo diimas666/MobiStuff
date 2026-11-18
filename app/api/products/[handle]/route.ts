@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const product = await Product.findOne({ handle });
+    const product = await Product.findOne({ handle }).lean();
     if (!product) {
       return NextResponse.json({ error: 'Товар не знайдено' }, { status: 404 });
     }

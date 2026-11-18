@@ -1,26 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
-import { normalizeOrderPayload } from '@/lib/normalizeOrderPayload';
+import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/lib/orders';
 
 export async function POST(req: NextRequest) {
   try {
+    const raw = await req.json().catch(() => null);
+    if (!raw || typeof raw !== 'object') {
+      return NextResponse.json({ message: 'Некоректні дані' }, { status: 400 });
+    }
+
     await dbConnect();
-    const raw = await req.json();
-    const order = normalizeOrderPayload(raw);
+    const order = await buildOrderFromPayload(raw as Record<string, unknown>);
 
-    const newOrder = new Order(order);
-    await newOrder.save();
+    // Захист від подвійного натискання: те саме замовлення не створюємо двічі
+    const existing = await Order.findOne({ orderId: order.orderId, phone: order.phone }).select('_id').lean();
+    if (!existing) {
+      await Order.create(order);
+      await notifyTelegram(order);
+    }
 
-    // Отправляем в Telegram
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/notifyTelegram`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(order),
+    return NextResponse.json({
+      success: true,
+      orderId: order.orderId,
+      total: order.total,
+      paymentMethod: order.paymentMethod,
     });
-
-    return NextResponse.json({ success: true });
   } catch (error) {
+    if (error instanceof OrderValidationError) {
+      return NextResponse.json({ message: error.message }, { status: 400 });
+    }
     console.error('❌ Checkout error:', error);
     return NextResponse.json({ message: 'Помилка сервера' }, { status: 500 });
   }

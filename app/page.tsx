@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 import Link from 'next/link';
 import Image from 'next/image';
 import { popularItems } from '@/data/popularAndTrending';
@@ -7,6 +8,8 @@ import OffersSection from '@/components/OffersSection.client';
 import ProductShelf from '@/components/ProductShelf';
 import { getProductsByCategory } from '@/lib/getProductsByCategory';
 import { getTrendingProducts } from '@/lib/getTrendingProducts';
+import { getFeatured, getNewArrivals, getPromotions, getSaleProducts } from '@/lib/storefront';
+import PromoCards from '@/components/PromoCards';
 import HomeHero from '@/components/HomeHero';
 import HomeSectionTitle from '@/components/HomeSectionTitle';
 import ProductImage from '@/components/ProductImage';
@@ -28,34 +31,24 @@ const banners = [
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Купити аксесуари для телефону в Україні | MobiStuff',
+  title: { absolute: `Аксесуари для телефону — купити в Україні | ${SITE_NAME}` },
   description:
-    'Широкий вибір: павербанки, навушники, зарядки, кабелі, смарт-годинники, чохли та інше. Якісні аксесуари за доступними цінами. Доставка по Україні.',
-  keywords: [
-    'аксесуари для телефону',
-    'павербанк купити',
-    'навушники bluetooth',
-    'кабель lightning',
-    'смарт годинник',
-    'аксесуари Київ',
-    'чохол iPhone',
-    'зарядне бездротове',
-  ],
+    'Навушники, павербанки, зарядки, кабелі, смарт-годинники, чохли та захисне скло. Доставка Новою Поштою 1–3 дні, оплата при отриманні, 14 днів на повернення.',
+  alternates: { canonical: SITE_URL },
   openGraph: {
-    title: 'Купити аксесуари для телефону в Україні | MobiStuff',
-    description:
-      'Найкращі пропозиції на аксесуари: зарядки, кабелі, павербанки, чохли, навушники та інше. Вибір і доставка по всій Україні.',
-    url: 'https://mobistuff.shop',
-    siteName: 'MobiStuff',
-    locale: 'uk_UA',
-    type: 'website',
-  },
-  alternates: {
-    canonical: 'https://mobistuff.shop',
+    url: SITE_URL,
+    title: `Аксесуари для телефону — ${SITE_NAME}`,
+    description: 'Зарядки, кабелі, павербанки, навушники та інше з доставкою по всій Україні за 1–3 дні.',
   },
 };
 
 export default async function GeneralPage() {
+  const [promotions, sale, fresh, featured] = await Promise.all([
+    getPromotions(),
+    getSaleProducts(12),
+    getNewArrivals(12),
+    getFeatured(6),
+  ]);
   const [
     trending,
     headphones,
@@ -70,16 +63,16 @@ export default async function GeneralPage() {
     films,
   ] = await Promise.all([
     getTrendingProducts(),
-    getProductsByCategory('category-naushniki', 'category-bluetooth-stereo-garnituri-tws'),
-    getProductsByCategory('category-akkumulyatori-i-powerbank', 'category-portativnie-batarei'),
-    getProductsByCategory('category-zaryadki-i-kabeli', 'category-lightning'),
-    getProductsByCategory('category-zaryadki-i-kabeli', 'category-besprovodnie-zaryadnie-ustroystva'),
-    getProductsByCategory('category-kompyyuternaya-periferiya', 'category-mishi'),
-    getProductsByCategory('category-avtomobilynaya-tematika', 'category-avtomobilynie-derzhateli'),
-    getProductsByCategory('category-audio-i-video', 'category-portativnie-kolonki'),
-    getProductsByCategory('category-gadzheti', 'category-umnie-chasi-i-fitnes-trekeri'),
-    getProductsByCategory('category-chehli', 'category-apple'),
-    getProductsByCategory('category-zashtita-ekrana', 'category-zashtitnie-stekla'),
+    getProductsByCategory('category-naushniki', 'category-bluetooth-stereo-garnituri-tws', 12),
+    getProductsByCategory('category-akkumulyatori-i-powerbank', 'category-portativnie-batarei', 12),
+    getProductsByCategory('category-zaryadki-i-kabeli', 'category-lightning', 12),
+    getProductsByCategory('category-zaryadki-i-kabeli', 'category-besprovodnie-zaryadnie-ustroystva', 12),
+    getProductsByCategory('category-kompyyuternaya-periferiya', 'category-mishi', 12),
+    getProductsByCategory('category-avtomobilynaya-tematika', 'category-avtomobilynie-derzhateli', 12),
+    getProductsByCategory('category-audio-i-video', 'category-portativnie-kolonki', 12),
+    getProductsByCategory('category-gadzheti', 'category-umnie-chasi-i-fitnes-trekeri', 12),
+    getProductsByCategory('category-chehli', 'category-apple', 12),
+    getProductsByCategory('category-zashtita-ekrana', 'category-zashtitnie-stekla', 12),
   ]);
 
   const featuredSections = [
@@ -99,7 +92,8 @@ export default async function GeneralPage() {
 
   return (
     <div className="space-y-16 sm:space-y-24">
-      <HomeHero products={trending} />
+      {/* «Топ» з адмінки — на першому екрані; якщо не вибрано — хіти */}
+      <HomeHero products={featured.length >= 3 ? featured : trending} />
 
       {/* Переваги магазину */}
       <section aria-label="Переваги" className="-mt-6 grid grid-cols-2 gap-x-4 gap-y-6 px-1 sm:-mt-12 lg:grid-cols-4">
@@ -160,17 +154,35 @@ export default async function GeneralPage() {
         <OffersSection key={section.title} {...section} />
       ))}
 
-      {/* Акції */}
+      {/* Акції: банери з адмінки, інакше — статичні */}
       <section>
-        <HomeSectionTitle title="Акції" subtitle="Вигідніше, ніж зазвичай." />
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-          {banners.map((b, i) => (
-            <Link key={b.src} href={b.href} className="tile tile-hover relative block aspect-[16/9] overflow-hidden">
-              <Image src={b.src} alt={b.alt} fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" loading={i === 0 ? 'eager' : 'lazy'} />
-            </Link>
-          ))}
-        </div>
+        <HomeSectionTitle title="Акції" subtitle="Вигідніше, ніж зазвичай." href="/sale" linkLabel="Усі акції" />
+        {promotions.length > 0 ? (
+          <PromoCards promotions={promotions.slice(0, 6)} />
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            {banners.map((b, i) => (
+              <Link key={b.src} href={b.href} className="tile tile-hover relative block aspect-[16/9] overflow-hidden">
+                <Image src={b.src} alt={b.alt} fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" loading={i === 0 ? 'eager' : 'lazy'} />
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
+
+      {sale.length > 0 && (
+        <section>
+          <HomeSectionTitle title="Зараз зі знижкою" subtitle="Встигніть, поки є в наявності." href="/sale" />
+          <ProductShelf products={sale} />
+        </section>
+      )}
+
+      {fresh.length > 0 && (
+        <section>
+          <HomeSectionTitle title="Новинки" subtitle="Щойно в магазині." />
+          <ProductShelf products={fresh} />
+        </section>
+      )}
 
       {restSections.map((section) => (
         <OffersSection key={section.title} {...section} />

@@ -20,6 +20,7 @@ const OrderSchema = new mongoose.Schema(
     total: Number,
     items: Array,
     createdAt: String,
+    utm: { type: mongoose.Schema.Types.Mixed },
   },
   { timestamps: true }
 );

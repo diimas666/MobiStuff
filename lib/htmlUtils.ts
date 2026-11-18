@@ -2,7 +2,7 @@
 export function stripHtml(html: string): string {
   return html
     .replace(/<br\s*\/?>/gi, ' ')
-    .replace(/<\/p>/gi, ' ')
+    .replace(/<\/(p|li|div|h[1-6]|tr|td)>/gi, ' ')
     .replace(/<[^>]+>/g, '')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')

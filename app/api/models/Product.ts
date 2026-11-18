@@ -23,11 +23,12 @@ const ProductSchema = new mongoose.Schema(
     reviewsCount: Number,
     variants: [String],
     tags: [String],
-    mmaKey: { type: String, unique: true, sparse: true },
-    mmaSlug: String,
-    mmaSourcePrice: Number,
-    priceManuallyEdited: { type: Boolean, default: false },
-    lastSyncedAt: Date,
+    // Службові поля постачальника — не віддаються на вітрину (select: false)
+    mmaKey: { type: String, unique: true, sparse: true, select: false },
+    mmaSlug: { type: String, select: false },
+    mmaSourcePrice: { type: Number, select: false },
+    priceManuallyEdited: { type: Boolean, default: false, select: false },
+    lastSyncedAt: { type: Date, select: false },
   },
   {
     suppressReservedKeysWarning: true, // ✅ Добавь сюда

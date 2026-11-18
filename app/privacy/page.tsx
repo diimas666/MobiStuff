@@ -5,7 +5,7 @@ import { privacyPolicyMeta, privacyPolicySections } from '@/data/privacyPolicyUa
 import { Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Політика конфіденційності | MobiStuff',
+  title: 'Політика конфіденційності',
   description:
     'Політика конфіденційності інтернет-магазину MobiStuff. Порядок збору, обробки та захисту персональних даних відповідно до законодавства України.',
   alternates: { canonical: '/privacy' },

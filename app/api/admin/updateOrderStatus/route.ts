@@ -1,9 +1,11 @@
+import { checkAdminAuth, unauthorizedResponse } from '@/lib/adminAuth';
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../../models/Order';
 import { isOrderStatus, ORDER_STATUS_LABELS } from '@/lib/orderStatus';
 
 export async function PATCH(req: NextRequest) {
+  if (!checkAdminAuth(req)) return unauthorizedResponse();
   try {
     await dbConnect();
     const { id, status } = await req.json();

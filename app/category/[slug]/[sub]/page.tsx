@@ -9,6 +9,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import Pagination from '@/components/Pagination';
 import FilterSheet from '@/components/FilterSheet';
 import type { Metadata } from 'next';
+import { absoluteUrl } from '@/lib/site';
 import Link from 'next/link';
 import { LayoutGrid, Square } from 'lucide-react';
 import { plural, productForms } from '@/lib/format';
@@ -19,23 +20,35 @@ const ITEMS_PER_PAGE = 20;
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string; sub: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const { slug, sub } = await params; // ⬅️ обязательно await
+  const { slug, sub } = await params;
+  const sp = await searchParams;
 
   const category = catalogCategory.find((cat) => cat.slug === slug);
   const subcategory = category?.subcategories.find((s) => s.slug === sub);
 
-  if (!category || !subcategory) return {};
+  if (!category || !subcategory) return { title: 'Категорію не знайдено', robots: { index: false } };
+
+  const page = Number(sp.page) || 1;
+  const path = `/category/${slug}/${sub}`;
+  const canonical = absoluteUrl(page > 1 ? `${path}?page=${page}` : path);
+  // Сторінки з фільтрами (бренд, ціна, сортування) — не індексуємо, щоб не плодити дублікати
+  const filtered = ['brand', 'phone', 'minPrice', 'maxPrice', 'sort', 'cols'].some((k) => sp[k] !== undefined);
+  const title = (subcategory.seoTitle || `${subcategory.title} — купити в Україні`).replace(/\s*\|\s*MobiStuff$/i, '');
+  const description =
+    subcategory.seoDescription ||
+    `${subcategory.title} з доставкою Новою Поштою за 1–3 дні. Оплата при отриманні, 14 днів на повернення, оригінальна продукція.`;
 
   return {
-    title:
-      subcategory.seoTitle ||
-      `${subcategory.title} – ${category.title} | MobiStuff`,
-    description:
-      subcategory.seoDescription ||
-      `Перегляньте підкатегорію "${subcategory.title}" у категорії "${category.title}".`,
+    title: page > 1 ? `${title} — сторінка ${page}` : title,
+    description,
+    alternates: { canonical },
+    robots: filtered ? { index: false, follow: true } : undefined,
+    openGraph: { type: 'website', url: canonical, title, description },
   };
 }
 

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { jsonLd } from '@/lib/jsonLd';
+import { absoluteUrl } from '@/lib/site';
 
 export interface Crumb {
   label: string;
@@ -7,14 +9,14 @@ export interface Crumb {
 }
 
 export default function Breadcrumbs({ items }: { items: Crumb[] }) {
-  const jsonLd = {
+  const data = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: items.map((item, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       name: item.label,
-      ...(item.href ? { item: `https://mobistuff.shop${item.href}` } : {}),
+      ...(item.href ? { item: absoluteUrl(item.href) } : {}),
     })),
   };
 
@@ -22,7 +24,7 @@ export default function Breadcrumbs({ items }: { items: Crumb[] }) {
     <nav aria-label="Навігація" className="no-scrollbar mb-5 overflow-x-auto">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={jsonLd(data)}
       />
       <ol className="flex items-center gap-1 whitespace-nowrap text-[13px] text-ink-2">
         {items.map((item, i) => {

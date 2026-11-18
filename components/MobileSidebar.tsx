@@ -22,7 +22,7 @@ export default function MobileSidebar() {
   return (
     <div
       onClick={close}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
     >
       <aside
         onClick={(e) => e.stopPropagation()}

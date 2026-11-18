@@ -20,8 +20,47 @@ type GaItem = {
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    fbq?: (...args: unknown[]) => void;
+    ttq?: { track: (event: string, data?: Record<string, unknown>) => void; page: () => void };
   }
 }
+
+/* ---------- Meta Pixel (Facebook / Instagram) та TikTok Pixel ----------
+ * content_ids = _id товару — збігається з g:id у фіді /feed/products.xml,
+ * тому працюють динамічна реклама та ретаргетинг на конкретні товари. */
+function fbq(...args: unknown[]) {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') window.fbq(...args);
+}
+function ttq(event: string, data?: Record<string, unknown>) {
+  if (typeof window !== 'undefined' && window.ttq?.track) window.ttq.track(event, data);
+}
+type PixelItem = { id: string; price: number; quantity: number; title?: string };
+function pixelEvent(metaEvent: string, ttEvent: string | null, items: PixelItem[], extra: Record<string, unknown> = {}) {
+  const value = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  fbq('track', metaEvent, {
+    content_ids: items.map((i) => i.id),
+    contents: items.map((i) => ({ id: i.id, quantity: i.quantity, item_price: i.price })),
+    content_type: 'product',
+    num_items: items.reduce((s, i) => s + i.quantity, 0),
+    value,
+    currency: 'UAH',
+    ...extra,
+  });
+  if (ttEvent) {
+    ttq(ttEvent, {
+      contents: items.map((i) => ({ content_id: i.id, content_type: 'product', content_name: i.title, quantity: i.quantity, price: i.price })),
+      value,
+      currency: 'UAH',
+      ...extra,
+    });
+  }
+}
+const toPixel = (p: { _id?: string; id?: string; handle?: string; price: number; title?: string }, quantity = 1): PixelItem => ({
+  id: String(p._id || p.id || p.handle),
+  price: p.price,
+  quantity,
+  title: p.title,
+});
 
 function isGtagAvailable() {
   return typeof window !== 'undefined' && typeof window.gtag === 'function';
@@ -63,6 +102,8 @@ export function trackPageView(url: string) {
   gtag('event', 'page_view', {
     page_path: url,
   });
+  fbq('track', 'PageView');
+  if (typeof window !== 'undefined') window.ttq?.page();
 }
 
 export function trackViewItem(product: Product) {
@@ -71,6 +112,7 @@ export function trackViewItem(product: Product) {
     value: product.price,
     items: [productToGaItem(product)],
   });
+  pixelEvent('ViewContent', 'ViewContent', [toPixel(product)], { content_name: product.title });
 }
 
 export function trackViewItemList(
@@ -104,6 +146,7 @@ export function trackAddToCart(
   });
 
   trackGoogleAdsAddToCartConversion(product.price * quantity);
+  pixelEvent('AddToCart', 'AddToCart', [toPixel(product, quantity)], { content_name: product.title });
 }
 
 export function trackRemoveFromCart(
@@ -138,9 +181,11 @@ export function trackBeginCheckout(items: CartItem[]) {
     value,
     items: items.map((item) => productToGaItem(item, item.quantity)),
   });
+  pixelEvent('InitiateCheckout', 'InitiateCheckout', items.map((i) => toPixel(i, i.quantity)));
 }
 
 export function trackPurchase(order: {
+  orderId?: string;
   createdAt?: string;
   phone?: string;
   total: number;
@@ -148,9 +193,10 @@ export function trackPurchase(order: {
   items?: CartItem[];
 }) {
   const transactionId =
-    order.createdAt && order.phone
+    order.orderId ||
+    (order.createdAt && order.phone
       ? `${order.createdAt}-${order.phone}`
-      : order.createdAt || String(Date.now());
+      : order.createdAt || String(Date.now()));
 
   const storageKey = `ga_purchase_${transactionId}`;
   if (typeof window !== 'undefined' && sessionStorage.getItem(storageKey)) {
@@ -167,6 +213,10 @@ export function trackPurchase(order: {
     ),
   });
 
+  const items = (order.items || []).map((i) => toPixel(i, i.quantity));
+  // eventID — для дедуплікації, якщо згодом підключите Conversions API
+  pixelEvent('Purchase', 'CompletePayment', items, { value: order.total, eventID: transactionId });
+
   if (typeof window !== 'undefined') {
     sessionStorage.setItem(storageKey, '1');
   }
@@ -178,6 +228,7 @@ export function trackAddToWishlist(product: Product) {
     value: product.price,
     items: [productToGaItem(product)],
   });
+  pixelEvent('AddToWishlist', 'AddToWishlist', [toPixel(product)]);
 }
 
 export function trackSearch(searchTerm: string) {
@@ -187,6 +238,8 @@ export function trackSearch(searchTerm: string) {
   gtag('event', 'search', {
     search_term: term,
   });
+  fbq('track', 'Search', { search_string: term });
+  ttq('Search', { query: term });
 }
 
 export function trackSelectItem(product: Product, listName?: string) {

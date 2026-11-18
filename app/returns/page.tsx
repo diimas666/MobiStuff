@@ -5,7 +5,7 @@ import PaymentRulesNote from '@/components/PaymentRulesNote';
 import { CheckCircle2, Mail, PackageX, RefreshCw, Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Повернення | MobiStuff',
+  title: 'Повернення',
   description:
     'Політика повернення товарів у магазині MobiStuff. Ви можете повернути товар протягом 14 днів згідно із законодавством України.',
   alternates: { canonical: '/returns' },

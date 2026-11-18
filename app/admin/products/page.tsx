@@ -1,421 +1,495 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { toast } from 'react-toastify';
+import { Check, ExternalLink, Flame, Link2, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
 import AdminWrapper from '@/components/AdminWrapper';
 import { adminHeaders } from '@/lib/adminHeaders';
-import { toast } from 'react-toastify';
 import { catalogCategory } from '@/data/catalogCategory';
+import { buildAdLink, AD_SOURCES, type AdSource } from '@/lib/adLinks';
+
+type AdminProduct = {
+  _id: string;
+  title: string;
+  handle: string;
+  image?: string;
+  price: number;
+  oldPrice?: number;
+  discountPercent?: number;
+  inStock?: boolean;
+  lowStock?: boolean;
+  isTrending?: boolean;
+  isNew?: boolean;
+  isFeatured?: boolean;
+  brand?: string;
+  categorySlug?: string;
+  subcategorySlug?: string;
+  mmaKey?: string;
+  priceManuallyEdited?: boolean;
+};
+
+const SEGMENTS = [
+  { id: 'all', label: 'Усі' },
+  { id: 'hits', label: 'Хіти' },
+  { id: 'new', label: 'Новинки' },
+  { id: 'featured', label: 'Рекомендуємо' },
+  { id: 'sale', label: 'Зі знижкою' },
+  { id: 'out', label: 'Немає в наявності' },
+] as const;
+type Segment = (typeof SEGMENTS)[number]['id'];
+
+const PAGE_SIZE = 60;
+
+const onSale = (p: AdminProduct) => Boolean(p.oldPrice && p.oldPrice > p.price);
 
 export default function AllProductsAdminPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [subcategoryFilter, setSubcategoryFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-
-  const subcategoryOptions = useMemo(() => {
-    if (!categoryFilter) return [];
-    const category = catalogCategory.find((c) => c.slug === categoryFilter);
-    return category?.subcategories ?? [];
-  }, [categoryFilter]);
-
-  const getCategoryLabel = (categorySlug?: string, subcategorySlug?: string) => {
-    const category = catalogCategory.find((c) => c.slug === categorySlug);
-    const sub = category?.subcategories.find((s) => s.slug === subcategorySlug);
-    if (category && sub) return `${category.title} / ${sub.title}`;
-    if (category) return category.title;
-    if (categorySlug || subcategorySlug) {
-      return `${categorySlug ?? '—'} / ${subcategorySlug ?? '—'}`;
-    }
-    return '—';
-  };
-
-  const filteredProducts = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-
-    return products.filter((p) => {
-      if (subcategoryFilter) {
-        if (
-          p.categorySlug !== categoryFilter ||
-          p.subcategorySlug !== subcategoryFilter
-        ) {
-          return false;
-        }
-      } else if (categoryFilter && p.categorySlug !== categoryFilter) {
-        return false;
-      }
-
-      if (!query) return true;
-
-      const categoryLabel = getCategoryLabel(
-        p.categorySlug,
-        p.subcategorySlug
-      ).toLowerCase();
-
-      return (
-        p.title?.toLowerCase().includes(query) ||
-        p.handle?.toLowerCase().includes(query) ||
-        p.mmaKey?.toLowerCase().includes(query) ||
-        p.brand?.toLowerCase().includes(query) ||
-        p.categorySlug?.toLowerCase().includes(query) ||
-        p.subcategorySlug?.toLowerCase().includes(query) ||
-        categoryLabel.includes(query)
-      );
-    });
-  }, [products, categoryFilter, subcategoryFilter, searchQuery]);
-
-  // тренд
-  const toggleTrending = async (id: string, isTrending: boolean) => {
-    try {
-      const res = await fetch(`/api/admin/updateProduct`, {
-        method: 'PATCH',
-        headers: adminHeaders(),
-        body: JSON.stringify({ id, isTrending: !isTrending }),
-      });
-
-      if (res.ok) {
-        setProducts((prev) =>
-          prev.map((p) =>
-            p._id === id ? { ...p, isTrending: !isTrending } : p
-          )
-        );
-        toast.success('Статус "Тренд" оновлено');
-      } else {
-        toast.error('Не вдалося оновити "Тренд"');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Помилка оновлення "Тренд"');
-    }
-  };
+  const [segment, setSegment] = useState<Segment>('all');
+  const [page, setPage] = useState(1);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkDiscount, setBulkDiscount] = useState('');
+  const [adSource, setAdSource] = useState<AdSource>('instagram');
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch('/api/products');
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-
-        toast.error('Помилка при завантаженні товарів');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
+    fetch('/api/admin/products', { cache: 'no-store' })
+      .then((r) => (r.status === 401 ? [] : r.ok ? r.json() : Promise.reject()))
+      .then(setProducts)
+      .catch(() => toast.error('Не вдалося завантажити товари'))
+      .finally(() => setLoading(false));
   }, []);
 
-  const getStockStatus = (p: { inStock?: boolean; lowStock?: boolean }) => {
-    if (p.inStock === false) return 'out' as const;
-    if (p.lowStock) return 'low' as const;
-    return 'in' as const;
+  const subcategoryOptions = useMemo(
+    () => catalogCategory.find((c) => c.slug === categoryFilter)?.subcategories ?? [],
+    [categoryFilter]
+  );
+
+  const categoryLabel = (p: AdminProduct) => {
+    const cat = catalogCategory.find((c) => c.slug === p.categorySlug);
+    const sub = cat?.subcategories.find((s) => s.slug === p.subcategorySlug);
+    return [cat?.title, sub?.title].filter(Boolean).join(' / ') || '—';
   };
 
-  const cycleStockStatus = async (product: {
-    _id: string;
-    inStock?: boolean;
-    lowStock?: boolean;
-  }) => {
-    const current = getStockStatus(product);
+  const counts = useMemo(
+    () => ({
+      all: products.length,
+      hits: products.filter((p) => p.isTrending).length,
+      new: products.filter((p) => p.isNew).length,
+      featured: products.filter((p) => p.isFeatured).length,
+      sale: products.filter(onSale).length,
+      out: products.filter((p) => p.inStock === false).length,
+    }),
+    [products]
+  );
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return products.filter((p) => {
+      if (segment === 'hits' && !p.isTrending) return false;
+      if (segment === 'new' && !p.isNew) return false;
+      if (segment === 'featured' && !p.isFeatured) return false;
+      if (segment === 'sale' && !onSale(p)) return false;
+      if (segment === 'out' && p.inStock !== false) return false;
+      if (categoryFilter && p.categorySlug !== categoryFilter) return false;
+      if (subcategoryFilter && p.subcategorySlug !== subcategoryFilter) return false;
+      if (!q) return true;
+      return [p.title, p.handle, p.mmaKey, p.brand].some((v) => v?.toLowerCase().includes(q));
+    });
+  }, [products, segment, categoryFilter, subcategoryFilter, searchQuery]);
+
+  useEffect(() => setPage(1), [segment, categoryFilter, subcategoryFilter, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const allOnPageSelected = pageItems.length > 0 && pageItems.every((p) => selected.has(p._id));
+
+  const merge = (id: string, patchData: Partial<AdminProduct>) =>
+    setProducts((prev) => prev.map((p) => (p._id === id ? { ...p, ...patchData } : p)));
+
+  const patch = async (id: string, body: Record<string, unknown>, okMsg: string) => {
+    try {
+      const res = await fetch('/api/admin/updateProduct', {
+        method: 'PATCH',
+        headers: adminHeaders(),
+        body: JSON.stringify({ id, ...body }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error);
+      merge(id, data.product ?? body);
+      toast.success(okMsg, { autoClose: 1200 });
+    } catch (e) {
+      toast.error((e as Error).message || 'Не вдалося зберегти');
+    }
+  };
+
+  const toggle = (p: AdminProduct, key: 'isTrending' | 'isNew' | 'isFeatured') => {
+    const labels = { isTrending: 'Хіт продажу', isNew: 'Новинка', isFeatured: 'Рекомендуємо' };
+    const next = !p[key];
+    merge(p._id, { [key]: next });
+    patch(p._id, { [key]: next }, `${labels[key]}: ${next ? 'увімкнено' : 'вимкнено'}`);
+  };
+
+  const cycleStock = (p: AdminProduct) => {
+    const status = p.inStock === false ? 'out' : p.lowStock ? 'low' : 'in';
     const next =
-      current === 'in'
+      status === 'in'
         ? { inStock: true, lowStock: true }
-        : current === 'low'
+        : status === 'low'
           ? { inStock: false, lowStock: false }
           : { inStock: true, lowStock: false };
+    merge(p._id, next);
+    patch(p._id, next, 'Наявність оновлено');
+  };
 
+  const remove = async (p: AdminProduct) => {
+    if (!confirm(`Видалити «${p.title}»? Це не можна скасувати.`)) return;
+    const res = await fetch('/api/admin/deleteProduct', {
+      method: 'DELETE',
+      headers: adminHeaders(),
+      body: JSON.stringify({ id: p._id }),
+    });
+    if (res.ok) {
+      setProducts((prev) => prev.filter((x) => x._id !== p._id));
+      toast.success('Товар видалено');
+    } else toast.error('Не вдалося видалити');
+  };
+
+  const copyAdLink = async (p: AdminProduct) => {
+    const url = buildAdLink(window.location.origin, `/product/${p.handle}`, {
+      source: adSource,
+      campaign: p.handle.slice(0, 60),
+    });
     try {
-      const res = await fetch(`/api/admin/updateProduct`, {
-        method: 'PATCH',
-        headers: adminHeaders(),
-        body: JSON.stringify({ id: product._id, ...next }),
-      });
-
-      if (res.ok) {
-        setProducts((prev) =>
-          prev.map((p) => (p._id === product._id ? { ...p, ...next } : p))
-        );
-        toast.success('Наявність оновлено');
-      } else {
-        toast.error('Не вдалося оновити');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Помилка оновлення');
+      await navigator.clipboard.writeText(url);
+      toast.success('Посилання для реклами скопійовано', { autoClose: 1500 });
+    } catch {
+      prompt('Скопіюйте посилання:', url);
     }
   };
 
-  const updatePrice = async (id: string, price: number) => {
-    if (!price || price <= 0) return;
-
-    try {
-      const res = await fetch(`/api/admin/updateProduct`, {
-        method: 'PATCH',
-        headers: adminHeaders(),
-        body: JSON.stringify({ id, price }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setProducts((prev) =>
-          prev.map((p) => (p._id === id ? { ...p, ...data.product } : p))
-        );
-        toast.success('Ціну оновлено (захищено від синхронізації)');
-      } else {
-        toast.error('Не вдалося оновити ціну');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Помилка оновлення ціни');
-    }
+  const bulk = async (body: Record<string, unknown>, msg: string) => {
+    const ids = [...selected];
+    const res = await fetch('/api/admin/bulkUpdate', {
+      method: 'POST',
+      headers: adminHeaders(),
+      body: JSON.stringify({ ids, ...body }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return toast.error(data.error || 'Помилка');
+    const fresh = await fetch('/api/admin/products', { cache: 'no-store' }).then((r) => r.json());
+    setProducts(fresh);
+    setSelected(new Set());
+    toast.success(`${msg} (${ids.length})`);
   };
 
-  const updateDiscount = async (id: string, discountPercent: number) => {
-    if (discountPercent < 0 || discountPercent >= 100) {
-      if (discountPercent !== 0) return;
-    }
-
-    try {
-      const res = await fetch(`/api/admin/updateProduct`, {
-        method: 'PATCH',
-        headers: adminHeaders(),
-        body: JSON.stringify({ id, discountPercent }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setProducts((prev) =>
-          prev.map((p) => (p._id === id ? { ...p, ...data.product } : p))
-        );
-        toast.success(
-          discountPercent > 0
-            ? `Знижку ${discountPercent}% застосовано`
-            : 'Знижку скасовано'
-        );
-      } else {
-        toast.error('Не вдалося оновити знижку');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Помилка оновлення знижки');
-    }
-  };
-
-  const deleteProduct = async (id: string) => {
-    if (!confirm('Ти впевнений?')) return;
-
-    try {
-      const res = await fetch(`/api/admin/deleteProduct`, {
-        method: 'DELETE',
-        headers: adminHeaders(),
-        body: JSON.stringify({ id }),
-      });
-
-      if (res.ok) {
-        setProducts((prev) => prev.filter((p) => p._id !== id));
-        toast.success('Товар видалено');
-      } else {
-        toast.error('Не вдалося видалити');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Помилка видалення');
-    }
-  };
+  const toggleSelect = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   return (
     <AdminWrapper>
-      <div className="p-6">
-        <div className="flex flex-wrap items-center gap-3 mb-4">
-          <h2 className="text-xl font-bold">Всі товари</h2>
-
-          <select
-            value={categoryFilter}
-            onChange={(e) => {
-              setCategoryFilter(e.target.value);
-              setSubcategoryFilter('');
-            }}
-            className="border rounded px-3 py-1.5 text-sm bg-white min-w-[180px]"
+      <div className="no-scrollbar -mx-4 mb-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        {SEGMENTS.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            onClick={() => setSegment(s.id)}
+            className={`chip shrink-0 ${segment === s.id ? 'chip-active' : ''}`}
           >
-            <option value="">Усі категорії</option>
-            {catalogCategory.map((cat) => (
-              <option key={cat.slug} value={cat.slug}>
-                {cat.title}
-              </option>
-            ))}
-          </select>
+            {s.label}
+            <span className="ml-1.5 tabular-nums opacity-60">{counts[s.id]}</span>
+          </button>
+        ))}
+      </div>
 
-          <select
-            value={subcategoryFilter}
-            onChange={(e) => setSubcategoryFilter(e.target.value)}
-            disabled={!categoryFilter}
-            className="border rounded px-3 py-1.5 text-sm bg-white min-w-[200px] disabled:opacity-50"
-          >
-            <option value="">Усі підкатегорії</option>
-            {subcategoryOptions.map((sub) => (
-              <option key={sub.slug} value={sub.slug}>
-                {sub.title}
-              </option>
-            ))}
-          </select>
-
+      <div className="panel mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_auto]">
+        <label className="relative">
+          <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-ink-3" />
           <input
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Пошук за назвою, артикулом, брендом..."
-            className="border rounded px-3 py-1.5 text-sm bg-white min-w-[220px] flex-1 max-w-md"
+            placeholder="Назва, бренд, артикул MMA…"
+            className="field pl-10"
           />
+        </label>
+        <select
+          value={categoryFilter}
+          onChange={(e) => {
+            setCategoryFilter(e.target.value);
+            setSubcategoryFilter('');
+          }}
+          className="field"
+          aria-label="Категорія"
+        >
+          <option value="">Усі категорії</option>
+          {catalogCategory.map((c) => (
+            <option key={c.slug} value={c.slug}>
+              {c.title}
+            </option>
+          ))}
+        </select>
+        <select
+          value={subcategoryFilter}
+          onChange={(e) => setSubcategoryFilter(e.target.value)}
+          disabled={!categoryFilter}
+          className="field disabled:opacity-50"
+          aria-label="Підкатегорія"
+        >
+          <option value="">Усі підкатегорії</option>
+          {subcategoryOptions.map((s) => (
+            <option key={s.slug} value={s.slug}>
+              {s.title}
+            </option>
+          ))}
+        </select>
+        <select
+          value={adSource}
+          onChange={(e) => setAdSource(e.target.value as AdSource)}
+          className="field"
+          aria-label="Джерело для рекламних посилань"
+          title="Для кнопки «Посилання для реклами»"
+        >
+          {AD_SOURCES.map((s) => (
+            <option key={s.id} value={s.id}>
+              Реклама: {s.label}
+            </option>
+          ))}
+        </select>
+      </div>
 
-          {searchQuery && (
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-ink-2">
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={allOnPageSelected}
+            onChange={() =>
+              setSelected((prev) => {
+                const next = new Set(prev);
+                pageItems.forEach((p) => (allOnPageSelected ? next.delete(p._id) : next.add(p._id)));
+                return next;
+              })
+            }
+            className="h-4 w-4 accent-[var(--accent)]"
+          />
+          Вибрати всі на сторінці
+        </label>
+        <span>
+          {loading ? 'Завантаження…' : `Показано ${pageItems.length} з ${filtered.length} (усього ${products.length})`}
+        </span>
+      </div>
+
+      <ul className="space-y-2">
+        {pageItems.map((p) => {
+          const stock = p.inStock === false ? 'out' : p.lowStock ? 'low' : 'in';
+          return (
+            <li
+              key={p._id}
+              className={`panel grid grid-cols-[auto_56px_1fr] items-center gap-x-3 gap-y-3 p-3 sm:p-4 lg:grid-cols-[auto_56px_minmax(0,1fr)_200px_auto_auto] ${
+                selected.has(p._id) ? 'ring-2 ring-accent' : ''
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={selected.has(p._id)}
+                onChange={() => toggleSelect(p._id)}
+                className="h-4 w-4 accent-[var(--accent)]"
+                aria-label={`Вибрати ${p.title}`}
+              />
+              <span className="relative h-14 w-14 overflow-hidden rounded-xl bg-canvas">
+                {p.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={p.image} alt="" className="h-full w-full object-contain p-1 mix-blend-multiply" loading="lazy" />
+                ) : null}
+              </span>
+              <div className="min-w-0">
+                <p className="line-clamp-2 text-[14px] leading-snug font-medium">{p.title}</p>
+                <p className="mt-0.5 truncate text-[12px] text-ink-3">
+                  {[p.brand, categoryLabel(p), p.priceManuallyEdited ? 'ціна вручну' : ''].filter(Boolean).join(' · ')}
+                </p>
+              </div>
+
+              <div className="col-span-3 flex items-center gap-2 lg:col-span-1">
+                <label className="relative flex-1">
+                  <input
+                    type="number"
+                    min={1}
+                    key={`price-${p._id}-${p.price}`}
+                    defaultValue={p.price}
+                    onBlur={(e) => {
+                      const v = parseFloat(e.target.value);
+                      if (v > 0 && v !== p.price) patch(p._id, { price: v }, 'Ціну оновлено');
+                    }}
+                    className="field h-10 pr-7 text-[14px]"
+                    aria-label="Ціна"
+                  />
+                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[13px] text-ink-3">₴</span>
+                </label>
+                <label className="relative w-[84px]">
+                  <input
+                    type="number"
+                    min={0}
+                    max={99}
+                    key={`disc-${p._id}-${p.discountPercent ?? 0}`}
+                    defaultValue={p.discountPercent || ''}
+                    placeholder="0"
+                    onBlur={(e) => {
+                      const v = parseFloat(e.target.value) || 0;
+                      if (v !== (p.discountPercent || 0))
+                        patch(p._id, { discountPercent: v }, v ? `Знижка −${v}%` : 'Знижку знято');
+                    }}
+                    className="field h-10 pr-7 text-[14px]"
+                    aria-label="Знижка, %"
+                  />
+                  <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[13px] text-ink-3">%</span>
+                </label>
+              </div>
+
+              <div className="col-span-3 flex flex-wrap items-center gap-1.5 lg:col-span-1">
+                <Flag on={p.isTrending} onClick={() => toggle(p, 'isTrending')} icon={Flame} label="Хіт" />
+                <Flag on={p.isNew} onClick={() => toggle(p, 'isNew')} icon={Sparkles} label="Новинка" />
+                <Flag on={p.isFeatured} onClick={() => toggle(p, 'isFeatured')} icon={Star} label="Топ" />
+                <button
+                  type="button"
+                  onClick={() => cycleStock(p)}
+                  title="Клік: В наявності → Закінчується → Немає"
+                  className={`rounded-full px-3 py-1.5 text-[12px] font-medium ${
+                    stock === 'in'
+                      ? 'bg-accent-soft text-accent'
+                      : stock === 'low'
+                        ? 'bg-amber-50 text-amber-700'
+                        : 'bg-canvas text-ink-3'
+                  }`}
+                >
+                  {stock === 'in' ? 'В наявності' : stock === 'low' ? 'Закінчується' : 'Немає'}
+                </button>
+              </div>
+
+              <div className="col-span-3 flex items-center justify-end gap-1 lg:col-span-1">
+                <button type="button" onClick={() => copyAdLink(p)} className="hdr-icon" title="Скопіювати посилання для реклами">
+                  <Link2 className="h-4 w-4" />
+                </button>
+                <Link href={`/product/${p.handle}`} target="_blank" className="hdr-icon" title="Відкрити на сайті">
+                  <ExternalLink className="h-4 w-4" />
+                </Link>
+                <button type="button" onClick={() => remove(p)} className="hdr-icon text-sale" title="Видалити">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {!loading && filtered.length === 0 && (
+        <p className="py-16 text-center text-ink-2">Нічого не знайдено. Змініть фільтри.</p>
+      )}
+
+      {totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-center gap-2">
+          <button type="button" className="btn-ghost h-9 px-4" disabled={page <= 1} onClick={() => setPage((n) => n - 1)}>
+            Назад
+          </button>
+          <span className="px-2 text-[14px] text-ink-2 tabular-nums">
+            {page} / {totalPages}
+          </span>
+          <button
+            type="button"
+            className="btn-ghost h-9 px-4"
+            disabled={page >= totalPages}
+            onClick={() => setPage((n) => n + 1)}
+          >
+            Далі
+          </button>
+        </div>
+      )}
+
+      {selected.size > 0 && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line-soft bg-white/90 px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur-xl">
+          <div className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-2">
+            <span className="mr-2 text-[14px] font-semibold">Вибрано: {selected.size}</span>
+            <button type="button" className="chip" onClick={() => bulk({ set: { isTrending: true } }, 'Додано в хіти')}>
+              <Flame className="mr-1 h-4 w-4" /> У хіти
+            </button>
+            <button type="button" className="chip" onClick={() => bulk({ set: { isTrending: false } }, 'Прибрано з хітів')}>
+              Прибрати з хітів
+            </button>
+            <button type="button" className="chip" onClick={() => bulk({ set: { isNew: true } }, 'Позначено як новинки')}>
+              <Sparkles className="mr-1 h-4 w-4" /> Новинка
+            </button>
+            <button type="button" className="chip" onClick={() => bulk({ set: { isNew: false } }, 'Знято «Новинка»')}>
+              Не новинка
+            </button>
+            <span className="flex items-center gap-1">
+              <input
+                type="number"
+                min={1}
+                max={99}
+                value={bulkDiscount}
+                onChange={(e) => setBulkDiscount(e.target.value)}
+                placeholder="%"
+                className="field h-9 w-20 text-[14px]"
+                aria-label="Знижка для вибраних"
+              />
+              <button
+                type="button"
+                className="chip"
+                disabled={!bulkDiscount}
+                onClick={() => bulk({ discountPercent: Number(bulkDiscount) }, `Знижка −${bulkDiscount}%`)}
+              >
+                Знижка
+              </button>
+            </span>
+            <button type="button" className="chip" onClick={() => bulk({ discountPercent: 0 }, 'Знижки знято')}>
+              Зняти знижку
+            </button>
             <button
               type="button"
-              onClick={() => setSearchQuery('')}
-              className="text-sm text-gray-500 hover:text-gray-800 underline"
+              className="chip"
+              onClick={() => bulk({ set: { inStock: false, lowStock: false } }, 'Немає в наявності')}
             >
-              Скинути
+              Немає в наявності
             </button>
-          )}
-
-          {!loading && (
-            <span className="text-sm text-gray-500">
-              Показано {filteredProducts.length} з {products.length}
-            </span>
-          )}
+            <button type="button" className="hdr-icon ml-auto" onClick={() => setSelected(new Set())} aria-label="Скасувати вибір">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
-
-        {loading ? (
-          <p>Завантаження...</p>
-        ) : filteredProducts.length === 0 ? (
-          <p className="text-gray-500">
-            {searchQuery
-              ? 'За вашим запитом нічого не знайдено.'
-              : 'Товарів у цій категорії немає.'}
-          </p>
-        ) : (
-          <table className="w-full border">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="p-2 border w-16">Фото</th>
-                <th className="p-2 border">Назва</th>
-                <th className="p-2 border">Категорія</th>
-                <th className="p-2 border">Ціна</th>
-                <th className="p-2 border">Знижка %</th>
-                <th className="p-2 border">Наявність</th>
-                <th className="p-2 border">Тренд</th>
-                <th className="p-2 border">Дія</th>
-                
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((p) => (
-                <tr key={p._id} className="text-sm">
-                  <td className="border p-2 w-16">
-                    {p.image ? (
-                      <img
-                        src={p.image}
-                        alt={p.title}
-                        className="w-12 h-12 object-contain rounded bg-gray-50"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="text-xs text-gray-400">—</span>
-                    )}
-                  </td>
-                  <td className="border p-2">{p.title}</td>
-                  <td className="border p-2">
-                    {getCategoryLabel(p.categorySlug, p.subcategorySlug)}
-                  </td>
-                  <td className="border p-2">
-                    <input
-                      type="number"
-                      key={`price-${p._id}-${p.price}`}
-                      defaultValue={p.price}
-                      className="w-20 border rounded px-1 py-0.5"
-                      onBlur={(e) =>
-                        updatePrice(p._id, parseFloat(e.target.value))
-                      }
-                    />
-                    {p.oldPrice && p.oldPrice > p.price && (
-                      <span className="block text-xs text-gray-400 line-through">
-                        {p.oldPrice} грн
-                      </span>
-                    )}
-                    {p.priceManuallyEdited && (
-                      <span className="block text-xs text-blue-600">ручна</span>
-                    )}
-                  </td>
-                  <td className="border p-2">
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        min={0}
-                        max={99}
-                        key={`discount-${p._id}-${p.discountPercent ?? 0}`}
-                        defaultValue={p.discountPercent ?? ''}
-                        placeholder="0"
-                        className="w-14 border rounded px-1 py-0.5"
-                        onBlur={(e) =>
-                          updateDiscount(
-                            p._id,
-                            parseFloat(e.target.value) || 0
-                          )
-                        }
-                      />
-                      <span className="text-xs text-gray-500">%</span>
-                    </div>
-                  </td>
-                  <td className="border p-2">
-                    {(() => {
-                      const status = getStockStatus(p);
-                      return (
-                        <button
-                          onClick={() => cycleStockStatus(p)}
-                          className={`px-2 py-1 text-white rounded text-xs whitespace-nowrap ${
-                            status === 'in'
-                              ? 'bg-green-500'
-                              : status === 'low'
-                                ? 'bg-amber-500'
-                                : 'bg-gray-400'
-                          }`}
-                          title="Клік: В наявності → Закінчується → Немає"
-                        >
-                          {status === 'in'
-                            ? 'В наявності'
-                            : status === 'low'
-                              ? 'Закінчується'
-                              : 'Немає'}
-                        </button>
-                      );
-                    })()}
-                  </td>
-                  <td className="border p-2">
-                    <button
-                      onClick={() => toggleTrending(p._id, p.isTrending)}
-                      className={`px-2 py-1 text-white rounded ${
-                        p.isTrending ? 'bg-yellow-500' : 'bg-gray-400'
-                      }`}
-                    >
-                      {p.isTrending ? '✅ Так' : '–'}
-                    </button>
-                  </td>
-
-                  <td className="border p-2">
-                    <button
-                      onClick={() => deleteProduct(p._id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded"
-                    >
-                      Видалити
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      )}
     </AdminWrapper>
+  );
+}
+
+function Flag({
+  on,
+  onClick,
+  icon: Icon,
+  label,
+}: {
+  on?: boolean;
+  onClick: () => void;
+  icon: typeof Flame;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={Boolean(on)}
+      className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-medium transition ${
+        on ? 'bg-ink text-white' : 'bg-canvas text-ink-2 hover:text-ink'
+      }`}
+    >
+      {on ? <Check className="h-3.5 w-3.5" /> : <Icon className="h-3.5 w-3.5" />}
+      {label}
+    </button>
   );
 }

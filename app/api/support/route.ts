@@ -48,16 +48,16 @@ export async function POST(req: NextRequest) {
     });
 
     const topicLabel = SUPPORT_TOPIC_LABELS[topic];
-    const senderLine = [name, email, phone].filter(Boolean).join(' · ') || 'Користувач додатку';
-    const safeMessage = message
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+    const esc = (v: string) =>
+      v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const senderLine =
+      [name, email, phone].filter(Boolean).map((v) => esc(v.slice(0, 120))).join(' · ') || 'Користувач додатку';
+    const safeMessage = esc(message.slice(0, 5000));
 
     await transporter.sendMail({
       from: `"MobiStuff App" <${process.env.SMTP_USER}>`,
       to: [SUPPORT_STORE_EMAIL, SUPPORT_TEAM_EMAIL],
-      replyTo: email || undefined,
+      replyTo: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : undefined,
       subject: `[Підтримка] ${topicLabel}`,
       html: `
         <div style="font-family: Arial, sans-serif; background: #f9fafb; padding: 24px;">
@@ -75,8 +75,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Support email error:', error);
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Не вдалося надіслати повідомлення' }, { status: 500 });
   }
 }

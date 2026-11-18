@@ -5,7 +5,7 @@ import PaymentRulesNote from '@/components/PaymentRulesNote';
 import { Clock, Facebook, Instagram, Mail, MapPin, MessageCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Контакти | MobiStuff',
+  title: 'Контакти',
   description:
     'Зв’яжіться з нами — MobiStuff. Ми завжди на зв’язку для консультацій, замовлень та підтримки. Працюємо онлайн по всій Україні!',
   alternates: { canonical: '/contacts' },

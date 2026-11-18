@@ -69,23 +69,39 @@ export default function GalleryImages({ images, title }: GalleryImagesProps) {
       </div>
 
       {list.length > 1 && (
-        <div className="no-scrollbar mt-3 hidden gap-2 overflow-x-auto lg:flex">
-          {list.map((src, i) => (
-            <button
-              key={`${src}-thumb-${i}`}
-              type="button"
-              onClick={() => goTo(i)}
-              aria-label={`Показати фото ${i + 1}`}
-              aria-pressed={i === active}
-              className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white p-2 transition ${
-                i === active ? 'ring-2 ring-ink' : 'opacity-60 hover:opacity-100'
-              }`}
-            >
-              <span className="relative block h-full w-full">
-                <ProductImage src={src} alt="" fill sizes="80px" loading="lazy" className="object-contain" />
-              </span>
-            </button>
-          ))}
+        <div className="no-scrollbar -mx-1 mt-4 hidden gap-3 overflow-x-auto px-1 pt-1 pb-1 lg:flex" role="tablist" aria-label="Фото товару">
+          {list.map((src, i) => {
+            const isActive = i === active;
+            return (
+              <button
+                key={`${src}-thumb-${i}`}
+                type="button"
+                role="tab"
+                onClick={() => goTo(i)}
+                aria-label={`Показати фото ${i + 1}`}
+                aria-selected={isActive}
+                className="group flex shrink-0 flex-col items-center gap-2 rounded-2xl outline-none"
+              >
+                <span
+                  className={`relative block h-[76px] w-[76px] overflow-hidden rounded-2xl bg-white p-2 transition-all duration-300 ease-[cubic-bezier(.22,1,.36,1)] group-focus-visible:shadow-[0_0_0_3px_rgba(19,138,71,.35)] ${
+                    isActive
+                      ? 'shadow-[0_6px_20px_-8px_rgba(0,0,0,.25)] -translate-y-0.5'
+                      : 'opacity-55 group-hover:opacity-100'
+                  }`}
+                >
+                  <span className="relative block h-full w-full">
+                    <ProductImage src={src} alt="" fill sizes="76px" loading="lazy" className="object-contain" />
+                  </span>
+                </span>
+                <span
+                  aria-hidden
+                  className={`h-[3px] rounded-full transition-all duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
+                    isActive ? 'w-7 bg-ink' : 'w-0 bg-transparent'
+                  }`}
+                />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

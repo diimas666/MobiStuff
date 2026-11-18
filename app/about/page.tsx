@@ -5,7 +5,7 @@ import { FREE_DELIVERY_FROM } from '@/data/storePolicies';
 import { Award, Headphones, ShieldCheck, Sparkles, Truck, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Про нас | MobiStuff',
+  title: 'Про нас',
   description:
     'Дізнайтесь більше про магазин MobiStuff — наші цінності, переваги та підхід до якості. Ми прагнемо забезпечити найкращий вибір аксесуарів для вашої техніки.',
   alternates: { canonical: '/about' },

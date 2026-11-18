@@ -1,3 +1,4 @@
+import { jsonLd } from '@/lib/jsonLd';
 import Link from 'next/link';
 import { getCategorySeoArticle } from '@/lib/getCategorySeoArticle';
 
@@ -36,7 +37,7 @@ export default function CategorySeoArticle({
 
   return (
     <section className="mt-20 grid gap-10 border-t border-line-soft pt-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(faqJsonLd)} />
 
       <article className="max-w-[68ch]">
         <h2 className="display-md">{article.title}</h2>

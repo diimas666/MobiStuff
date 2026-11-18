@@ -1,3 +1,4 @@
+import { revalidateStore } from '@/lib/revalidateStore';
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import { checkAdminAuth } from '@/lib/adminAuth';
@@ -44,6 +45,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const created = await Promotion.create(body);
     await markPromotionsInitialized();
+    revalidateStore();
     return NextResponse.json(created, { status: 201 });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to create promotion';
@@ -70,6 +72,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Promotion not found' }, { status: 404 });
     }
 
+    revalidateStore();
     return NextResponse.json({
       ...updated,
       imageUrl: resolvePromotionImageUrl(updated),
@@ -105,6 +108,7 @@ export async function DELETE(req: NextRequest) {
 
     await Promotion.findByIdAndDelete(id);
     await markPromotionsInitialized();
+    revalidateStore();
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to delete promotion';

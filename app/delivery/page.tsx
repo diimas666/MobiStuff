@@ -6,7 +6,7 @@ import { CARD_ONLY_FROM, FREE_DELIVERY_FROM, storePolicies } from '@/data/storeP
 import { Banknote, CreditCard, Gift, MapPin, Package, Truck } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Доставка і оплата | MobiStuff',
+  title: 'Доставка і оплата',
   description:
     'Дізнайтесь про доставку Новою Поштою, оплату карткою або післяплатою до 4000 грн, безкоштовну доставку від 2500 грн.',
   alternates: { canonical: '/delivery' },

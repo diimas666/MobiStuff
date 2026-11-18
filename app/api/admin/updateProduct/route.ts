@@ -1,3 +1,4 @@
+import { revalidateStore } from '@/lib/revalidateStore';
 // ✅ /app/api/admin/updateProduct/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
@@ -24,7 +25,18 @@ export async function PATCH(req: Request) {
   await dbConnect();
   const body = await req.json();
 
-  const { id, ...updateFields } = body;
+  const { id, ...rawFields } = body ?? {};
+
+  // Дозволяємо змінювати лише ці поля (захист від запису довільних полів)
+  const ALLOWED = [
+    'title', 'description', 'image', 'images', 'price', 'oldPrice', 'discountPercent',
+    'inStock', 'lowStock', 'isNew', 'isFeatured', 'isTrending', 'category', 'categorySlug',
+    'subcategorySlug', 'brand', 'tags', 'variants',
+  ] as const;
+  const updateFields: Record<string, any> = {};
+  for (const key of ALLOWED) {
+    if (rawFields[key] !== undefined) updateFields[key] = rawFields[key];
+  }
 
   if (!id) {
     return NextResponse.json({ error: 'ID відсутній' }, { status: 400 });
@@ -76,8 +88,9 @@ export async function PATCH(req: Request) {
 
     const updated = await Product.findByIdAndUpdate(id, updateQuery, {
       new: true,
-    });
+    }).select('+mmaKey +priceManuallyEdited');
 
+    revalidateStore();
     return NextResponse.json({ message: 'Оновлено', product: updated });
   } catch (e) {
     console.error('❌ Помилка оновлення:', e);

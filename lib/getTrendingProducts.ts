@@ -1,19 +1,7 @@
-import dbConnect from '@/lib/dbConnect';
-import ProductModel from '@/app/api/models/Product';
+import { findCards } from '@/lib/storefront';
 import { Product } from '@/interface/product';
 
 // lib/getTrendingProducts.ts
 export async function getTrendingProducts(limit = 10): Promise<Product[]> {
-  await dbConnect();
-
-  const trending = await ProductModel.find({ isTrending: true }) // ← це головне
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .lean();
-
-  return trending.map((p: any) => ({
-    ...p,
-    _id: p._id.toString(),
-    id: p._id.toString(),
-  }));
+  return findCards({ isTrending: true }, { limit });
 }

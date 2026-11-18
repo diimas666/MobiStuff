@@ -6,7 +6,7 @@ import { getCatalogSections } from "@/lib/getCatalogCategories";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Каталог товарів | MobiStuff",
+  title: "Каталог товарів",
   description:
     "Повний каталог категорій MobiStuff: чохли, навушники, зарядки, павербанки, аксесуари та інше. Доставка по Україні.",
   alternates: { canonical: "/catalog" },
@@ -22,7 +22,7 @@ export default async function CatalogPage() {
         <p className="lead mt-3 max-w-xl">Усі категорії аксесуарів. Оберіть розділ, щоб побачити товари.</p>
       </header>
 
-      <nav aria-label="Розділи каталогу" className="no-scrollbar sticky top-[68px] z-30 -mx-4 mb-10 flex gap-2 overflow-x-auto bg-canvas/85 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6">
+      <nav aria-label="Розділи каталогу" className="no-scrollbar sticky top-[60px] sm:top-[64px] z-30 -mx-4 mb-10 flex gap-2 overflow-x-auto bg-canvas/85 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6">
         {sections.map((section) => (
           <a key={section.slug} href={`#${section.slug}`} className="chip">
             {section.title}

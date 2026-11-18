@@ -1,4 +1,8 @@
-// lib/api.ts
+// lib/api.ts — серверні вибірки для сторінок (без HTTP-запиту до власного API)
+import { unstable_cache } from 'next/cache';
+import { queryProducts, queryProductFacets } from '@/lib/queryProducts';
+import { CARD_FIELDS } from '@/lib/storefront';
+
 export interface ProductFilters {
   brand?: string;
   phone?: string;
@@ -9,38 +13,15 @@ export interface ProductFilters {
   sort?: string;
 }
 
-export async function fetchProducts(
-  category?: string,
-  subcategory?: string,
-  filters?: ProductFilters
-) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products`);
+export const fetchProducts = unstable_cache(
+  async (category?: string, subcategory?: string, filters?: ProductFilters) =>
+    queryProducts({ category, subcategory, ...filters }, CARD_FIELDS),
+  ['products-cards-v1'],
+  { revalidate: 300, tags: ['products'] }
+);
 
-  if (category) url.searchParams.set('category', category);
-  if (subcategory) url.searchParams.set('subcategory', subcategory);
-  if (filters?.brand) url.searchParams.set('brand', filters.brand);
-  if (filters?.phone) url.searchParams.set('phone', filters.phone);
-  if (filters?.minPrice) url.searchParams.set('minPrice', filters.minPrice);
-  if (filters?.maxPrice) url.searchParams.set('maxPrice', filters.maxPrice);
-  if (filters?.isTrending) url.searchParams.set('isTrending', filters.isTrending);
-  if (filters?.onSale) url.searchParams.set('onSale', filters.onSale);
-  if (filters?.sort) url.searchParams.set('sort', filters.sort);
-
-  const res = await fetch(url.toString(), { next: { revalidate: 300 } });
-  return res.json();
-}
-
-export async function fetchProductFacets(category: string, subcategory: string) {
-  const url = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products/facets`);
-  url.searchParams.set('category', category);
-  url.searchParams.set('subcategory', subcategory);
-
-  const res = await fetch(url.toString(), { next: { revalidate: 300 } });
-  return res.json() as Promise<{
-    brands: string[];
-    phoneModels: string[];
-    minPrice: number;
-    maxPrice: number;
-    count: number;
-  }>;
-}
+export const fetchProductFacets = unstable_cache(
+  async (category: string, subcategory: string) => queryProductFacets(category, subcategory),
+  ['facets-v2'],
+  { revalidate: 300, tags: ['products'] }
+);

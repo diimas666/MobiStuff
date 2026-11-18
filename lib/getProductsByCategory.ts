@@ -1,5 +1,4 @@
-import dbConnect from '@/lib/dbConnect';
-import ProductModel from '@/app/api/models/Product';
+import { findCards } from '@/lib/storefront';
 import type { Product } from '@/interface/product';
 
 export async function getProductsByCategory(
@@ -7,7 +6,6 @@ export async function getProductsByCategory(
   subcategorySlug?: string,
   limit = 40
 ): Promise<Product[]> {
-  await dbConnect();
 
   const query: any = { categorySlug };
 
@@ -15,14 +13,5 @@ export async function getProductsByCategory(
     query.subcategorySlug = subcategorySlug;
   }
 
-  const products = await ProductModel.find(query)
-    .sort({ createdAt: -1 }) // самые новые первыми
-    .limit(limit)
-    .lean();
-
-  return products.map((p: any) => ({
-    ...p,
-    _id: p._id?.toString(),
-    id: p._id?.toString(),
-  }));
+  return findCards(query, { limit });
 }

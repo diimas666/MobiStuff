@@ -2,101 +2,98 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { BarChart3, ExternalLink, Loader2, Lock, LogOut, Megaphone, Package, PlusCircle, RefreshCw, ShoppingCart, Tag, Upload } from 'lucide-react';
 
-export default function AdminWrapper({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const NAV = [
+  { href: '/admin/products', label: 'Товари', icon: Package },
+  { href: '/admin/promotions', label: 'Акції', icon: Tag },
+  { href: '/admin/orders', label: 'Замовлення', icon: ShoppingCart },
+  { href: '/admin/marketing', label: 'Реклама', icon: Megaphone },
+  { href: '/admin/analytics', label: 'Аналітика', icon: BarChart3 },
+  { href: '/admin', label: 'Додати товар', icon: PlusCircle },
+  { href: '/admin/import', label: 'Імпорт CSV', icon: Upload },
+  { href: '/admin/sync', label: 'Синх. MMA', icon: RefreshCw },
+];
+
+export default function AdminWrapper({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [auth, setAuth] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [pass, setPass] = useState('');
   const [loading, setLoading] = useState(false);
-  const [checking, setChecking] = useState(true);
   const [error, setError] = useState('');
 
-  const verifyPassword = async (password: string) => {
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    });
-    return res.ok;
-  };
-
   useEffect(() => {
-    const saved = localStorage.getItem('admin_access');
-    if (!saved) {
-      setChecking(false);
-      return;
-    }
-
-    verifyPassword(saved)
-      .then((ok) => {
-        if (ok) setAuth(true);
-        else localStorage.removeItem('admin_access');
-      })
+    // Старий вхід зберігав пароль у браузері — прибираємо
+    try {
+      localStorage.removeItem('admin_access');
+    } catch {}
+    fetch('/api/admin/login', { cache: 'no-store' })
+      .then((r) => setAuth(r.ok))
+      .catch(() => setAuth(false))
       .finally(() => setChecking(false));
   }, []);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
-      const ok = await verifyPassword(pass);
-      if (ok) {
-        setAuth(true);
-        localStorage.setItem('admin_access', pass);
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        // Перезавантажуємо, щоб сторінка підтягнула дані вже з сесією
+        window.location.reload();
+        return;
       } else {
-        setError('Неправильний пароль');
+        setError(data.error || 'Неправильний пароль');
       }
     } catch {
-      setError('Помилка зʼєднання з сервером');
+      setError('Немає звʼязку із сервером');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_access');
+  const handleLogout = async () => {
+    await fetch('/api/admin/login', { method: 'DELETE' }).catch(() => {});
     setAuth(false);
-    setPass('');
   };
 
   if (checking) {
     return (
-      <div className="h-screen flex items-center justify-center text-gray-500">
-        Перевірка доступу...
+      <div className="flex min-h-[60vh] items-center justify-center text-ink-3">
+        <Loader2 className="h-6 w-6 animate-spin" />
       </div>
     );
   }
 
   if (!auth) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center px-4">
-        <h1 className="text-xl font-bold mb-4">🔐 Вхід в адмінку</h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-          className="flex flex-col items-center w-full max-w-xs"
-        >
+      <div className="flex min-h-[70vh] items-center justify-center px-4">
+        <form onSubmit={handleLogin} className="panel w-full max-w-sm p-8 text-center">
+          <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-white">
+            <Lock className="h-5 w-5" />
+          </span>
+          <h1 className="text-[24px] font-semibold tracking-tight">Вхід в адмінку</h1>
+          <p className="mt-1 text-[14px] text-ink-2">Пароль — значення ADMIN_SECRET на сервері.</p>
           <input
             type="password"
-            placeholder="Введіть пароль"
-            className="border px-4 py-2 rounded w-full"
+            placeholder="Пароль"
+            className="field mt-6 text-center"
             value={pass}
             onChange={(e) => setPass(e.target.value)}
             autoComplete="current-password"
+            autoFocus
           />
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading || !pass}
-            className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 w-full"
-          >
-            {loading ? 'Вхід...' : 'Увійти'}
+          {error && <p className="mt-3 text-[14px] text-sale" role="alert">{error}</p>}
+          <button type="submit" disabled={loading || !pass} className="btn-primary mt-5 w-full">
+            {loading ? 'Перевіряємо…' : 'Увійти'}
           </button>
         </form>
       </div>
@@ -104,38 +101,31 @@ export default function AdminWrapper({
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-4 flex-wrap">
-          <Link href="/admin" className="text-blue-600 hover:underline">
-            ➕ Додати товар
+    <div className="admin pb-16">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-[28px] font-semibold tracking-tight">Адмінка</h1>
+        <div className="flex items-center gap-2">
+          <Link href="/" className="btn-ghost h-9 px-4 text-[13px]" target="_blank">
+            <ExternalLink className="h-4 w-4" />
+            Сайт
           </Link>
-          <Link href="/admin/products" className="text-blue-600 hover:underline">
-            📋 Товари
-          </Link>
-          <Link href="/admin/promotions" className="text-blue-600 hover:underline">
-            🎯 Акції
-          </Link>
-          <Link href="/admin/orders" className="text-blue-600 hover:underline">
-            📦 Замовлення
-          </Link>
-          <Link href="/admin/analytics" className="text-blue-600 hover:underline">
-            📊 Аналітика
-          </Link>
-          <Link href="/admin/sync" className="text-blue-600 hover:underline">
-            🔄 Синх. MMA
-          </Link>
-          <Link href="/" className="text-blue-600 hover:underline">
-            🏠 На сайт
-          </Link>
+          <button type="button" onClick={handleLogout} className="btn-ghost h-9 px-4 text-[13px]">
+            <LogOut className="h-4 w-4" />
+            Вийти
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
-        >
-          Вийти
-        </button>
       </div>
+      <nav className="no-scrollbar -mx-4 mb-8 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" aria-label="Розділи адмінки">
+        {NAV.map(({ href, label, icon: Icon }) => {
+          const active = pathname === href;
+          return (
+            <Link key={href} href={href} className={`chip shrink-0 gap-1.5 ${active ? 'chip-active' : ''}`}>
+              <Icon className="h-4 w-4" strokeWidth={1.8} />
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
       {children}
     </div>
   );

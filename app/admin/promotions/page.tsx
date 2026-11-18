@@ -68,6 +68,7 @@ export default function PromotionsAdminPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/promotions', { headers: adminHeaders() });
+      if (res.status === 401) return;
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Помилка завантаження');
       setPromotions(data.promotions ?? []);
@@ -112,13 +113,11 @@ export default function PromotionsAdminPage() {
 
     setUploadingImage(true);
     try {
-      const token = localStorage.getItem('admin_access');
       const formData = new FormData();
       formData.append('file', file);
 
       const res = await fetch('/api/admin/promotions/upload', {
         method: 'POST',
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: formData,
       });
 

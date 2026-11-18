@@ -14,41 +14,60 @@ import { CARD_ONLY_FROM, FREE_DELIVERY_FROM } from '@/data/storePolicies';
 import { CreditCard, PackageCheck, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import EcommerceTracker from '@/components/EcommerceTracker';
 import { formatPrice } from '@/lib/format';
+import { getProductByHandle } from '@/lib/getProduct';
+import { absoluteUrl, SITE_NAME } from '@/lib/site';
+import { jsonLd } from '@/lib/jsonLd';
+import { sanitizeHtml } from '@/lib/sanitizeHtml';
 
-export async function generateMetadata({
-  params: paramsPromise,
-}: {
-  params: Promise<{ handle: string }>;
-}): Promise<Metadata> {
-  const { handle } = await paramsPromise;
+type Params = { params: Promise<{ handle: string }> };
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${handle}`
-  );
-  const product = await res.json();
+export const revalidate = 300;
+
+// Сторінки товарів генеруються при першому запиті й кешуються (ISR) на 5 хвилин
+export async function generateStaticParams() {
+  return [];
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { handle } = await params;
+  const product = await getProductByHandle(handle);
+  if (!product) return { title: 'Товар не знайдено', robots: { index: false } };
+
+  const url = absoluteUrl(`/product/${product.handle}`);
+  const plain = stripHtml(product.description || '');
+  const description = (
+    plain ||
+    `${product.title} за ${formatPrice(product.price)} — доставка Новою Поштою 1–3 дні, оплата при отриманні, 14 днів на повернення.`
+  ).slice(0, 160);
+  const images = (product.images?.length ? product.images : [product.image]).filter(Boolean).slice(0, 4);
 
   return {
-    title: product.title || 'Товар',
-    description: stripHtml(product.description || ''),
+    title: `${product.title} — купити за ${formatPrice(product.price)}`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title: product.title,
+      description,
+      images: images.map((src) => ({ url: src, alt: product.title })),
+    },
+    twitter: { card: 'summary_large_image', title: product.title, description, images },
+    other: {
+      'product:price:amount': String(product.price),
+      'product:price:currency': 'UAH',
+      'product:availability': product.inStock === false ? 'out of stock' : 'in stock',
+      ...(product.brand ? { 'product:brand': product.brand } : {}),
+      'product:retailer_item_id': product._id,
+    },
   };
 }
 
-export default async function ProductPage({
-  params: paramsPromise,
-}: {
-  params: Promise<{ handle: string }>;
-}) {
-  const { handle } = await paramsPromise;
+export default async function ProductPage({ params }: Params) {
+  const { handle } = await params;
+  const product = await getProductByHandle(handle);
+  if (!product) return notFound();
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  if (!baseUrl) {
-    throw new Error('❌ NEXT_PUBLIC_BASE_URL не задан');
-  }
-
-  const res = await fetch(`${baseUrl}/api/products/${handle}`);
-  if (!res.ok) return notFound();
-
-  const product = await res.json();
   const category = catalogCategory.find(
     (cat) => cat.slug === product.categorySlug
   );
@@ -90,11 +109,33 @@ export default async function ProductPage({
     image: product.images?.length ? product.images : [product.image],
     description: stripHtml(product.description || '').slice(0, 500),
     ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
+    sku: product._id,
+    url: absoluteUrl(`/product/${product.handle}`),
+    ...(category ? { category: category.title } : {}),
     offers: {
       '@type': 'Offer',
+      url: absoluteUrl(`/product/${product.handle}`),
       priceCurrency: 'UAH',
       price: product.price,
+      priceValidUntil: new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10),
+      itemCondition: 'https://schema.org/NewCondition',
       availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      seller: { '@type': 'Organization', name: SITE_NAME },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'UA' },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'UA',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 14,
+      },
     },
   };
 
@@ -112,7 +153,7 @@ export default async function ProductPage({
   return (
     <>
       <EcommerceTracker event="view_item" product={product} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(productJsonLd)} />
       <Breadcrumbs items={crumbs} />
 
       <article className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12">
@@ -141,7 +182,7 @@ export default async function ProductPage({
               {hasDiscount && (
                 <>
                   <span className="text-lg text-ink-3 line-through">{formatPrice(product.oldPrice)}</span>
-                  {product.discountPercent > 0 && (
+                  {(product.discountPercent ?? 0) > 0 && (
                     <span className="rounded-full bg-sale px-2 py-0.5 text-[13px] font-semibold text-white">
                       −{product.discountPercent}%
                     </span>
@@ -160,7 +201,7 @@ export default async function ProductPage({
             </p>
           </header>
 
-          <VariantSection variants={product.variants} product={product} />
+          <VariantSection variants={product.variants ?? []} product={product} />
 
           <ul className="divide-y divide-line-soft rounded-[22px] bg-white px-5">
             {perks.map(({ icon: Icon, title, text }) => (
@@ -180,7 +221,7 @@ export default async function ProductPage({
                 <PackageCheck className="h-5 w-5 text-accent" strokeWidth={1.75} />
                 Про товар
               </h2>
-              <ProductDescription html={product.description} />
+              <ProductDescription html={sanitizeHtml(product.description)} />
             </section>
           )}
         </div>

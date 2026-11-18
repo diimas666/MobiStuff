@@ -128,6 +128,13 @@ export default function CheckoutPage() {
       total,
       items: cart,
       createdAt: new Date().toISOString(),
+      utm: (() => {
+        try {
+          return JSON.parse(localStorage.getItem('ms_utm') || 'null');
+        } catch {
+          return null;
+        }
+      })(),
     };
 
     try {
@@ -137,13 +144,20 @@ export default function CheckoutPage() {
         body: JSON.stringify(order),
       });
 
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         orderCompletedRef.current = true;
-        localStorage.setItem('lastOrder', JSON.stringify(order));
+        localStorage.setItem(
+          'lastOrder',
+          JSON.stringify({ ...order, orderId: data.orderId, total: data.total ?? order.total, paymentMethod: data.paymentMethod ?? order.paymentMethod })
+        );
         clearCart();
         router.replace('/thank-you');
       } else {
-        fail('Не вдалося оформити замовлення. Спробуйте ще раз або напишіть нам на mobistuffinfo@gmail.com.');
+        fail(
+          (res.status === 400 && data.message) ||
+            'Не вдалося оформити замовлення. Спробуйте ще раз або напишіть нам на mobistuffinfo@gmail.com.'
+        );
       }
     } catch {
       fail('Немає з’єднання з сервером. Перевірте інтернет і спробуйте ще раз.');
@@ -175,11 +189,11 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="co-name" className="field-label">Ім’я</label>
-                <input id="co-name" type="text" autoComplete="given-name" value={name} onChange={(e) => setName(e.target.value)} required className={inputClass} />
+                <input id="co-name" type="text" autoComplete="given-name" placeholder="Олена" value={name} onChange={(e) => setName(e.target.value)} required className={inputClass} />
               </div>
               <div>
                 <label htmlFor="co-last" className="field-label">Прізвище</label>
-                <input id="co-last" type="text" autoComplete="family-name" value={lastName} onChange={(e) => setLastName(e.target.value)} required className={inputClass} />
+                <input id="co-last" type="text" autoComplete="family-name" placeholder="Шевченко" value={lastName} onChange={(e) => setLastName(e.target.value)} required className={inputClass} />
               </div>
               <div>
                 <label htmlFor="co-phone" className="field-label">Телефон</label>
@@ -201,7 +215,7 @@ export default function CheckoutPage() {
               </div>
               <div>
                 <label htmlFor="co-email" className="field-label">Email <span className="text-ink-3">(необов’язково)</span></label>
-                <input id="co-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+                <input id="co-email" type="email" autoComplete="email" inputMode="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
               </div>
             </div>
           </Step>
@@ -247,7 +261,7 @@ export default function CheckoutPage() {
 
             <div className="mt-6">
               <label htmlFor="co-comment" className="field-label">Коментар до замовлення <span className="text-ink-3">(необов’язково)</span></label>
-              <textarea id="co-comment" rows={3} value={comment} onChange={(e) => setComment(e.target.value)} className={`${inputClass} resize-none`} />
+              <textarea id="co-comment" rows={3} placeholder="Наприклад: передзвоніть після 18:00" value={comment} onChange={(e) => setComment(e.target.value)} className={`${inputClass} resize-none`} />
             </div>
           </Step>
         </div>

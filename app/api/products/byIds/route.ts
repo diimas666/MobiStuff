@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       .filter((id: string) => mongoose.Types.ObjectId.isValid(id))
       .map((id: string) => new mongoose.Types.ObjectId(id));
 
-    const products = await Product.find({ _id: { $in: objectIds } });
+    const products = await Product.find({ _id: { $in: objectIds } }).limit(200).lean();
     return NextResponse.json(products);
   } catch (error) {
     console.error('❌ Ошибка при поиске продуктов:', error);

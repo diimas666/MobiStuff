@@ -1,78 +1,24 @@
-// app/api/products/route.ts
+// app/api/products/route.ts — публічний каталог (вітрина + мобільний застосунок)
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import Product from '@/app/api/models/Product';
-import { filterCatalogProducts } from '@/lib/productCategoryRules';
-import { titleMatchesPhoneModel } from '@/lib/glassPhoneFilter';
-
-function escapeRegex(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+import { queryProducts } from '@/lib/queryProducts';
 
 export async function GET(req: Request) {
   try {
-    await dbConnect();
-    const { searchParams } = new URL(req.url);
-
-    const category = searchParams.get('category');
-    const subcategory = searchParams.get('subcategory');
-    const brand = searchParams.get('brand');
-    const phone = searchParams.get('phone');
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
-    const isTrending = searchParams.get('isTrending');
-    const onSale = searchParams.get('onSale');
-    const sort = searchParams.get('sort');
-
-    const filter: Record<string, unknown> = {};
-
-    if (category) filter.categorySlug = category;
-    if (subcategory) filter.subcategorySlug = subcategory;
-    if (brand) filter.brand = new RegExp(`^${escapeRegex(brand)}$`, 'i');
-
-    if (minPrice || maxPrice) {
-      filter.price = {};
-      if (minPrice) (filter.price as Record<string, number>).$gte = Number(minPrice);
-      if (maxPrice) (filter.price as Record<string, number>).$lte = Number(maxPrice);
-    }
-
-    if (isTrending === 'true') filter.isTrending = true;
-
-    if (onSale === 'true') {
-      filter.$or = [
-        { discountPercent: { $gt: 0 } },
-        { $expr: { $and: [{ $gt: ['$oldPrice', '$price'] }, { $gt: ['$oldPrice', 0] }] } },
-      ];
-    }
-
-    let sortOption: Record<string, 1 | -1> = { title: 1 };
-    switch (sort) {
-      case 'price-asc':
-        sortOption = { price: 1 };
-        break;
-      case 'price-desc':
-        sortOption = { price: -1 };
-        break;
-      case 'newest':
-        sortOption = { createdAt: -1 };
-        break;
-      case 'title-asc':
-        sortOption = { title: 1 };
-        break;
-      default:
-        sortOption = { title: 1 };
-    }
-
-    const products = filterCatalogProducts(
-      await Product.find(filter).sort(sortOption).lean(),
-      category
-    );
-
-    const filteredProducts = phone
-      ? products.filter((product) => titleMatchesPhoneModel(product.title, phone))
-      : products;
-
-    return NextResponse.json(filteredProducts);
+    const sp = new URL(req.url).searchParams;
+    const products = await queryProducts({
+      category: sp.get('category'),
+      subcategory: sp.get('subcategory'),
+      brand: sp.get('brand'),
+      phone: sp.get('phone'),
+      minPrice: sp.get('minPrice'),
+      maxPrice: sp.get('maxPrice'),
+      isTrending: sp.get('isTrending'),
+      onSale: sp.get('onSale'),
+      sort: sp.get('sort'),
+    });
+    return NextResponse.json(products, {
+      headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' },
+    });
   } catch (error) {
     console.error('❌ Ошибка при получении товаров:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

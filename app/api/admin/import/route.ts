@@ -1,3 +1,5 @@
+import { revalidateStore } from '@/lib/revalidateStore';
+import { checkAdminAuth, unauthorizedResponse } from '@/lib/adminAuth';
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
 import csv from 'csv-parser';
@@ -6,6 +8,7 @@ import Product from '@/app/api/models/Product';
 import { slugify } from 'transliteration'; // npm i transliteration
 
 export async function POST(req: NextRequest) {
+  if (!checkAdminAuth(req)) return unauthorizedResponse();
   const formData = (await req.formData()) as unknown as globalThis.FormData;
   const file = formData.get('file') as File | null;
   if (!file)
@@ -67,5 +70,6 @@ export async function POST(req: NextRequest) {
   }
 
   await Product.insertMany(products);
+  revalidateStore();
   return NextResponse.json({ success: true, count: products.length });
 }

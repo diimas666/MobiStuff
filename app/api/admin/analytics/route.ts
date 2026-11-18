@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
     const [orders, products, dailyStats] = await Promise.all([
       Order.find().lean(),
-      Product.find().select('_id handle mmaSourcePrice price').lean(),
+      Product.find().select('_id handle price +mmaSourcePrice').lean(),
       DailyStat.find({
         date: {
           $gte: `${year}-01-01`,
