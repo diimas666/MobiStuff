@@ -13,7 +13,7 @@ import NavigationProgress from '@/components/NavigationProgress';
 import AnalyticsPageView from '@/components/AnalyticsPageView';
 import GoogleTags from '@/components/GoogleTags';
 import MetaPixel from '@/components/MetaPixel';
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site';
+import { IOS_APP_ID, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site';
 import { jsonLd } from '@/lib/jsonLd';
 import { getStoreSettings, publicSettings } from '@/lib/storeSettings';
 import { StoreSettingsProvider } from '@/context/StoreSettingsContext';
@@ -27,6 +27,8 @@ const onest = Onest({
 });
 
 export const metadata: Metadata = {
+  // Smart App Banner у Safari на iPhone: «Відкрити / Завантажити» застосунок
+  ...(IOS_APP_ID ? { itunes: { appId: IOS_APP_ID } } : {}),
   metadataBase: new URL(SITE_URL),
   title: {
     default: `${SITE_NAME} — аксесуари для смартфонів з доставкою по Україні`,

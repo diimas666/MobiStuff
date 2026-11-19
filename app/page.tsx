@@ -14,6 +14,7 @@ import HomeHero from '@/components/HomeHero';
 import HomeSectionTitle from '@/components/HomeSectionTitle';
 import ProductImage from '@/components/ProductImage';
 import { getStoreSettings } from '@/lib/storeSettings';
+import AppPromo from '@/components/app/AppPromo';
 import { ChevronRight, CreditCard, PackageCheck, RotateCcw, Truck } from 'lucide-react';
 
 const getBenefits = (FREE_DELIVERY_FROM: number, CARD_ONLY_FROM: number) => [
@@ -190,6 +191,8 @@ export default async function GeneralPage() {
       {restSections.map((section) => (
         <OffersSection key={section.title} {...section} />
       ))}
+
+      <AppPromo />
 
       <section>
         <HomeSectionTitle title="Бренди" subtitle="Перевірені виробники, офіційний товар." />

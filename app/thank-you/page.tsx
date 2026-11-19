@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import AppStoreButton from '@/components/app/AppStoreButton';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
@@ -127,6 +128,12 @@ export default function ThankYouPage() {
         Продовжити покупки
       </Link>
       <p className="mt-4 text-[13px] text-ink-3">Повернемося на головну через {secondsLeft} с</p>
+
+      <div className="mt-10 flex w-full max-w-md flex-col items-center rounded-3xl bg-white p-6 text-center">
+        <p className="text-[17px] font-semibold tracking-tight">Стежте за посилкою в застосунку</p>
+        <p className="mt-1 mb-4 text-[14px] text-ink-2">Статус і номер ТТН прийдуть сповіщенням — без дзвінків.</p>
+        <AppStoreButton source="thank-you" />
+      </div>
     </div>
   );
 }

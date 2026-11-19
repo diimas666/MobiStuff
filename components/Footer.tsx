@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Container from '@/components/Container';
 import { policyTexts } from '@/data/storePolicies';
 import { getStoreSettings } from '@/lib/storeSettings';
+import AppStoreButton from '@/components/app/AppStoreButton';
 
 const columns = [
   {
@@ -78,6 +79,11 @@ export default async function Footer() {
               </p>
             )}
           </div>
+        </div>
+
+        <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <AppStoreButton source="footer" />
+          <p className="text-[13px]">Замовляйте швидше в застосунку для iPhone.</p>
         </div>
 
         <div className="flex flex-col gap-2 border-t border-line-soft pt-6 sm:flex-row sm:items-center sm:justify-between">

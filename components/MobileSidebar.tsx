@@ -9,6 +9,8 @@ import { useCart } from '@/context/CartContext';
 import { catalogCategory } from '@/data/catalogCategory';
 import { Logo } from './Header';
 import type { MenuCategory } from '@/lib/getMenuData';
+import { useShowIosApp } from './app/AppStoreButton';
+import { IOS_APP_URL } from '@/lib/site';
 
 /* Запасний варіант, поки дані меню не завантажились або база недоступна */
 const STATIC_MENU: MenuCategory[] = catalogCategory.map((c) => ({
@@ -66,6 +68,7 @@ export default function MobileSidebar() {
   const [closing, setClosing] = useState(false);
   const closeBtn = useRef<HTMLButtonElement>(null);
   const cartCount = cart.reduce((n, i) => n + i.quantity, 0);
+  const showApp = useShowIosApp();
 
   const dismiss = useCallback(() => {
     setClosing(true);
@@ -196,6 +199,18 @@ export default function MobileSidebar() {
                   </li>
                 ))}
               </ul>
+
+              {showApp && (
+                <a href={IOS_APP_URL} target="_blank" rel="noopener noreferrer" className="mt-6 flex items-center gap-3.5 rounded-3xl bg-white p-3 pr-4 active:bg-canvas">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/images/app-icon.jpg" alt="" className="h-14 w-14 shrink-0 rounded-[14px]" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[16px] font-medium tracking-tight">Застосунок MobiStuff</span>
+                    <span className="block text-[13px] text-ink-3">Статус замовлення і ТТН у сповіщеннях</span>
+                  </span>
+                  <span className="rounded-full bg-canvas px-3.5 py-1.5 text-[14px] font-semibold text-accent">Завантажити</span>
+                </a>
+              )}
 
               <ul className="mt-6 overflow-hidden rounded-3xl bg-white">
                 {INFO_LINKS.map((l, i) => (
