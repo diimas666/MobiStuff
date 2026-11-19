@@ -22,7 +22,7 @@ const NAV = [
   { label: 'Акції', href: '/sale', accent: true },
 ];
 
-function Logo() {
+export function Logo() {
   const name = SITE_NAME;
   const split = name === 'MobiStuff' ? ['Mobi', 'Stuff'] : [name, ''];
   return (
@@ -50,6 +50,13 @@ export default function Header() {
 
   // Закриваємо пошук при переході між сторінками
   useEffect(() => setIsSearchOpen(false), [pathname]);
+
+  // Пошук можна відкрити з мобільного меню
+  useEffect(() => {
+    const openSearch = () => setIsSearchOpen(true);
+    window.addEventListener('ms:open-search', openSearch);
+    return () => window.removeEventListener('ms:open-search', openSearch);
+  }, []);
 
   return (
     <>
