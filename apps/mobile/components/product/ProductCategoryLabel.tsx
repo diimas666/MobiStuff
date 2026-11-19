@@ -10,8 +10,8 @@ export function ProductCategoryLabel({ category }: Props) {
   category: {
     fontSize: 13,
     fontWeight: '600',
-    color: c.priceLight,
-    marginBottom: 6,
+    color: c.ink3,
+    marginBottom: 4,
   },
 }));
 

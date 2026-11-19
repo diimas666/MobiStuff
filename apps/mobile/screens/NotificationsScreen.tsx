@@ -6,7 +6,6 @@ import { useCallback, useMemo } from 'react';
 import {
   Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -53,7 +52,7 @@ export function NotificationsScreen() {
       borderRadius: radius.pill,
       backgroundColor: c.homeSearch,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
     },
     markAllText: {
       fontSize: 13,
@@ -166,7 +165,6 @@ export function NotificationsScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

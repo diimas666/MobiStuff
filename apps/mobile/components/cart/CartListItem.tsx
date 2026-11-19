@@ -1,13 +1,12 @@
 import { memo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ProductImage } from '../ProductImage';
-import { radius } from '../../constants/theme';
 import type { CartItem } from '../../types/cart';
 import { formatPrice } from '../../types/catalog';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 
-const IMAGE_SIZE = 80;
+const IMAGE_SIZE = 88;
 
 type Props = {
   item: CartItem;
@@ -16,166 +15,53 @@ type Props = {
   onRemove: () => void;
 };
 
-export const CartListItem = memo(function CartListItem({
-  item,
-  onIncrement,
-  onDecrement,
-  onRemove,
-}: Props) {
+/** Товар у кошику: фото, назва, ціна за шт., лічильник і «Видалити» */
+export const CartListItem = memo(function CartListItem({ item, onIncrement, onDecrement, onRemove }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    gap: 12,
-    backgroundColor: c.homeSearch,
-    borderRadius: radius.md,
-    padding: 12,
-    marginBottom: 12,
-    minHeight: IMAGE_SIZE + 24,
-  },
-  imageWrap: {
-    backgroundColor: c.card,
-    borderRadius: radius.sm,
-    overflow: 'hidden',
-  },
-  content: {
-    flex: 1,
-    minWidth: 0,
-    justifyContent: 'space-between',
-    minHeight: IMAGE_SIZE,
-  },
-  textBlock: {
-    gap: 4,
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: c.priceLight,
-    lineHeight: 24,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: c.textOnDark,
-    lineHeight: 19,
-  },
-  description: {
-    fontSize: 12,
-    color: c.textOnDarkMuted,
-    lineHeight: 17,
-  },
-  variant: {
-    fontSize: 12,
-    color: c.textOnDarkMuted,
-  },
-  actions: {
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-    minHeight: IMAGE_SIZE,
-  },
-  actionsSpacer: {
-    flex: 1,
-  },
-  counter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: c.homeSurface,
-    borderRadius: radius.sm,
-    padding: 4,
-    gap: 4,
-  },
-  counterButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.14)',
-  },
-  quantity: {
-    minWidth: 24,
-    textAlign: 'center',
-    fontSize: 14,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  deleteButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.45)',
-    backgroundColor: 'rgba(239, 68, 68, 0.18)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pressed: {
-    opacity: 0.8,
-  },
-}));
+    card: { flexDirection: 'row', gap: 14, backgroundColor: c.card, borderRadius: 22, padding: 12, marginBottom: 10 },
+    image: { width: IMAGE_SIZE, height: IMAGE_SIZE, borderRadius: 16, backgroundColor: '#FFFFFF', overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+    content: { flex: 1, minWidth: 0 },
+    title: { fontSize: 15, lineHeight: 20, fontWeight: '600', color: c.text },
+    meta: { marginTop: 2, fontSize: 13, color: c.ink3 },
+    bottom: { marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    stepper: { flexDirection: 'row', alignItems: 'center', backgroundColor: c.fill, borderRadius: 18, height: 34 },
+    stepBtn: { width: 34, height: 34, alignItems: 'center', justifyContent: 'center' },
+    qty: { minWidth: 22, textAlign: 'center', fontSize: 15, fontWeight: '600', color: c.text },
+    total: { fontSize: 17, fontWeight: '700', letterSpacing: -0.3, color: c.text },
+    remove: { marginTop: 6, alignSelf: 'flex-start' },
+    removeText: { fontSize: 14, color: c.primary, fontWeight: '500' },
+  }));
+  const hasOld = item.oldPrice && item.oldPrice > item.price;
 
   return (
     <View style={styles.card}>
-      <View style={styles.imageWrap}>
-        <ProductImage
-          uri={item.image}
-          label={item.title}
-          size={IMAGE_SIZE}
-          rounded={radius.sm}
-          resizeMode="cover"
-        />
+      <View style={styles.image}>
+        <ProductImage uri={item.image} label={item.title} size={IMAGE_SIZE - 8} resizeMode="contain" backgroundColor="#FFFFFF" />
       </View>
-
       <View style={styles.content}>
-        <View style={styles.textBlock}>
-          <Text style={styles.title} numberOfLines={2}>
-            {item.title}
-          </Text>
-
-          {item.description ? (
-            <Text style={styles.description} numberOfLines={2} ellipsizeMode="tail">
-              {item.description}
-            </Text>
-          ) : null}
-
-          {item.variant ? <Text style={styles.variant}>{item.variant}</Text> : null}
-        </View>
-
-        <Text style={styles.price}>{formatPrice(item.price)}</Text>
-      </View>
-
-      <View style={styles.actions}>
-        <View style={styles.counter}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Зменшити кількість"
-            onPress={onDecrement}
-            style={({ pressed }) => [styles.counterButton, pressed && styles.pressed]}>
-            <Ionicons name="remove" size={18} color={colors.textOnDark} />
-          </Pressable>
-
-          <Text style={styles.quantity}>{item.quantity}</Text>
-
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Збільшити кількість"
-            onPress={onIncrement}
-            style={({ pressed }) => [styles.counterButton, pressed && styles.pressed]}>
-            <Ionicons name="add" size={18} color={colors.textOnDark} />
-          </Pressable>
-        </View>
-
-        <View style={styles.actionsSpacer} />
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Видалити з кошика"
-          onPress={onRemove}
-          style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
-          <Ionicons name="trash-outline" size={18} color={colors.danger} />
+        <Text style={styles.title} numberOfLines={2}>
+          {item.title}
+        </Text>
+        <Text style={styles.meta}>
+          {item.variant ? `${item.variant} · ` : ''}
+          {formatPrice(item.price)} за шт.{hasOld ? ` (було ${formatPrice(item.oldPrice!)})` : ''}
+        </Text>
+        <Pressable accessibilityRole="button" onPress={onRemove} hitSlop={8} style={styles.remove}>
+          <Text style={styles.removeText}>Видалити</Text>
         </Pressable>
+        <View style={styles.bottom}>
+          <View style={styles.stepper}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Зменшити кількість" onPress={onDecrement} style={({ pressed }) => [styles.stepBtn, pressed && { opacity: 0.5 }]}>
+              <Ionicons name="remove" size={18} color={colors.text} />
+            </Pressable>
+            <Text style={styles.qty}>{item.quantity}</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel="Збільшити кількість" onPress={onIncrement} style={({ pressed }) => [styles.stepBtn, pressed && { opacity: 0.5 }]}>
+              <Ionicons name="add" size={18} color={colors.text} />
+            </Pressable>
+          </View>
+          <Text style={styles.total}>{formatPrice(item.price * item.quantity)}</Text>
+        </View>
       </View>
     </View>
   );
 });
-

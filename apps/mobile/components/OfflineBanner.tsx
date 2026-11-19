@@ -15,7 +15,7 @@ export function OfflineBanner() {
       paddingVertical: 10,
       backgroundColor: c.homeSurface,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: 'rgba(255,255,255,0.12)',
+      borderBottomColor: c.lineSoft,
     },
     text: {
       fontSize: 13,

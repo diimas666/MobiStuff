@@ -7,7 +7,8 @@ module.exports = {
       'module:react-native-dotenv',
       {
         moduleName: '@env',
-        path: path.resolve(__dirname, '.env'),
+        // ENVFILE=.env.development — щоб у розробці ходити на локальний сервер
+        path: path.resolve(__dirname, process.env.ENVFILE || '.env'),
         safe: false,
         allowUndefined: false,
       },

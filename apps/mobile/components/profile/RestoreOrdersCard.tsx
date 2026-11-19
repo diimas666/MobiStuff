@@ -22,7 +22,7 @@ export function RestoreOrdersCard({ onRestored }: { onRestored: () => Promise<vo
       borderRadius: radius.lg,
       backgroundColor: c.homeSearch,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
       gap: 10,
     },
     row: { flexDirection: 'row', alignItems: 'center', gap: 10 },

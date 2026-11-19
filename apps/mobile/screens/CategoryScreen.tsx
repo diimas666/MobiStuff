@@ -6,7 +6,6 @@ import { FlashList } from '@shopify/flash-list';
 import {
   ActivityIndicator,
   Dimensions,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -304,7 +303,6 @@ export function CategoryScreen({ route, navigation }: Props) {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
       {isOffline && displayedProducts.length === 0 ? (
         <OfflineState onRetry={retry} />
       ) : isLoading && displayedProducts.length === 0 ? (

@@ -168,7 +168,7 @@ export function BrandCategoryFilterSheet({
                   <Text style={styles.count}>{option.count}</Text>
                   <View style={[styles.checkbox, isActive && styles.checkboxActive]}>
                     {isActive ? (
-                      <Ionicons name="checkmark" size={14} color={colors.textOnDark} />
+                      <Ionicons name="checkmark" size={14} color={colors.onPrimary} />
                     ) : null}
                   </View>
                 </Pressable>

@@ -9,6 +9,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { CartDiscountBanner } from '../components/cart/CartDiscountBanner';
 import { CartEmptyState } from '../components/cart/CartEmptyState';
 import { CartListItem } from '../components/cart/CartListItem';
+import { FreeDeliveryProgress } from '../components/cart/FreeDeliveryProgress';
+import { useStoreSettings } from '../hooks/useStoreSettings';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { useCart } from '../context/CartContext';
@@ -39,10 +41,12 @@ export function CartScreen() {
     marginBottom: 16,
   },
   title: {
-    fontSize: 28,
+    fontSize: 34,
     fontWeight: '700',
-    color: c.textOnDark,
-    marginBottom: 6,
+    letterSpacing: -0.8,
+    color: c.text,
+    marginTop: 8,
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
@@ -51,23 +55,22 @@ export function CartScreen() {
     lineHeight: 20,
   },
   subtitleBold: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: c.textOnDark,
-    marginBottom: 20,
+    fontSize: 15,
+    color: c.textOnDarkMuted,
+    marginBottom: 18,
     lineHeight: 20,
   },
   subtitlePrice: {
-    fontWeight: '700',
-    color: c.priceLight,
+    fontWeight: '600',
+    color: c.text,
   },
   footer: {
     paddingHorizontal: spacing.screen,
     paddingTop: 12,
-    paddingBottom: 24,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
-    backgroundColor: c.homeBackground,
+    paddingBottom: 14,
+    borderTopWidth: 0.5,
+    borderTopColor: c.line,
+    backgroundColor: c.card,
     gap: 12,
   },
   totalRow: {
@@ -76,14 +79,15 @@ export function CartScreen() {
     justifyContent: 'space-between',
   },
   totalLabel: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
-    color: c.textOnDarkMuted,
+    color: c.text,
   },
   totalValue: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '700',
-    color: c.priceLight,
+    letterSpacing: -0.5,
+    color: c.text,
   },
   checkoutButton: {
     minHeight: 52,
@@ -98,7 +102,7 @@ export function CartScreen() {
   checkoutButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: c.textOnDark,
+    color: c.onPrimary,
   },
   pressed: {
     opacity: 0.88,
@@ -110,6 +114,7 @@ export function CartScreen() {
   const route = useRoute<CartRouteProp>();
   const { items, totalQuantity, increment, decrement, removeFromCart } = useCart();
   const cartTotals = useMemo(() => getCartTotals(items), [items]);
+  const { freeDeliveryFrom } = useStoreSettings();
   const { total } = cartTotals;
 
   const handleBack = useCallback(() => {
@@ -189,7 +194,9 @@ export function CartScreen() {
 
         {items.length === 0 ? (
           <CartEmptyState onBrowseCatalog={openCatalog} onGoHome={openHome} />
-        ) : null}
+        ) : (
+          <FreeDeliveryProgress total={total} threshold={freeDeliveryFrom} />
+        )}
       </>
     ),
     [
@@ -200,6 +207,7 @@ export function CartScreen() {
       showBackButton,
       total,
       totalQuantity,
+      freeDeliveryFrom,
     ],
   );
 
@@ -220,7 +228,7 @@ export function CartScreen() {
         {items.length > 0 ? (
           <View style={styles.footer}>
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Разом до сплати</Text>
+              <Text style={styles.totalLabel}>Разом</Text>
               <Text style={styles.totalValue}>{formatPrice(total)}</Text>
             </View>
 
@@ -231,7 +239,7 @@ export function CartScreen() {
               onPress={openCheckout}
               style={({ pressed }) => [styles.checkoutButton, pressed && styles.pressed]}>
               <Text style={styles.checkoutButtonText}>Оформити замовлення</Text>
-              <Ionicons name="arrow-forward" size={18} color={colors.textOnDark} />
+              <Ionicons name="arrow-forward" size={18} color={colors.onPrimary} />
             </Pressable>
           </View>
         ) : null}

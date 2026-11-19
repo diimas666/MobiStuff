@@ -38,7 +38,7 @@ export function HomeSearchResultItem({ product, onPress }: Props) {
   price: {
     fontSize: 14,
     fontWeight: '700',
-    color: c.primary,
+    color: c.text,
     marginTop: 2,
   },
 }));
@@ -47,7 +47,7 @@ export function HomeSearchResultItem({ product, onPress }: Props) {
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [styles.item, pressed && styles.pressed]}>
-      <ProductImage uri={product.image} label={product.title} size={56} rounded={radius.sm} />
+      <ProductImage uri={product.image} label={product.title} size={56} rounded={12} backgroundColor="#FFFFFF" />
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>
           {product.title}

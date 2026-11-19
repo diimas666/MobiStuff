@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { radius } from '../../constants/theme';
 import { useProductSearch } from '../../hooks/useProductSearch';
 import type { HomeProduct } from '../../types/catalog';
 import { HomeSearchResultItem } from './HomeSearchResultItem';
@@ -14,22 +13,23 @@ type Props = {
 export function HomeSearchBar({ onProductPress }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
     wrapper: {
-      marginBottom: 20,
+      marginBottom: 24,
+      zIndex: 2,
     },
     container: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 10,
-      backgroundColor: c.homeSearch,
-      borderRadius: radius.pill,
-      paddingHorizontal: 16,
-      paddingVertical: 10,
+      height: 48,
+      backgroundColor: c.card,
+      borderRadius: 14,
+      paddingHorizontal: 14,
     },
     input: {
       flex: 1,
-      fontSize: 15,
-      color: c.textOnDark,
-      paddingVertical: 4,
+      fontSize: 17,
+      color: c.text,
+      paddingVertical: 0,
     },
     searchingText: {
       fontSize: 14,
@@ -38,8 +38,12 @@ export function HomeSearchBar({ onProductPress }: Props) {
     results: {
       marginTop: 8,
       backgroundColor: c.card,
-      borderRadius: radius.md,
+      borderRadius: 18,
       overflow: 'hidden',
+      shadowColor: '#000',
+      shadowOpacity: 0.08,
+      shadowRadius: 20,
+      shadowOffset: { width: 0, height: 8 },
     },
   }));
 
@@ -59,11 +63,11 @@ export function HomeSearchBar({ onProductPress }: Props) {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        <Ionicons name="search-outline" size={20} color={colors.textOnDarkMuted} />
+        <Ionicons name="search" size={19} color={colors.ink3} />
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder={isSearching ? 'Пошук...' : 'Пошук товарів'}
+          placeholder="Навушники, павербанк, чохол…"
           placeholderTextColor={colors.textOnDarkMuted}
           style={styles.input}
           returnKeyType="search"

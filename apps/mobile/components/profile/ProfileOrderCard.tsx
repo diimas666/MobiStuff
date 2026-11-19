@@ -56,7 +56,7 @@ export function ProfileOrderCard({ order }: Props) {
     backgroundColor: c.homeSearch,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: c.lineSoft,
     overflow: 'hidden',
   },
   topSection: {
@@ -111,7 +111,7 @@ export function ProfileOrderCard({ order }: Props) {
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: c.fill,
   },
   productsSection: {
     paddingHorizontal: 16,
@@ -136,7 +136,7 @@ export function ProfileOrderCard({ order }: Props) {
     overflow: 'hidden',
     backgroundColor: c.card,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: c.lineSoft,
   },
   qtyBadge: {
     position: 'absolute',
@@ -160,7 +160,7 @@ export function ProfileOrderCard({ order }: Props) {
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: c.lineSoft,
   },
   moreText: {
     fontSize: 15,

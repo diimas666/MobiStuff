@@ -19,7 +19,7 @@ export function BackButton({ onPress }: Props) {
         { backgroundColor: colors.homeSurface },
         pressed && styles.pressed,
       ]}>
-      <Ionicons name="arrow-back" size={22} color={colors.textOnDark} />
+      <Ionicons name="chevron-back" size={22} color={colors.text} />
     </Pressable>
   );
 }

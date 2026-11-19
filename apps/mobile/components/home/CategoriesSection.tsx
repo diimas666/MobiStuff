@@ -1,8 +1,8 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { ProductImage } from '../ProductImage';
-import { radius } from '../../constants/theme';
 import type { HomeCategory } from '../../types/catalog';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
+import { SectionHeader } from '../ui/SectionHeader';
 
 type Props = {
   items: HomeCategory[];
@@ -10,83 +10,31 @@ type Props = {
   onCategoryPress?: (category: HomeCategory) => void;
 };
 
-export function CategoriesSection({
-  items,
-  onSeeAll,
-  onCategoryPress,
-}: Props) {
-  const { styles, colors } = useThemedStyles(c => ({
-  section: {
-    marginBottom: 28,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: c.textOnDark,
-  },
-  link: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: c.textOnDarkMuted,
-  },
-  list: {
-    gap: 12,
-    paddingRight: 4,
-  },
-  card: {
-    width: 88,
-    alignItems: 'center',
-  },
-  imageBox: {
-    width: 72,
-    height: 72,
-    borderRadius: radius.md,
-    backgroundColor: c.card,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-    overflow: 'hidden',
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: c.textOnDark,
-    textAlign: 'center',
-    lineHeight: 16,
-  },
-}));
+/** Категорії — фото товару на білій плитці, як у меню сайту */
+export function CategoriesSection({ items, onSeeAll, onCategoryPress }: Props) {
+  const { styles } = useThemedStyles(c => ({
+    section: { marginBottom: 32 },
+    list: { gap: 10, paddingRight: 4 },
+    card: { width: 96 },
+    imageBox: { width: 96, height: 96, borderRadius: 22, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+    label: { marginTop: 8, fontSize: 13, lineHeight: 17, fontWeight: '500', color: c.text, textAlign: 'center' },
+  }));
+
+  if (items.length === 0) return null;
 
   return (
     <View style={styles.section}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Категорії</Text>
-        <Pressable onPress={onSeeAll}>
-          <Text style={styles.link}>Дивитись всі</Text>
-        </Pressable>
-      </View>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.list}>
+      <SectionHeader title="Категорії" onAction={onSeeAll} />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.list}>
         {items.map(category => (
           <Pressable
             key={category.id}
-            style={styles.card}
+            accessibilityRole="button"
+            accessibilityLabel={category.title}
+            style={({ pressed }) => [styles.card, pressed && { opacity: 0.75 }]}
             onPress={() => onCategoryPress?.(category)}>
             <View style={styles.imageBox}>
-              <ProductImage
-                uri={category.image}
-                label={category.title}
-                size={56}
-                rounded={radius.md}
-              />
+              <ProductImage uri={category.image} label={category.title} size={80} resizeMode="contain" backgroundColor="#FFFFFF" />
             </View>
             <Text style={styles.label} numberOfLines={2}>
               {category.title}
@@ -97,4 +45,3 @@ export function CategoriesSection({
     </View>
   );
 }
-

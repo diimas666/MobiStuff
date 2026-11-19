@@ -5,7 +5,6 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback, useMemo } from 'react';
 import {
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -102,7 +101,7 @@ export function ViewedProductsScreen() {
       borderRadius: 20,
       backgroundColor: c.homeSearch,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
     },
     groupHeader: {
       flexDirection: 'row',
@@ -144,7 +143,7 @@ export function ViewedProductsScreen() {
       justifyContent: 'space-between',
       paddingTop: 4,
       borderTopWidth: 1,
-      borderTopColor: 'rgba(255, 255, 255, 0.08)',
+      borderTopColor: c.lineSoft,
     },
     groupSummaryLabel: {
       fontSize: 13,
@@ -206,7 +205,6 @@ export function ViewedProductsScreen() {
   if (!isHydrated) {
     return (
       <Screen variant="home">
-        <StatusBar barStyle="light-content" />
         <View style={styles.loadingHeader}>
           <BackButton onPress={() => navigation.goBack()} />
         </View>
@@ -217,7 +215,6 @@ export function ViewedProductsScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

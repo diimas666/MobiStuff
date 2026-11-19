@@ -5,7 +5,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -138,7 +137,7 @@ export function DeliveryAddressesScreen() {
     saveButtonText: {
       fontSize: 16,
       fontWeight: '700',
-      color: c.textOnDark,
+      color: c.onPrimary,
     },
     pressed: {
       opacity: 0.88,
@@ -267,7 +266,6 @@ export function DeliveryAddressesScreen() {
   if (!isHydrated) {
     return (
       <Screen variant="home">
-        <StatusBar barStyle="light-content" />
         <View style={styles.loadingHeader}>
           <BackButton onPress={() => navigation.goBack()} />
         </View>
@@ -278,7 +276,6 @@ export function DeliveryAddressesScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <KeyboardAvoidingView
         style={styles.layout}

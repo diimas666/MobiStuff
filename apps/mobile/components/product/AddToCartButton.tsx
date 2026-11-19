@@ -17,6 +17,8 @@ type Props = {
   inCart: boolean;
   onAdd: () => Promise<void>;
   onRemove: () => Promise<void>;
+  /** Якщо задано — товар у кошику веде до кошика, а не видаляється */
+  onGoToCart?: () => void;
   style?: object;
 };
 
@@ -25,12 +27,13 @@ export function AddToCartButton({
   inCart,
   onAdd,
   onRemove,
+  onGoToCart,
   style,
 }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
   button: {
-    flex: 1.4,
-    minHeight: 48,
+    flex: 1,
+    minHeight: 52,
     borderRadius: radius.pill,
     backgroundColor: c.primary,
     alignItems: 'center',
@@ -41,7 +44,7 @@ export function AddToCartButton({
     opacity: 0.5,
   },
   buttonInCart: {
-    backgroundColor: c.primaryDark,
+    backgroundColor: c.text,
   },
   pressed: {
     opacity: 0.85,
@@ -53,9 +56,12 @@ export function AddToCartButton({
     gap: 8,
   },
   text: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: c.textOnDark,
+    fontSize: 17,
+    fontWeight: '600',
+    color: c.onPrimary,
+  },
+  textInCart: {
+    color: c.screen,
   },
 }));
 
@@ -77,6 +83,10 @@ export function AddToCartButton({
 
     try {
       if (inCart) {
+        if (onGoToCart) {
+          onGoToCart();
+          return;
+        }
         await onRemove();
         return;
       }
@@ -106,16 +116,16 @@ export function AddToCartButton({
         pressed && !isDisabled && styles.pressed,
       ]}>
       {isLoading ? (
-        <ActivityIndicator color={colors.textOnDark} size="small" />
+        <ActivityIndicator color={colors.onPrimary} size="small" />
       ) : showAdded ? (
         <View style={styles.content}>
-          <Ionicons name="checkmark-circle" size={20} color={colors.textOnDark} />
+          <Ionicons name="checkmark-circle" size={20} color={colors.onPrimary} />
           <Text style={styles.text}>Додано в кошик</Text>
         </View>
       ) : inCart ? (
         <View style={styles.content}>
-          <Ionicons name="trash-outline" size={18} color={colors.textOnDark} />
-          <Text style={styles.text}>Видалити з кошика</Text>
+          <Ionicons name={onGoToCart ? 'bag-check-outline' : 'trash-outline'} size={19} color={colors.screen} />
+          <Text style={[styles.text, styles.textInCart]}>{onGoToCart ? 'У кошику — оформити' : 'Видалити з кошика'}</Text>
         </View>
       ) : (
         <Text style={styles.text}>

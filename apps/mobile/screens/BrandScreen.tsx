@@ -5,7 +5,6 @@ import {
   Linking,
   Pressable,
   ScrollView,
-  StatusBar,
   Text,
   View,
 } from 'react-native';
@@ -95,7 +94,7 @@ export function BrandScreen({ route, navigation }: Props) {
       gap: 8,
       backgroundColor: c.homeSurface,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.12)',
+      borderColor: c.lineSoft,
       borderRadius: radius.pill,
       paddingHorizontal: 14,
       paddingVertical: 10,
@@ -127,7 +126,7 @@ export function BrandScreen({ route, navigation }: Props) {
       borderRadius: radius.md,
       backgroundColor: c.homeSurface,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.2)',
+      borderColor: c.lineSoft,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -244,7 +243,6 @@ export function BrandScreen({ route, navigation }: Props) {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <View style={styles.layout}>
         <ScrollView

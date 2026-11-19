@@ -78,7 +78,6 @@ export function CategoriesScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
       {isOffline && categories.length === 0 ? (
         <OfflineState onRetry={retry} />
       ) : isLoading && categories.length === 0 ? (

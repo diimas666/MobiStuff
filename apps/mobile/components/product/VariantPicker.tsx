@@ -55,7 +55,7 @@ export function VariantPicker({ variants, selected, onSelect }: Props) {
   },
   dotBorder: {
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.35)',
+    borderColor: c.line,
   },
 }));
 

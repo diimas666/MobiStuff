@@ -26,7 +26,8 @@ export type ProfileStackParamList = {
 
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList>;
-  Product: { product: HomeProduct };
+  /** product — з картки; handle — з посилання mobistuff://product/<handle> */
+  Product: { product?: HomeProduct; handle?: string };
   Brand: { brand: BrandItem };
   Checkout: undefined;
   PrivacyPolicy: undefined;

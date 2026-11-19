@@ -45,6 +45,9 @@ export type HomeProduct = {
   title: string;
   price: number;
   image?: string;
+  oldPrice?: number;
+  brand?: string;
+  inStock?: boolean;
 };
 
 export type SearchProduct = HomeProduct & {
@@ -83,6 +86,9 @@ export function mapProduct(product: ApiProduct): HomeProduct {
     title: product.title,
     price: product.price,
     image: product.image || product.images?.[0],
+    oldPrice: product.oldPrice && product.oldPrice > product.price ? product.oldPrice : undefined,
+    brand: product.brand,
+    inStock: product.inStock === undefined ? undefined : product.inStock !== false,
   };
 }
 

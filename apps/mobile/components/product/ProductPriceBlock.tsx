@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { radius } from '../../constants/theme';
 import { formatPrice } from '../../types/catalog';
 import { StockStatusBadge } from './StockStatusBadge';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -28,17 +27,15 @@ export function ProductPriceBlock({
     marginBottom: 20,
   },
   discountBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: c.homeSurface,
-    borderRadius: radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginBottom: 10,
+    backgroundColor: c.sale,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
   discountBadgeText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
-    color: c.priceLight,
+    color: '#FFFFFF',
   },
   row: {
     flexDirection: 'row',
@@ -48,19 +45,23 @@ export function ProductPriceBlock({
   },
   prices: {
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'center',
     flexWrap: 'wrap',
     gap: 10,
     flex: 1,
   },
   price: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '700',
-    color: c.priceLight,
+    letterSpacing: -0.6,
+    color: c.text,
+  },
+  priceSale: {
+    color: c.sale,
   },
   oldPrice: {
-    fontSize: 18,
-    color: c.textOnDarkMuted,
+    fontSize: 17,
+    color: c.ink3,
     textDecorationLine: 'line-through',
   },
 }));

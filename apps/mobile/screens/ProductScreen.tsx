@@ -3,7 +3,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -12,7 +11,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
 import { OfflineState } from '../components/OfflineState';
-import { AppTabBar } from '../components/navigation/AppTabBar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ProductPerks } from '../components/product/ProductPerks';
+import { baseUrl } from '../config/api';
 import { AddToCartButton } from '../components/product/AddToCartButton';
 import { ProductCategoryLabel } from '../components/product/ProductCategoryLabel';
 import { ProductDescription } from '../components/product/ProductDescription';
@@ -26,7 +27,7 @@ import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useViewedProducts } from '../context/ViewedProductsContext';
 import { showErrorToast, showToast } from '../context/ToastContext';
-import { radius, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
 import { useProductScreen } from '../hooks/useProductScreen';
 import { useNetwork } from '../context/NetworkContext';
 import type { RootStackParamList } from '../navigation/types';
@@ -46,49 +47,42 @@ export function ProductScreen({ route, navigation }: Props) {
     content: {
       paddingHorizontal: spacing.screen,
       paddingTop: 16,
-      paddingBottom: 16,
+      paddingBottom: 28,
     },
     pressed: {
       opacity: 0.85,
       transform: [{ scale: 0.96 }],
     },
     title: {
-      fontSize: 22,
+      fontSize: 26,
       fontWeight: '700',
-      color: c.textOnDark,
-      lineHeight: 28,
+      letterSpacing: -0.5,
+      color: c.text,
+      lineHeight: 31,
       marginBottom: 12,
     },
-    actions: {
+    buyBar: {
       flexDirection: 'row',
       gap: 10,
-      marginBottom: 24,
+      paddingHorizontal: spacing.screen,
+      paddingTop: 10,
+      backgroundColor: c.card,
+      borderTopWidth: 0.5,
+      borderTopColor: c.line,
     },
     favoriteButton: {
-      flex: 1,
-      minHeight: 48,
-      borderRadius: radius.pill,
-      backgroundColor: c.card,
-      flexDirection: 'row',
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      backgroundColor: c.fill,
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 8,
-      paddingHorizontal: 12,
-    },
-    favoriteButtonActive: {
-      backgroundColor: c.primary,
-    },
-    favoriteText: {
-      fontSize: 14,
-      fontWeight: '600',
-      color: c.text,
-    },
-    favoriteTextActive: {
-      color: c.textOnDark,
     },
   }));
 
-  const { product: preview } = route.params;
+  const insets = useSafeAreaInsets();
+  const params = route.params;
+  const preview: HomeProduct = params.product ?? { id: params.handle ?? '', handle: params.handle ?? '', title: '', price: 0 };
   const { isOffline } = useNetwork();
   const { product, related, isLoading, error, retry } = useProductScreen(
     preview.handle,
@@ -102,6 +96,7 @@ export function ProductScreen({ route, navigation }: Props) {
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!preview.title) return;
     void addViewedProduct({
       id: preview.id,
       handle: preview.handle,
@@ -189,11 +184,12 @@ export function ProductScreen({ route, navigation }: Props) {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
       <ProductScreenHeader
         onBack={() => navigation.goBack()}
         onCartPress={openCart}
         cartCount={totalQuantity}
+        shareUrl={displayProduct.handle ? `${baseUrl}/product/${displayProduct.handle}` : undefined}
+        shareTitle={displayProduct.title}
       />
 
       {showBlockingLoader && isOffline && !product ? (
@@ -226,6 +222,8 @@ export function ProductScreen({ route, navigation }: Props) {
               lowStock={displayProduct.lowStock}
             />
 
+            <ProductPerks />
+
             <VariantPicker
               variants={displayProduct.variants}
               selected={selectedVariant}
@@ -235,44 +233,6 @@ export function ProductScreen({ route, navigation }: Props) {
             {displayProduct.description ? (
               <ProductDescription text={displayProduct.description} />
             ) : null}
-
-            <View style={styles.actions}>
-              <Pressable
-                onPress={() => void toggleFavorite(displayProduct)}
-                style={({ pressed }) => [
-                  styles.favoriteButton,
-                  isFavorite(displayProduct.id) && styles.favoriteButtonActive,
-                  pressed && styles.pressed,
-                ]}
-              >
-                <Ionicons
-                  name={
-                    isFavorite(displayProduct.id) ? 'heart' : 'heart-outline'
-                  }
-                  size={22}
-                  color={
-                    isFavorite(displayProduct.id)
-                      ? colors.textOnDark
-                      : colors.text
-                  }
-                />
-                <Text
-                  style={[
-                    styles.favoriteText,
-                    isFavorite(displayProduct.id) && styles.favoriteTextActive,
-                  ]}
-                >
-                  {isFavorite(displayProduct.id) ? 'В обраному' : 'В обране'}
-                </Text>
-              </Pressable>
-
-              <AddToCartButton
-                inStock={displayProduct.inStock}
-                inCart={productInCart}
-                onAdd={handleAddToCart}
-                onRemove={handleRemoveFromCart}
-              />
-            </View>
 
             <RelatedProductsSection
               items={related}
@@ -284,7 +244,26 @@ export function ProductScreen({ route, navigation }: Props) {
             />
           </ScrollView>
 
-          <AppTabBar />
+          <View style={[styles.buyBar, { paddingBottom: Math.max(insets.bottom, 12) }]}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={isFavorite(displayProduct.id) ? 'Прибрати з обраного' : 'Додати в обране'}
+              onPress={() => void toggleFavorite(displayProduct)}
+              style={({ pressed }) => [styles.favoriteButton, pressed && styles.pressed]}>
+              <Ionicons
+                name={isFavorite(displayProduct.id) ? 'heart' : 'heart-outline'}
+                size={24}
+                color={isFavorite(displayProduct.id) ? colors.sale : colors.text}
+              />
+            </Pressable>
+            <AddToCartButton
+              inStock={displayProduct.inStock}
+              inCart={productInCart}
+              onAdd={handleAddToCart}
+              onRemove={handleRemoveFromCart}
+              onGoToCart={openCart}
+            />
+          </View>
         </View>
       )}
     </Screen>

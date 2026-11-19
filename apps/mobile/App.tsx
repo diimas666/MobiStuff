@@ -1,4 +1,6 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
+import { DevNavBridge } from './components/dev/DevNavBridge';
+import type { RootStackParamList } from './navigation/types';
 import { StatusBar } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -15,8 +17,11 @@ import { NetworkProvider } from './context/NetworkContext';
 import { ToastProvider } from './context/ToastContext';
 import { ViewedProductsProvider } from './context/ViewedProductsContext';
 import { RootNavigator } from './navigation/RootNavigator';
+import { linking } from './navigation/linking';
 
 enableScreens(true);
+
+const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 function AppShell() {
   const { resolvedTheme } = useSettings();
@@ -25,7 +30,8 @@ function AppShell() {
     <>
       <StatusBar barStyle={resolvedTheme === 'dark' ? 'light-content' : 'dark-content'} />
       <OfflineBanner />
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef} linking={linking}>
+        {__DEV__ ? <DevNavBridge navRef={navigationRef} /> : null}
         <RootNavigator />
       </NavigationContainer>
     </>

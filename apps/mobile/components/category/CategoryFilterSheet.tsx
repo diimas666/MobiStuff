@@ -94,7 +94,7 @@ function FilterListOption({
       </Text>
       <View style={[styles.checkbox, active && styles.checkboxActive]}>
         {active ? (
-          <Ionicons name="checkmark" size={16} color={colors.textOnDark} />
+          <Ionicons name="checkmark" size={16} color={colors.onPrimary} />
         ) : null}
       </View>
     </Pressable>
@@ -202,7 +202,7 @@ export function CategoryFilterSheet({
   },
   listRowBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+    borderBottomColor: c.lineSoft,
   },
   listLabel: {
     flex: 1,

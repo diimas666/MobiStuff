@@ -117,7 +117,7 @@ export function OrderSuccessModal({ visible, onClose }: Props) {
                 transform: [{ scale }],
               },
             ]}>
-            <Ionicons name="checkmark" size={42} color={colors.textOnDark} />
+            <Ionicons name="checkmark" size={42} color={colors.onPrimary} />
           </Animated.View>
 
           <Animated.View style={{ opacity: textOpacity }}>

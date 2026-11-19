@@ -1,5 +1,5 @@
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { radius } from '../../constants/theme';
+import { SectionHeader } from '../ui/SectionHeader';
 import type { BrandItem } from '../../types/brand';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 
@@ -12,36 +12,21 @@ type Props = {
 export function BrandsSection({ items, isLoading, onBrandPress }: Props) {
   const { styles } = useThemedStyles(c => ({
     section: {
-      marginBottom: 28,
-    },
-    header: {
-      marginBottom: 8,
-      gap: 4,
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: '700',
-      color: c.textOnDark,
-    },
-    subtitle: {
-      fontSize: 13,
-      lineHeight: 18,
-      color: c.textOnDarkMuted,
+      marginBottom: 32,
     },
     list: {
-      gap: 12,
+      gap: 10,
       paddingRight: 4,
-      paddingTop: 8,
     },
     card: {
-      width: 124,
+      width: 120,
       alignItems: 'center',
     },
     imageBox: {
-      width: 112,
-      height: 72,
-      borderRadius: radius.md,
-      backgroundColor: c.card,
+      width: 120,
+      height: 76,
+      borderRadius: 20,
+      backgroundColor: '#FFFFFF',
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: 8,
@@ -56,7 +41,7 @@ export function BrandsSection({ items, isLoading, onBrandPress }: Props) {
     label: {
       fontSize: 13,
       fontWeight: '600',
-      color: c.textOnDark,
+      color: c.text,
       textAlign: 'center',
     },
     hint: {
@@ -74,10 +59,7 @@ export function BrandsSection({ items, isLoading, onBrandPress }: Props) {
   if (isLoading) {
     return (
       <View style={styles.section}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Популярні бренди</Text>
-          <Text style={styles.subtitle}>Натисніть, щоб дізнатися більше про бренд</Text>
-        </View>
+        <SectionHeader title="Бренди" subtitle="Перевірені виробники, офіційний товар." />
         <View style={styles.loader}>
           <ActivityIndicator />
         </View>
@@ -91,10 +73,7 @@ export function BrandsSection({ items, isLoading, onBrandPress }: Props) {
 
   return (
     <View style={styles.section}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Популярні бренди</Text>
-        <Text style={styles.subtitle}>Натисніть, щоб дізнатися більше про бренд</Text>
-      </View>
+      <SectionHeader title="Бренди" subtitle="Перевірені виробники, офіційний товар." />
 
       <ScrollView
         horizontal
@@ -115,7 +94,6 @@ export function BrandsSection({ items, isLoading, onBrandPress }: Props) {
             <Text style={styles.label} numberOfLines={1}>
               {brand.title}
             </Text>
-            <Text style={styles.hint}>Детальніше</Text>
           </Pressable>
         ))}
       </ScrollView>

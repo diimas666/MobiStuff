@@ -53,7 +53,7 @@ export function OfflineState({ onRetry }: Props) {
     buttonText: {
       fontSize: 15,
       fontWeight: '600',
-      color: c.textOnDark,
+      color: c.onPrimary,
     },
   }));
 

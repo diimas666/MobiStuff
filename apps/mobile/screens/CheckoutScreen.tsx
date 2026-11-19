@@ -6,7 +6,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -175,7 +174,7 @@ export function CheckoutScreen({ navigation }: Props) {
     paddingHorizontal: spacing.screen,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    borderTopColor: c.lineSoft,
     backgroundColor: c.homeBackground,
   },
   submitButton: {
@@ -458,7 +457,6 @@ export function CheckoutScreen({ navigation }: Props) {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
         <BackButton onPress={() => navigation.goBack()} />
@@ -678,7 +676,7 @@ export function CheckoutScreen({ navigation }: Props) {
                     ? 'Оформити замовлення'
                     : 'Підтвердити замовлення'}
                 </Text>
-                <Ionicons name="arrow-forward" size={18} color={colors.textOnDark} />
+                <Ionicons name="arrow-forward" size={18} color={colors.onPrimary} />
               </>
             )}
           </Pressable>

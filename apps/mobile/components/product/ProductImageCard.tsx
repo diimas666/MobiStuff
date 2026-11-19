@@ -13,9 +13,9 @@ import { radius, spacing } from '../../constants/theme';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const { width: screenWidth } = Dimensions.get('window');
-const CARD_PADDING = 24;
+const CARD_PADDING = 16;
 const slideWidth = screenWidth - spacing.screen * 2 - CARD_PADDING * 2;
-const IMAGE_SIZE = Math.min(280, slideWidth);
+const IMAGE_SIZE = Math.min(340, slideWidth);
 
 type Props = {
   title: string;
@@ -34,11 +34,11 @@ export function ProductImageCard({
 }: Props) {
   const { styles, colors } = useThemedStyles(c => ({
   card: {
-    backgroundColor: c.card,
-    borderRadius: radius.lg,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28,
     paddingVertical: CARD_PADDING,
     paddingHorizontal: CARD_PADDING,
-    marginBottom: 24,
+    marginBottom: 20,
     overflow: 'hidden',
   },
   carousel: {
@@ -60,11 +60,11 @@ export function ProductImageCard({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(17, 24, 39, 0.2)',
+    backgroundColor: '#D2D2D7',
   },
   dotActive: {
     width: 18,
-    backgroundColor: c.primary,
+    backgroundColor: '#1D1D1F',
   },
 }));
 
@@ -106,8 +106,9 @@ export function ProductImageCard({
               uri={item}
               label={title}
               size={IMAGE_SIZE}
-              rounded={radius.md}
+              rounded={0}
               resizeMode="contain"
+              backgroundColor="#FFFFFF"
             />
           </View>
         )}

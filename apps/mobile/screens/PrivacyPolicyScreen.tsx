@@ -153,7 +153,6 @@ export function PrivacyPolicyScreen({ navigation }: Props) {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
         <BackButton onPress={() => navigation.goBack()} />

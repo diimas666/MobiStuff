@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { PlatformPressable } from '@react-navigation/elements';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSettings } from '../context/SettingsContext';
 import { useCart } from '../context/CartContext';
@@ -39,22 +39,20 @@ export function TabNavigator() {
           <PlatformPressable {...props} testID={`tab-${route.name}`} />
         ),
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarInactiveTintColor: colors.ink3,
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '500',
-          marginBottom: 4,
+          fontSize: 10.5,
+          fontWeight: '600',
+          letterSpacing: 0.1,
         },
+        // Панель як у iOS: біла, з тонкою лінією зверху, без важкої тіні
         tabBarStyle: {
-          backgroundColor: colors.background,
-          borderTopWidth: 0,
-          height: 72,
-          paddingTop: 8,
-          elevation: 12,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.08,
-          shadowRadius: 8,
+          backgroundColor: colors.card,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: colors.line,
+          elevation: 0,
+          shadowOpacity: 0,
+          paddingTop: 6,
         },
         tabBarIcon: ({ focused, color, size }) => {
           const tab = tabItems.find(item => item.name === route.name);
@@ -63,7 +61,8 @@ export function TabNavigator() {
               ? tab.icons.active
               : tab.icons.inactive
             : 'ellipse-outline';
-          const icon = <Ionicons name={iconName} size={size} color={color} />;
+          const icon = <Ionicons name={iconName} size={25} color={color} />;
+          void size;
 
           if (route.name !== 'Cart' || !hasCartItems) {
             return icon;
@@ -72,7 +71,9 @@ export function TabNavigator() {
           return (
             <View style={styles.iconWrap}>
               {icon}
-              <View style={[styles.cartBadge, { backgroundColor: colors.danger, borderColor: colors.background }]} />
+              <View style={[styles.cartBadge, { backgroundColor: colors.primary, borderColor: colors.card }]}>
+                <Text style={[styles.cartBadgeText, { color: colors.onPrimary }]}>{totalQuantity > 99 ? '99+' : totalQuantity}</Text>
+              </View>
             </View>
           );
         },
@@ -104,11 +105,18 @@ const styles = StyleSheet.create({
   },
   cartBadge: {
     position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-    borderWidth: 1.5,
+    top: -5,
+    right: -11,
+    minWidth: 19,
+    height: 19,
+    paddingHorizontal: 4,
+    borderRadius: 10,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cartBadgeText: {
+    fontSize: 10,
+    fontWeight: '700',
   },
 });

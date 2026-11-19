@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 import {
   Platform,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -83,7 +82,7 @@ export function PaymentMethodsScreen() {
       borderRadius: radius.md,
       backgroundColor: c.homeSearch,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
     },
     infoText: {
       flex: 1,
@@ -112,7 +111,6 @@ export function PaymentMethodsScreen() {
   if (!isHydrated) {
     return (
       <Screen variant="home">
-        <StatusBar barStyle="light-content" />
         <View style={styles.loadingHeader}>
           <BackButton onPress={() => navigation.goBack()} />
         </View>
@@ -123,7 +121,6 @@ export function PaymentMethodsScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

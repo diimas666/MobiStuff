@@ -125,7 +125,6 @@ export function ProfileScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <ScrollView
         testID="screen-profile"

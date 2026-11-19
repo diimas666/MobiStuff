@@ -16,12 +16,12 @@ export function StockStatusBadge({ inStock, lowStock }: Props) {
     flexShrink: 0,
   },
   inStock: {
-    backgroundColor: c.homeSearch,
+    backgroundColor: c.accentSoft,
   },
   inStockText: {
     fontSize: 12,
     fontWeight: '600',
-    color: c.priceLight,
+    color: c.primary,
   },
   lowStock: {
     backgroundColor: '#FEF3C7',
@@ -32,7 +32,7 @@ export function StockStatusBadge({ inStock, lowStock }: Props) {
     color: '#B45309',
   },
   outOfStock: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: c.fill,
   },
   outOfStockText: {
     fontSize: 12,

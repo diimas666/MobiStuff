@@ -6,7 +6,6 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StatusBar,
   Text,
   TextInput,
   View,
@@ -227,7 +226,6 @@ export function SupportScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <KeyboardAvoidingView
         style={styles.flex}

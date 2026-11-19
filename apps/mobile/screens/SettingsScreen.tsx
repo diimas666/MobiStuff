@@ -79,7 +79,7 @@ export function SettingsScreen() {
       padding: 14,
       gap: 8,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
     },
     resetTitle: {
       fontSize: 16,

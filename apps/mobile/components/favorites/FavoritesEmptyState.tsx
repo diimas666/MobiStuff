@@ -23,7 +23,7 @@ export function FavoritesEmptyState({ onBrowseCatalog, onGoHome }: Props) {
     backgroundColor: c.homeSearch,
     borderRadius: radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: c.lineSoft,
     gap: 12,
   },
   iconWrap: {
@@ -105,7 +105,7 @@ export function FavoritesEmptyState({ onBrowseCatalog, onGoHome }: Props) {
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: c.textOnDark,
+    color: c.onPrimary,
   },
   secondaryButton: {
     flexDirection: 'row',
@@ -154,7 +154,7 @@ export function FavoritesEmptyState({ onBrowseCatalog, onGoHome }: Props) {
         accessibilityRole="button"
         onPress={onBrowseCatalog}
         style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
-        <Ionicons name="grid-outline" size={18} color={colors.textOnDark} />
+        <Ionicons name="grid-outline" size={18} color={colors.onPrimary} />
         <Text style={styles.primaryButtonText}>Перейти до каталогу</Text>
       </Pressable>
 

@@ -23,9 +23,10 @@ export function Screen({
 }: Props) {
   const { colors } = useSettings();
   const { width, height } = useWindowDimensions();
-  const usePatternBackground = variant === 'home' && !backgroundColor;
+  // Новий дизайн: рівне полотно без градієнта і візерунка
+  const usePatternBackground = false;
   const resolvedBackground =
-    backgroundColor ?? (variant === 'home' ? 'transparent' : colors.screen);
+    backgroundColor ?? colors.screen;
 
   const background = useMemo(() => {
     if (!usePatternBackground) {

@@ -18,13 +18,13 @@ export const tabItems: TabItem[] = [
   },
   {
     name: 'Categories',
-    label: 'Категорії',
+    label: 'Каталог',
     icons: { active: 'grid', inactive: 'grid-outline' },
   },
   {
     name: 'Cart',
     label: 'Кошик',
-    icons: { active: 'cart', inactive: 'cart-outline' },
+    icons: { active: 'bag', inactive: 'bag-outline' },
   },
   {
     name: 'Favorites',
@@ -34,6 +34,6 @@ export const tabItems: TabItem[] = [
   {
     name: 'Profile',
     label: 'Профіль',
-    icons: { active: 'person', inactive: 'person-outline' },
+    icons: { active: 'person-circle', inactive: 'person-circle-outline' },
   },
 ];

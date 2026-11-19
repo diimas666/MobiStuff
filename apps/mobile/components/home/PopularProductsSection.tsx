@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { SectionHeader } from '../ui/SectionHeader';
 import { RelatedProductCard } from '../product/RelatedProductCard';
 import type { HomeProduct } from '../../types/catalog';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -20,18 +21,12 @@ export function PopularProductsSection({
   isFavorite,
   isInCart,
 }: Props) {
-  const { styles, colors } = useThemedStyles(c => ({
+  const { styles } = useThemedStyles(() => ({
   section: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: c.textOnDark,
-    marginBottom: 16,
+    marginBottom: 32,
   },
   list: {
-    gap: 12,
+    gap: 10,
     paddingRight: 4,
   },
 }));
@@ -42,7 +37,7 @@ export function PopularProductsSection({
 
   return (
     <View style={styles.section}>
-      <Text style={styles.title}>Популярні товари</Text>
+      <SectionHeader title="Популярне" subtitle="Найчастіше купують цього тижня." />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

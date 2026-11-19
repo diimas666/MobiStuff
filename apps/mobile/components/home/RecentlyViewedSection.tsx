@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { SectionHeader } from '../ui/SectionHeader';
 import { RelatedProductCard } from '../product/RelatedProductCard';
 import type { HomeProduct } from '../../types/catalog';
 import type { ViewedProductItem } from '../../types/viewedProducts';
@@ -11,28 +12,12 @@ type Props = {
 };
 
 export function RecentlyViewedSection({ items, onProductPress, onSeeAll }: Props) {
-  const { styles } = useThemedStyles(c => ({
+  const { styles } = useThemedStyles(() => ({
     section: {
-      marginBottom: 28,
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 16,
-    },
-    title: {
-      fontSize: 20,
-      fontWeight: '700',
-      color: c.textOnDark,
-    },
-    link: {
-      fontSize: 14,
-      fontWeight: '500',
-      color: c.textOnDarkMuted,
+      marginBottom: 32,
     },
     list: {
-      gap: 12,
+      gap: 10,
       paddingRight: 4,
     },
   }));
@@ -45,14 +30,7 @@ export function RecentlyViewedSection({ items, onProductPress, onSeeAll }: Props
 
   return (
     <View style={styles.section}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Нещодавно переглянуті</Text>
-        {onSeeAll ? (
-          <Pressable onPress={onSeeAll}>
-            <Text style={styles.link}>Дивитись всі</Text>
-          </Pressable>
-        ) : null}
-      </View>
+      <SectionHeader title="Ви переглядали" onAction={onSeeAll} />
 
       <ScrollView
         horizontal
@@ -61,6 +39,7 @@ export function RecentlyViewedSection({ items, onProductPress, onSeeAll }: Props
         {preview.map(product => (
           <RelatedProductCard
             key={product.productId}
+            width={140}
             product={{
               id: product.productId,
               handle: product.handle,

@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { radius } from '../constants/theme';
+import { baseUrl } from '../config/api';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 
 type Props = {
@@ -35,12 +36,16 @@ export function ProductImage({
     },
   }));
 
-  const resolvedBackground = backgroundColor ?? colors.screen;
+  // Фото товарів — на білому тлі (як на сайті); заглушка — сіра
+  const resolvedBackground = backgroundColor ?? (uri ? '#FFFFFF' : colors.fill);
 
-  if (uri) {
+  // Відносні шляхи (/api/media/…, /images/…) — з адресою сервера
+  const src = uri && uri.startsWith('/') ? `${baseUrl}${uri}` : uri;
+
+  if (src) {
     return (
       <Image
-        source={{ uri }}
+        source={{ uri: src }}
         style={[
           styles.image,
           {

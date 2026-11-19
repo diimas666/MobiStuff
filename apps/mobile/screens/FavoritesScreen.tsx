@@ -88,7 +88,7 @@ export function FavoritesScreen() {
       borderRadius: 16,
       backgroundColor: c.homeSearch,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
       marginBottom: 8,
     },
     summaryLabel: {
@@ -239,7 +239,6 @@ export function FavoritesScreen() {
   if (!isHydrated) {
     return (
       <Screen variant="home">
-        <StatusBar barStyle="light-content" />
         {showBackButton ? (
           <View style={styles.loadingHeader}>
             <BackButton onPress={handleBack} />
@@ -252,7 +251,6 @@ export function FavoritesScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
       <FlashList
         testID="screen-favorites"
         data={items}

@@ -50,7 +50,7 @@ export function SubcategoriesScreen({ route, navigation }: Props) {
     borderRadius: radius.md,
     backgroundColor: c.homeSurface,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: c.lineSoft,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -132,7 +132,6 @@ export function SubcategoriesScreen({ route, navigation }: Props) {
 
   return (
     <Screen variant="home" testID="screen-subcategories">
-      <StatusBar barStyle="light-content" />
 
       <View style={styles.header}>
         <BackButton onPress={() => navigation.goBack()} />

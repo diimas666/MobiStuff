@@ -25,7 +25,7 @@ export function SubcategoryChipBar({ subcategories, selectedSlug, onSelect }: Pr
     borderRadius: radius.pill,
     backgroundColor: c.homeSurface,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: c.lineSoft,
   },
   chipActive: {
     backgroundColor: c.primary,

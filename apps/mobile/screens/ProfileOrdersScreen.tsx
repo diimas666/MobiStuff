@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import {
   Pressable,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -75,7 +74,7 @@ export function ProfileOrdersScreen() {
       borderRadius: radius.md,
       backgroundColor: c.homeSearch,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
     },
     summaryIcon: {
       width: 40,
@@ -136,7 +135,7 @@ export function ProfileOrdersScreen() {
       backgroundColor: c.homeSearch,
       borderRadius: radius.lg,
       borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.08)',
+      borderColor: c.lineSoft,
       gap: 10,
     },
     emptyIcon: {
@@ -170,7 +169,7 @@ export function ProfileOrdersScreen() {
     emptyButtonText: {
       fontSize: 14,
       fontWeight: '700',
-      color: c.textOnDark,
+      color: c.onPrimary,
     },
     pressed: {
       opacity: 0.88,
@@ -196,7 +195,6 @@ export function ProfileOrdersScreen() {
 
   return (
     <Screen variant="home">
-      <StatusBar barStyle="light-content" />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
