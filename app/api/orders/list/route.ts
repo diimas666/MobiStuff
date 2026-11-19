@@ -29,6 +29,7 @@ function toMobileOrder(order: Record<string, unknown>) {
         ? order.createdAt
         : new Date().toISOString(),
     status: normalizeOrderStatus(order.status),
+    ttn: typeof order.ttn === 'string' ? order.ttn : undefined,
   };
 }
 

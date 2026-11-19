@@ -19,7 +19,6 @@ import { SupportTopicSelect } from '../components/support/SupportTopicSelect';
 import { radius, spacing } from '../constants/theme';
 import {
   SUPPORT_STORE_EMAIL,
-  SUPPORT_TEAM_EMAIL,
   type SupportTopicId,
 } from '../constants/support';
 import { useNetwork } from '../context/NetworkContext';
@@ -262,14 +261,6 @@ export function SupportScreen() {
               <Ionicons name="open-outline" size={16} color={colors.textMuted} />
             </Pressable>
 
-            <Pressable
-              accessibilityRole="link"
-              onPress={() => openEmail(SUPPORT_TEAM_EMAIL)}
-              style={({ pressed }) => [styles.emailRow, pressed && styles.pressed]}>
-              <Ionicons name="mail-outline" size={18} color={colors.primary} />
-              <Text style={styles.emailText}>{SUPPORT_TEAM_EMAIL}</Text>
-              <Ionicons name="open-outline" size={16} color={colors.textMuted} />
-            </Pressable>
           </View>
 
           <View style={styles.formCard}>

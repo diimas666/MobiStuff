@@ -132,7 +132,8 @@ export function ordersDataChanged(before: StoredOrder[], after: StoredOrder[]): 
       previous.status !== order.status ||
       previous.total !== order.total ||
       previous.warehouse !== order.warehouse ||
-      previous.city !== order.city
+      previous.city !== order.city ||
+      previous.ttn !== order.ttn
     );
   });
 }

@@ -34,6 +34,8 @@ export type StoredOrder = {
   items: CartItem[];
   createdAt: string;
   status: OrderStatus;
+  /** Номер ТТН Нової Пошти (додає менеджер в адмінці) */
+  ttn?: string;
 };
 
 export function normalizeOrderStatus(

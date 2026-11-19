@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { ComponentProps } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ProductImage } from '../ProductImage';
@@ -79,8 +79,6 @@ export function ProfileOrderCard({ order }: Props) {
     fontSize: 12,
     fontWeight: '600',
     color: c.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
   },
   orderId: {
     fontSize: 17,
@@ -113,6 +111,27 @@ export function ProfileOrderCard({ order }: Props) {
     height: 1,
     backgroundColor: c.fill,
   },
+  ttnRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginHorizontal: 16,
+    marginTop: 14,
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: c.accentSoft,
+  },
+  ttnValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    color: c.text,
+  },
+  ttnLink: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: c.primary,
+  },
   productsSection: {
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -122,8 +141,6 @@ export function ProfileOrderCard({ order }: Props) {
     fontSize: 13,
     fontWeight: '600',
     color: c.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
   },
   imagesRow: {
     flexDirection: 'row',
@@ -217,8 +234,6 @@ export function ProfileOrderCard({ order }: Props) {
     fontSize: 11,
     fontWeight: '600',
     color: c.textOnDarkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
   },
   metaValue: {
     fontSize: 14,
@@ -302,6 +317,21 @@ export function ProfileOrderCard({ order }: Props) {
       </View>
 
       <View style={styles.divider} />
+
+      {order.ttn ? (
+        <Pressable
+          accessibilityRole="link"
+          accessibilityLabel={`Відстежити посилку ${order.ttn}`}
+          onPress={() => void Linking.openURL(`https://novaposhta.ua/tracking/?cargo_number=${encodeURIComponent(order.ttn ?? '')}`)}
+          style={({ pressed }) => [styles.ttnRow, pressed && { opacity: 0.7 }]}>
+          <Ionicons name="cube-outline" size={20} color={colors.primary} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.metaLabel}>ТТН Нової Пошти</Text>
+            <Text style={styles.ttnValue}>{order.ttn}</Text>
+          </View>
+          <Text style={styles.ttnLink}>Відстежити</Text>
+        </Pressable>
+      ) : null}
 
       <View style={styles.detailsSection}>
         <OrderMetaRow

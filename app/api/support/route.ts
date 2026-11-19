@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import {
   SUPPORT_STORE_EMAIL,
-  SUPPORT_TEAM_EMAIL,
   SUPPORT_TOPIC_LABELS,
   type SupportTopicId,
 } from '@/lib/support';
@@ -65,7 +64,8 @@ export async function POST(req: NextRequest) {
 
     await transporter.sendMail({
       from: `"MobiStuff App" <${process.env.SMTP_USER}>`,
-      to: [SUPPORT_STORE_EMAIL, SUPPORT_TEAM_EMAIL],
+      // Особиста пошта команди — лише з налаштувань сервера, не в коді застосунку
+      to: [SUPPORT_STORE_EMAIL, process.env.SUPPORT_TEAM_EMAIL].filter(Boolean) as string[],
       replyTo: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : undefined,
       subject: `[Підтримка] ${topicLabel}`,
       html: `

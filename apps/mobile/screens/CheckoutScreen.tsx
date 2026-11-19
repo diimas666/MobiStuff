@@ -112,8 +112,6 @@ export function CheckoutScreen({ navigation }: Props) {
     fontSize: 12,
     fontWeight: '600',
     color: c.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
   },
   selectedPaymentValue: {
     fontSize: 16,

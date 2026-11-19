@@ -40,8 +40,6 @@ export function ProductBadges({
     fontSize: 11,
     fontWeight: '700',
     color: c.textOnDark,
-    textTransform: 'uppercase',
-    letterSpacing: 0.3,
   },
 }));
 

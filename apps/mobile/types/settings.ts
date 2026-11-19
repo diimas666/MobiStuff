@@ -24,8 +24,8 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
 };
 
 export const THEME_MODE_OPTIONS: Array<{ id: ThemeMode; label: string }> = [
-  { id: 'light', label: 'Light' },
-  { id: 'dark', label: 'Dark' },
+  { id: 'light', label: 'Світла' },
+  { id: 'dark', label: 'Темна' },
 ];
 
 export const LANGUAGE_OPTIONS: Array<{

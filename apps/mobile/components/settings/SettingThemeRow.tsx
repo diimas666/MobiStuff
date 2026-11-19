@@ -12,7 +12,7 @@ type Props = {
 
 export function SettingThemeRow({ value, onChange }: Props) {
   const { colors, resolvedTheme } = useSettings();
-  const currentLabel = THEME_MODE_OPTIONS.find(option => option.id === value)?.label ?? 'Light';
+  const currentLabel = THEME_MODE_OPTIONS.find(option => option.id === value)?.label ?? 'Світла';
 
   const openPicker = () => {
     const options = [...THEME_MODE_OPTIONS.map(option => option.label), 'Cancel'];

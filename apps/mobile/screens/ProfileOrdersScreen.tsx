@@ -125,8 +125,6 @@ export function ProfileOrdersScreen() {
       fontSize: 12,
       fontWeight: '600',
       color: c.textOnDarkMuted,
-      textTransform: 'uppercase',
-      letterSpacing: 0.4,
       paddingLeft: 4,
     },
     emptyState: {
