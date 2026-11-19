@@ -3,9 +3,18 @@ import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
 import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/lib/orders';
 import { createOrderAccessToken } from '@/lib/orderAccess';
+import { rateLimited } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   try {
+    // Захист від фейкових замовлень: не більше 10 за 10 хвилин з одного IP
+    if (rateLimited(req, 'checkout', 10, 10 * 60 * 1000)) {
+      return NextResponse.json(
+        { message: 'Забагато спроб. Спробуйте через кілька хвилин або зателефонуйте нам.' },
+        { status: 429 }
+      );
+    }
+
     const raw = await req.json().catch(() => null);
     if (!raw || typeof raw !== 'object') {
       return NextResponse.json({ message: 'Некоректні дані' }, { status: 400 });

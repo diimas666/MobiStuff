@@ -1,7 +1,8 @@
+import 'server-only';
+
 export const NOVA_API_URL = 'https://api.novaposhta.ua/v2.0/json/';
-const NOVA_API_KEY =
-  process.env.NOVA_POSHTA_API_KEY ||
-  process.env.NEXT_PUBLIC_NOVA_POSHTA_API_KEY;
+// Ключ лише на сервері (без NEXT_PUBLIC_), щоб не потрапляв у браузер
+const NOVA_API_KEY = process.env.NOVA_POSHTA_API_KEY || process.env.NEXT_PUBLIC_NOVA_POSHTA_API_KEY;
 
 export interface NovaCity {
   Ref: string;
@@ -38,7 +39,7 @@ async function novaRequest<T>(calledMethod: string, methodProperties: Record<str
 
     if (message.toLowerCase().includes('api key expired')) {
       throw new Error(
-        'Ключ Nova Poshta прострочений. Оновіть NEXT_PUBLIC_NOVA_POSHTA_API_KEY у .env.local та на Vercel.',
+        'Ключ Nova Poshta прострочений. Оновіть NOVA_POSHTA_API_KEY у .env.local та на Vercel.',
       );
     }
 

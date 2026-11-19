@@ -38,6 +38,7 @@
     "react-dom": "19.2.3",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.5",
+    "server-only": "^0.0.1",
     "sharp": "^0.35.5",
     "slick-carousel": "^1.8.1",
     "slugify": "^1.6.6",

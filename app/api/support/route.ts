@@ -6,15 +6,24 @@ import {
   SUPPORT_TOPIC_LABELS,
   type SupportTopicId,
 } from '@/lib/support';
+import { rateLimited } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
   try {
+    // Захист від спаму: не більше 5 звернень за 10 хвилин з одного IP
+    if (rateLimited(req, 'support', 5, 10 * 60 * 1000)) {
+      return NextResponse.json(
+        { success: false, error: 'Забагато звернень. Спробуйте через кілька хвилин.' },
+        { status: 429 },
+      );
+    }
+
     const body = await req.json();
     const topic = String(body.topic ?? '').trim() as SupportTopicId;
-    const message = String(body.message ?? '').trim();
-    const name = String(body.name ?? '').trim();
-    const email = String(body.email ?? '').trim();
-    const phone = String(body.phone ?? '').trim();
+    const message = String(body.message ?? '').trim().slice(0, 5000);
+    const name = String(body.name ?? '').trim().slice(0, 120);
+    const email = String(body.email ?? '').trim().slice(0, 200);
+    const phone = String(body.phone ?? '').trim().slice(0, 40);
 
     if (!topic || !(topic in SUPPORT_TOPIC_LABELS)) {
       return NextResponse.json(

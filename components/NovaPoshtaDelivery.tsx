@@ -8,7 +8,7 @@ import {
   fetchWarehouses,
   type NovaCity,
   type NovaWarehouse,
-} from '@/lib/novaposhta';
+} from '@/lib/novaposhtaClient';
 
 export interface NovaPoshtaSelection {
   cityRef: string;
