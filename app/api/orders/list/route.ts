@@ -3,6 +3,7 @@ import dbConnect from '@/lib/dbConnect';
 import { normalizeOrderStatus } from '@/lib/orderStatus';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 import Order from '../../models/Order';
+import { verifyOrderAccessToken } from '@/lib/orderAccess';
 
 function toMobileOrder(order: Record<string, unknown>) {
   const orderId =
@@ -33,8 +34,7 @@ function toMobileOrder(order: Record<string, unknown>) {
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
-    const body = await req.json();
+    const body = await req.json().catch(() => null);
     const phone = normalizeUkrainianPhone(
       typeof body?.phone === 'string' ? body.phone : '',
     );
@@ -43,9 +43,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Невірний номер телефону' }, { status: 400 });
     }
 
+    // Без ключа, виданого при оформленні замовлення, чужі замовлення не віддаємо
+    if (!verifyOrderAccessToken(phone, body?.token)) {
+      return NextResponse.json({ error: 'Немає доступу' }, { status: 401 });
+    }
+
+    await dbConnect();
     const phoneVariants = [phone, phone.replace(/^\+/, '')];
     const orders = await Order.find({ phone: { $in: phoneVariants } })
       .sort({ createdAt: -1 })
+      .limit(100)
       .lean();
 
     return NextResponse.json({

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
 import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/lib/orders';
+import { createOrderAccessToken } from '@/lib/orderAccess';
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,6 +26,8 @@ export async function POST(req: NextRequest) {
       orderId: order.orderId,
       total: order.total,
       paymentMethod: order.paymentMethod,
+      // Ключ для перегляду історії замовлень цього номера (мобільний застосунок)
+      ordersToken: createOrderAccessToken(order.phone),
     });
   } catch (error) {
     if (error instanceof OrderValidationError) {

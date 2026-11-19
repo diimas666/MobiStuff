@@ -11,20 +11,22 @@ type SyncItem = {
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
-    const body = await req.json();
-    const items: SyncItem[] = Array.isArray(body?.orders) ? body.orders : [];
+    const body = await req.json().catch(() => null);
+    // Лише статус за парою «номер замовлення + телефон»; не більше 50 за запит
+    const items: SyncItem[] = Array.isArray(body?.orders) ? body.orders.slice(0, 50) : [];
 
     if (!items.length) {
       return NextResponse.json({ statuses: {} });
     }
 
+    await dbConnect();
+
     const statuses: Record<string, string> = {};
 
     await Promise.all(
       items.map(async (item) => {
-        const orderId = item.orderId?.trim();
-        const phone = normalizeUkrainianPhone(item.phone?.trim() ?? '');
+        const orderId = typeof item?.orderId === 'string' ? item.orderId.trim().slice(0, 40) : '';
+        const phone = normalizeUkrainianPhone(typeof item?.phone === 'string' ? item.phone : '');
 
         if (!orderId || !phone) return;
 

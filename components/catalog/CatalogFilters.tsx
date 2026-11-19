@@ -57,6 +57,33 @@ function Section({
 }
 
 /* ---------- Список варіантів з одним вибором (бренд, модель) ---------- */
+/* Рядок списку — окремий компонент, щоб не перемонтовувався на кожен рендер */
+function Row({ label, selected, count, onClick }: { label: string; selected: boolean; count?: number; onClick: () => void }) {
+  return (
+  <li>
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      onClick={onClick}
+      className={`group flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left text-[15px] transition-colors hover:bg-canvas ${
+        selected ? 'font-medium text-ink' : 'text-ink-2'
+      }`}
+    >
+      <span
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-all ${
+          selected ? 'border-accent bg-accent text-white' : 'border-line group-hover:border-ink-3'
+        }`}
+      >
+        {selected && <Check className="h-3 w-3" strokeWidth={3} />}
+      </span>
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {typeof count === 'number' && <span className="text-[13px] text-ink-3 tabular-nums">{count}</span>}
+    </button>
+  </li>
+);
+}
+
 function OptionList({
   options,
   value,
@@ -83,29 +110,6 @@ function OptionList({
   const visible = expanded || q ? filtered : filtered.slice(0, LIMIT);
   const shown = value && !visible.includes(value) && filtered.includes(value) ? [value, ...visible] : visible;
 
-  const Row = ({ label, selected, count, onClick }: { label: string; selected: boolean; count?: number; onClick: () => void }) => (
-    <li>
-      <button
-        type="button"
-        role="radio"
-        aria-checked={selected}
-        onClick={onClick}
-        className={`group flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left text-[15px] transition-colors hover:bg-canvas ${
-          selected ? 'font-medium text-ink' : 'text-ink-2'
-        }`}
-      >
-        <span
-          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-all ${
-            selected ? 'border-accent bg-accent text-white' : 'border-line group-hover:border-ink-3'
-          }`}
-        >
-          {selected && <Check className="h-3 w-3" strokeWidth={3} />}
-        </span>
-        <span className="min-w-0 flex-1 truncate">{label}</span>
-        {typeof count === 'number' && <span className="text-[13px] text-ink-3 tabular-nums">{count}</span>}
-      </button>
-    </li>
-  );
 
   return (
     <div>
@@ -174,7 +178,9 @@ function PriceFilter({ bounds }: { bounds: { min: number; max: number } }) {
   const [min, setMin] = useState(pMin ? Number(pMin) : bounds.min);
   const [max, setMax] = useState(pMax ? Number(pMax) : bounds.max);
   const latest = useRef({ min, max });
-  latest.current = { min, max };
+  useEffect(() => {
+    latest.current = { min, max };
+  }, [min, max]);
 
   useEffect(() => {
     setMin(pMin ? Number(pMin) : bounds.min);

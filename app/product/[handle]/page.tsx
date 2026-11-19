@@ -117,7 +117,7 @@ export default async function ProductPage({ params }: Params) {
       url: absoluteUrl(`/product/${product.handle}`),
       priceCurrency: 'UAH',
       price: product.price,
-      priceValidUntil: new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10),
+      priceValidUntil: priceValidUntil(),
       itemCondition: 'https://schema.org/NewCondition',
       availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       seller: { '@type': 'Organization', name: SITE_NAME },
@@ -241,4 +241,9 @@ export default async function ProductPage({ params }: Params) {
       <div className="h-16 lg:hidden" aria-hidden />
     </>
   );
+}
+
+/** Дата «ціна дійсна до» для розмітки Product: +30 днів */
+function priceValidUntil() {
+  return new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
 }

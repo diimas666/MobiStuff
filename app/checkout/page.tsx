@@ -41,6 +41,7 @@ export default function CheckoutPage() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isLoading, setIsLoading] = useState(false);
   const orderCompletedRef = useRef(false);
+  const [orderCompleted, setOrderCompleted] = useState(false);
   const checkoutTrackedRef = useRef(false);
 
   const [name, setName] = useState('');
@@ -147,6 +148,7 @@ export default function CheckoutPage() {
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         orderCompletedRef.current = true;
+        setOrderCompleted(true);
         localStorage.setItem(
           'lastOrder',
           JSON.stringify({ ...order, orderId: data.orderId, total: data.total ?? order.total, paymentMethod: data.paymentMethod ?? order.paymentMethod })
@@ -166,7 +168,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (cart.length === 0 && !orderCompletedRef.current) {
+  if (cart.length === 0 && !orderCompleted) {
     return null;
   }
 

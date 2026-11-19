@@ -45,10 +45,6 @@ export default function OrdersPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const fetchOrders = () => {
     setLoading(true);
     fetch('/api/admin/getOrders')
@@ -57,6 +53,10 @@ export default function OrdersPage() {
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   const toggleSelect = (id: string) => {
     setSelected((prev) =>

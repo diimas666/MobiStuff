@@ -1,6 +1,7 @@
 import { api } from '../config/api';
 import type { StoredOrder, OrderStatus } from '../types/order';
 import { normalizeOrderStatus } from '../types/order';
+import { getOrderAccessToken } from './orderAccessStorage';
 
 export async function fetchOrdersByPhone(phone: string): Promise<StoredOrder[]> {
   if (!phone.trim()) {
@@ -8,7 +9,13 @@ export async function fetchOrdersByPhone(phone: string): Promise<StoredOrder[]> 
   }
 
   try {
-    const response = await api.listOrders({ phone });
+    // Без ключа (виданого при оформленні замовлення) сервер історію не віддає
+    const token = await getOrderAccessToken(phone);
+    if (!token) {
+      return [];
+    }
+
+    const response = await api.listOrders({ phone, token });
 
     if (!response.ok) {
       return [];

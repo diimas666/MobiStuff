@@ -1,5 +1,6 @@
 import type { CartItem } from '../types/cart';
 import { api } from '../config/api';
+import { saveOrderAccessToken } from './orderAccessStorage';
 
 export type CheckoutOrder = {
   name: string;
@@ -22,7 +23,21 @@ export async function submitCheckout(order: CheckoutOrder & { id?: string }): Pr
       ...order,
       orderId: order.id,
     });
-    return response.ok;
+    if (!response.ok) {
+      return false;
+    }
+
+    // Сервер видає ключ для перегляду історії замовлень цього номера
+    try {
+      const data = (await response.json()) as { ordersToken?: unknown };
+      if (typeof data.ordersToken === 'string') {
+        await saveOrderAccessToken(order.phone, data.ordersToken);
+      }
+    } catch {
+      // замовлення вже прийняте — відсутність ключа не критична
+    }
+
+    return true;
   } catch {
     return false;
   }
