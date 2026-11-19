@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import AdminWrapper from '@/components/AdminWrapper';
 
 const MARKUP_RULES = [
@@ -111,11 +112,11 @@ export default function SyncAdminPage() {
           </h2>
           <p className="text-blue-800">
             Якщо ви змінили ціну в{' '}
-            <a href="/admin/products" className="underline font-medium">
+            <Link href="/admin/products" className="underline font-medium">
               адмінці → Товари
-            </a>
-            , синхронізація <strong>не перезапише</strong> її. Біля ціни
-            зʼявиться позначка «ручна».
+            </Link>
+            , синхронізація <strong>не перезапише</strong> її. Так само з назвою, описом, фото
+            і позначкою «Новинка», якщо ви їх редагували.
           </p>
         </div>
 
