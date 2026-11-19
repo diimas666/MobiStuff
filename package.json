@@ -24,6 +24,7 @@
     "mobile:test:e2e": "npm run test:e2e --workspace=MobistuffMobile",
     "mobile:pod-install": "cd apps/mobile/ios && bundle exec pod install",
     "mobile:icons": "node scripts/generate-app-icons.mjs",
+    "mobile:screenshots": "node scripts/resize-app-store-screenshots.mjs",
     "export-catalog-tree": "npx tsx scripts/exportCatalogTree.mjs"
   },
   "dependencies": {
