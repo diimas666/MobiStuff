@@ -86,10 +86,9 @@ async function load(): Promise<StoreSettingsData> {
 
 export const getStoreSettings = unstable_cache(load, ['store-settings-v1'], { revalidate: 3600, tags: ['settings'] });
 
-/** Публічна частина (для сторінок і застосунку) */
+/** Публічна частина (для сторінок і застосунку). Реквізити картки — публічні: їх бачить кожен покупець */
 export function publicSettings(s: StoreSettingsData) {
-  const { cardPaymentDetails: _hidden, notifyCustomers: _n, ...rest } = s;
-  void _hidden;
+  const { notifyCustomers: _n, ...rest } = s;
   void _n;
   return rest;
 }

@@ -26,13 +26,8 @@ type NavigationProp = NativeStackNavigationProp<
   'PaymentMethods'
 >;
 
-const METHOD_ORDER: PaymentMethodType[] = [
-  'card_transfer',
-  'stripe',
-  'google_pay',
-  'apple_pay',
-  'cod',
-];
+// Показуємо лише ті способи, що працюють зараз
+const METHOD_ORDER: PaymentMethodType[] = ['card_transfer', 'cod'];
 
 export function PaymentMethodsScreen() {
   const { styles, colors } = useThemedStyles(c => ({
@@ -160,9 +155,8 @@ export function PaymentMethodsScreen() {
             color={colors.primary}
           />
           <Text style={styles.infoText}>
-            Зараз доступні переказ на картку та оплата при отриманні. Stripe,
-            Google Pay та Apple Pay з&apos;являться після підключення
-            онлайн-оплати.
+            Для великих замовлень діє лише оплата карткою — умови показуємо під час
+            оформлення.
           </Text>
         </View>
       </ScrollView>

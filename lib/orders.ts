@@ -66,7 +66,8 @@ export async function buildOrderFromPayload(data: Record<string, unknown>) {
   });
 
   const total = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
-  let paymentMethod = str(data.paymentMethod) === 'card' ? 'card' : 'cod';
+  // Застосунок раніше надсилав card_online / card_transfer — це теж оплата карткою
+  let paymentMethod = ['card', 'card_online', 'card_transfer'].includes(str(data.paymentMethod)) ? 'card' : 'cod';
   const { cardOnlyFrom } = await getStoreSettings();
   if (total >= cardOnlyFrom) paymentMethod = 'card';
 

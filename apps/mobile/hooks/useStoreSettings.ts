@@ -10,6 +10,8 @@ export type StoreSettings = {
   instagram: string;
   telegram: string;
   workingHours: string;
+  /** Реквізити для оплати карткою з адмінки */
+  cardPaymentDetails: string;
 };
 
 const FALLBACK: StoreSettings = {
@@ -20,6 +22,7 @@ const FALLBACK: StoreSettings = {
   instagram: '',
   telegram: '',
   workingHours: '',
+  cardPaymentDetails: '',
 };
 
 let cache: StoreSettings | null = null;

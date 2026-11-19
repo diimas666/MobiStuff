@@ -27,6 +27,7 @@ import { OrderSuccessModal } from '../components/checkout/OrderSuccessModal';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { paymentCardNumber } from '../config/payment';
+import { useStoreSettings } from '../hooks/useStoreSettings';
 import { radius, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useDeliveryAddresses } from '../context/DeliveryAddressesContext';
@@ -191,7 +192,11 @@ export function CheckoutScreen({ navigation }: Props) {
 }));
 
   const insets = useSafeAreaInsets();
+  const store = useStoreSettings();
   const { items, totalQuantity, clearCart } = useCart();
+  const { total: cartTotal } = useMemo(() => getCartTotals(items), [items]);
+  // Великі замовлення — лише передоплата карткою (поріг з адмінки)
+  const cardOnly = cartTotal >= store.cardOnlyFrom;
   const { addOrder } = useOrders();
   const { addresses, isHydrated: addressesHydrated, getDefaultAddress } = useDeliveryAddresses();
   const { defaultMethod, isHydrated: paymentMethodsHydrated } = usePaymentMethods();
@@ -203,6 +208,10 @@ export function CheckoutScreen({ navigation }: Props) {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethodType>('card_transfer');
   const [paymentInitialized, setPaymentInitialized] = useState(false);
+
+  useEffect(() => {
+    if (cardOnly && selectedPaymentMethod === 'cod') setSelectedPaymentMethod('card_transfer');
+  }, [cardOnly, selectedPaymentMethod]);
 
   const {
     name,
@@ -589,11 +598,6 @@ export function CheckoutScreen({ navigation }: Props) {
           </CheckoutSection>
 
           <CheckoutSection title="Оплата">
-            <View style={styles.selectedPaymentCard}>
-              <Text style={styles.selectedPaymentLabel}>Обраний спосіб</Text>
-              <Text style={styles.selectedPaymentValue}>{selectedPaymentMeta.title}</Text>
-              <Text style={styles.selectedPaymentHint}>{selectedPaymentMeta.description}</Text>
-            </View>
 
             <CheckoutRadioRow
               label={PAYMENT_METHOD_META.card_transfer.title}
@@ -603,16 +607,16 @@ export function CheckoutScreen({ navigation }: Props) {
             />
             <CheckoutRadioRow
               label={PAYMENT_METHOD_META.cod.title}
-              hint={PAYMENT_METHOD_META.cod.description}
+              hint={cardOnly ? `Недоступно для замовлень від ${formatPrice(store.cardOnlyFrom)}` : PAYMENT_METHOD_META.cod.description}
               selected={selectedPaymentMethod === 'cod'}
-              onPress={() => selectCheckoutPayment('cod')}
+              onPress={() => (cardOnly ? showToast(`Від ${formatPrice(store.cardOnlyFrom)} — лише оплата карткою`, 'info') : selectCheckoutPayment('cod'))}
             />
 
             {selectedPaymentMethod === 'card_transfer' ? (
               <View style={styles.cardBlock}>
                 <Text style={styles.cardLabel}>Номер картки для оплати</Text>
                 <Text style={styles.cardNumber} selectable>
-                  {paymentCardNumber}
+                  {store.cardPaymentDetails || paymentCardNumber}
                 </Text>
                 <Text style={styles.cardHint}>
                   Перекажіть суму замовлення на цю картку та вкажіть ПІБ у призначенні

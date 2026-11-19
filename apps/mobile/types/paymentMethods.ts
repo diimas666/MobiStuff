@@ -50,6 +50,11 @@ export const PAYMENT_METHOD_META: Record<
   },
 };
 
+/** Способи, які можна обрати зараз (онлайн-оплату підключимо пізніше) */
+export const AVAILABLE_PAYMENT_METHODS = (Object.keys(PAYMENT_METHOD_META) as PaymentMethodType[]).filter(
+  m => PAYMENT_METHOD_META[m].available,
+);
+
 export function mapPaymentMethodToCheckout(method: PaymentMethodType): 'card' | 'cod' {
   return method === 'cod' ? 'cod' : 'card';
 }
@@ -66,7 +71,7 @@ export function mapPaymentMethodToOrder(method: PaymentMethodType): string {
       return 'apple_pay';
     case 'card_transfer':
     default:
-      return 'card_online';
+      return 'card';
   }
 }
 
