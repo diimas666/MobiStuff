@@ -20,36 +20,40 @@
         "slug": "category-xiaomi"
       },
       {
-        "title": "ZTE",
-        "slug": "category-zte"
-      },
-      {
-        "title": "VIVO",
-        "slug": "category-vivo"
+        "title": "Realme",
+        "slug": "category-realme"
       },
       {
         "title": "Tecno",
         "slug": "category-tecno"
       },
       {
-        "title": "Realme",
-        "slug": "category-realme"
-      },
-      {
         "title": "Poco",
         "slug": "category-poco"
+      },
+      {
+        "title": "ZTE",
+        "slug": "category-zte"
       },
       {
         "title": "OPPO",
         "slug": "category-oppo"
       },
       {
-        "title": "ONE PLUS",
-        "slug": "category-one-plus"
-      },
-      {
         "title": "Motorola",
         "slug": "category-motorola"
+      },
+      {
+        "title": "Honor",
+        "slug": "category-honor"
+      },
+      {
+        "title": "VIVO",
+        "slug": "category-vivo"
+      },
+      {
+        "title": "ONE PLUS",
+        "slug": "category-one-plus"
       },
       {
         "title": "Meizu",
@@ -64,10 +68,6 @@
         "slug": "category-huawei"
       },
       {
-        "title": "Honor",
-        "slug": "category-honor"
-      },
-      {
         "title": "Универсальные",
         "slug": "category-universalynie"
       },
@@ -76,16 +76,20 @@
         "slug": "category-chehli-dlya-planshetov-i-noutbukov"
       },
       {
-        "title": "Чохли для Airpods та iн.",
-        "slug": "category-chehli-dlya-airpods-i-dr"
-      },
-      {
         "title": "Pop Socket та настільні підставки",
         "slug": "category-pop-socket-i-nastolynie-podstavki"
       },
       {
+        "title": "Чохли для Airpods та iн.",
+        "slug": "category-chehli-dlya-airpods-i-dr"
+      },
+      {
         "title": "Муляжі для телефонів",
         "slug": "category-mulyazhi-dlya-telefonov"
+      },
+      {
+        "title": "Шнурки для телефонів",
+        "slug": "category-shnurki-dlya-telefonov"
       }
     ]
   },
@@ -98,12 +102,12 @@
         "slug": "category-plotteri"
       },
       {
-        "title": "Плівки для плотера",
-        "slug": "category-plenki-dlya-plottera"
-      },
-      {
         "title": "Захисне скло",
         "slug": "category-zashtitnie-stekla"
+      },
+      {
+        "title": "Плівки для плотера",
+        "slug": "category-plenki-dlya-plottera"
       },
       {
         "title": "Аксесуари для плотерів",
@@ -115,14 +119,6 @@
     "title": "Акумулятори та powerbank",
     "slug": "category-akkumulyatori-i-powerbank",
     "subcategories": [
-      {
-        "title": "Акумулятор для ноутбука",
-        "slug": "category-akkumulyator-dlya-noutbuka"
-      },
-      {
-        "title": "Лужні батарейки",
-        "slug": "category-shtelochnie-batareyki"
-      },
       {
         "title": "Портативні батареї",
         "slug": "category-portativnie-batarei"
@@ -140,6 +136,10 @@
         "slug": "category-akkumulyatori-dlya-plansheta"
       },
       {
+        "title": "Акумулятор для ноутбука",
+        "slug": "category-akkumulyator-dlya-noutbuka"
+      },
+      {
         "title": "Акумулятори внутрішні з проводами",
         "slug": "category-akkumulyatori-vnutrennie-s-provodami"
       },
@@ -150,6 +150,10 @@
       {
         "title": "Акумулятори внутрішні зі шлейфом",
         "slug": "category-akkumulyatori-vnutrennie-so-shleyfom"
+      },
+      {
+        "title": "Лужні батарейки",
+        "slug": "category-shtelochnie-batareyki"
       }
     ]
   },
@@ -170,12 +174,56 @@
         "slug": "category-breloki"
       },
       {
-        "title": "Автомобільні зарядні пристрої",
-        "slug": "category-avtomobilynie-zaryadnie-ustroystva"
+        "title": "Турбовентилятори",
+        "slug": "category-turboventilyatori"
+      },
+      {
+        "title": "CarPlay / Android Auto",
+        "slug": "category-carplay-android-auto"
+      },
+      {
+        "title": "Автовізитки",
+        "slug": "category-avtovizitki"
+      },
+      {
+        "title": "Авто-Мото інвертори",
+        "slug": "category-avto-moto-invertori"
+      },
+      {
+        "title": "Ароматизатори",
+        "slug": "category-aromatizatori"
+      },
+      {
+        "title": "Компресори",
+        "slug": "category-kompressori"
+      },
+      {
+        "title": "Мікрофібра",
+        "slug": "category-mikrofibra"
+      },
+      {
+        "title": "Пускові пристрої",
+        "slug": "category-puskovie-ustroystva"
+      },
+      {
+        "title": "Пилососи",
+        "slug": "category-pilesosi"
+      },
+      {
+        "title": "Сонцезахисні шторки та парасольки",
+        "slug": "category-solntsezashtitnie-shtorki-i-zonti"
+      },
+      {
+        "title": "Велоаксесуари",
+        "slug": "category-veloaksessuari"
       },
       {
         "title": "Автомобільні тримачi",
         "slug": "category-avtomobilynie-derzhateli"
+      },
+      {
+        "title": "Автомобільні зарядні пристрої",
+        "slug": "category-avtomobilynie-zaryadnie-ustroystva"
       },
       {
         "title": "FM модулятори",
@@ -192,10 +240,6 @@
         "slug": "category-umnie-chasi-i-fitnes-trekeri"
       },
       {
-        "title": "Настільні Led лампи",
-        "slug": "category-nastolynie-led-lampi"
-      },
-      {
         "title": "Аксесуари для розумних годинникiв і фітнес трекерів",
         "slug": "category-aksessuari-dlya-umnih-chasov-i-fitnes-trekerov"
       },
@@ -204,16 +248,20 @@
         "slug": "category-monopodi"
       },
       {
+        "title": "Настільні Led лампи",
+        "slug": "category-nastolynie-led-lampi"
+      },
+      {
+        "title": "Кiльцевi лампи",
+        "slug": "category-kolytsevie-lampi"
+      },
+      {
         "title": "Мікрофони",
         "slug": "category-mikrofoni"
       },
       {
         "title": "Iншi гаджети",
         "slug": "category-drugie-gadzheti"
-      },
-      {
-        "title": "Кiльцевi лампи",
-        "slug": "category-kolytsevie-lampi"
       }
     ]
   },
@@ -222,12 +270,16 @@
     "slug": "category-zaryadki-i-kabeli",
     "subcategories": [
       {
-        "title": "Мережеві зарядні пристрої",
-        "slug": "category-setevie-zaryadnie-ustroystva"
+        "title": "Хаби, перехідники, мережеві шнури",
+        "slug": "category-habi-perehodniki-udliniteli"
       },
       {
-        "title": "Мережеві Подовжувачі",
+        "title": "Мережеві подовжувачі",
         "slug": "category-testeri-dlya-zaryadok"
+      },
+      {
+        "title": "Мережеві зарядні пристрої",
+        "slug": "category-setevie-zaryadnie-ustroystva"
       },
       {
         "title": "Мережеві перехідники",
@@ -284,10 +336,6 @@
       {
         "title": "Кабелі AUX і HDMI",
         "slug": "category-kabeli-aux-i-hdmi"
-      },
-      {
-        "title": "Хаби, перехідники, мережеві шнури",
-        "slug": "category-habi-perehodniki-udliniteli"
       }
     ]
   },
@@ -320,16 +368,8 @@
         "slug": "category-usb-nakopiteli"
       },
       {
-        "title": "Ігрові поверхні",
-        "slug": "category-igrovie-poverhnosti"
-      },
-      {
         "title": "Зовнішні Жорсткі Диски",
         "slug": "category-vneshnie-zhestkie-diski"
-      },
-      {
-        "title": "Веб камери",
-        "slug": "category-veb-kameri"
       },
       {
         "title": "SSD",
@@ -342,16 +382,80 @@
     ]
   },
   {
-    "title": "Комп'ютерні меблі",
-    "slug": "category-kompyyuternaya-mebely",
+    "title": "Геймінг",
+    "slug": "category-geyming",
     "subcategories": [
       {
-        "title": "Комп'ютерні столи",
+        "title": "Стримінг та мультимедіа",
+        "slug": "category-striming-i-mulytimedia"
+      },
+      {
+        "title": "Ігрові мікрофони",
+        "slug": "category-igrovie-mikrofoni"
+      },
+      {
+        "title": "Веб камери",
+        "slug": "category-veb-kameri"
+      },
+      {
+        "title": "Колонки з підсвіткою",
+        "slug": "category-kolonki-s-podsvetkoy"
+      },
+      {
+        "title": "Меблі та освітлення",
+        "slug": "category-mebely-i-osveshtenie"
+      },
+      {
+        "title": "Ігрові столи",
         "slug": "category-kompyyuternie-stoli"
       },
       {
-        "title": "Комп'ютерні крісла",
+        "title": "Фонове освітлення",
+        "slug": "category-fonovoe-osveshtenie"
+      },
+      {
+        "title": "Кронштейни",
+        "slug": "category-kronshteyni"
+      },
+      {
+        "title": "Ігрові крісла",
         "slug": "category-kompyyuternie-kresla"
+      },
+      {
+        "title": "Ігрові навушники та гарнітури",
+        "slug": "category-igrovie-naushniki-i-garnituri"
+      },
+      {
+        "title": "Ігрові миші",
+        "slug": "category-igrovie-mishi"
+      },
+      {
+        "title": "Ігрові комплекти (набори)",
+        "slug": "category-igrovie-komplekti-nabori"
+      },
+      {
+        "title": "Ігрові клавіатури",
+        "slug": "category-igrovie-klaviaturi"
+      },
+      {
+        "title": "Механічні",
+        "slug": "category-mehanicheskie"
+      },
+      {
+        "title": "Мембранні",
+        "slug": "category-membrannie"
+      },
+      {
+        "title": "Геймпади та контролери",
+        "slug": "category-geympadi-i-kontrolleri"
+      },
+      {
+        "title": "Ігрові килимки та поверхні",
+        "slug": "category-igrovie-poverhnosti"
+      },
+      {
+        "title": "Мобільний геймінг",
+        "slug": "category-mobilyniy-geyming"
       }
     ]
   },
@@ -394,12 +498,12 @@
         "slug": "category-portativnie-kolonki"
       },
       {
-        "title": "Аварійне радіо для виживання",
-        "slug": "category-avariynoe-radio-dlya-vizhivaniya"
-      },
-      {
         "title": "Геймпади",
         "slug": "category-geympadi"
+      },
+      {
+        "title": "Аварійне радіо для виживання",
+        "slug": "category-avariynoe-radio-dlya-vizhivaniya"
       },
       {
         "title": "Комп'ютерна акустика",

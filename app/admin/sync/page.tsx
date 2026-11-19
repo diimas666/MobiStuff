@@ -50,9 +50,8 @@ export default function SyncAdminPage() {
         <div className="border rounded-xl p-5 space-y-4 text-sm">
           <h2 className="font-semibold text-base">Наценка до оптової ціни</h2>
           <p className="text-gray-600">
-            Оптова ціна MMA приходить у <strong>USD</strong>. Скрипт
-            конвертує в гривні (курс <code>MMA_USD_RATE</code>, за замовчуванням{' '}
-            <strong>42</strong>) і додає наценку залежно від категорії:
+            Оптова ціна MMA приходить у <strong>гривнях</strong>. Курс $ (для аналітики і старих цін)
+            береться автоматично з MMA, запасний — НБУ. Скрипт додає наценку залежно від категорії:
           </p>
 
           <div className="overflow-x-auto">
@@ -142,7 +141,7 @@ MMA_PASSWORD=ваш_пароль
 MONGODB_URI=...
 
 # Курс долара (опціонально):
-MMA_USD_RATE=42
+MMA_USD_RATE=42  # лише запасний курс, якщо MMA і НБУ недоступні
 
 # Тест на N товарів:
 # MMA_SYNC_LIMIT=10

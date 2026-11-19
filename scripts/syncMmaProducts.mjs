@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { MmaClient, mapAvailability } from './lib/mma/client.mjs';
 import { mapCategories } from './lib/mma/categoryMap.mjs';
-import { applyMarkup, getMarkupPercent } from './lib/mma/pricing.mjs';
+import { applyMarkup, getMarkupPercent, loadUsdRate, retailPriceFor, sourceCurrency } from './lib/mma/pricing.mjs';
 
 const rootDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 dotenv.config({ path: path.join(rootDir, '.env.local'), override: true });
@@ -35,8 +35,10 @@ const ProductSchema = new mongoose.Schema(
     mmaKey: { type: String, unique: true, sparse: true },
     mmaSlug: String,
     mmaSourcePrice: Number,
+    mmaSourceCurrency: String,
     priceManuallyEdited: { type: Boolean, default: false },
     lastSyncedAt: Date,
+    manualFields: [String],
   },
   { timestamps: true, suppressReservedKeysWarning: true }
 );
@@ -70,10 +72,9 @@ function buildProductDoc(listing, details, client) {
   const title = details?.translation?.name || listing.translation?.name;
   const { category, categorySlug, subcategorySlug } = mapCategories(breadcrumbs, title);
   const description = details?.translation?.description || '';
-  const sourcePrice =
-    listing.productVariantInfo?.price?.minValue ||
-    details?.recommendedRetailPrice ||
-    0;
+  // Оптова ціна (лише для авторизованого акаунта MMA) і рекомендована роздрібна
+  const sourcePrice = listing.productVariantInfo?.price?.minValue || 0;
+  const rrp = details?.recommendedRetailPrice || listing.recommendedRetailPrice || 0;
   const sourceOldPrice = listing.productVariantInfo?.price?.minOldValue || null;
 
   const images = [
@@ -83,12 +84,15 @@ function buildProductDoc(listing, details, client) {
 
   const image = images[0] || '';
 
-  const retailPrice = applyMarkup(sourcePrice, {
+  const { price: retailPrice, suspicious } = retailPriceFor(sourcePrice, rrp, {
     categorySlug,
     subcategorySlug,
     breadcrumbs,
     title,
   });
+  if (suspicious) {
+    console.warn(`\n⚠️  ${title?.slice(0, 50)}: ціна після наценки завелика — взято рекомендовану ${rrp} грн`);
+  }
   const retailOldPrice = sourceOldPrice
     ? applyMarkup(sourceOldPrice, {
         categorySlug,
@@ -110,6 +114,7 @@ function buildProductDoc(listing, details, client) {
     image,
     images,
     mmaSourcePrice: sourcePrice > 0 ? sourcePrice : undefined,
+    mmaSourceCurrency: sourcePrice > 0 ? sourceCurrency() : undefined,
     price: retailPrice,
     oldPrice: retailOldPrice,
     inStock: mapAvailability(availability),
@@ -151,6 +156,7 @@ async function upsertProduct(doc) {
     brand: doc.brand,
     mmaSlug: doc.mmaSlug,
     mmaSourcePrice: doc.mmaSourcePrice,
+    mmaSourceCurrency: doc.mmaSourceCurrency,
     isNew: doc.isNew,
     tags: doc.tags,
     lastSyncedAt: doc.lastSyncedAt,
@@ -161,12 +167,22 @@ async function upsertProduct(doc) {
     update.oldPrice = doc.oldPrice;
   }
 
+  // Не перезаписуємо те, що змінили вручну в адмінці (назва, опис, фото, позначки…)
+  for (const field of existing.manualFields ?? []) {
+    delete update[field];
+    if (field === 'categorySlug') {
+      delete update.category;
+      delete update.subcategorySlug;
+    }
+  }
+
   await Product.updateOne({ _id: existing._id }, { $set: update });
   return { action: 'updated' };
 }
 
 async function main() {
-  const uri = process.env.MONGODB_URI;
+  // SYNC_MONGODB_URI — щоб прогнати синхронізацію на тестовій базі
+  const uri = process.env.SYNC_MONGODB_URI || process.env.MONGODB_URI;
   if (!uri) {
     console.error('❌ MONGODB_URI не найден в .env.local');
     process.exit(1);
@@ -184,7 +200,9 @@ async function main() {
 
   console.log('🔄 Синхронизация ассортимента MMA → MobiStuff');
   console.log(`   Наценка: +40% | кабелі/скло +80% | мишки +50%`);
-  console.log(`   Курс USD→UAH: ${process.env.MMA_USD_RATE || 42}`);
+  const { rate, source } = await loadUsdRate();
+  console.log(`   Курс $: ${rate} ₴ (джерело: ${source})`);
+  console.log(`   Оптові ціни MMA у: ${sourceCurrency()}`);
   console.log(`   Фото: URL с cdn.mma.ua`);
   console.log(`   Ручные цены в админке не перезаписываются\n`);
 

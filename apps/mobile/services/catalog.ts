@@ -1,4 +1,4 @@
-import { api } from '../config/api';
+import { api, baseUrl } from '../config/api';
 import { CACHE_TTL, cachedFetch, setCached } from './apiCache';
 import {
   extractCategories,
@@ -69,10 +69,25 @@ function normalizeCategories(
     .filter(item => item.id && item.title);
 }
 
+/** Фото, завантажені через адмінку, мають відносний шлях (/api/media/…) */
+function absoluteImage(url?: string): string | undefined {
+  if (!url) return url;
+  return url.startsWith('/') ? `${baseUrl}${url}` : url;
+}
+
+function withAbsoluteImages(product: ApiProduct): ApiProduct {
+  return {
+    ...product,
+    image: absoluteImage(product.image) as ApiProduct['image'],
+    images: product.images?.map(img => absoluteImage(img) ?? img),
+  };
+}
+
 function normalizeProducts(
   data: ApiProduct[] | { products: ApiProduct[] },
 ): ApiProduct[] {
-  return Array.isArray(data) ? data : data.products ?? [];
+  const list = Array.isArray(data) ? data : data.products ?? [];
+  return list.map(withAbsoluteImages);
 }
 
 function normalizeProductImages(image?: string, images?: string[]): string[] {
@@ -124,7 +139,7 @@ async function loadProducts(query: string): Promise<ApiProduct[]> {
 async function loadProductByHandle(handle: string): Promise<ProductDetail> {
   const response = await api.productByHandle(handle);
   const product = await parseJson<ApiProduct>(response);
-  return toProductDetail(product);
+  return toProductDetail(withAbsoluteImages(product));
 }
 
 async function loadProductsByCategory(

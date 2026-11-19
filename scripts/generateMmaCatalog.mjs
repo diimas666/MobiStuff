@@ -15,6 +15,7 @@ const ICON_BY_SLUG = {
   'category-naushniki': 'Headset',
   'category-audio-i-video': 'Speaker',
   'category-poleznie-aksessuari': 'Wrench',
+  'category-geyming': 'Gamepad2',
 };
 
 function collectSubs(children, acc = []) {

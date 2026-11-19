@@ -27,7 +27,11 @@ export async function POST(req: Request) {
     if (typeof body?.set?.[key] === 'boolean') set[key] = body.set[key];
   }
   if (Object.keys(set).length) {
-    await Product.updateMany({ _id: { $in: ids } }, { $set: set });
+    await Product.updateMany(
+      { _id: { $in: ids } },
+      // «Новинка», виставлена вручну, не скидається синхронізацією з MMA
+      set.isNew !== undefined ? { $set: set, $addToSet: { manualFields: 'isNew' } } : { $set: set }
+    );
   }
 
   if (body?.discountPercent !== undefined) {

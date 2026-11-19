@@ -1,11 +1,17 @@
-export function getUsdRate() {
-  const rate = Number(process.env.MMA_USD_RATE || 42);
-  return rate > 0 ? rate : 42;
-}
+import { unstable_cache } from 'next/cache';
+import { resolveUsdRate } from './usdRateSources.mjs';
 
-export function wholesaleToUah(usdPrice?: number | null): number | null {
-  if (!usdPrice || usdPrice <= 0) return null;
-  return Math.ceil(usdPrice * getUsdRate());
+/** Актуальний курс $ (MMA → НБУ → .env), кеш 6 годин */
+export const getUsdRate = unstable_cache(async () => (await resolveUsdRate()).rate, ['usd-rate-v1'], {
+  revalidate: 6 * 60 * 60,
+});
+
+/**
+ * Закупівельна ціна в гривнях. Записи без позначки валюти — старі, з доларами.
+ */
+export function wholesaleToUah(price: number | null | undefined, currency: string | undefined, usdRate: number): number | null {
+  if (!price || price <= 0) return null;
+  return Math.ceil((currency ?? 'USD') === 'USD' ? price * usdRate : price);
 }
 
 /** Оцінка закупки, якщо немає MMA-ціни (стандартна наценка +40%) */

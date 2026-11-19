@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { applyMarkup, getMarkupPercent } from './lib/mma/pricing.mjs';
+import { applyMarkup, getMarkupPercent, loadUsdRate } from './lib/mma/pricing.mjs';
 import { isGlassCategory } from './lib/mma/categoryMap.mjs';
 
 const rootDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -17,6 +17,7 @@ const ProductSchema = new mongoose.Schema(
     categorySlug: String,
     subcategorySlug: String,
     mmaSourcePrice: Number,
+    mmaSourceCurrency: String,
     priceManuallyEdited: { type: Boolean, default: false },
   },
   { timestamps: true, suppressReservedKeysWarning: true }
@@ -27,7 +28,7 @@ const Product =
   mongoose.model('RecalcProduct', ProductSchema, 'products');
 
 async function main() {
-  const uri = process.env.MONGODB_URI;
+  const uri = process.env.SYNC_MONGODB_URI || process.env.MONGODB_URI;
   if (!uri) {
     console.error('❌ MONGODB_URI не найден в .env.local');
     process.exit(1);
@@ -35,6 +36,8 @@ async function main() {
 
   const onlyGlass = process.env.MMA_RECALC_GLASS === '1';
 
+  const { rate, source } = await loadUsdRate();
+  console.log(`💱 Курс $: ${rate} ₴ (${source})`);
   await mongoose.connect(uri);
 
   const filter = {
@@ -50,12 +53,13 @@ async function main() {
   }
 
   const products = await Product.find(filter).select(
-    'title price oldPrice categorySlug subcategorySlug mmaSourcePrice priceManuallyEdited'
+    'title price oldPrice categorySlug subcategorySlug mmaSourcePrice mmaSourceCurrency priceManuallyEdited'
   );
 
   let updated = 0;
   let skippedManual = 0;
   let unchanged = 0;
+  let skippedLegacy = 0;
 
   for (const product of products) {
     if (onlyGlass) {
@@ -75,7 +79,13 @@ async function main() {
       title: product.title,
     };
 
-    const newPrice = applyMarkup(product.mmaSourcePrice, context);
+    // Без позначки валюти (записи до виправлення) не перераховуємо — невідомо,
+    // долари там чи гривні. Повна синхронизація (npm run sync-mma) оновить їх.
+    if (!product.mmaSourceCurrency) {
+      skippedLegacy++;
+      continue;
+    }
+    const newPrice = applyMarkup(product.mmaSourcePrice, context, product.mmaSourceCurrency);
     if (!newPrice) continue;
 
     if (newPrice === product.price) {
@@ -101,6 +111,7 @@ async function main() {
   console.log(`   Обновлено:    ${updated}`);
   console.log(`   Без изменений: ${unchanged}`);
   console.log(`   Пропущено (ручная цена): ${skippedManual}`);
+  console.log(`   Пропущено (стара ціна без валюти — оновить sync-mma): ${skippedLegacy}`);
   console.log(
     onlyGlass
       ? '   Режим: только захисне скло (+80%)'

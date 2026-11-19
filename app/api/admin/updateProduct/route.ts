@@ -82,6 +82,8 @@ export async function PATCH(req: Request) {
     }
 
     const updateQuery: Record<string, unknown> = { $set: updateFields };
+    const manual = ['title', 'description', 'image', 'images', 'brand', 'isNew', 'tags'].filter((k) => updateFields[k] !== undefined);
+    if (manual.length) updateQuery.$addToSet = { manualFields: { $each: manual } };
     if (Object.keys(unsetFields).length > 0) {
       updateQuery.$unset = unsetFields;
     }

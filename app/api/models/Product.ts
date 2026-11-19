@@ -27,8 +27,11 @@ const ProductSchema = new mongoose.Schema(
     mmaKey: { type: String, unique: true, sparse: true, select: false },
     mmaSlug: { type: String, select: false },
     mmaSourcePrice: { type: Number, select: false },
+    mmaSourceCurrency: { type: String, select: false }, // UAH | USD
     priceManuallyEdited: { type: Boolean, default: false, select: false },
     lastSyncedAt: { type: Date, select: false },
+    // Поля, змінені вручну в адмінці — синхронізація з MMA їх не перезаписує
+    manualFields: { type: [String], select: false },
   },
   {
     suppressReservedKeysWarning: true, // ✅ Добавь сюда

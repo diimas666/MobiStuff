@@ -12,6 +12,7 @@ import {
   getOrderDate,
   roundMoney,
   wholesaleToUah,
+  getUsdRate,
 } from '@/lib/adminAnalytics';
 
 interface OrderItem {
@@ -41,9 +42,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid year or month' }, { status: 400 });
     }
 
+    const usdRate = await getUsdRate();
     const [orders, products, dailyStats] = await Promise.all([
       Order.find().lean(),
-      Product.find().select('_id handle price +mmaSourcePrice').lean(),
+      Product.find().select('_id handle price +mmaSourcePrice +mmaSourceCurrency').lean(),
       DailyStat.find({
         date: {
           $gte: `${year}-01-01`,
@@ -111,7 +113,7 @@ export async function GET(req: NextRequest) {
           null;
 
         const costUnit =
-          wholesaleToUah(product?.mmaSourcePrice) ??
+          wholesaleToUah(product?.mmaSourcePrice, product?.mmaSourceCurrency, usdRate) ??
           estimateCostFromSale(salePrice);
 
         bucket.cost += costUnit * qty;
@@ -177,7 +179,7 @@ export async function GET(req: NextRequest) {
           (item.handle && productByHandle.get(item.handle)) ||
           null;
 
-        const wholesale = wholesaleToUah(product?.mmaSourcePrice);
+        const wholesale = wholesaleToUah(product?.mmaSourcePrice, product?.mmaSourceCurrency, usdRate);
         const costPrice = wholesale ?? estimateCostFromSale(salePrice);
         const revenue = salePrice * qty;
         const costTotal = costPrice * qty;

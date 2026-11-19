@@ -14,7 +14,7 @@ const CABLE_KEYWORDS = [
 function categoryFromTitle(title = '') {
   const haystack = title.toLowerCase();
 
-  if (/\bколонк/.test(haystack)) {
+  if (/(^|[^а-яіїєґ])колонк/.test(haystack)) {
     return {
       category: 'Аудіо та відео',
       categorySlug: 'category-audio-i-video',
@@ -22,7 +22,7 @@ function categoryFromTitle(title = '') {
     };
   }
 
-  if (/\b(навушник|гарнітур|earbud|headphone)\b/.test(haystack)) {
+  if (/(^|[^а-яіїєґ])(навушник|гарнітур)|\b(earbud|headphone)/.test(haystack)) {
     return {
       category: 'Навушники',
       categorySlug: 'category-naushniki',
@@ -34,10 +34,12 @@ function categoryFromTitle(title = '') {
 }
 
 export function mapCategories(breadcrumbs = [], title = '') {
-  const titleOverride = categoryFromTitle(title);
-  if (titleOverride) return titleOverride;
-
+  // Категорія з MMA (хлібні крихти) — основне джерело. За назвою вгадуємо лише
+  // коли MMA категорію не віддав: інакше ігрові гарнітури/колонки з підсвіткою
+  // потрапляли б у «Навушники для телефона» / «Портативні колонки».
   if (!breadcrumbs.length) {
+    const titleOverride = categoryFromTitle(title);
+    if (titleOverride) return titleOverride;
     return {
       category: 'Корисні аксесуари',
       categorySlug: 'category-poleznie-aksessuari',
@@ -95,7 +97,8 @@ export function isGlassCategory(
 
 /** Мишки — +50% */
 export function isMiceCategory(categorySlug, subcategorySlug, breadcrumbs = []) {
-  if (subcategorySlug === 'category-mishi') return true;
+  // Звичайні та ігрові мишки (category-mishi, category-igrovie-mishi)
+  if (subcategorySlug === 'category-mishi' || subcategorySlug === 'category-igrovie-mishi') return true;
   const haystack = categoryHaystack(categorySlug, subcategorySlug, breadcrumbs);
-  return haystack.includes('category-mishi');
+  return /category-(igrovie-)?mishi\b/.test(haystack);
 }

@@ -31,8 +31,8 @@ export function verifyPassword(password: unknown): boolean {
   return safeEqual(sign(`pw:${password}`), sign(`pw:${s}`));
 }
 
-export function createSessionToken(): string {
-  const exp = Math.floor(Date.now() / 1000) + ADMIN_SESSION_TTL;
+export function createSessionToken(ttl = ADMIN_SESSION_TTL): string {
+  const exp = Math.floor(Date.now() / 1000) + ttl;
   const payload = String(exp);
   return `${payload}.${sign(payload)}`;
 }
@@ -67,6 +67,28 @@ export function unauthorizedResponse() {
 export function sessionCookie(value: string, maxAge: number) {
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
   return `${ADMIN_COOKIE}=${value}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${secure}`;
+}
+
+/* ---------- Вхід за одноразовим посиланням (без пароля) ----------
+ * Посилання створює скрипт `npm run admin` на компʼютері, де лежить .env.local
+ * з ADMIN_SECRET. Діє 10 хвилин і лише один раз. Підпис — той самий HMAC,
+ * тож без секрету підробити посилання неможливо.
+ */
+export const LINK_SESSION_TTL = 60 * 60 * 24 * 90; // довірений компʼютер: 90 днів
+const usedLinks = new Map<string, number>();
+
+export function verifyLoginLink(token: string | null): boolean {
+  if (!token || !secret()) return false;
+  const [payload, sig] = token.split('.');
+  if (!payload?.startsWith('link-') || !sig) return false;
+  if (!safeEqual(sig, sign(payload))) return false;
+  const exp = Number(payload.slice(5));
+  const now = Date.now() / 1000;
+  if (!Number.isFinite(exp) || exp < now || exp > now + 15 * 60) return false;
+  for (const [k, e] of usedLinks) if (e < now) usedLinks.delete(k);
+  if (usedLinks.has(token)) return false;
+  usedLinks.set(token, exp);
+  return true;
 }
 
 /* Простий ліміт спроб входу (на інстанс): 8 спроб / 15 хв з одного IP */

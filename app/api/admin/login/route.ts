@@ -3,13 +3,26 @@ import {
   ADMIN_SESSION_TTL,
   checkAdminAuth,
   createSessionToken,
+  LINK_SESSION_TTL,
+  verifyLoginLink,
   loginRateLimited,
   sessionCookie,
   verifyPassword,
 } from '@/lib/adminAuth';
 
-/** Перевірка поточної сесії */
+/** Перевірка поточної сесії; з ?link=… — вхід за одноразовим посиланням */
 export async function GET(req: Request) {
+  const link = new URL(req.url).searchParams.get('link');
+  if (link !== null) {
+    if (loginRateLimited(req) || !verifyLoginLink(link)) {
+      return NextResponse.redirect(new URL('/admin?link=expired', req.url));
+    }
+    const res = NextResponse.redirect(new URL('/admin/orders', req.url));
+    res.headers.set('Set-Cookie', sessionCookie(createSessionToken(LINK_SESSION_TTL), LINK_SESSION_TTL));
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
+  }
+
   return NextResponse.json({ ok: checkAdminAuth(req) }, { status: checkAdminAuth(req) ? 200 : 401 });
 }
 

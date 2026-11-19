@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isValidObjectId } from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import PromotionAsset from '@/app/api/models/PromotionAsset';
 
@@ -23,7 +24,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
 
-    if (!id) {
+    if (!id || !isValidObjectId(id)) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
