@@ -12,6 +12,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LoadingState } from '../components/LoadingState';
 import { ProfileOrderCard } from '../components/profile/ProfileOrderCard';
+import { RestoreOrdersCard } from '../components/profile/RestoreOrdersCard';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { radius, spacing } from '../constants/theme';
@@ -252,6 +253,8 @@ export function ProfileOrdersScreen() {
             <Text style={styles.syncHint}>Оновлення статусів...</Text>
           </View>
         ) : null}
+
+        {isHydrated ? <RestoreOrdersCard onRestored={refreshOrders} /> : null}
 
         <View style={styles.section}>
           {!isHydrated ? (

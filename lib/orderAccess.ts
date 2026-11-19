@@ -35,3 +35,14 @@ export function verifyOrderAccessToken(normalizedPhone: string, token: unknown):
   const b = Buffer.from(expected);
   return a.length === b.length && timingSafeEqual(a, b);
 }
+
+/** Хеш одноразового коду (сам код ніде не зберігається) */
+export function hashOtp(normalizedPhone: string, code: string): string {
+  return createHmac('sha256', `otp:${secret()}`).update(`${normalizedPhone}:${code}`).digest('base64url');
+}
+
+export function otpMatches(normalizedPhone: string, code: string, hash: string): boolean {
+  const a = Buffer.from(hashOtp(normalizedPhone, code));
+  const b = Buffer.from(hash);
+  return a.length === b.length && timingSafeEqual(a, b);
+}

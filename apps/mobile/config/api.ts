@@ -64,6 +64,16 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
+  requestOrdersOtp: (body: unknown) =>
+    request('/api/orders/otp/request', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  verifyOrdersOtp: (body: unknown) =>
+    request('/api/orders/otp/verify', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
   promotions: () => request('/api/promotions'),
   brands: () => request('/api/brands'),
   support: (body: unknown) =>

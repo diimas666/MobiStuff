@@ -14,7 +14,11 @@ export function clientIp(req: Request): string {
 
 /** true — ліміт перевищено */
 export function rateLimited(req: Request, scope: string, max: number, windowMs: number): boolean {
-  const key = `${scope}:${clientIp(req)}`;
+  return keyLimited(`${scope}:${clientIp(req)}`, max, windowMs);
+}
+
+/** Ліміт за довільним ключем (напр. номером телефону) */
+export function keyLimited(key: string, max: number, windowMs: number): boolean {
   const now = Date.now();
   if (buckets.size > 5000) {
     for (const [k, v] of buckets) if (v.until < now) buckets.delete(k);
