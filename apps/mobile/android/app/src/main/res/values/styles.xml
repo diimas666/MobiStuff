@@ -4,6 +4,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <!-- Заставка під час запуску: світле полотно з іконкою, як на iOS -->
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+        <item name="android:statusBarColor">#F5F5F7</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
 </resources>
