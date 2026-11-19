@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import InfoPageLayout, { InfoCard, InfoStep } from '@/components/InfoPageLayout';
 import PaymentRulesNote from '@/components/PaymentRulesNote';
-import { CARD_ONLY_FROM, FREE_DELIVERY_FROM, storePolicies } from '@/data/storePolicies';
+import { policyTexts } from '@/data/storePolicies';
+import { getStoreSettings } from '@/lib/storeSettings';
 import { Banknote, CreditCard, Gift, MapPin, Package, Truck } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
   alternates: { canonical: '/delivery' },
 };
 
-export default function DeliveryPage() {
+export default async function DeliveryPage() {
+  const { freeDeliveryFrom: FREE_DELIVERY_FROM, cardOnlyFrom: CARD_ONLY_FROM } = await getStoreSettings();
+  const storePolicies = policyTexts(FREE_DELIVERY_FROM, CARD_ONLY_FROM);
   return (
     <InfoPageLayout
       badge="Доставка"

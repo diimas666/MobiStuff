@@ -46,7 +46,8 @@ export async function PUT(req: Request, { params }: Ctx) {
     }
 
     // Запамʼятовуємо, що змінено вручну, — синхронізація з MMA цього не перезапише
-    const changed = PROTECTED.filter((k) => set[k] !== undefined && JSON.stringify(set[k]) !== JSON.stringify(existing[k] ?? null));
+    const norm = (x: unknown) => (x == null || x === '' || (Array.isArray(x) && !x.length) ? null : x);
+    const changed = PROTECTED.filter((k) => set[k] !== undefined && JSON.stringify(norm(set[k])) !== JSON.stringify(norm(existing[k])));
 
     const update: Record<string, unknown> = { $set: set };
     if (changed.length) update.$addToSet = { manualFields: { $each: changed } };

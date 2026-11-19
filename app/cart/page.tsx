@@ -6,7 +6,7 @@ import ProductImage from '@/components/ProductImage';
 import PaymentRulesNote from '@/components/PaymentRulesNote';
 import { ChevronRight, Minus, Plus, ShoppingBag, Truck } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { FREE_DELIVERY_FROM } from '@/data/storePolicies';
+import { useStoreSettings } from '@/context/StoreSettingsContext';
 import { trackViewCart } from '@/lib/analytics';
 import { formatPrice, plural, productForms } from '@/lib/format';
 import { popularItems } from '@/data/popularAndTrending';
@@ -23,6 +23,7 @@ export default function CartPage() {
     trackViewCart(cart);
   }, [cart]);
 
+  const { freeDeliveryFrom: FREE_DELIVERY_FROM } = useStoreSettings();
   const progress = Math.min(100, Math.round((total / FREE_DELIVERY_FROM) * 100));
   const left = Math.max(0, FREE_DELIVERY_FROM - total);
   const freeDelivery = left === 0;

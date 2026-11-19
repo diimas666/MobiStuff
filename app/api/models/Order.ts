@@ -21,6 +21,18 @@ const OrderSchema = new mongoose.Schema(
     items: Array,
     createdAt: String,
     utm: { type: mongoose.Schema.Types.Mixed },
+    // Номер експрес-накладної Нової Пошти
+    ttn: String,
+    // Внутрішня примітка менеджера (клієнт не бачить)
+    managerNote: String,
+    // Історія: зміни статусу, ТТН, надіслані повідомлення
+    history: [
+      {
+        at: { type: Date, default: Date.now },
+        text: String,
+        _id: false,
+      },
+    ],
   },
   { timestamps: true }
 );

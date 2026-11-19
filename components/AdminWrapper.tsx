@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, ExternalLink, Loader2, Lock, LogOut, Megaphone, Package, PlusCircle, RefreshCw, ShoppingCart, Tag, Upload } from 'lucide-react';
+import { BarChart3, ExternalLink, Loader2, Lock, LogOut, Megaphone, Package, PlusCircle, RefreshCw, Settings, ShoppingCart, Tag, Upload } from 'lucide-react';
 
 const NAV = [
   { href: '/admin/products', label: 'Товари', icon: Package },
@@ -14,6 +14,7 @@ const NAV = [
   { href: '/admin', label: 'Додати товар', icon: PlusCircle },
   { href: '/admin/import', label: 'Імпорт CSV', icon: Upload },
   { href: '/admin/sync', label: 'Синх. MMA', icon: RefreshCw },
+  { href: '/admin/settings', label: 'Налаштування', icon: Settings },
 ];
 
 export default function AdminWrapper({ children }: { children: React.ReactNode }) {

@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
-import { storePolicies } from '@/data/storePolicies';
+import { policyTexts } from '@/data/storePolicies';
+import { useStoreSettings } from '@/context/StoreSettingsContext';
 
 interface InfoPageLayoutProps {
   title: string;
@@ -18,6 +21,8 @@ export default function InfoPageLayout({
   ctaLabel = 'Перейти до каталогу',
   ctaHref = '/catalog',
 }: InfoPageLayoutProps) {
+  const { freeDeliveryFrom, cardOnlyFrom } = useStoreSettings();
+  const storePolicies = { ...policyTexts(freeDeliveryFrom, cardOnlyFrom), paymentSummary: `Безкоштовна доставка від ${freeDeliveryFrom} грн. Замовлення від ${cardOnlyFrom} грн — тільки оплата карткою.` };
   return (
     <div className="pb-6">
       <header className="mx-auto max-w-4xl py-8 text-center sm:py-16">

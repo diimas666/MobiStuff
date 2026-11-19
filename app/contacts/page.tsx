@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import InfoPageLayout, { InfoCard } from '@/components/InfoPageLayout';
 import PaymentRulesNote from '@/components/PaymentRulesNote';
-import { Clock, Facebook, Instagram, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { getStoreSettings } from '@/lib/storeSettings';
 
 export const metadata: Metadata = {
   title: 'Контакти',
@@ -11,7 +12,12 @@ export const metadata: Metadata = {
   alternates: { canonical: '/contacts' },
 };
 
-export default function ContactsPage() {
+export default async function ContactsPage() {
+  const s = await getStoreSettings();
+  const socials = [
+    { label: 'Instagram', href: s.instagram },
+    { label: 'Telegram', href: s.telegram },
+  ].filter((x) => x.href);
   return (
     <InfoPageLayout
       badge="Підтримка"
@@ -25,20 +31,22 @@ export default function ContactsPage() {
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4 mb-10">
+        {s.phone && (
+          <InfoCard icon={<Phone className="w-5 h-5" />} title="Телефон">
+            <a href={`tel:${s.phone.replace(/[^\d+]/g, '')}`} className="text-accent font-semibold hover:underline text-base">
+              {s.phone}
+            </a>
+            {s.viber && <p className="mt-2">Viber: {s.viber}</p>}
+          </InfoCard>
+        )}
         <InfoCard icon={<Mail className="w-5 h-5" />} title="Email">
-          <a
-            href="mailto:mobistuffinfo@gmail.com"
-            className="text-accent font-semibold hover:underline text-base"
-          >
-            mobistuffinfo@gmail.com
+          <a href={`mailto:${s.email}`} className="text-accent font-semibold hover:underline text-base">
+            {s.email}
           </a>
           <p className="mt-2">Замовлення, повернення, консультації — пишіть сюди.</p>
         </InfoCard>
         <InfoCard icon={<Clock className="w-5 h-5" />} title="Графік роботи">
-          <p>
-            <strong>Пн – Пт:</strong> 9:00 – 18:00
-          </p>
-          <p className="mt-1 text-ink-3">Сб – Нд: вихідний</p>
+          <p>{s.workingHours || 'Пн – Пт: 9:00 – 18:00'}</p>
           <p className="mt-2">Замовлення на сайті — цілодобово.</p>
         </InfoCard>
         <InfoCard icon={<MapPin className="w-5 h-5" />} title="Доставка">
@@ -71,32 +79,19 @@ export default function ContactsPage() {
         </InfoCard>
       </div>
 
-      <section className="rounded-[28px] bg-ink text-white px-6 py-12 sm:px-12 text-center">
-        <h2 className="text-lg font-bold mb-4">Ми в соцмережах</h2>
-        <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
-          Слідкуйте за новинками, акціями та знижками на наші сторінки
-        </p>
-        <div className="flex justify-center gap-4">
-          <a
-            href="https://facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition border border-white/10"
-          >
-            <Facebook className="w-5 h-5" />
-            Facebook
-          </a>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 transition border border-white/10"
-          >
-            <Instagram className="w-5 h-5" />
-            Instagram
-          </a>
-        </div>
-      </section>
+      {socials.length > 0 && (
+        <section className="rounded-[28px] bg-ink text-white px-6 py-12 sm:px-12 text-center">
+          <h2 className="text-lg font-bold mb-4">Ми в соцмережах</h2>
+          <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">Новинки, акції та знижки — першими там</p>
+          <div className="flex justify-center gap-3">
+            {socials.map((x) => (
+              <a key={x.label} href={x.href} target="_blank" rel="noopener noreferrer" className="rounded-full bg-white/10 px-5 py-3 font-medium transition hover:bg-white/20">
+                {x.label}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
     </InfoPageLayout>
   );
 }

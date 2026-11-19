@@ -15,6 +15,9 @@ import GoogleTags from '@/components/GoogleTags';
 import MetaPixel from '@/components/MetaPixel';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/lib/site';
 import { jsonLd } from '@/lib/jsonLd';
+import { getStoreSettings, publicSettings } from '@/lib/storeSettings';
+import { StoreSettingsProvider } from '@/context/StoreSettingsContext';
+import AnnouncementBar from '@/components/AnnouncementBar';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
@@ -76,11 +79,12 @@ export const viewport: Viewport = {
   themeColor: '#f5f5f7',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = publicSettings(await getStoreSettings());
   return (
     <html lang="uk" suppressHydrationWarning>
       <head>
@@ -91,6 +95,7 @@ export default function RootLayout({
       <body
         className={`${onest.variable} antialiased min-h-screen flex flex-col site-page-bg`}
       >
+        <StoreSettingsProvider value={settings}>
         <FavoritesProvider>
           <CartProvider>
             <MobileSidebarProvider>
@@ -100,12 +105,14 @@ export default function RootLayout({
                 <AnalyticsPageView />
               </Suspense>
               <main className="mt-[60px] flex-1 overflow-x-clip pt-5 sm:mt-[64px] sm:pt-8">
+                <AnnouncementBar />
                 <Container>{children}</Container>
               </main>
               <Footer />
             </MobileSidebarProvider>
           </CartProvider>
         </FavoritesProvider>
+        </StoreSettingsProvider>
         <ToastProvider />
       </body>
     </html>

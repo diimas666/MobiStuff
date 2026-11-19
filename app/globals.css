@@ -591,3 +591,8 @@ body {
   .menu-slide-in, .menu-slide-out, .menu-fade-in, .menu-fade-out { animation-duration: 1ms; }
 }
 
+
+/* Картка замовлення в адмінці — виїжджає справа */
+@keyframes sheet-right { from { transform: translateX(100%); } to { transform: none; } }
+.sheet-right { animation: sheet-right .38s cubic-bezier(.22,1,.36,1) both; }
+@media (prefers-reduced-motion: reduce) { .sheet-right { animation-duration: 1ms; } }

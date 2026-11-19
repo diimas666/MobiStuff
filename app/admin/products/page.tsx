@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-import { Check, ExternalLink, Flame, Link2, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
+import { Check, ExternalLink, Flame, Link2, Pencil, Search, Sparkles, Star, Trash2, X } from 'lucide-react';
 import AdminWrapper from '@/components/AdminWrapper';
 import { adminHeaders } from '@/lib/adminHeaders';
 import { catalogCategory } from '@/data/catalogCategory';
@@ -311,7 +311,9 @@ export default function AllProductsAdminPage() {
                 ) : null}
               </span>
               <div className="min-w-0">
-                <p className="line-clamp-2 text-[14px] leading-snug font-medium">{p.title}</p>
+                <Link href={`/admin/products/${p._id}`} className="line-clamp-2 text-[14px] leading-snug font-medium hover:text-accent" title="Редагувати товар">
+                  {p.title}
+                </Link>
                 <p className="mt-0.5 truncate text-[12px] text-ink-3">
                   {[p.brand, categoryLabel(p), p.priceManuallyEdited ? 'ціна вручну' : ''].filter(Boolean).join(' · ')}
                 </p>
@@ -377,6 +379,9 @@ export default function AllProductsAdminPage() {
                 <button type="button" onClick={() => copyAdLink(p)} className="hdr-icon" title="Скопіювати посилання для реклами">
                   <Link2 className="h-4 w-4" />
                 </button>
+                <Link href={`/admin/products/${p._id}`} className="hdr-icon" title="Редагувати">
+                  <Pencil className="h-4 w-4" />
+                </Link>
                 <Link href={`/product/${p.handle}`} target="_blank" className="hdr-icon" title="Відкрити на сайті">
                   <ExternalLink className="h-4 w-4" />
                 </Link>

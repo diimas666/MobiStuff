@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Product from '@/app/api/models/Product';
 import { DEFAULT_ORDER_STATUS, generateOrderId } from '@/lib/orderStatus';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
-import { CARD_ONLY_FROM } from '@/data/storePolicies';
+import { getStoreSettings } from '@/lib/storeSettings';
 
 const str = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
@@ -67,7 +67,8 @@ export async function buildOrderFromPayload(data: Record<string, unknown>) {
 
   const total = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
   let paymentMethod = str(data.paymentMethod) === 'card' ? 'card' : 'cod';
-  if (total >= CARD_ONLY_FROM) paymentMethod = 'card';
+  const { cardOnlyFrom } = await getStoreSettings();
+  if (total >= cardOnlyFrom) paymentMethod = 'card';
 
   const email = str(data.email, 120);
 

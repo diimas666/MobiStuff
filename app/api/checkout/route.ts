@@ -3,6 +3,7 @@ import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
 import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/lib/orders';
 import { createOrderAccessToken } from '@/lib/orderAccess';
+import { notifyOrderCreated } from '@/lib/customerNotify';
 import { rateLimited } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
@@ -26,8 +27,13 @@ export async function POST(req: NextRequest) {
     // Захист від подвійного натискання: те саме замовлення не створюємо двічі
     const existing = await Order.findOne({ orderId: order.orderId, phone: order.phone }).select('_id').lean();
     if (!existing) {
-      await Order.create(order);
+      const created = await Order.create({ ...order, history: [{ text: 'Замовлення створено' }] });
       await notifyTelegram(order);
+      // Підтвердження клієнту (email/SMS) — не блокує відповідь при збої
+      const sent = await notifyOrderCreated(order).catch(() => []);
+      if (sent.length) {
+        await Order.updateOne({ _id: created._id }, { $push: { history: { text: `Клієнту надіслано підтвердження: ${sent.join(', ')}` } } });
+      }
     }
 
     return NextResponse.json({

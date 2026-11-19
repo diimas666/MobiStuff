@@ -13,17 +13,17 @@ import PromoCards from '@/components/PromoCards';
 import HomeHero from '@/components/HomeHero';
 import HomeSectionTitle from '@/components/HomeSectionTitle';
 import ProductImage from '@/components/ProductImage';
-import { CARD_ONLY_FROM, FREE_DELIVERY_FROM } from '@/data/storePolicies';
+import { getStoreSettings } from '@/lib/storeSettings';
 import { ChevronRight, CreditCard, PackageCheck, RotateCcw, Truck } from 'lucide-react';
 
-const benefits = [
+const getBenefits = (FREE_DELIVERY_FROM: number, CARD_ONLY_FROM: number) => [
   { icon: Truck, title: 'Доставка 1–3 дні', text: 'Новою Поштою по всій Україні' },
   { icon: PackageCheck, title: `Безкоштовно від ${FREE_DELIVERY_FROM} ₴`, text: 'Доставку оплачуємо ми' },
   { icon: CreditCard, title: 'Оплата при отриманні', text: `Для замовлень до ${CARD_ONLY_FROM} ₴` },
   { icon: RotateCcw, title: '14 днів на повернення', text: 'Якщо товар не підійшов' },
 ];
 
-const banners = [
+const getBanners = (FREE_DELIVERY_FROM: number) => [
   { src: '/images/banners/free-delivery.webp', alt: `Безкоштовна доставка від ${FREE_DELIVERY_FROM} грн`, href: '/delivery' },
   { src: '/images/banners/borofone-discount.webp', alt: 'Знижка 5% на Borofone', href: '/brand/borofone' },
 ];
@@ -43,6 +43,9 @@ export const metadata: Metadata = {
 };
 
 export default async function GeneralPage() {
+  const { freeDeliveryFrom, cardOnlyFrom } = await getStoreSettings();
+  const benefits = getBenefits(freeDeliveryFrom, cardOnlyFrom);
+  const banners = getBanners(freeDeliveryFrom);
   const [promotions, sale, fresh, featured] = await Promise.all([
     getPromotions(),
     getSaleProducts(12),

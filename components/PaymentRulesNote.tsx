@@ -1,4 +1,7 @@
-import { storePolicies } from '@/data/storePolicies';
+'use client';
+
+import { policyTexts } from '@/data/storePolicies';
+import { useStoreSettings } from '@/context/StoreSettingsContext';
 import { CreditCard, Truck } from 'lucide-react';
 
 interface PaymentRulesNoteProps {
@@ -6,6 +9,8 @@ interface PaymentRulesNoteProps {
 }
 
 export default function PaymentRulesNote({ variant = 'light' }: PaymentRulesNoteProps) {
+  const { freeDeliveryFrom, cardOnlyFrom } = useStoreSettings();
+  const storePolicies = { ...policyTexts(freeDeliveryFrom, cardOnlyFrom), paymentSummary: `Безкоштовна доставка від ${freeDeliveryFrom} грн. Замовлення від ${cardOnlyFrom} грн — тільки оплата карткою.` };
   if (variant === 'inline') {
     return <p className="text-sm leading-relaxed text-ink-2">{storePolicies.paymentSummary}</p>;
   }

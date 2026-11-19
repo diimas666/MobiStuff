@@ -9,7 +9,8 @@ import ProductImage from '@/components/ProductImage';
 import { AlertCircle, ChevronLeft, CreditCard, Loader2, Lock, Wallet } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { CARD_ONLY_FROM, storePolicies } from '@/data/storePolicies';
+import { policyTexts } from '@/data/storePolicies';
+import { useStoreSettings } from '@/context/StoreSettingsContext';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 import { generateOrderId } from '@/lib/orderStatus';
 import { trackBeginCheckout } from '@/lib/analytics';
@@ -54,6 +55,8 @@ export default function CheckoutPage() {
   const [consentError, setConsentError] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const errorRef = useRef<HTMLDivElement>(null);
+  const { cardOnlyFrom: CARD_ONLY_FROM, freeDeliveryFrom } = useStoreSettings();
+  const storePolicies = policyTexts(freeDeliveryFrom, CARD_ONLY_FROM);
   const cardOnlyRequired = total >= CARD_ONLY_FROM;
 
   const [delivery, setDelivery] = useState<NovaPoshtaSelection>({

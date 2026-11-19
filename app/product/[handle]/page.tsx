@@ -10,7 +10,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import ProductDescription from '@/components/ProductDescription';
 import { stripHtml } from '@/lib/htmlUtils';
 import { getRelatedProducts } from '@/lib/getRelatedProducts';
-import { CARD_ONLY_FROM, FREE_DELIVERY_FROM } from '@/data/storePolicies';
+import { getStoreSettings } from '@/lib/storeSettings';
 import { CreditCard, PackageCheck, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import EcommerceTracker from '@/components/EcommerceTracker';
 import { formatPrice } from '@/lib/format';
@@ -84,6 +84,7 @@ export default async function ProductPage({ params }: Params) {
   const brand = product.brand
     ? brands.find((b) => b.title.toLowerCase() === String(product.brand).toLowerCase())
     : undefined;
+  const { freeDeliveryFrom: FREE_DELIVERY_FROM, cardOnlyFrom: CARD_ONLY_FROM } = await getStoreSettings();
   const freeDelivery = product.price >= FREE_DELIVERY_FROM;
   const cardOnly = product.price >= CARD_ONLY_FROM;
 

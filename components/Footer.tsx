@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Container from '@/components/Container';
-import { storePolicies } from '@/data/storePolicies';
+import { policyTexts } from '@/data/storePolicies';
+import { getStoreSettings } from '@/lib/storeSettings';
 
 const columns = [
   {
@@ -32,7 +33,9 @@ const columns = [
   },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const settings = await getStoreSettings();
+  const storePolicies = policyTexts(settings.freeDeliveryFrom, settings.cardOnlyFrom);
   return (
     <footer className="mt-20 border-t border-line-soft bg-canvas text-[13px] text-ink-2">
       <Container className="py-10 sm:py-14">
@@ -57,10 +60,23 @@ export default function Footer() {
           ))}
           <div>
             <h3 className="mb-3 font-semibold text-ink">Підтримка</h3>
-            <p className="mb-2.5">Пишіть — відповідаємо протягом дня.</p>
-            <a href="mailto:mobistuffinfo@gmail.com" className="font-medium text-accent hover:underline">
-              mobistuffinfo@gmail.com
-            </a>
+            <p className="mb-2.5">{settings.workingHours || 'Пишіть — відповідаємо протягом дня.'}</p>
+            {settings.phone && (
+              <a href={`tel:${settings.phone.replace(/[^\d+]/g, '')}`} className="mb-1.5 block font-medium text-ink hover:underline">
+                {settings.phone}
+              </a>
+            )}
+            {settings.email && (
+              <a href={`mailto:${settings.email}`} className="font-medium text-accent hover:underline">
+                {settings.email}
+              </a>
+            )}
+            {(settings.instagram || settings.telegram) && (
+              <p className="mt-2.5 flex gap-3">
+                {settings.instagram && <a href={settings.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-ink hover:underline">Instagram</a>}
+                {settings.telegram && <a href={settings.telegram} target="_blank" rel="noopener noreferrer" className="hover:text-ink hover:underline">Telegram</a>}
+              </p>
+            )}
           </div>
         </div>
 
