@@ -18,12 +18,11 @@ export type CatalogSection = {
   items: CatalogSubcategoryItem[];
 };
 
-export async function getCatalogSections(): Promise<CatalogSection[]> {
+type CoverRow = { _id: string; image: string; title: string; categorySlug: string };
+
+async function loadCovers(subcategorySlugs: string[]): Promise<CoverRow[]> {
   await dbConnect();
-
-  const subcategorySlugs = catalogCategory.flatMap((cat) => cat.subcategories.map((sub) => sub.slug));
-
-  const covers = await ProductModel.aggregate([
+  return ProductModel.aggregate([
     {
       $match: {
         subcategorySlug: { $in: subcategorySlugs },
@@ -42,6 +41,16 @@ export async function getCatalogSections(): Promise<CatalogSection[]> {
       },
     },
   ]);
+}
+
+export async function getCatalogSections(): Promise<CatalogSection[]> {
+  const subcategorySlugs = catalogCategory.flatMap((cat) => cat.subcategories.map((sub) => sub.slug));
+
+  // Якщо база недоступна (напр. під час збірки) — каталог без фото, сторінка оновиться пізніше
+  const covers = await loadCovers(subcategorySlugs).catch((error) => {
+    console.error('getCatalogSections: база недоступна, показуємо каталог без фото', error?.message);
+    return [] as CoverRow[];
+  });
 
   const coverMap = new Map(
     covers.map((row) => [

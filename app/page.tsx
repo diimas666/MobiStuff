@@ -14,6 +14,7 @@ import HomeHero from '@/components/HomeHero';
 import HomeSectionTitle from '@/components/HomeSectionTitle';
 import ProductImage from '@/components/ProductImage';
 import { getStoreSettings } from '@/lib/storeSettings';
+import { safe } from '@/lib/safeData';
 import AppPromo from '@/components/app/AppPromo';
 import { ChevronRight, CreditCard, PackageCheck, RotateCcw, Truck } from 'lucide-react';
 
@@ -48,10 +49,10 @@ export default async function GeneralPage() {
   const benefits = getBenefits(freeDeliveryFrom, cardOnlyFrom);
   const banners = getBanners(freeDeliveryFrom);
   const [promotions, sale, fresh, featured] = await Promise.all([
-    getPromotions(),
-    getSaleProducts(12),
-    getNewArrivals(12),
-    getFeatured(6),
+    safe(getPromotions(), [], 'home'),
+    safe(getSaleProducts(12), [], 'home'),
+    safe(getNewArrivals(12), [], 'home'),
+    safe(getFeatured(6), [], 'home'),
   ]);
   const [
     trending,
@@ -66,17 +67,17 @@ export default async function GeneralPage() {
     cases,
     films,
   ] = await Promise.all([
-    getTrendingProducts(),
-    getProductsByCategory('category-naushniki', 'category-bluetooth-stereo-garnituri-tws', 12),
-    getProductsByCategory('category-akkumulyatori-i-powerbank', 'category-portativnie-batarei', 12),
-    getProductsByCategory('category-zaryadki-i-kabeli', 'category-lightning', 12),
-    getProductsByCategory('category-zaryadki-i-kabeli', 'category-besprovodnie-zaryadnie-ustroystva', 12),
-    getProductsByCategory('category-kompyyuternaya-periferiya', 'category-mishi', 12),
-    getProductsByCategory('category-avtomobilynaya-tematika', 'category-avtomobilynie-derzhateli', 12),
-    getProductsByCategory('category-audio-i-video', 'category-portativnie-kolonki', 12),
-    getProductsByCategory('category-gadzheti', 'category-umnie-chasi-i-fitnes-trekeri', 12),
-    getProductsByCategory('category-chehli', 'category-apple', 12),
-    getProductsByCategory('category-zashtita-ekrana', 'category-zashtitnie-stekla', 12),
+    safe(getTrendingProducts(), [], 'home'),
+    safe(getProductsByCategory('category-naushniki', 'category-bluetooth-stereo-garnituri-tws', 12), [], 'home'),
+    safe(getProductsByCategory('category-akkumulyatori-i-powerbank', 'category-portativnie-batarei', 12), [], 'home'),
+    safe(getProductsByCategory('category-zaryadki-i-kabeli', 'category-lightning', 12), [], 'home'),
+    safe(getProductsByCategory('category-zaryadki-i-kabeli', 'category-besprovodnie-zaryadnie-ustroystva', 12), [], 'home'),
+    safe(getProductsByCategory('category-kompyyuternaya-periferiya', 'category-mishi', 12), [], 'home'),
+    safe(getProductsByCategory('category-avtomobilynaya-tematika', 'category-avtomobilynie-derzhateli', 12), [], 'home'),
+    safe(getProductsByCategory('category-audio-i-video', 'category-portativnie-kolonki', 12), [], 'home'),
+    safe(getProductsByCategory('category-gadzheti', 'category-umnie-chasi-i-fitnes-trekeri', 12), [], 'home'),
+    safe(getProductsByCategory('category-chehli', 'category-apple', 12), [], 'home'),
+    safe(getProductsByCategory('category-zashtita-ekrana', 'category-zashtitnie-stekla', 12), [], 'home'),
   ]);
 
   const featuredSections = [

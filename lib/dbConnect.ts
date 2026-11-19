@@ -28,9 +28,17 @@ export default async function dbConnect() {
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
+      // Не висіти хвилинами, якщо база недоступна
+      serverSelectionTimeoutMS: 8000,
     });
   }
 
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    // Не кешуємо невдале підключення — наступний запит спробує ще раз
+    cached.promise = null;
+    throw error;
+  }
   return cached.conn;
 }
