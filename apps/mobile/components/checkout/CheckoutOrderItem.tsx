@@ -21,15 +21,15 @@ export function CheckoutOrderItem({ item, isLast = false }: Props) {
   },
   rowBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: c.fill,
     marginBottom: 14,
   },
   imageWrap: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: c.fill,
     borderRadius: radius.sm,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: c.line,
   },
   content: {
     flex: 1,

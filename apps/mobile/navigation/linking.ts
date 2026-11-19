@@ -17,7 +17,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
           Home: 'home',
           Cart: 'cart',
           Favorites: 'favorites',
-          Categories: { screens: { CategoriesList: 'catalog' } },
+          Categories: { screens: { CategoriesList: 'catalog', Category: 'category/:slug/:sub?' } },
           Profile: {
             screens: {
               ProfileMain: 'profile',

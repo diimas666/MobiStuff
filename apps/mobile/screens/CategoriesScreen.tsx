@@ -2,16 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { ErrorState } from '../components/ErrorState';
 import { OfflineState } from '../components/OfflineState';
 import { LoadingState } from '../components/LoadingState';
 import { Screen } from '../components/Screen';
 import { CategoryListItem } from '../components/categories/CategoryListItem';
+import { HomeSearchBar } from '../components/home/HomeSearchBar';
 import { spacing } from '../constants/theme';
 import { useCategories } from '../hooks/useCategories';
 import { useNetwork } from '../context/NetworkContext';
-import type { CategoriesStackParamList } from '../navigation/types';
+import type { CategoriesStackParamList, RootStackParamList } from '../navigation/types';
 import type { HomeCategory } from '../types/catalog';
 import { openCategoryFlow } from '../utils/openCategoryFlow';
 import { useThemedStyles } from '../hooks/useThemedStyles';
@@ -22,25 +23,21 @@ type CategoriesNavigationProp = NativeStackNavigationProp<
 >;
 
 export function CategoriesScreen() {
-  const { styles, colors } = useThemedStyles(c => ({
+  const { styles } = useThemedStyles(c => ({
     header: {
       paddingHorizontal: spacing.screen,
       paddingTop: 8,
       paddingBottom: 16,
     },
     title: {
-      fontSize: 28,
+      fontSize: 34,
       fontWeight: '700',
-      color: c.textOnDark,
+      letterSpacing: -0.8,
+      color: c.text,
+      marginBottom: 14,
     },
     list: {
-      paddingBottom: 24,
-    },
-    separator: {
-      height: 1,
-      backgroundColor: c.homeSurface,
-      marginLeft: spacing.screen + 72 + 16,
-      marginRight: spacing.screen,
+      paddingBottom: 32,
     },
   }));
 
@@ -56,25 +53,22 @@ export function CategoriesScreen() {
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: HomeCategory }) => (
-      <CategoryListItem category={item} onPress={openCategory} />
+    ({ item, index }: { item: HomeCategory; index: number }) => (
+      <CategoryListItem category={item} onPress={openCategory} isFirst={index === 0} isLast={index === categories.length - 1} />
     ),
-    [openCategory],
+    [openCategory, categories.length],
   );
 
   const listHeader = useCallback(
     () => (
       <View style={styles.header}>
-        <Text style={styles.title}>Категорії</Text>
+        <Text style={styles.title}>Каталог</Text>
+        <HomeSearchBar onProductPress={product => (navigation as unknown as NativeStackNavigationProp<RootStackParamList>).navigate('Product', { product })} />
       </View>
     ),
     [],
   );
 
-  const itemSeparator = useCallback(
-    () => <View style={styles.separator} />,
-    [],
-  );
 
   return (
     <Screen variant="home">
@@ -91,7 +85,6 @@ export function CategoriesScreen() {
           keyExtractor={item => item.id}
           renderItem={renderItem}
           ListHeaderComponent={listHeader}
-          ItemSeparatorComponent={itemSeparator}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
         />

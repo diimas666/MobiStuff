@@ -65,6 +65,13 @@ function normalizeCategories(
       id: item.slug || item.categorySlug || item._id || item.id || '',
       title: item.title || item.name || item.category || '',
       image: item.image || item.images?.[0],
+      count: item.count,
+      subcategories: item.subcategories?.map(sub => ({
+        slug: sub.slug,
+        title: sub.title,
+        image: sub.image ?? undefined,
+        count: sub.count,
+      })),
     }))
     .filter(item => item.id && item.title);
 }

@@ -1,17 +1,16 @@
 import { useCallback, useState } from 'react';
-import { ScrollView, StatusBar, Text, View } from 'react-native';
+import { Linking, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ProfileMenuItem } from '../components/profile/ProfileMenuItem';
-import { ProfileUserHeader } from '../components/profile/ProfileUserHeader';
-import { SettingsSection } from '../components/settings/SettingsSection';
+import { ListGroup, ListRow } from '../components/ui/ListGroup';
 import { Screen } from '../components/Screen';
 import { spacing } from '../constants/theme';
 import { useNotifications } from '../context/NotificationsContext';
 import { useOrders } from '../context/OrdersContext';
-import { showToast } from '../context/ToastContext';
+import { useFavorites } from '../context/FavoritesContext';
+import { useStoreSettings } from '../hooks/useStoreSettings';
 import type { ProfileStackParamList, TabParamList } from '../navigation/types';
 import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
 import { useThemedStyles } from '../hooks/useThemedStyles';
@@ -21,180 +20,97 @@ type ProfileNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList>
 >;
 
+const APP_STORE_REVIEW_URL = 'https://apps.apple.com/app/id6785212528?action=write-review';
+
+/** Профіль: дані з останнього замовлення та групи розділів як у Налаштуваннях iOS */
 export function ProfileScreen() {
   const { styles } = useThemedStyles(c => ({
-    content: {
-      flexGrow: 1,
-      paddingHorizontal: spacing.screen,
-      paddingTop: 8,
-      paddingBottom: 32,
-    },
-    headerBlock: {
-      marginBottom: 8,
-      gap: 18,
-    },
-    title: {
-      fontSize: 28,
-      fontWeight: '700',
-      color: c.textOnDark,
-    },
-    group: {
-      gap: 10,
-      marginBottom: 18,
-    },
+    content: { flexGrow: 1, paddingHorizontal: spacing.screen, paddingTop: 8, paddingBottom: 40 },
+    title: { fontSize: 34, fontWeight: '700', letterSpacing: -0.8, color: c.text, marginBottom: 16 },
+    card: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: c.card, borderRadius: 22, padding: 16, marginBottom: 24 },
+    avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: c.accentSoft, alignItems: 'center', justifyContent: 'center' },
+    avatarText: { fontSize: 22, fontWeight: '700', color: c.primary },
+    name: { fontSize: 20, fontWeight: '700', letterSpacing: -0.3, color: c.text },
+    meta: { marginTop: 2, fontSize: 14, lineHeight: 19, color: c.ink3 },
+    version: { textAlign: 'center', fontSize: 12, color: c.ink3, marginTop: 4 },
   }));
-
   const navigation = useNavigation<ProfileNavigationProp>();
   const { unreadCount, refreshNotifications } = useNotifications();
-  const { refreshOrders } = useOrders();
-  const [displayName, setDisplayName] = useState('');
-  const [displayEmail, setDisplayEmail] = useState('');
-  const [hasProfile, setHasProfile] = useState(false);
+  const { orders, refreshOrders } = useOrders();
+  const { items: favorites } = useFavorites();
+  const store = useStoreSettings();
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
 
   useFocusEffect(
     useCallback(() => {
-      let isMounted = true;
-
+      let alive = true;
       void refreshNotifications();
       void refreshOrders();
-
       loadCheckoutProfile().then(profile => {
-        if (!isMounted) {
-          return;
-        }
-
-        if (!profile) {
-          setHasProfile(false);
-          setDisplayName('');
-          setDisplayEmail('');
-          return;
-        }
-
-        const name = profile.name.trim();
-        const email = profile.email.trim();
-        const profileExists = Boolean(name || email);
-
-        setHasProfile(profileExists);
-        setDisplayName(name);
-        setDisplayEmail(email);
+        if (!alive) return;
+        setName(profile?.name?.trim() ?? '');
+        setPhone(profile?.phone?.trim() ?? '');
       });
-
       return () => {
-        isMounted = false;
+        alive = false;
       };
     }, [refreshNotifications, refreshOrders]),
   );
 
-  const openLogin = useCallback(() => {
-    showToast('Вхід в акаунт незабаром буде доступний', 'info');
-  }, []);
-
-  const openSettings = useCallback(() => {
-    navigation.navigate('Settings');
-  }, [navigation]);
-
-  const openOrders = useCallback(() => {
-    navigation.navigate('ProfileOrders');
-  }, [navigation]);
-
-  const openFavorites = useCallback(() => {
-    navigation.navigate('Favorites', {
-      returnTo: { tab: 'Profile', screen: 'ProfileMain' },
-    });
-  }, [navigation]);
-
-  const openViewedProducts = useCallback(() => {
-    navigation.navigate('ViewedProducts');
-  }, [navigation]);
-
-  const openDeliveryAddresses = useCallback(() => {
-    navigation.navigate('DeliveryAddresses');
-  }, [navigation]);
-
-  const openPaymentMethods = useCallback(() => {
-    navigation.navigate('PaymentMethods');
-  }, [navigation]);
-
-  const openNotifications = useCallback(() => {
-    navigation.navigate('Notifications');
-  }, [navigation]);
-
-  const openSupport = useCallback(() => {
-    navigation.navigate('Support');
-  }, [navigation]);
+  const activeOrders = orders.filter(o => o.status !== 'completed' && o.status !== 'cancelled').length;
+  const go = (screen: keyof ProfileStackParamList) => () => navigation.navigate(screen);
 
   return (
     <Screen variant="home">
+      <ScrollView testID="screen-profile" showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+        <Text style={styles.title} accessibilityRole="header">
+          Профіль
+        </Text>
 
-      <ScrollView
-        testID="screen-profile"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
-        <View style={styles.headerBlock}>
-          <Text style={styles.title}>Профіль</Text>
-          <ProfileUserHeader
-            isGuest={!hasProfile}
-            name={displayName}
-            email={displayEmail}
-            onGuestPress={openLogin}
-            onSettingsPress={openSettings}
-          />
+        <View style={styles.card}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{(name || 'M').charAt(0).toUpperCase()}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.name}>{name || 'Вітаємо в MobiStuff'}</Text>
+            <Text style={styles.meta}>
+              {phone || 'Ваші замовлення й адреси доставки зберігаються на цьому телефоні'}
+            </Text>
+          </View>
         </View>
 
-        <SettingsSection title="Покупки" icon="bag-handle-outline" />
-        <View style={styles.group}>
-          <ProfileMenuItem
-            icon="person-outline"
-            label="Мої замовлення"
-            onPress={openOrders}
-          />
-          <ProfileMenuItem
-            icon="heart-outline"
+        <ListGroup title="Покупки">
+          <ListRow icon="cube" label="Мої замовлення" value={activeOrders ? `${activeOrders} активн.` : undefined} onPress={go('ProfileOrders')} testID="profile-orders" />
+          <ListRow
+            icon="heart"
+            iconColor="#FF2D55"
             label="Обране"
-            onPress={openFavorites}
+            value={favorites.length ? String(favorites.length) : undefined}
+            onPress={() => navigation.navigate('Favorites', { returnTo: { tab: 'Profile', screen: 'ProfileMain' } })}
           />
-          <ProfileMenuItem
-            icon="eye-outline"
-            label="Переглянуті товари"
-            onPress={openViewedProducts}
-          />
-        </View>
+          <ListRow icon="time" iconColor="#5856D6" label="Переглянуті товари" onPress={go('ViewedProducts')} />
+        </ListGroup>
 
-        <SettingsSection title="Доставка та оплата" icon="location-outline" />
-        <View style={styles.group}>
-          <ProfileMenuItem
-            icon="location-outline"
-            label="Адреси доставки"
-            onPress={openDeliveryAddresses}
-          />
-          <ProfileMenuItem
-            icon="card-outline"
-            label="Способи оплати"
-            onPress={openPaymentMethods}
-          />
-        </View>
+        <ListGroup title="Доставка та оплата">
+          <ListRow icon="location" iconColor="#FF9500" label="Адреси доставки" onPress={go('DeliveryAddresses')} />
+          <ListRow icon="card" iconColor="#007AFF" label="Способи оплати" onPress={go('PaymentMethods')} />
+        </ListGroup>
 
-        <SettingsSection title="Додаток" icon="apps-outline" />
-        <View style={styles.group}>
-          <ProfileMenuItem
-            icon="notifications-outline"
-            label="Повідомлення"
-            badge={unreadCount > 0 ? unreadCount : undefined}
-            showChevron={false}
-            onPress={openNotifications}
-          />
-          <ProfileMenuItem
-            icon="settings-outline"
-            label="Налаштування"
-            onPress={openSettings}
-          />
-          <ProfileMenuItem
-            icon="chatbubble-ellipses-outline"
-            label="Підтримка"
-            showChevron={false}
-            onPress={openSupport}
-          />
-        </View>
+        <ListGroup title="Застосунок">
+          <ListRow icon="notifications" iconColor="#FF3B30" label="Повідомлення" badge={unreadCount || undefined} onPress={go('Notifications')} />
+          <ListRow icon="settings" iconColor="#8E8E93" label="Налаштування" onPress={go('Settings')} />
+        </ListGroup>
+
+        <ListGroup title="Допомога" footer={store.workingHours ? `Працюємо: ${store.workingHours}` : undefined}>
+          <ListRow icon="chatbubble-ellipses" iconColor="#34C759" label="Написати в підтримку" onPress={go('Support')} />
+          {store.phone ? (
+            <ListRow icon="call" iconColor="#34C759" label="Зателефонувати" value={store.phone} onPress={() => void Linking.openURL(`tel:${store.phone.replace(/[^\d+]/g, '')}`)} />
+          ) : null}
+          <ListRow icon="star" iconColor="#FFCC00" label="Оцінити застосунок" onPress={() => void Linking.openURL(APP_STORE_REVIEW_URL)} />
+        </ListGroup>
+
+        <Text style={styles.version}>MobiStuff для iPhone</Text>
       </ScrollView>
     </Screen>
   );

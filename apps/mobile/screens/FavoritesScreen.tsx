@@ -68,8 +68,9 @@ export function FavoritesScreen() {
       marginBottom: 16,
     },
     title: {
-      fontSize: 28,
+      fontSize: 34,
       fontWeight: '700',
+      letterSpacing: -0.8,
       color: c.textOnDark,
       marginBottom: 6,
     },

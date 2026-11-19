@@ -6,7 +6,10 @@ export type CategoriesStackParamList = {
   CategoriesList: undefined;
   Subcategories: { category: HomeCategory };
   Category: {
-    category: HomeCategory;
+    category?: HomeCategory;
+    /** з посилання: mobistuff://category/<slug>/<sub> */
+    slug?: string;
+    sub?: string;
     subcategorySlug?: string;
     subcategoryTitle?: string;
     onSaleOnly?: boolean;

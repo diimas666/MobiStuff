@@ -83,9 +83,7 @@ export function CheckoutScreen({ navigation }: Props) {
   cardBlock: {
     padding: 14,
     borderRadius: radius.sm,
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1,
-    borderColor: '#BBF7D0',
+    backgroundColor: c.accentSoft,
     gap: 6,
   },
   cardLabel: {
@@ -107,9 +105,7 @@ export function CheckoutScreen({ navigation }: Props) {
   selectedPaymentCard: {
     padding: 14,
     borderRadius: radius.sm,
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1,
-    borderColor: '#BBF7D0',
+    backgroundColor: c.accentSoft,
     gap: 4,
   },
   selectedPaymentLabel: {
@@ -131,14 +127,9 @@ export function CheckoutScreen({ navigation }: Props) {
   },
   totalsCard: {
     backgroundColor: c.card,
-    borderRadius: radius.lg,
+    borderRadius: 22,
     padding: 18,
     gap: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
   },
   totalRow: {
     flexDirection: 'row',
@@ -173,9 +164,9 @@ export function CheckoutScreen({ navigation }: Props) {
   footer: {
     paddingHorizontal: spacing.screen,
     paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: c.lineSoft,
-    backgroundColor: c.homeBackground,
+    borderTopWidth: 0.5,
+    borderTopColor: c.line,
+    backgroundColor: c.card,
   },
   submitButton: {
     minHeight: 52,
@@ -191,9 +182,9 @@ export function CheckoutScreen({ navigation }: Props) {
     opacity: 0.7,
   },
   submitText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: c.textOnDark,
+    fontSize: 17,
+    fontWeight: '600',
+    color: c.onPrimary,
   },
   pressed: {
     opacity: 0.88,

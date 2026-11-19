@@ -21,23 +21,21 @@ export function SubcategoryChipBar({ subcategories, selectedSlug, onSelect }: Pr
   chip: {
     maxWidth: 220,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 9,
     borderRadius: radius.pill,
-    backgroundColor: c.homeSurface,
-    borderWidth: 1,
-    borderColor: c.lineSoft,
+    backgroundColor: c.card,
   },
   chipActive: {
-    backgroundColor: c.primary,
-    borderColor: c.primary,
+    backgroundColor: c.text,
   },
   chipText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: c.textOnDarkMuted,
+    fontSize: 14,
+    fontWeight: '500',
+    color: c.text,
   },
   chipTextActive: {
-    color: c.textOnDark,
+    color: c.screen,
+    fontWeight: '600',
   },
 }));
 

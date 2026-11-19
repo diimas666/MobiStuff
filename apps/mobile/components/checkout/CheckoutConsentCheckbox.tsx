@@ -41,7 +41,7 @@ export function CheckoutConsentCheckbox({
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#D1D5DB',
+    borderColor: c.line,
     alignItems: 'center',
     justifyContent: 'center',
   },

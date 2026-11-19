@@ -63,8 +63,9 @@ export function DeliveryAddressesScreen() {
       gap: 6,
     },
     title: {
-      fontSize: 28,
+      fontSize: 34,
       fontWeight: '700',
+      letterSpacing: -0.8,
       color: c.textOnDark,
     },
     subtitle: {

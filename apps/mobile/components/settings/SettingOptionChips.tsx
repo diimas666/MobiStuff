@@ -31,7 +31,7 @@ export function SettingOptionChips<T extends string>({ options, value, onChange 
             onPress={() => onChange(option.id)}
             style={({ pressed }) => [
               styles.chip,
-              selected && { borderColor: colors.primary, backgroundColor: '#F0FDF4' },
+              selected && { borderColor: colors.primary, backgroundColor: colors.accentSoft },
               option.disabled && styles.chipDisabled,
               pressed && !option.disabled && styles.pressed,
             ]}>

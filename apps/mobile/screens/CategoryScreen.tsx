@@ -36,7 +36,7 @@ import {
 } from '../types/catalog';
 import { addHomeProductToCart } from '../utils/addProductToCart';
 import { countActiveFilters } from '../utils/categoryFilters';
-import { getCatalogSubcategories } from '../utils/catalogTree';
+import { getCatalogCategory, getCatalogSubcategoryTitle, getCatalogSubcategories } from '../utils/catalogTree';
 import { errorMessages } from '../utils/errors';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 
@@ -129,8 +129,15 @@ export function CategoryScreen({ route, navigation }: Props) {
     },
   }));
 
-  const { category, subcategorySlug, subcategoryTitle, onSaleOnly } =
-    route.params;
+  const params = route.params;
+  // З посилання mobistuff://category/<slug>[/<sub>] приходить лише slug
+  const category = params.category ?? {
+    id: params.slug ?? '',
+    title: getCatalogCategory(params.slug ?? '')?.title ?? 'Каталог',
+  };
+  const subcategorySlug = params.subcategorySlug ?? params.sub;
+  const subcategoryTitle = params.subcategoryTitle ?? (params.sub ? getCatalogSubcategoryTitle(category.id, params.sub) : undefined);
+  const onSaleOnly = params.onSaleOnly;
   const catalogSubcategories = useMemo(
     () => getCatalogSubcategories(category.id),
     [category.id],

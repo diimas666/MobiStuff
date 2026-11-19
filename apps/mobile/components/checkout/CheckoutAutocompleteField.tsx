@@ -57,7 +57,7 @@ export function CheckoutAutocompleteField({
   suggestions: {
     marginTop: 8,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: c.line,
     borderRadius: radius.sm,
     overflow: 'hidden',
     backgroundColor: '#FFFFFF',
@@ -74,10 +74,10 @@ export function CheckoutAutocompleteField({
   },
   suggestionBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: c.fill,
   },
   suggestionPressed: {
-    backgroundColor: '#F0FDF4',
+    backgroundColor: c.accentSoft,
   },
   suggestionTitle: {
     fontSize: 15,

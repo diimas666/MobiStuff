@@ -62,8 +62,9 @@ export function BrandScreen({ route, navigation }: Props) {
       gap: 12,
     },
     title: {
-      fontSize: 28,
+      fontSize: 34,
       fontWeight: '700',
+      letterSpacing: -0.8,
       color: c.textOnDark,
       marginBottom: 4,
     },

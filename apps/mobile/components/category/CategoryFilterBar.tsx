@@ -1,11 +1,9 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { radius } from '../../constants/theme';
 import type { ProductSort } from '../../types/filters';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 
-const CONTROL_SIZE = 44;
-const CONTROL_BORDER = 'rgba(255, 255, 255, 0.2)';
+const CONTROL_SIZE = 38;
 
 type Props = {
   activeSort: ProductSort;
@@ -37,17 +35,14 @@ export function CategoryFilterBar({
   control: {
     minWidth: CONTROL_SIZE,
     height: CONTROL_SIZE,
-    borderRadius: radius.md,
-    backgroundColor: c.homeSurface,
-    borderWidth: 1,
-    borderColor: CONTROL_BORDER,
+    borderRadius: 19,
+    backgroundColor: c.card,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
   controlActive: {
-    backgroundColor: c.primary,
-    borderColor: c.primary,
+    backgroundColor: c.text,
   },
   pressed: {
     opacity: 0.85,
@@ -67,7 +62,7 @@ export function CategoryFilterBar({
   badgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: c.textOnDark,
+    color: c.onPrimary,
   },
   toggles: {
     flexDirection: 'row',
@@ -76,12 +71,12 @@ export function CategoryFilterBar({
     marginLeft: 'auto',
   },
   controlText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '500',
-    color: c.textOnDarkMuted,
+    color: c.text,
   },
   controlTextActive: {
-    color: c.textOnDark,
+    color: c.screen,
     fontWeight: '600',
   },
 }));

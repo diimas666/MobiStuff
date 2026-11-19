@@ -37,9 +37,9 @@ export function CheckoutAddressPicker({
     paddingHorizontal: 14,
     paddingVertical: 14,
     borderRadius: radius.md,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: c.fill,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: c.line,
   },
   triggerIcon: {
     width: 36,
@@ -113,7 +113,7 @@ export function CheckoutAddressPicker({
     borderColor: 'transparent',
   },
   optionSelected: {
-    backgroundColor: '#F0FDF4',
+    backgroundColor: c.accentSoft,
     borderColor: c.primary,
   },
   optionContent: {
@@ -135,7 +135,7 @@ export function CheckoutAddressPicker({
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#D1D5DB',
+    borderColor: c.line,
   },
   manualOption: {
     flexDirection: 'row',

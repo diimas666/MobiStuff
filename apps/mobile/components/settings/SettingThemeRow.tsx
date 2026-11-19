@@ -65,8 +65,8 @@ export function SettingThemeRow({ value, onChange }: Props) {
         style={({ pressed }) => [
           styles.dropdown,
           {
-            borderColor: resolvedTheme === 'dark' ? '#374151' : '#E5E7EB',
-            backgroundColor: resolvedTheme === 'dark' ? '#111827' : '#F9FAFB',
+            borderColor: colors.line,
+            backgroundColor: colors.fill,
           },
           pressed && styles.pressed,
         ]}>

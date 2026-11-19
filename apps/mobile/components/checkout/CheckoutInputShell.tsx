@@ -52,10 +52,10 @@ export function CheckoutInputShell({
     alignItems: 'center',
     minHeight: 52,
     paddingHorizontal: 14,
-    borderRadius: radius.sm,
-    backgroundColor: '#F3F4F6',
+    borderRadius: 14,
+    backgroundColor: c.fill,
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: 'transparent',
     gap: 10,
   },
   inputBoxMultiline: {

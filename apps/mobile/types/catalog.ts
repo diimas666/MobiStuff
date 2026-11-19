@@ -31,12 +31,19 @@ export type ApiCategory = {
   categorySlug?: string;
   image?: string;
   images?: string[];
+  count?: number;
+  subcategories?: { slug: string; title: string; image?: string | null; count?: number }[];
 };
+
+export type HomeSubcategory = { slug: string; title: string; image?: string; count?: number };
 
 export type HomeCategory = {
   id: string;
   title: string;
   image?: string;
+  /** Кількість товарів у наявності (з /api/categories) */
+  count?: number;
+  subcategories?: HomeSubcategory[];
 };
 
 export type HomeProduct = {

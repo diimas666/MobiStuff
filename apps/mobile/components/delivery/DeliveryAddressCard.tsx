@@ -33,7 +33,7 @@ export function DeliveryAddressCard({
   },
   cardSelected: {
     borderColor: c.primary,
-    backgroundColor: '#F0FDF4',
+    backgroundColor: c.accentSoft,
   },
   pressed: {
     opacity: 0.88,
@@ -90,7 +90,7 @@ export function DeliveryAddressCard({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: '#D1D5DB',
+    borderColor: c.line,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 2,
