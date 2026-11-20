@@ -6,10 +6,14 @@ import { FlashList } from '@shopify/flash-list';
 import {
   ActivityIndicator,
   Dimensions,
+  Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useMyPhone } from '../context/MyPhoneContext';
+import { compatModels, compatibleWith } from '../utils/phoneCompat';
 import { ErrorState } from '../components/ErrorState';
 import { OfflineState } from '../components/OfflineState';
 import { LoadingState } from '../components/LoadingState';
@@ -100,6 +104,25 @@ export function CategoryScreen({ route, navigation }: Props) {
       paddingHorizontal: GRID_GAP / 2,
       marginBottom: GRID_GAP,
     },
+    phoneChip: {
+      alignSelf: 'flex-start',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 14,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: c.accentSoft,
+      marginBottom: 12,
+    },
+    phoneChipOn: {
+      backgroundColor: c.text,
+    },
+    phoneChipText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: c.primary,
+    },
     count: {
       fontSize: 14,
       fontWeight: '500',
@@ -166,6 +189,15 @@ export function CategoryScreen({ route, navigation }: Props) {
     category.title,
     subcategorySlug,
     onSaleOnly,
+  );
+
+  // «Мій телефон»: показати лише сумісні з моделлю покупця
+  const { phone: myPhone, openPicker } = useMyPhone();
+  const [phoneOnly, setPhoneOnly] = useState(false);
+  const hasCompat = useMemo(() => products.some(p => compatModels(p.title).length > 0), [products]);
+  const visibleProducts = useMemo(
+    () => (phoneOnly && myPhone ? displayedProducts.filter(p => compatibleWith(p.title, myPhone) === true) : displayedProducts),
+    [displayedProducts, phoneOnly, myPhone],
   );
 
   const selectedSubcategorySlug = filters.subcategories[0] ?? null;
@@ -254,8 +286,19 @@ export function CategoryScreen({ route, navigation }: Props) {
             onSortChange={sort => setFilters(current => ({ ...current, sort }))}
             onOpenFilters={() => setSheetVisible(true)}
           />
+          {hasCompat ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => (myPhone ? setPhoneOnly(v => !v) : openPicker())}
+              style={[styles.phoneChip, phoneOnly && myPhone ? styles.phoneChipOn : null]}>
+              <Ionicons name="phone-portrait-outline" size={16} color={phoneOnly && myPhone ? colors.screen : colors.primary} />
+              <Text style={[styles.phoneChipText, phoneOnly && myPhone ? { color: colors.screen } : null]}>
+                {myPhone ? (phoneOnly ? `Лише для ${myPhone} ✓` : `Показати для ${myPhone}`) : 'Вкажіть свій телефон'}
+              </Text>
+            </Pressable>
+          ) : null}
           <Text style={styles.count}>
-            {totalCount} {totalCount === 1 ? 'товар' : 'товарів'}
+            {phoneOnly && myPhone ? visibleProducts.length : totalCount} {totalCount === 1 ? 'товар' : 'товарів'}
           </Text>
         </View>
       </>
@@ -272,6 +315,10 @@ export function CategoryScreen({ route, navigation }: Props) {
       onSaleOnly,
       bannerSubtitle,
       totalCount,
+      hasCompat,
+      myPhone,
+      phoneOnly,
+      visibleProducts.length,
     ],
   );
 
@@ -320,7 +367,7 @@ export function CategoryScreen({ route, navigation }: Props) {
         <>
           <FlashList
             testID="screen-category"
-            data={displayedProducts}
+            data={visibleProducts}
             numColumns={NUM_COLUMNS}
             keyExtractor={item => item._id}
             renderItem={renderItem}

@@ -19,6 +19,8 @@ import { NetworkProvider } from './context/NetworkContext';
 import { ToastProvider } from './context/ToastContext';
 import { ViewedProductsProvider } from './context/ViewedProductsContext';
 import { RootNavigator } from './navigation/RootNavigator';
+import { MyPhoneProvider } from './context/MyPhoneContext';
+import { PhonePickerSheet } from './components/phone/PhonePickerSheet';
 import { linking } from './navigation/linking';
 
 enableScreens(true);
@@ -59,7 +61,10 @@ function App() {
                       <FavoriteDiscountWatcher />
                       <OrdersProvider>
                         <CartProvider>
-                          <AppShell />
+                          <MyPhoneProvider>
+                            <AppShell />
+                            <PhonePickerSheet />
+                          </MyPhoneProvider>
                         </CartProvider>
                       </OrdersProvider>
                     </FavoritesProvider>

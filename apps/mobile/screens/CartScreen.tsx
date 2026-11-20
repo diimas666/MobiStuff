@@ -10,6 +10,8 @@ import { CartDiscountBanner } from '../components/cart/CartDiscountBanner';
 import { CartEmptyState } from '../components/cart/CartEmptyState';
 import { CartListItem } from '../components/cart/CartListItem';
 import { FreeDeliveryProgress } from '../components/cart/FreeDeliveryProgress';
+import { CrossSellSection } from '../components/product/CrossSellSection';
+import { addHomeProductToCart } from '../utils/addProductToCart';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
@@ -112,8 +114,10 @@ export function CartScreen() {
 
   const navigation = useNavigation<CartNavigationProp>();
   const route = useRoute<CartRouteProp>();
-  const { items, totalQuantity, increment, decrement, removeFromCart } = useCart();
+  const { items, totalQuantity, increment, decrement, removeFromCart, addToCart } = useCart();
   const cartTotals = useMemo(() => getCartTotals(items), [items]);
+  const mainItem = useMemo(() => [...items].sort((a, b) => b.price - a.price)[0], [items]);
+  const rootNav = navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
   const { freeDeliveryFrom } = useStoreSettings();
   const { total } = cartTotals;
 
@@ -221,6 +225,21 @@ export function CartScreen() {
           renderItem={renderItem}
           extraData={items}
           ListHeaderComponent={listHeader}
+          ListFooterComponent={
+            mainItem ? (
+              <View style={{ marginTop: 18 }}>
+                <CrossSellSection
+                  handle={mainItem.handle}
+                  exclude={items.map(i => i.handle)}
+                  title="Додайте до замовлення"
+                  subtitle="Часто купують разом"
+                  onProductPress={product => rootNav?.navigate('Product', { product })}
+                  onAddToCartPress={product => void addHomeProductToCart(addToCart, product).catch(() => {})}
+                  isInCart={id => items.some(i => i.productId === id)}
+                />
+              </View>
+            ) : null
+          }
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         />

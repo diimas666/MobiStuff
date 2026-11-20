@@ -14,6 +14,9 @@ import { OfflineState } from '../components/OfflineState';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ProductPerks } from '../components/product/ProductPerks';
 import { QuickOrderSheet } from '../components/product/QuickOrderSheet';
+import { PhoneCompatBadge } from '../components/phone/PhoneCompatBadge';
+import { CrossSellSection } from '../components/product/CrossSellSection';
+import { StockAlertCard } from '../components/product/StockAlertCard';
 import { baseUrl } from '../config/api';
 import { AddToCartButton } from '../components/product/AddToCartButton';
 import { ProductCategoryLabel } from '../components/product/ProductCategoryLabel';
@@ -61,6 +64,13 @@ export function ProductScreen({ route, navigation }: Props) {
       color: c.text,
       lineHeight: 31,
       marginBottom: 12,
+    },
+    sold: {
+      marginTop: -6,
+      marginBottom: 14,
+      fontSize: 15,
+      fontWeight: '600',
+      color: c.text,
     },
     buyBar: {
       flexDirection: 'row',
@@ -228,6 +238,14 @@ export function ProductScreen({ route, navigation }: Props) {
               lowStock={displayProduct.lowStock}
             />
 
+            {displayProduct.inStock && (displayProduct.soldThisWeek ?? 0) >= 3 ? (
+              <Text style={styles.sold}>🔥 Купили {displayProduct.soldThisWeek} разів за тиждень</Text>
+            ) : null}
+
+            <PhoneCompatBadge title={displayProduct.title} />
+
+            {!displayProduct.inStock && displayProduct.id ? <StockAlertCard productId={displayProduct.id} /> : null}
+
             {displayProduct.inStock && displayProduct.id ? (
               <QuickOrderSheet productId={displayProduct.id} title={displayProduct.title} price={displayProduct.price} variant={selectedVariant} />
             ) : null}
@@ -243,6 +261,13 @@ export function ProductScreen({ route, navigation }: Props) {
             {displayProduct.description ? (
               <ProductDescription text={displayProduct.description} />
             ) : null}
+
+            <CrossSellSection
+              handle={displayProduct.handle}
+              onProductPress={openRelatedProduct}
+              onAddToCartPress={handleAddRelatedToCart}
+              isInCart={isRelatedInCart}
+            />
 
             <RelatedProductsSection
               items={related}

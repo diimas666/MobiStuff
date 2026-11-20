@@ -2,6 +2,7 @@ import { Pressable, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { useCart } from '../../context/CartContext';
+import { useMyPhone } from '../../context/MyPhoneContext';
 
 type Props = {
   onCartPress?: () => void;
@@ -10,11 +11,13 @@ type Props = {
 /** Логотип і кошик — як шапка сайту */
 export function HomeHeader({ onCartPress }: Props) {
   const { totalQuantity } = useCart();
+  const { phone: myPhone, openPicker } = useMyPhone();
   const { styles, colors } = useThemedStyles(c => ({
     row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 6, marginBottom: 14 },
     logo: { fontSize: 30, fontWeight: '700', letterSpacing: -1, color: c.text },
     logoAccent: { color: c.primary },
-    subtitle: { marginTop: 1, fontSize: 15, color: c.textOnDarkMuted },
+    subtitle: { fontSize: 15, color: c.textOnDarkMuted },
+    phoneRow: { marginTop: 2, flexDirection: 'row', alignItems: 'center', gap: 5 },
     cartButton: {
       width: 44,
       height: 44,
@@ -46,7 +49,12 @@ export function HomeHeader({ onCartPress }: Props) {
         <Text testID="home-greeting" style={styles.logo} accessibilityRole="header">
           Mobi<Text style={styles.logoAccent}>Stuff</Text>
         </Text>
-        <Text style={styles.subtitle}>Аксесуари для телефону</Text>
+        <Pressable accessibilityRole="button" onPress={openPicker} hitSlop={6} style={styles.phoneRow}>
+          <Ionicons name="phone-portrait-outline" size={14} color={myPhone ? colors.primary : colors.textOnDarkMuted} />
+          <Text style={[styles.subtitle, myPhone ? { color: colors.primary, fontWeight: '600' } : null]}>
+            {myPhone ? `Аксесуари для ${myPhone}` : 'Аксесуари для телефону · обрати модель'}
+          </Text>
+        </Pressable>
       </View>
 
       <Pressable

@@ -1,34 +1,23 @@
-// app/api/products/[handle]/route.ts
-// app/api/products/[handle]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
+import { getWeeklySales } from '@/lib/weeklySales';
+import { safe } from '@/lib/safeData';
 
-export async function GET(req: NextRequest) {
-  await dbConnect();
+type Ctx = { params: Promise<{ handle: string }> };
 
-  const handle = req.nextUrl.pathname.split('/').pop(); // вытаскиваем handle из URL
-
-  if (!handle) {
-    return NextResponse.json({ error: 'Handle не указан' }, { status: 400 });
-  }
-
+/** Один товар за адресою (застосунок): + скільки разів купили за тиждень */
+export async function GET(_req: NextRequest, { params }: Ctx) {
+  const handle = decodeURIComponent((await params).handle || '').slice(0, 200);
+  if (!handle) return NextResponse.json({ error: 'Товар не знайдено' }, { status: 400 });
   try {
+    await dbConnect();
     const product = await Product.findOne({ handle }).lean();
-    if (!product) {
-      return NextResponse.json({ error: 'Товар не знайдено' }, { status: 404 });
-    }
-    return NextResponse.json(product);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (!product) return NextResponse.json({ error: 'Товар не знайдено' }, { status: 404 });
+    const soldThisWeek = (await safe(getWeeklySales(), {} as Record<string, number>, 'weekly-sales'))[handle] ?? 0;
+    return NextResponse.json({ ...product, soldThisWeek }, { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } });
+  } catch (error) {
+    console.error('GET /api/products/[handle] failed', error);
+    return NextResponse.json({ error: 'Помилка сервера' }, { status: 500 });
   }
 }
-
-// Это API-роут, который:
-
-// ищет один товар по его handle (уникальный slug товара),
-
-// возвращает JSON-объект товара,
-
-// const res = await fetch(`/api/products/33wdsd`);
-// const product = await res.json();

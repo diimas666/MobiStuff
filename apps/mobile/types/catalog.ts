@@ -63,6 +63,8 @@ export type SearchProduct = HomeProduct & {
 
 export type ProductDetail = {
   id: string;
+  /** Скільки разів купили за 7 днів */
+  soldThisWeek?: number;
   handle: string;
   title: string;
   description: string;

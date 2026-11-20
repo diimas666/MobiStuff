@@ -11,6 +11,7 @@ import { useNotifications } from '../context/NotificationsContext';
 import { useOrders } from '../context/OrdersContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useStoreSettings } from '../hooks/useStoreSettings';
+import { useMyPhone } from '../context/MyPhoneContext';
 import type { ProfileStackParamList, TabParamList } from '../navigation/types';
 import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
 import { useThemedStyles } from '../hooks/useThemedStyles';
@@ -39,6 +40,7 @@ export function ProfileScreen() {
   const { orders, refreshOrders } = useOrders();
   const { items: favorites } = useFavorites();
   const store = useStoreSettings();
+  const { phone: myPhone, openPicker } = useMyPhone();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
@@ -90,6 +92,10 @@ export function ProfileScreen() {
             onPress={() => navigation.navigate('Favorites', { returnTo: { tab: 'Profile', screen: 'ProfileMain' } })}
           />
           <ListRow icon="time" iconColor="#5856D6" label="Переглянуті товари" onPress={go('ViewedProducts')} />
+        </ListGroup>
+
+        <ListGroup title="Мій телефон" footer="Покажемо, які чохли й стекла підходять саме до вашої моделі.">
+          <ListRow icon="phone-portrait" iconColor="#1D1D1F" label="Модель" value={myPhone ?? 'Обрати'} onPress={openPicker} />
         </ListGroup>
 
         <ListGroup title="Доставка та оплата">

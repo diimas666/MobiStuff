@@ -135,6 +135,7 @@ function toProductDetail(product: ApiProduct): ProductDetail {
     isTrending: product.isTrending === true,
     isFeatured: product.isFeatured === true,
     brand: product.brand,
+    soldThisWeek: (product as ApiProduct & { soldThisWeek?: number }).soldThisWeek,
   };
 }
 

@@ -76,6 +76,12 @@ export const api = {
     }),
   promotions: () => request('/api/promotions'),
   settings: () => request('/api/settings'),
+  phoneModels: () => request('/api/phone-models'),
+  crossSell: (handle: string, exclude = '') =>
+    request(`/api/cross-sell?handle=${encodeURIComponent(handle)}&exclude=${encodeURIComponent(exclude)}`),
+  stockAlert: (body: unknown) =>
+    request('/api/stock-alert', { method: 'POST', body: JSON.stringify(body) }),
+  tracking: (ttn: string) => request(`/api/tracking?ttn=${encodeURIComponent(ttn)}`),
   search: (q: string) => request(`/api/search?q=${encodeURIComponent(q)}`),
   registerPush: (body: unknown) =>
     request('/api/push/register', { method: 'POST', body: JSON.stringify(body) }),
