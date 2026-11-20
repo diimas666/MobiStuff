@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, ExternalLink, Loader2, Lock, LogOut, Megaphone, Package, PlusCircle, RefreshCw, Settings, ShoppingCart, Tag, Ticket, Upload } from 'lucide-react';
+import { BarChart3, BellRing, ExternalLink, Loader2, Lock, LogOut, Megaphone, Package, PlusCircle, RefreshCw, Settings, ShoppingCart, Tag, Ticket, Upload } from 'lucide-react';
 
 const NAV = [
   { href: '/admin/products', label: 'Товари', icon: Package },
@@ -11,6 +11,7 @@ const NAV = [
   { href: '/admin/promo', label: 'Промокоди', icon: Ticket },
   { href: '/admin/orders', label: 'Замовлення', icon: ShoppingCart },
   { href: '/admin/marketing', label: 'Реклама', icon: Megaphone },
+  { href: '/admin/push', label: 'Push', icon: BellRing },
   { href: '/admin/analytics', label: 'Аналітика', icon: BarChart3 },
   { href: '/admin', label: 'Додати товар', icon: PlusCircle },
   { href: '/admin/import', label: 'Імпорт CSV', icon: Upload },

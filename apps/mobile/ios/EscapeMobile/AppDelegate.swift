@@ -1,10 +1,11 @@
 import UIKit
+import UserNotifications
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
   var window: UIWindow?
 
   var reactNativeDelegate: ReactNativeDelegate?
@@ -20,6 +21,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     reactNativeDelegate = delegate
     reactNativeFactory = factory
+
+    // Push: показуємо банери і в відкритому застосунку; токен оновлюємо при кожному запуску,
+    // якщо дозвіл уже надано (сам дозвіл запитується з JS через mobistuff://push-enable)
+    UNUserNotificationCenter.current().delegate = self
+    UNUserNotificationCenter.current().getNotificationSettings { settings in
+      if settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional {
+        DispatchQueue.main.async { application.registerForRemoteNotifications() }
+      }
+    }
 
     window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -38,7 +48,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     open url: URL,
     options: [UIApplication.OpenURLOptionsKey: Any] = [:]
   ) -> Bool {
+    // Службове посилання: запит дозволу на сповіщення (викликається з JS)
+    if url.scheme == "mobistuff" && url.host == "push-enable" {
+      UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+        UserDefaults.standard.set(granted ? "granted" : "denied", forKey: "pushPermission")
+        if granted {
+          DispatchQueue.main.async { app.registerForRemoteNotifications() }
+        }
+      }
+      return true
+    }
     return RCTLinkingManager.application(app, open: url, options: options)
+  }
+
+  // Токен APNs → UserDefaults; JS читає його через Settings.get('pushToken') і реєструє на сервері
+  func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    let token = deviceToken.map { String(format: "%02x", $0) }.joined()
+    UserDefaults.standard.set(token, forKey: "pushToken")
+  }
+
+  func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    UserDefaults.standard.removeObject(forKey: "pushToken")
+  }
+
+  // Сповіщення при відкритому застосунку — теж показуємо банер
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    completionHandler([.banner, .list, .sound])
+  }
+
+  // Натискання на сповіщення → відкриваємо екран з поля "url" (mobistuff://orders тощо)
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    if let link = response.notification.request.content.userInfo["url"] as? String,
+       let url = URL(string: link), url.scheme == "mobistuff" {
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+        _ = RCTLinkingManager.application(UIApplication.shared, open: url, options: [:])
+      }
+    }
+    completionHandler()
   }
 }
 

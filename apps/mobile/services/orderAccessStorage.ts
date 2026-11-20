@@ -37,3 +37,9 @@ export async function saveOrderAccessToken(phone: string, token: string): Promis
   if (tokens[key] === token) return;
   await setStorageItem(ORDER_ACCESS_KEY, JSON.stringify({ ...tokens, [key]: token }));
 }
+
+/** Усі збережені ключі: номер (без +380) → ключ */
+export async function getAllOrderAccessTokens(): Promise<{ phone: string; token: string }[]> {
+  const tokens = await loadTokens();
+  return Object.entries(tokens).map(([phone, token]) => ({ phone, token }));
+}

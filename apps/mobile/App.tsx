@@ -1,7 +1,9 @@
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { DevNavBridge } from './components/dev/DevNavBridge';
 import type { RootStackParamList } from './navigation/types';
+import { useEffect } from 'react';
 import { StatusBar } from 'react-native';
+import { syncPushToken } from './services/push';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { FavoriteDiscountWatcher } from './components/notification/FavoriteDiscountWatcher';
@@ -25,6 +27,11 @@ const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 function AppShell() {
   const { resolvedTheme } = useSettings();
+
+  // Оновлюємо push-токен на сервері при кожному запуску
+  useEffect(() => {
+    void syncPushToken();
+  }, []);
 
   return (
     <>

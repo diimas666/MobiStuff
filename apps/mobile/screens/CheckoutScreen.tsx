@@ -28,6 +28,7 @@ import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { paymentCardNumber } from '../config/payment';
 import { useStoreSettings } from '../hooks/useStoreSettings';
+import { askPushPermissionOnce, syncPushToken } from '../services/push';
 import { PromoCodeInput, type AppliedPromo } from '../components/checkout/PromoCodeInput';
 import { radius, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
@@ -392,6 +393,8 @@ export function CheckoutScreen({ navigation }: Props) {
     };
     await addOrder(saved).catch(() => {});
     await persistProfile().catch(() => {});
+    // Сповіщення про статус: питаємо дозвіл після першого замовлення
+    void askPushPermissionOnce().then(() => syncPushToken());
 
     setIsOrderComplete(true);
     setShowSuccessModal(true);

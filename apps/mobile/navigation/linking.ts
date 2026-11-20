@@ -7,6 +7,8 @@ import type { RootStackParamList } from './types';
  */
 export const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['mobistuff://'],
+  // mobistuff://push-enable обробляє нативна частина (запит дозволу), не навігація
+  filter: url => !url.includes('push-enable'),
   config: {
     screens: {
       Product: 'product/:handle',
