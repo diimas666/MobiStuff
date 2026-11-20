@@ -20,6 +20,8 @@ const columns = [
     links: [
       { href: '/delivery', label: 'Доставка і оплата' },
       { href: '/returns', label: 'Повернення' },
+      { href: '/warranty', label: 'Гарантія' },
+      { href: '/tracking', label: 'Відстежити посилку' },
       { href: '/favorites', label: 'Обране' },
       { href: '/cart', label: 'Кошик' },
     ],

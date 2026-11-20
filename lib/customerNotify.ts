@@ -24,7 +24,8 @@ type NotifyOrder = {
 const esc = (v: unknown) =>
   String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export const trackingUrl = (ttn: string) => `https://novaposhta.ua/tracking/?cargo_number=${encodeURIComponent(ttn)}`;
+// Наша сторінка відстеження (статус від Нової Пошти без переходу на її сайт)
+export const trackingUrl = (ttn: string) => absoluteUrl(`/tracking?ttn=${encodeURIComponent(ttn)}`);
 
 export async function sendSms(phone: string, text: string): Promise<boolean> {
   const token = process.env.TURBOSMS_TOKEN;
