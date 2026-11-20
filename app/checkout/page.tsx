@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { policyTexts } from '@/data/storePolicies';
 import { useStoreSettings } from '@/context/StoreSettingsContext';
+import PromoCodeField, { type AppliedPromo } from '@/components/PromoCodeField';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 import { generateOrderId } from '@/lib/orderStatus';
 import { trackBeginCheckout } from '@/lib/analytics';
@@ -38,7 +39,9 @@ function Step({ n, title, hint, children }: { n: number; title: string; hint?: s
 export default function CheckoutPage() {
   const { cart, clearCart, isReady } = useCart();
   const router = useRouter();
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  const total = subtotal - (promo?.discount ?? 0);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isLoading, setIsLoading] = useState(false);
   const orderCompletedRef = useRef(false);
@@ -130,6 +133,7 @@ export default function CheckoutPage() {
       cityRef: delivery.cityRef,
       warehouse: delivery.warehouse,
       total,
+      promoCode: promo?.code,
       items: cart,
       createdAt: new Date().toISOString(),
       utm: (() => {
@@ -294,7 +298,11 @@ export default function CheckoutPage() {
               ))}
             </ul>
 
-            <div className="mt-5 flex items-baseline justify-between border-t border-line-soft pt-5">
+            <div className="mt-5 border-t border-line-soft pt-4">
+              <PromoCodeField total={subtotal} value={promo} onChange={setPromo} />
+            </div>
+
+            <div className="mt-4 flex items-baseline justify-between">
               <span className="text-[17px] font-semibold">До сплати</span>
               <span className="text-[26px] font-semibold tracking-tight">{formatPrice(total)}</span>
             </div>

@@ -76,6 +76,8 @@ export const api = {
     }),
   promotions: () => request('/api/promotions'),
   settings: () => request('/api/settings'),
+  validatePromo: (body: unknown) =>
+    request('/api/promo/validate', { method: 'POST', body: JSON.stringify(body) }),
   brands: () => request('/api/brands'),
   support: (body: unknown) =>
     request('/api/support', {

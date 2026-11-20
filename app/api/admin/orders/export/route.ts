@@ -29,7 +29,7 @@ export async function GET(req: Request) {
     if (/^[=@\t]/.test(s) || /^[+-][^\d]/.test(s)) s = `'${s}`;
     return `"${s.replace(/"/g, '""')}"`;
   };
-  const head = ['Дата', '№', 'Статус', 'Імʼя', 'Прізвище', 'Телефон', 'Email', 'Місто', 'Відділення', 'Оплата', 'Сума', 'ТТН', 'Товари', 'Коментар клієнта', 'Примітка менеджера', 'Джерело'];
+  const head = ['Дата', '№', 'Статус', 'Імʼя', 'Прізвище', 'Телефон', 'Email', 'Місто', 'Відділення', 'Оплата', 'Сума', 'ТТН', 'Товари', 'Коментар клієнта', 'Примітка менеджера', 'Джерело', 'Промокод'];
   const lines = orders.map((o) =>
     [
       new Date(o.createdAt).toLocaleString('uk-UA'),
@@ -48,6 +48,7 @@ export async function GET(req: Request) {
       o.comment,
       o.managerNote,
       o.utm ? [o.utm.utm_source, o.utm.utm_campaign].filter(Boolean).join(' / ') : '',
+      o.promo ? `${o.promo.code} −${o.promo.discount}` : '',
     ]
       .map(cell)
       .join(';')

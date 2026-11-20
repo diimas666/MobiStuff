@@ -42,6 +42,8 @@ interface Order {
   ttn?: string;
   managerNote?: string;
   history?: { at: string; text: string }[];
+  promo?: { code: string; discount: number };
+  quick?: boolean;
 }
 
 const fmtDate = (d: string) =>
@@ -149,6 +151,12 @@ function OrderSheet({ order, onClose, onSaved }: { order: Order; onClose: () => 
                 </li>
               ))}
             </ul>
+            {order.promo ? (
+              <div className="mt-2 flex justify-between text-[14px] text-accent">
+                <span>Промокод {order.promo.code}</span>
+                <span>−{formatPrice(order.promo.discount)}</span>
+              </div>
+            ) : null}
             <div className="mt-2 flex justify-between border-t border-line-soft pt-3 text-[16px] font-semibold">
               <span>Разом</span>
               <span>{formatPrice(order.total)}</span>

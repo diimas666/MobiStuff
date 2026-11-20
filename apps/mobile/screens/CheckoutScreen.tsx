@@ -28,6 +28,7 @@ import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { paymentCardNumber } from '../config/payment';
 import { useStoreSettings } from '../hooks/useStoreSettings';
+import { PromoCodeInput, type AppliedPromo } from '../components/checkout/PromoCodeInput';
 import { radius, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
 import { useDeliveryAddresses } from '../context/DeliveryAddressesContext';
@@ -202,6 +203,8 @@ export function CheckoutScreen({ navigation }: Props) {
   const { defaultMethod, isHydrated: paymentMethodsHydrated } = usePaymentMethods();
   const cartTotals = useMemo(() => getCartTotals(items), [items]);
   const { total } = cartTotals;
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
+  const payable = total - (promo?.discount ?? 0);
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [addressInitialized, setAddressInitialized] = useState(false);
@@ -365,7 +368,7 @@ export function CheckoutScreen({ navigation }: Props) {
       city: trimmedCity,
       cityRef,
       warehouse: trimmedWarehouse,
-      total,
+      total: payable,
       items: [...items],
       createdAt,
       status: 'processing',
@@ -373,24 +376,22 @@ export function CheckoutScreen({ navigation }: Props) {
 
     setIsSubmitting(true);
 
-    let sentToServer = false;
-
-    try {
-      sentToServer = await submitCheckout(order);
-    } catch {
-      sentToServer = false;
+    // Замовлення вважаємо оформленим лише коли сервер його прийняв
+    const result = await submitCheckout({ ...order, promoCode: promo?.code });
+    if (!result.ok) {
+      showToast(result.error, 'error');
+      setIsSubmitting(false);
+      return;
     }
 
-    try {
-      await addOrder(order);
-      await persistProfile();
-    } catch {
-      if (!sentToServer) {
-        showErrorToast(new Error('save_failed'), 'Не вдалося оформити замовлення');
-        setIsSubmitting(false);
-        return;
-      }
-    }
+    const saved: StoredOrder = {
+      ...order,
+      id: result.orderId || order.id,
+      total: result.total ?? order.total,
+      paymentMethod: result.paymentMethod ?? order.paymentMethod,
+    };
+    await addOrder(saved).catch(() => {});
+    await persistProfile().catch(() => {});
 
     setIsOrderComplete(true);
     setShowSuccessModal(true);
@@ -643,9 +644,16 @@ export function CheckoutScreen({ navigation }: Props) {
               </Text>
               <Text style={styles.totalValue}>{formatPrice(total)}</Text>
             </View>
+            <PromoCodeInput total={total} value={promo} onChange={setPromo} />
+            {promo ? (
+              <View style={styles.totalRow}>
+                <Text style={[styles.totalLabel, { color: colors.primary }]}>Промокод {promo.code}</Text>
+                <Text style={[styles.totalValue, { color: colors.primary }]}>−{formatPrice(promo.discount)}</Text>
+              </View>
+            ) : null}
             <View style={[styles.totalRow, styles.grandTotalRow]}>
               <Text style={styles.grandTotalLabel}>Всього до сплати</Text>
-              <Text style={styles.grandTotalValue}>{formatPrice(total)}</Text>
+              <Text style={styles.grandTotalValue}>{formatPrice(payable)}</Text>
             </View>
           </View>
         </ScrollView>

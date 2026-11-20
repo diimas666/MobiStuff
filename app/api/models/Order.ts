@@ -21,6 +21,8 @@ const OrderSchema = new mongoose.Schema(
     items: Array,
     createdAt: String,
     utm: { type: mongoose.Schema.Types.Mixed },
+    subtotal: Number,
+    promo: { code: String, discount: Number, label: String },
     // Номер експрес-накладної Нової Пошти
     ttn: String,
     // Внутрішня примітка менеджера (клієнт не бачить)

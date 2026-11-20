@@ -4,6 +4,7 @@ import Order from '../models/Order';
 import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/lib/orders';
 import { createOrderAccessToken } from '@/lib/orderAccess';
 import { notifyOrderCreated } from '@/lib/customerNotify';
+import { consumePromo } from '@/lib/promo';
 import { rateLimited } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
     const existing = await Order.findOne({ orderId: order.orderId, phone: order.phone }).select('_id').lean();
     if (!existing) {
       const created = await Order.create({ ...order, history: [{ text: 'Замовлення створено' }] });
+      if (order.promo) await consumePromo(order.promo.code).catch(() => {});
       await notifyTelegram(order);
       // Підтвердження клієнту (email/SMS) — не блокує відповідь при збої
       const sent = await notifyOrderCreated(order).catch(() => []);
@@ -41,6 +43,7 @@ export async function POST(req: NextRequest) {
       orderId: order.orderId,
       total: order.total,
       paymentMethod: order.paymentMethod,
+      promo: order.promo,
       // Ключ для перегляду історії замовлень цього номера (мобільний застосунок)
       ordersToken: createOrderAccessToken(order.phone),
     });

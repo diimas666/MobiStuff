@@ -3,6 +3,7 @@ import Product from '@/app/api/models/Product';
 import { DEFAULT_ORDER_STATUS, generateOrderId } from '@/lib/orderStatus';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 import { getStoreSettings } from '@/lib/storeSettings';
+import { checkPromo, PromoError } from '@/lib/promo';
 
 const str = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
@@ -65,7 +66,19 @@ export async function buildOrderFromPayload(data: Record<string, unknown>) {
     };
   });
 
-  const total = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
+  const subtotal = items.reduce((sum, it) => sum + it.price * it.quantity, 0);
+
+  // Промокод: знижка рахується лише тут, на сервері
+  let promo: { code: string; discount: number; label: string } | undefined;
+  if (str(data.promoCode)) {
+    try {
+      promo = await checkPromo(data.promoCode, subtotal);
+    } catch (e) {
+      if (e instanceof PromoError) throw new OrderValidationError(e.message);
+      throw e;
+    }
+  }
+  const total = subtotal - (promo?.discount ?? 0);
   // Застосунок раніше надсилав card_online / card_transfer — це теж оплата карткою
   let paymentMethod = ['card', 'card_online', 'card_transfer'].includes(str(data.paymentMethod)) ? 'card' : 'cod';
   const { cardOnlyFrom } = await getStoreSettings();
@@ -96,6 +109,7 @@ export async function buildOrderFromPayload(data: Record<string, unknown>) {
     warehouse,
     paymentMethod,
     total,
+    ...(promo ? { subtotal, promo } : {}),
     items,
     createdAt: new Date().toISOString(),
     ...(utm && Object.keys(utm).length ? { utm } : {}),
@@ -122,6 +136,7 @@ export async function notifyTelegram(order: BuiltOrder) {
     `📍 ${order.city}`,
     `🏤 ${order.warehouse}`,
     `💳 Оплата: ${order.paymentMethod === 'card' ? 'Карткою' : 'Післяплата'}`,
+    order.promo ? `🏷 Промокод ${order.promo.code}: −${order.promo.discount} ₴` : '',
     `💰 Всього: ${order.total} ₴`,
     order.utm ? `📣 Джерело: ${[order.utm.utm_source, order.utm.utm_campaign, order.utm.utm_content].filter(Boolean).join(' / ') || (order.utm.fbclid ? 'Facebook/Instagram' : order.utm.gclid ? 'Google Ads' : order.utm.ttclid ? 'TikTok' : '—')}` : '',
     '',

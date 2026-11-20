@@ -17,28 +17,43 @@ export type CheckoutOrder = {
   createdAt: string;
 };
 
-export async function submitCheckout(order: CheckoutOrder & { id?: string }): Promise<boolean> {
+export type CheckoutResult =
+  | { ok: true; total?: number; paymentMethod?: string; orderId?: string }
+  | { ok: false; error: string };
+
+/** Надсилає замовлення на сервер. Успіх — лише якщо сервер його прийняв. */
+export async function submitCheckout(
+  order: CheckoutOrder & { id?: string; promoCode?: string },
+): Promise<CheckoutResult> {
   try {
     const response = await api.checkout({
       ...order,
       orderId: order.id,
     });
+    const data = (await response.json().catch(() => ({}))) as {
+      ordersToken?: unknown;
+      message?: string;
+      total?: number;
+      paymentMethod?: string;
+      orderId?: string;
+    };
     if (!response.ok) {
-      return false;
+      return {
+        ok: false,
+        error:
+          data.message ||
+          (response.status === 429
+            ? 'Забагато спроб. Спробуйте за кілька хвилин.'
+            : 'Не вдалося оформити замовлення. Спробуйте ще раз.'),
+      };
     }
 
     // Сервер видає ключ для перегляду історії замовлень цього номера
-    try {
-      const data = (await response.json()) as { ordersToken?: unknown };
-      if (typeof data.ordersToken === 'string') {
-        await saveOrderAccessToken(order.phone, data.ordersToken);
-      }
-    } catch {
-      // замовлення вже прийняте — відсутність ключа не критична
+    if (typeof data.ordersToken === 'string') {
+      await saveOrderAccessToken(order.phone, data.ordersToken).catch(() => {});
     }
-
-    return true;
+    return { ok: true, total: data.total, paymentMethod: data.paymentMethod, orderId: data.orderId };
   } catch {
-    return false;
+    return { ok: false, error: 'Немає звʼязку з сервером. Перевірте інтернет і спробуйте ще раз.' };
   }
 }
