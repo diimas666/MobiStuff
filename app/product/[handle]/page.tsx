@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { catalogCategory } from '@/data/catalogCategory';
 import { brands } from '@/data/brands';
 import VariantSection from '@/components/VariantSection';
+import PhoneCompatBadge from '@/components/phone/PhoneCompatBadge';
 import OffersSection from '@/components/OffersSection.client';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ProductDescription from '@/components/ProductDescription';
@@ -202,6 +203,7 @@ export default async function ProductPage({ params }: Params) {
             </p>
           </header>
 
+          <PhoneCompatBadge title={product.title} />
           <VariantSection variants={product.variants ?? []} product={product} />
 
           <ul className="divide-y divide-line-soft rounded-[22px] bg-white px-5">

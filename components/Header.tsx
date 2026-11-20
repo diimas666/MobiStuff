@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import SearchBar from './SearchBar';
 import Container from './Container';
 import { useMobileSidebar } from '@/context/MobileSidebarContext';
+import MyPhoneButton from '@/components/phone/MyPhoneButton';
 import MobileSidebar from './MobileSidebar';
 import FavoritesCountBadge from '@/components/FavoritesCountBadge';
 import { useCart } from '@/context/CartContext';
@@ -86,6 +87,7 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center gap-1 sm:gap-1.5">
+              <MyPhoneButton className="hidden xl:inline-flex" />
               <button
                 type="button"
                 onClick={() => setIsSearchOpen((v) => !v)}

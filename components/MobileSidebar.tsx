@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Smartphone, X } from 'lucide-react';
+import { useMyPhone } from '@/context/MyPhoneContext';
 import { useMobileSidebar } from '@/context/MobileSidebarContext';
 import { useCart } from '@/context/CartContext';
 import { catalogCategory } from '@/data/catalogCategory';
@@ -69,6 +70,7 @@ export default function MobileSidebar() {
   const closeBtn = useRef<HTMLButtonElement>(null);
   const cartCount = cart.reduce((n, i) => n + i.quantity, 0);
   const showApp = useShowIosApp();
+  const { phone: myPhone, openPicker } = useMyPhone();
 
   const dismiss = useCallback(() => {
     setClosing(true);
@@ -157,6 +159,19 @@ export default function MobileSidebar() {
               >
                 <Search className="h-[18px] w-[18px]" />
                 Пошук товарів
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  dismiss();
+                  window.setTimeout(openPicker, 230);
+                }}
+                className="mt-3 flex h-12 w-full items-center gap-3 rounded-2xl bg-white px-4 text-left text-[15px]"
+              >
+                <Smartphone className="h-[18px] w-[18px] text-ink-3" />
+                <span className="flex-1">{myPhone ?? 'Мій телефон'}</span>
+                <span className="text-[13px] text-accent">{myPhone ? 'Змінити' : 'Обрати'}</span>
               </button>
 
               <div className="mt-3 grid grid-cols-3 gap-2">

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 // import ProductCard from '@/components/ProductCard';
 import ProductList from '@/components/ProductList';
 import CatalogFilters from '@/components/catalog/CatalogFilters';
+import MyPhoneChip from '@/components/catalog/MyPhoneChip';
 import ActiveFilters, { FilteredEmpty } from '@/components/catalog/ActiveFilters';
 import SortMenu from '@/components/catalog/SortMenu';
 import { FilterProvider, FilterResults } from '@/components/catalog/FilterContext';
@@ -217,6 +218,7 @@ export default async function SubcategoryPage({
               </div>
             </div>
 
+            <MyPhoneChip models={facets?.phoneModels ?? []} />
             <ActiveFilters />
 
             <FilterResults>

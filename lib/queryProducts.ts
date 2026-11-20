@@ -3,7 +3,7 @@ import Product from '@/app/api/models/Product';
 import { filterCatalogProducts } from '@/lib/productCategoryRules';
 import {
   GLASS_SUBCATEGORY_SLUG,
-  getPhoneModelsFromTitles,
+  extractCompatibility, getPhoneModelsFromTitles,
   titleMatchesPhoneModel,
 } from '@/lib/glassPhoneFilter';
 
@@ -79,7 +79,12 @@ export async function queryProductFacets(category: string, subcategory: string) 
   return {
     brands,
     brandCounts,
-    phoneModels: subcategory === GLASS_SUBCATEGORY_SLUG ? getPhoneModelsFromTitles(products.map((p) => p.title)) : [],
+    // Фільтр «Модель телефону» — там, де хоча б чверть товарів має сумісність у назві (чохли, скло тощо)
+    phoneModels:
+      subcategory === GLASS_SUBCATEGORY_SLUG ||
+      products.filter((p) => extractCompatibility(p.title)).length >= Math.max(3, products.length / 4)
+        ? getPhoneModelsFromTitles(products.map((p) => p.title))
+        : [],
     minPrice: prices.length ? Math.floor(Math.min(...prices)) : 0,
     maxPrice: prices.length ? Math.ceil(Math.max(...prices)) : 5000,
     count: products.length,

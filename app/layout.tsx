@@ -19,6 +19,8 @@ import { getStoreSettings, publicSettings } from '@/lib/storeSettings';
 import { StoreSettingsProvider } from '@/context/StoreSettingsContext';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import ServiceWorker from '@/components/ServiceWorker';
+import { MyPhoneProvider } from '@/context/MyPhoneContext';
+import PhonePicker from '@/components/phone/PhonePicker';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
@@ -99,6 +101,7 @@ export default async function RootLayout({
         className={`${onest.variable} antialiased min-h-screen flex flex-col site-page-bg`}
       >
         <StoreSettingsProvider value={settings}>
+        <MyPhoneProvider>
         <FavoritesProvider>
           <CartProvider>
             <MobileSidebarProvider>
@@ -115,6 +118,8 @@ export default async function RootLayout({
             </MobileSidebarProvider>
           </CartProvider>
         </FavoritesProvider>
+        <PhonePicker />
+        </MyPhoneProvider>
         </StoreSettingsProvider>
         <ToastProvider />
         <ServiceWorker />
