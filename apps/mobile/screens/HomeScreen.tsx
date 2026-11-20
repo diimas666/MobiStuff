@@ -24,6 +24,8 @@ import { showErrorToast } from '../context/ToastContext';
 import { useBrands } from '../hooks/useBrands';
 import { useHomeData } from '../hooks/useHomeData';
 import { usePromotions } from '../hooks/usePromotions';
+import { useAppConfig } from '../hooks/useAppConfig';
+import { AppBannerCarousel } from '../components/home/AppBannerCarousel';
 import { openPromoCategory } from '../navigation/categoriesTabListeners';
 import type { RootStackParamList, TabParamList } from '../navigation/types';
 import type { BrandItem } from '../types/brand';
@@ -46,6 +48,7 @@ export function HomeScreen() {
   const { categories, trending, popular, isLoading, error, retry } = useHomeData();
   const { items: brands, isLoading: isBrandsLoading } = useBrands();
   const { promotions } = usePromotions(settings.promoNotifications);
+  const { banners } = useAppConfig();
   const { items: viewedProducts } = useViewedProducts();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addToCart, items } = useCart();
@@ -132,6 +135,7 @@ export function HomeScreen() {
         >
           <HomeHeader onCartPress={() => navigation.navigate('Cart')} />
           <HomeSearchBar onProductPress={openProduct} />
+          <AppBannerCarousel items={banners} />
           <TrendingSlider items={trending} onProductPress={openProduct} />
           <PromoBannerCarousel
             items={promoBanners}

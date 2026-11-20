@@ -107,6 +107,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
         _ = RCTLinkingManager.application(UIApplication.shared, open: url, options: [:])
       }
+    } else if let link = response.notification.request.content.userInfo["url"] as? String,
+              let url = URL(string: link), url.scheme == "https", url.host?.hasSuffix("mobistuff.shop") == true {
+      // Сторінки сайту (напр. відгук за посиланням із замовлення) — у Safari
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+        UIApplication.shared.open(url)
+      }
     }
     completionHandler()
   }

@@ -6,6 +6,8 @@ import { StatusBar } from 'react-native';
 import { syncPushToken } from './services/push';
 import { installErrorHandler, setCurrentScreen, track } from './services/telemetry';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
+import { AppGate } from './components/AppGate';
+import { PushStateSync } from './components/PushStateSync';
 
 installErrorHandler();
 import { enableScreens } from 'react-native-screens';
@@ -71,8 +73,11 @@ function App() {
                       <OrdersProvider>
                         <CartProvider>
                           <MyPhoneProvider>
-                            <AppShell />
-                            <PhonePickerSheet />
+                            <AppGate>
+                              <AppShell />
+                              <PhonePickerSheet />
+                            </AppGate>
+                            <PushStateSync />
                           </MyPhoneProvider>
                         </CartProvider>
                       </OrdersProvider>

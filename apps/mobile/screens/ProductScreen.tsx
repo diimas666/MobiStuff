@@ -16,6 +16,7 @@ import { ProductPerks } from '../components/product/ProductPerks';
 import { QuickOrderSheet } from '../components/product/QuickOrderSheet';
 import { PhoneCompatBadge } from '../components/phone/PhoneCompatBadge';
 import { CrossSellSection } from '../components/product/CrossSellSection';
+import { ReviewsSection } from '../components/product/ReviewsSection';
 import { StockAlertCard } from '../components/product/StockAlertCard';
 import { track } from '../services/telemetry';
 import { baseUrl } from '../config/api';
@@ -266,6 +267,8 @@ export function ProductScreen({ route, navigation }: Props) {
             {displayProduct.description ? (
               <ProductDescription text={displayProduct.description} />
             ) : null}
+
+            {displayProduct.handle ? <ReviewsSection handle={displayProduct.handle} /> : null}
 
             <CrossSellSection
               handle={displayProduct.handle}

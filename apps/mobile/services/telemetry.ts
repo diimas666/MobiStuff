@@ -7,7 +7,7 @@ import { api } from '../config/api';
  */
 export type AppEventName = 'app_open' | 'view_product' | 'add_to_cart' | 'begin_checkout' | 'purchase' | 'search' | 'push_open';
 
-const APP_VERSION = '1.1';
+import { APP_VERSION } from '../constants/appVersion';
 let queue: { name: AppEventName; value?: number }[] = [];
 let timer: ReturnType<typeof setTimeout> | null = null;
 let currentScreen = '';
