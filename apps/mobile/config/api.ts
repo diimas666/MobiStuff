@@ -76,6 +76,8 @@ export const api = {
     }),
   promotions: () => request('/api/promotions'),
   settings: () => request('/api/settings'),
+  quickOrder: (body: unknown) =>
+    request('/api/quick-order', { method: 'POST', body: JSON.stringify(body) }),
   validatePromo: (body: unknown) =>
     request('/api/promo/validate', { method: 'POST', body: JSON.stringify(body) }),
   brands: () => request('/api/brands'),

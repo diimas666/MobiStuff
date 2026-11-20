@@ -393,6 +393,7 @@ export default function OrdersPage() {
                           {o.name} {o.lastName}
                         </span>
                         <StatusPill status={status} />
+                        {o.quick && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[12px] font-semibold text-amber-800">⚡ 1 клік — передзвонити</span>}
                         {o.utm && <span className="text-[12px] text-accent">📣 {sourceLabel(o.utm)}</span>}
                       </span>
                       <span className="mt-0.5 block truncate text-[13px] text-ink-3">

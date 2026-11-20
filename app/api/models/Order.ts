@@ -22,6 +22,8 @@ const OrderSchema = new mongoose.Schema(
     createdAt: String,
     utm: { type: mongoose.Schema.Types.Mixed },
     subtotal: Number,
+    // «Купити в 1 клік» — без адреси, менеджер передзвонює
+    quick: Boolean,
     promo: { code: String, discount: Number, label: String },
     // Номер експрес-накладної Нової Пошти
     ttn: String,

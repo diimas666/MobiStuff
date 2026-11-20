@@ -13,6 +13,7 @@ import { LoadingState } from '../components/LoadingState';
 import { OfflineState } from '../components/OfflineState';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ProductPerks } from '../components/product/ProductPerks';
+import { QuickOrderSheet } from '../components/product/QuickOrderSheet';
 import { baseUrl } from '../config/api';
 import { AddToCartButton } from '../components/product/AddToCartButton';
 import { ProductCategoryLabel } from '../components/product/ProductCategoryLabel';
@@ -221,6 +222,10 @@ export function ProductScreen({ route, navigation }: Props) {
               inStock={displayProduct.inStock}
               lowStock={displayProduct.lowStock}
             />
+
+            {displayProduct.inStock && displayProduct.id ? (
+              <QuickOrderSheet productId={displayProduct.id} title={displayProduct.title} price={displayProduct.price} variant={selectedVariant} />
+            ) : null}
 
             <ProductPerks />
 

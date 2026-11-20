@@ -10,6 +10,7 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { trackAddToWishlist } from '@/lib/analytics';
 import { formatPrice } from '@/lib/format';
 import ProductImage from './ProductImage';
+import QuickOrder from './QuickOrder';
 
 interface Props {
   variants: string[];
@@ -100,6 +101,7 @@ export default function VariantSection({ variants, product }: Props) {
             Купити зараз
           </button>
         )}
+        {inStock && <QuickOrder productId={String(product._id)} title={product.title} price={product.price} variant={selected} />}
       </div>
 
       {/* Липка панель покупки (мобільний) */}
