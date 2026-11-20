@@ -15,7 +15,7 @@ import FilterSheet from '@/components/FilterSheet';
 import type { Metadata } from 'next';
 import { absoluteUrl } from '@/lib/site';
 import Link from 'next/link';
-import { LayoutGrid, Square } from 'lucide-react';
+import { ChevronDown, LayoutGrid, Square } from 'lucide-react';
 import { plural, productForms } from '@/lib/format';
 // фетч
 import { fetchProducts, fetchProductFacets } from '@/lib/api';
@@ -170,12 +170,12 @@ export default async function SubcategoryPage({
           <aside className="hidden md:block">
             <div className="no-scrollbar sticky top-[88px] max-h-[calc(100vh-108px)] space-y-4 overflow-y-auto pb-4">
               <div className="panel p-5">{filterBar}</div>
-              <details className="panel group p-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] font-semibold">
+              <details className="panel group p-3" open>
+                <summary className="flex cursor-pointer list-none items-center justify-between px-2 py-1 text-[15px] font-semibold">
                   Усі категорії
-                  <span className="text-ink-3 transition-transform group-open:rotate-45">+</span>
+                  <ChevronDown className="h-4 w-4 text-ink-3 transition-transform group-open:rotate-180" />
                 </summary>
-                <div className="mt-4">
+                <div className="mt-2">
                   <CategoryList />
                 </div>
               </details>

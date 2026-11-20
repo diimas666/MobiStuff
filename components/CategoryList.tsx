@@ -1,126 +1,103 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { catalogCategory } from '@/data/catalogCategory';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
+import { catalogCategory } from '@/data/catalogCategory';
+import type { MenuCategory } from '@/lib/getMenuData';
 
-interface Props {
-  onClose?: () => void;
-  variant?: 'light' | 'dark';
+/* Поки дані меню (фото, кількість) не завантажились */
+const STATIC_MENU: MenuCategory[] = catalogCategory.map((c) => ({
+  title: c.title,
+  slug: c.slug,
+  image: null,
+  count: 0,
+  subs: c.subcategories.map((s) => ({ title: s.title, slug: s.slug, href: `/category/${c.slug}/${s.slug}`, image: null, count: 0 })),
+}));
+
+let menuCache: MenuCategory[] | null = null;
+
+function Thumb({ src, title }: { src: string | null; title: string }) {
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-canvas">
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-contain p-1 mix-blend-multiply" />
+      ) : (
+        <span className="text-[15px] font-semibold text-ink-3">{title.charAt(0)}</span>
+      )}
+    </span>
+  );
 }
 
-export default function CategoryList({ onClose, variant = 'light' }: Props) {
-  const isDark = variant === 'dark';
-  const [active, setActive] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+/**
+ * Усі категорії: розділ розкривається на місці (працює і у вузькій бічній
+ * колонці), підкатегорії — посилання з кількістю товарів, поточна підсвічена.
+ */
+export default function CategoryList({ onClose }: { onClose?: () => void; variant?: 'light' | 'dark' }) {
+  const pathname = usePathname();
+  const [menu, setMenu] = useState<MenuCategory[]>(menuCache ?? STATIC_MENU);
+  const currentSlug = pathname?.startsWith('/category/') ? pathname.split('/')[2] : null;
+  const [open, setOpen] = useState<string | null>(currentSlug);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    if (menuCache) return;
+    fetch('/api/menu')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.categories?.length) {
+          menuCache = d.categories;
+          setMenu(d.categories);
+        }
+      })
+      .catch(() => {});
   }, []);
 
-  const handleEnter = (title: string) => {
-    if (!isMobile) {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      setActive(title);
-    }
-  };
-
-  const handleLeave = () => {
-    if (!isMobile) {
-      timeoutRef.current = setTimeout(() => setActive(null), 200);
-    }
-  };
-
-  const handleClick = (title: string) => {
-    if (isMobile) {
-      setActive((prev) => (prev === title ? null : title));
-    }
-  };
-
-  const rowClass = isDark
-    ? 'flex items-center justify-between py-2.5 px-3 rounded-xl cursor-pointer transition hover:bg-white/10'
-    : 'flex items-center justify-between py-2 px-2 rounded cursor-pointer group-hover:bg-gray-300';
-
-  const iconClass = isDark ? 'w-5 h-5 text-green-400 shrink-0' : 'w-5 h-5 text-gray-900';
-  const titleClass = isDark
-    ? 'font-semibold text-sm text-white flex items-center gap-2'
-    : 'font-semibold text-sm text-gray-800 flex items-center gap-2';
-  const chevronClass = isDark
-    ? 'w-4 h-4 text-gray-400 transition-transform'
-    : 'w-5 h-5 text-gray-900 transition-transform';
-  const subListClass = isMobile
-    ? isDark
-      ? 'ml-3 pl-3 py-1 space-y-0.5 border-l border-white/10'
-      : 'px-4 py-2 space-y-1'
-    : 'absolute top-0 left-full ml-2 bg-white shadow-md rounded p-3 space-y-1 w-56 z-20';
-  const subLinkClass = isDark
-    ? 'text-sm text-gray-300 block py-2 px-2 rounded-lg hover:text-green-400 hover:bg-white/5 transition'
-    : 'text-md text-gray-700 block py-1 hover:underline';
-
   return (
-    <div className="relative w-full">
-      <ul className={`relative z-10 ${isDark ? 'space-y-0.5' : 'space-y-1'}`}>
-        {catalogCategory.map((category) => (
-          <li
-            key={category.title}
-            className="relative group"
-            onMouseEnter={() => handleEnter(category.title)}
-            onMouseLeave={handleLeave}
-          >
-            <div
-              className={`${rowClass} ${
-                isDark && active === category.title ? 'bg-white/10' : ''
-              }`}
-              onClick={() => handleClick(category.title)}
+    <ul className="space-y-1">
+      {menu.map((category) => {
+        const isOpen = open === category.slug;
+        const subs = category.subs.filter((s) => s.count > 0 || !menuCache);
+        return (
+          <li key={category.slug}>
+            <button
+              type="button"
+              aria-expanded={isOpen}
+              onClick={() => setOpen(isOpen ? null : category.slug)}
+              className={`flex w-full items-center gap-3 rounded-2xl p-1.5 pr-2 text-left transition ${isOpen ? 'bg-canvas' : 'hover:bg-canvas'}`}
             >
-              <div className="flex gap-3 items-center min-w-0">
-                <category.icon className={iconClass} strokeWidth={2} aria-hidden />
-                <h4 className={titleClass}>{category.title}</h4>
-              </div>
-              {isMobile ? (
-                <ChevronDown
-                  className={`${chevronClass} ${
-                    active === category.title ? 'rotate-180 text-green-400' : ''
-                  }`}
-                />
-              ) : (
-                <ChevronRight className={chevronClass.replace('w-4 h-4', 'w-5 h-5')} />
-              )}
-            </div>
+              <Thumb src={category.image} title={category.title} />
+              <span className="min-w-0 flex-1">
+                <span className="block text-[14px] leading-tight font-medium text-ink">{category.title}</span>
+                {category.count > 0 && <span className="block text-[12px] text-ink-3">{category.count} товарів</span>}
+              </span>
+              <ChevronDown className={`h-4 w-4 shrink-0 text-ink-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
 
-            {active === category.title && (
-              <ul className={subListClass}>
-                {category.subcategories.map((subcategory) => (
-                  <li key={subcategory.slug}>
-                    <Link
-                      href={`/category/${category.slug}/${subcategory.slug}`}
-                      className={subLinkClass}
-                      onClick={() => {
-                        if (onClose) onClose();
-                      }}
-                    >
-                      <h4
-                        className={
-                          isDark
-                            ? 'font-medium text-sm'
-                            : 'font-semibold text-sm text-gray-800 flex items-center gap-2'
-                        }
+            <div className={`grid transition-[grid-template-rows] duration-200 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+              <ul className="overflow-hidden">
+                {subs.map((sub) => {
+                  const active = pathname === sub.href;
+                  return (
+                    <li key={sub.slug}>
+                      <Link
+                        href={sub.href}
+                        onClick={onClose}
+                        aria-current={active ? 'page' : undefined}
+                        className={`ml-[52px] flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-[14px] transition ${active ? 'bg-ink font-medium text-white' : 'text-ink-2 hover:bg-canvas hover:text-ink'}`}
                       >
-                        {subcategory.title}
-                      </h4>
-                    </Link>
-                  </li>
-                ))}
+                        <span className="min-w-0 leading-snug">{sub.title}</span>
+                        {sub.count > 0 && <span className={`shrink-0 text-[12px] ${active ? 'text-white/70' : 'text-ink-3'}`}>{sub.count}</span>}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
-            )}
+            </div>
           </li>
-        ))}
-      </ul>
-    </div>
+        );
+      })}
+    </ul>
   );
 }
