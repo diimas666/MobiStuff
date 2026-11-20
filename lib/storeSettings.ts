@@ -22,6 +22,10 @@ export type StoreSettingsData = {
   remindersEnabled: boolean;
   /** Дата завершення акції (YYYY-MM-DD) — таймер на сайті */
   saleEndsAt: string;
+  /** Кешбек балами, % від виконаного замовлення (0 — вимкнено) */
+  cashbackPercent: number;
+  /** Скільки % суми можна оплатити балами */
+  maxPointsPercent: number;
 };
 
 export const DEFAULT_SETTINGS: StoreSettingsData = {
@@ -39,6 +43,8 @@ export const DEFAULT_SETTINGS: StoreSettingsData = {
   reminderPromoPercent: 5,
   remindersEnabled: true,
   saleEndsAt: '',
+  cashbackPercent: 3,
+  maxPointsPercent: 30,
 };
 
 const str = (v: unknown, max = 300) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -75,6 +81,8 @@ export function parseSettings(body: Record<string, any>, base: StoreSettingsData
     },
     reminderPromoPercent: Math.min(30, money(body.reminderPromoPercent, base.reminderPromoPercent)),
     remindersEnabled: body.remindersEnabled !== false,
+    cashbackPercent: Math.min(20, money(body.cashbackPercent, base.cashbackPercent ?? 3)),
+    maxPointsPercent: Math.min(100, money(body.maxPointsPercent, base.maxPointsPercent ?? 30)),
     saleEndsAt: /^\d{4}-\d{2}-\d{2}$/.test(str(body.saleEndsAt, 10)) ? str(body.saleEndsAt, 10) : '',
   };
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Search, Heart, ShoppingBag } from 'lucide-react';
+import { Heart, Search, ShoppingBag, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import SearchBar from './SearchBar';
@@ -97,6 +97,9 @@ export default function Header() {
               >
                 <Search className="h-[19px] w-[19px]" strokeWidth={1.9} />
               </button>
+              <Link href="/account" className="hdr-icon hidden sm:flex" aria-label="Мій кабінет">
+                <UserRound className="h-[19px] w-[19px]" strokeWidth={1.8} />
+              </Link>
               <Link href="/favorites" className="hdr-icon relative" aria-label="Обране">
                 <Heart className="h-[19px] w-[19px]" strokeWidth={1.9} />
                 <FavoritesCountBadge />

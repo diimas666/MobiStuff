@@ -4,6 +4,7 @@ import { DEFAULT_ORDER_STATUS, generateOrderId } from '@/lib/orderStatus';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 import { getStoreSettings } from '@/lib/storeSettings';
 import { checkPromo, PromoError } from '@/lib/promo';
+import { maxRedeemable } from '@/lib/loyalty';
 
 const str = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
@@ -15,7 +16,8 @@ type RawItem = Record<string, unknown>;
  * Будує замовлення з даних клієнта, НЕ довіряючи цінам і сумі з браузера:
  * ціни беруться з бази, сума рахується на сервері, статус завжди початковий.
  */
-export async function buildOrderFromPayload(data: Record<string, unknown>) {
+/** verifiedPhone — номер, підтверджений кодом з SMS (сесія кабінету / ключ застосунку): лише він може списати бали */
+export async function buildOrderFromPayload(data: Record<string, unknown>, verifiedPhone?: string | null) {
   const name = str(data.name, 80);
   const lastName = str(data.lastName, 80);
   const phone = normalizeUkrainianPhone(str(data.phone, 30));
@@ -78,7 +80,13 @@ export async function buildOrderFromPayload(data: Record<string, unknown>) {
       throw e;
     }
   }
-  const total = subtotal - (promo?.discount ?? 0);
+  // Оплата балами кешбеку — лише власник номера, у межах ліміту з налаштувань
+  let pointsUsed = 0;
+  const wantPoints = Math.max(0, Math.floor(Number(data.usePoints) || 0));
+  if (wantPoints > 0 && verifiedPhone && verifiedPhone === phone) {
+    pointsUsed = Math.min(wantPoints, await maxRedeemable(phone, subtotal - (promo?.discount ?? 0)));
+  }
+  const total = subtotal - (promo?.discount ?? 0) - pointsUsed;
   // Застосунок раніше надсилав card_online / card_transfer — це теж оплата карткою
   let paymentMethod = ['card', 'card_online', 'card_transfer'].includes(str(data.paymentMethod)) ? 'card' : 'cod';
   const { cardOnlyFrom } = await getStoreSettings();
@@ -109,7 +117,9 @@ export async function buildOrderFromPayload(data: Record<string, unknown>) {
     warehouse,
     paymentMethod,
     total,
-    ...(promo ? { subtotal, promo } : {}),
+    ...(promo || pointsUsed ? { subtotal } : {}),
+    ...(promo ? { promo } : {}),
+    ...(pointsUsed ? { pointsUsed } : {}),
     items,
     createdAt: new Date().toISOString(),
     ...(utm && Object.keys(utm).length ? { utm } : {}),
@@ -136,6 +146,7 @@ export async function notifyTelegram(order: BuiltOrder) {
     `📍 ${order.city}`,
     `🏤 ${order.warehouse}`,
     `💳 Оплата: ${order.paymentMethod === 'card' ? 'Карткою' : 'Післяплата'}`,
+    order.pointsUsed ? `⭐ Оплачено балами: −${order.pointsUsed} ₴` : '',
     order.promo ? `🏷 Промокод ${order.promo.code}: −${order.promo.discount} ₴` : '',
     `💰 Всього: ${order.total} ₴`,
     order.utm ? `📣 Джерело: ${[order.utm.utm_source, order.utm.utm_campaign, order.utm.utm_content].filter(Boolean).join(' / ') || (order.utm.fbclid ? 'Facebook/Instagram' : order.utm.gclid ? 'Google Ads' : order.utm.ttclid ? 'TikTok' : '—')}` : '',

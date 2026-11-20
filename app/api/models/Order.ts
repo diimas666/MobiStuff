@@ -25,6 +25,10 @@ const OrderSchema = new mongoose.Schema(
     // «Купити в 1 клік» — без адреси, менеджер передзвонює
     quick: Boolean,
     promo: { code: String, discount: Number, label: String },
+    // Кешбек: списано балами / нараховано / повернуто
+    pointsUsed: Number,
+    cashbackAwarded: Boolean,
+    pointsRefunded: Boolean,
     // Номер експрес-накладної Нової Пошти
     ttn: String,
     // Внутрішня примітка менеджера (клієнт не бачить)

@@ -31,6 +31,8 @@ const STATIC_MENU: MenuCategory[] = catalogCategory.map((c) => ({
 let menuCache: MenuCategory[] | null = null;
 
 const INFO_LINKS = [
+  { href: '/account', label: 'Мій кабінет і бали' },
+  { href: '/tracking', label: 'Відстежити посилку' },
   { href: '/delivery', label: 'Доставка і оплата' },
   { href: '/returns', label: 'Обмін і повернення' },
   { href: '/contacts', label: 'Контакти' },

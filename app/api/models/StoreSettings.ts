@@ -25,6 +25,8 @@ const StoreSettingsSchema = new mongoose.Schema(
     reminderPromoPercent: Number,
     remindersEnabled: Boolean,
     saleEndsAt: String,
+    cashbackPercent: Number,
+    maxPointsPercent: Number,
   },
   { timestamps: true }
 );

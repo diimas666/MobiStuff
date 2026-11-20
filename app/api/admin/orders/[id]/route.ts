@@ -6,6 +6,7 @@ import { checkAdminAuth, unauthorizedResponse } from '@/lib/adminAuth';
 import { isOrderStatus, ORDER_STATUS_LABELS } from '@/lib/orderStatus';
 import { notifyOrderShipped } from '@/lib/customerNotify';
 import { pushForOrder } from '@/lib/apns';
+import { awardCashback, refundPoints } from '@/lib/loyalty';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -76,6 +77,16 @@ export async function PATCH(req: Request, { params }: Ctx) {
       const sent = await pushForOrder(String(order.orderId), String(order.phone), { title: `Замовлення ${order.orderId}`, body: text, url: 'mobistuff://orders' }).catch(() => 0);
       if (sent) history.push(`Push у застосунок: ${text}`);
     }
+  }
+
+  // Кешбек: «Виконано» — нараховуємо, «Скасовано» — повертаємо списані бали
+  if ($set.status === 'completed') {
+    const pts = await awardCashback(String(order.orderId)).catch(() => 0);
+    if (pts) history.push(`Кешбек: +${pts} балів`);
+  }
+  if ($set.status === 'cancelled') {
+    const back = await refundPoints(String(order.orderId)).catch(() => 0);
+    if (back) history.push(`Повернуто ${back} балів`);
   }
 
   const update: Record<string, unknown> = {};

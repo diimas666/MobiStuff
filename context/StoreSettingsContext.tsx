@@ -14,6 +14,8 @@ export type PublicStoreSettings = {
   cardOnlyFrom: number;
   announcement: { enabled: boolean; text: string; link: string };
   saleEndsAt?: string;
+  cashbackPercent?: number;
+  maxPointsPercent?: number;
 };
 
 const FALLBACK: PublicStoreSettings = {

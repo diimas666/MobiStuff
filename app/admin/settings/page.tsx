@@ -19,6 +19,8 @@ type Settings = {
   reminderPromoPercent: number;
   remindersEnabled: boolean;
   saleEndsAt?: string;
+  cashbackPercent?: number;
+  maxPointsPercent?: number;
 };
 type Channels = { sms: boolean; email: boolean; telegram: boolean };
 
@@ -133,6 +135,19 @@ export default function AdminSettingsPage() {
           <Field id="st-req" label="Реквізити для оплати карткою" hint="Клієнт отримає їх у листі/SMS одразу після замовлення з оплатою карткою">
             <textarea id="st-req" rows={3} className="field py-3" value={s.cardPaymentDetails} onChange={(e) => set('cardPaymentDetails', e.target.value)} placeholder={'Картка ПриватБанку: 5168 0000 0000 0000\nОтримувач: ФОП Шевченко О.'} />
           </Field>
+        </section>
+
+        <section className="panel space-y-4 p-5">
+          <h3 className="text-[17px] font-semibold">Кешбек балами</h3>
+          <p className="-mt-2 text-[13px] text-ink-3">Нараховуємо, коли ставите замовленню статус «Виконано». 1 бал = 1 грн. Покупець бачить баланс у кабінеті (вхід кодом з SMS).</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field id="st-cb" label="Кешбек, % від замовлення" hint="0 — вимкнено">
+              <input id="st-cb" className="field" inputMode="numeric" value={s.cashbackPercent ?? 3} onChange={(e) => set('cashbackPercent', Math.min(20, Number(e.target.value.replace(/\D/g, '')) || 0))} />
+            </Field>
+            <Field id="st-mp" label="Можна оплатити балами до, % суми">
+              <input id="st-mp" className="field" inputMode="numeric" value={s.maxPointsPercent ?? 30} onChange={(e) => set('maxPointsPercent', Math.min(100, Number(e.target.value.replace(/\D/g, '')) || 0))} />
+            </Field>
+          </div>
         </section>
 
         <section className="panel space-y-3 p-5">

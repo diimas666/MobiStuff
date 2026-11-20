@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
 import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/lib/orders';
-import { createOrderToken } from '@/lib/orderAccess';
+import { createOrderToken, verifyOrderAccessToken } from '@/lib/orderAccess';
+import { currentCustomerPhone } from '@/lib/customerSession';
+import { spendPoints } from '@/lib/loyalty';
+import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 import { notifyOrderCreated } from '@/lib/customerNotify';
 import { consumePromo } from '@/lib/promo';
 import CartDraft from '../models/CartDraft';
@@ -24,11 +27,18 @@ export async function POST(req: NextRequest) {
     }
 
     await dbConnect();
-    const order = await buildOrderFromPayload(raw as Record<string, unknown>);
+    // Хто підтвердив номер: сесія кабінету (сайт) або ключ з коду SMS (застосунок)
+    const sessionPhone = await currentCustomerPhone();
+    const rawPhone = normalizeUkrainianPhone(String((raw as Record<string, unknown>).phone ?? ''));
+    const appVerified = rawPhone && verifyOrderAccessToken(rawPhone, (raw as Record<string, unknown>).pointsToken) ? rawPhone : null;
+    const order = await buildOrderFromPayload(raw as Record<string, unknown>, sessionPhone ?? appVerified);
 
     // Захист від подвійного натискання: те саме замовлення не створюємо двічі
     const existing = await Order.findOne({ orderId: order.orderId, phone: order.phone }).select('_id').lean();
     if (!existing) {
+      if (order.pointsUsed && !(await spendPoints(order.phone, order.pointsUsed, order.orderId))) {
+        return NextResponse.json({ message: 'Баланс балів змінився — оновіть сторінку' }, { status: 400 });
+      }
       const created = await Order.create({ ...order, history: [{ text: 'Замовлення створено' }] });
       if (order.promo) await consumePromo(order.promo.code).catch(() => {});
       // Покупець оформив — нагадування про кошик більше не потрібне
@@ -47,6 +57,7 @@ export async function POST(req: NextRequest) {
       total: order.total,
       paymentMethod: order.paymentMethod,
       promo: order.promo,
+      pointsUsed: order.pointsUsed,
       // Ключ для перегляду історії замовлень цього номера (мобільний застосунок)
       // Ключ лише до цього замовлення (історія номера — тільки після коду з SMS)
       orderToken: createOrderToken(order.orderId, order.phone),

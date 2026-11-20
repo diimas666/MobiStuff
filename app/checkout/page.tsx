@@ -57,7 +57,19 @@ export default function CheckoutPage() {
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const total = subtotal - (promo?.discount ?? 0);
+  // Бали кешбеку (лише для тих, хто увійшов у кабінет кодом з SMS)
+  const [points, setPoints] = useState<{ balance: number; phone: string } | null>(null);
+  const [usePoints, setUsePoints] = useState(false);
+  const { maxPointsPercent = 30 } = useStoreSettings();
+  useEffect(() => {
+    fetch('/api/account/me', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((d) => d?.loggedIn && d.balance > 0 && setPoints({ balance: d.balance, phone: d.phone }))
+      .catch(() => {});
+  }, []);
+  const afterPromo = subtotal - (promo?.discount ?? 0);
+  const pointsAmount = usePoints && points ? Math.min(points.balance, Math.floor((afterPromo * maxPointsPercent) / 100)) : 0;
+  const total = afterPromo - pointsAmount;
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isLoading, setIsLoading] = useState(false);
   const orderCompletedRef = useRef(false);
@@ -166,6 +178,7 @@ export default function CheckoutPage() {
       warehouse: delivery.warehouse,
       total,
       promoCode: promo?.code,
+      usePoints: pointsAmount || undefined,
       items: cart,
       createdAt: new Date().toISOString(),
       utm: (() => {
@@ -334,6 +347,16 @@ export default function CheckoutPage() {
             <div className="mt-5 border-t border-line-soft pt-4">
               <PromoCodeField total={subtotal} value={promo} onChange={setPromo} />
             </div>
+
+            {points && (
+              <label className="mt-3 flex cursor-pointer items-center justify-between gap-3 rounded-2xl bg-canvas px-4 py-3 text-[14px]">
+                <span>
+                  Списати бали <span className="text-ink-3">(є {points.balance})</span>
+                  {usePoints && pointsAmount > 0 && <b className="ml-1 text-accent">−{formatPrice(pointsAmount)}</b>}
+                </span>
+                <input type="checkbox" checked={usePoints} onChange={(e) => setUsePoints(e.target.checked)} className="h-5 w-5 accent-[#138a47]" />
+              </label>
+            )}
 
             <div className="mt-4 flex items-baseline justify-between">
               <span className="text-[17px] font-semibold">До сплати</span>
