@@ -24,6 +24,7 @@ const StoreSettingsSchema = new mongoose.Schema(
     },
     reminderPromoPercent: Number,
     remindersEnabled: Boolean,
+    saleEndsAt: String,
   },
   { timestamps: true }
 );

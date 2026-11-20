@@ -20,6 +20,8 @@ export type StoreSettingsData = {
   /** Нагадування про кошик: знижка в персональному промокоді, % (0 — без промокоду) */
   reminderPromoPercent: number;
   remindersEnabled: boolean;
+  /** Дата завершення акції (YYYY-MM-DD) — таймер на сайті */
+  saleEndsAt: string;
 };
 
 export const DEFAULT_SETTINGS: StoreSettingsData = {
@@ -36,6 +38,7 @@ export const DEFAULT_SETTINGS: StoreSettingsData = {
   notifyCustomers: { email: true, sms: true },
   reminderPromoPercent: 5,
   remindersEnabled: true,
+  saleEndsAt: '',
 };
 
 const str = (v: unknown, max = 300) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -72,6 +75,7 @@ export function parseSettings(body: Record<string, any>, base: StoreSettingsData
     },
     reminderPromoPercent: Math.min(30, money(body.reminderPromoPercent, base.reminderPromoPercent)),
     remindersEnabled: body.remindersEnabled !== false,
+    saleEndsAt: /^\d{4}-\d{2}-\d{2}$/.test(str(body.saleEndsAt, 10)) ? str(body.saleEndsAt, 10) : '',
   };
 }
 

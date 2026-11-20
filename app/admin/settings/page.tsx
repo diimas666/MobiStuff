@@ -18,6 +18,7 @@ type Settings = {
   notifyCustomers: { email: boolean; sms: boolean };
   reminderPromoPercent: number;
   remindersEnabled: boolean;
+  saleEndsAt?: string;
 };
 type Channels = { sms: boolean; email: boolean; telegram: boolean };
 
@@ -131,6 +132,13 @@ export default function AdminSettingsPage() {
           </div>
           <Field id="st-req" label="Реквізити для оплати карткою" hint="Клієнт отримає їх у листі/SMS одразу після замовлення з оплатою карткою">
             <textarea id="st-req" rows={3} className="field py-3" value={s.cardPaymentDetails} onChange={(e) => set('cardPaymentDetails', e.target.value)} placeholder={'Картка ПриватБанку: 5168 0000 0000 0000\nОтримувач: ФОП Шевченко О.'} />
+          </Field>
+        </section>
+
+        <section className="panel space-y-3 p-5">
+          <h3 className="text-[17px] font-semibold">Таймер акції</h3>
+          <Field id="st-sale" label="Акція діє до" hint="Показуємо відлік на сторінці «Акції» і в товарів зі знижкою. Порожньо — без таймера">
+            <input id="st-sale" type="date" className="field" value={s.saleEndsAt ?? ''} onChange={(e) => set('saleEndsAt', e.target.value)} />
           </Field>
         </section>
 

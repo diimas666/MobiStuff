@@ -13,6 +13,7 @@ export type PublicStoreSettings = {
   freeDeliveryFrom: number;
   cardOnlyFrom: number;
   announcement: { enabled: boolean; text: string; link: string };
+  saleEndsAt?: string;
 };
 
 const FALLBACK: PublicStoreSettings = {

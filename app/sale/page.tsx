@@ -6,6 +6,7 @@ import ProductList from '@/components/ProductList';
 import ProductShelf from '@/components/ProductShelf';
 import HomeSectionTitle from '@/components/HomeSectionTitle';
 import PromoCards from '@/components/PromoCards';
+import SaleCountdown from '@/components/SaleCountdown';
 import { getHits, getPromotions, getSaleProducts } from '@/lib/storefront';
 import { plural, productForms } from '@/lib/format';
 
@@ -42,6 +43,7 @@ export default async function SalePage({ searchParams }: { searchParams: Promise
               ? `${all.length} ${plural(all.length, productForms)} зі знижкою. Ціни діють, поки товар є в наявності.`
               : 'Зараз знижок немає — загляньте пізніше або подивіться хіти продажу.'}
           </p>
+          {all.length > 0 && <SaleCountdown className="mt-5" />}
         </header>
       </div>
 

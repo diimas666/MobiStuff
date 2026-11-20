@@ -12,6 +12,8 @@ import ProductDescription from '@/components/ProductDescription';
 import { stripHtml } from '@/lib/htmlUtils';
 import { getRelatedProducts } from '@/lib/getRelatedProducts';
 import { getCrossSell } from '@/lib/crossSell';
+import { getWeeklySales } from '@/lib/weeklySales';
+import SaleCountdown from '@/components/SaleCountdown';
 import { safe } from '@/lib/safeData';
 import { getStoreSettings } from '@/lib/storeSettings';
 import { CreditCard, PackageCheck, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
@@ -84,6 +86,7 @@ export default async function ProductPage({ params }: Params) {
   ]);
 
   const hasDiscount = product.oldPrice && product.oldPrice > product.price;
+  const soldThisWeek = (await safe(getWeeklySales(), {} as Record<string, number>, 'weekly-sales'))[product.handle] ?? 0;
   const inStock = product.inStock !== false;
   const brand = product.brand
     ? brands.find((b) => b.title.toLowerCase() === String(product.brand).toLowerCase())
@@ -204,6 +207,10 @@ export default async function ProductPage({ params }: Params) {
               />
               {!inStock ? 'Немає в наявності' : product.lowStock ? 'Закінчується — встигніть замовити' : 'В наявності, відправимо сьогодні або завтра'}
             </p>
+            {inStock && soldThisWeek >= 3 && (
+              <p className="mt-2 text-[14px] font-medium text-ink">🔥 Купили {soldThisWeek} разів за тиждень</p>
+            )}
+            {hasDiscount && inStock ? <SaleCountdown className="mt-3" /> : null}
           </header>
 
           <PhoneCompatBadge title={product.title} />
