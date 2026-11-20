@@ -14,6 +14,8 @@ interface CartContextProps {
   increment: (id: string) => void;
   decrement: (id: string) => void;
   clearCart: () => void;
+  /** Відновити кошик (з посилання в нагадуванні) */
+  restoreCart: (items: CartItem[]) => void;
   /** true, коли кошик уже прочитано з localStorage */
   isReady: boolean;
 }
@@ -106,6 +108,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
   const clearCart = () => setCart([]);
+  const restoreCart = (items: CartItem[]) =>
+    setCart((prev) => {
+      const map = new Map(prev.map((i) => [i._id, i]));
+      for (const i of items) if (i?._id && !map.has(i._id)) map.set(i._id, i);
+      return [...map.values()];
+    });
 
   return (
     <CartContext.Provider
@@ -116,6 +124,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         decrement,
         increment,
         clearCart,
+        restoreCart,
         isReady,
       }}
     >

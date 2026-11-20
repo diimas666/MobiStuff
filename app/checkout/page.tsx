@@ -41,6 +41,22 @@ export default function CheckoutPage() {
   const router = useRouter();
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
+
+  // Промокод з нагадування про кошик — застосовуємо автоматично
+  useEffect(() => {
+    let code: string | null = null;
+    try {
+      code = sessionStorage.getItem('ms_promo');
+    } catch {
+      code = null;
+    }
+    if (!code || !subtotal) return;
+    fetch('/api/promo/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code, total: subtotal }) })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setPromo(d))
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const total = subtotal - (promo?.discount ?? 0);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +68,22 @@ export default function CheckoutPage() {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+
+  // Зберігаємо кошик, щойно покупець вказав контакт, — щоб нагадати, якщо щось завадить
+  useEffect(() => {
+    const digits = phone.replace(/\D/g, '');
+    const okPhone = digits.length >= 10;
+    const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if ((!okPhone && !okEmail) || cart.length === 0) return;
+    const t = window.setTimeout(() => {
+      fetch('/api/cart/draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, email, name, items: cart.map((i) => ({ _id: i._id, quantity: i.quantity })) }),
+      }).catch(() => {});
+    }, 1500);
+    return () => window.clearTimeout(t);
+  }, [phone, email, name, cart]);
   const [comment, setComment] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [personalDataConsent, setPersonalDataConsent] = useState(false);
@@ -221,6 +253,7 @@ export default function CheckoutPage() {
                   placeholder="099 123 45 67"
                   className={inputClass}
                 />
+                <p className="mt-1.5 text-[12px] text-ink-3">Якщо оформлення перерветься — нагадаємо про кошик.</p>
               </div>
               <div>
                 <label htmlFor="co-email" className="field-label">Email <span className="text-ink-3">(необов’язково)</span></label>

@@ -61,7 +61,7 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
   }
 }
 
-function emailLayout(title: string, body: string) {
+export function emailLayout(title: string, body: string) {
   return `<div style="background:#f5f5f7;padding:28px 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#1d1d1f">
   <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:20px;padding:28px">
     <p style="margin:0 0 18px;font-size:20px;font-weight:600">${esc(SITE_NAME)}</p>

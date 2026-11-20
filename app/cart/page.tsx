@@ -5,6 +5,8 @@ import { useCart } from '@/context/CartContext';
 import ProductImage from '@/components/ProductImage';
 import PaymentRulesNote from '@/components/PaymentRulesNote';
 import CartUpsell from '@/components/CartUpsell';
+import CartRestore from '@/components/CartRestore';
+import { Suspense } from 'react';
 import { ChevronRight, Minus, Plus, ShoppingBag, Truck } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useStoreSettings } from '@/context/StoreSettingsContext';
@@ -36,6 +38,9 @@ export default function CartPage() {
   if (cart.length === 0) {
     return (
       <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-16 text-center sm:py-24">
+        <Suspense fallback={null}>
+          <CartRestore />
+        </Suspense>
         <ShoppingBag className="mb-6 h-14 w-14 text-ink-3" strokeWidth={1.25} />
         <h1 className="display-lg">Кошик порожній.</h1>
         <p className="lead mt-4">Додайте товари з каталогу — і вони з’являться тут.</p>
@@ -55,6 +60,9 @@ export default function CartPage() {
 
   return (
     <div className="pb-28 lg:pb-0">
+      <Suspense fallback={null}>
+        <CartRestore />
+      </Suspense>
       <header className="mb-8 flex flex-col gap-4 border-b border-line-soft pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="display-lg">Ваш кошик — {formatPrice(total)}.</h1>

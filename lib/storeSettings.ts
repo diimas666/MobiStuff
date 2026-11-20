@@ -17,6 +17,9 @@ export type StoreSettingsData = {
   cardPaymentDetails: string;
   announcement: { enabled: boolean; text: string; link: string };
   notifyCustomers: { email: boolean; sms: boolean };
+  /** Нагадування про кошик: знижка в персональному промокоді, % (0 — без промокоду) */
+  reminderPromoPercent: number;
+  remindersEnabled: boolean;
 };
 
 export const DEFAULT_SETTINGS: StoreSettingsData = {
@@ -31,6 +34,8 @@ export const DEFAULT_SETTINGS: StoreSettingsData = {
   cardPaymentDetails: '',
   announcement: { enabled: false, text: '', link: '' },
   notifyCustomers: { email: true, sms: true },
+  reminderPromoPercent: 5,
+  remindersEnabled: true,
 };
 
 const str = (v: unknown, max = 300) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -65,6 +70,8 @@ export function parseSettings(body: Record<string, any>, base: StoreSettingsData
       email: body.notifyCustomers?.email !== false,
       sms: body.notifyCustomers?.sms !== false,
     },
+    reminderPromoPercent: Math.min(30, money(body.reminderPromoPercent, base.reminderPromoPercent)),
+    remindersEnabled: body.remindersEnabled !== false,
   };
 }
 
@@ -84,11 +91,13 @@ async function load(): Promise<StoreSettingsData> {
   }
 }
 
-export const getStoreSettings = unstable_cache(load, ['store-settings-v1'], { revalidate: 3600, tags: ['settings'] });
+export const getStoreSettings = unstable_cache(load, ['store-settings-v2'], { revalidate: 3600, tags: ['settings'] });
 
 /** Публічна частина (для сторінок і застосунку). Реквізити картки — публічні: їх бачить кожен покупець */
 export function publicSettings(s: StoreSettingsData) {
-  const { notifyCustomers: _n, ...rest } = s;
+  const { notifyCustomers: _n, reminderPromoPercent: _r, remindersEnabled: _e, ...rest } = s;
   void _n;
+  void _r;
+  void _e;
   return rest;
 }

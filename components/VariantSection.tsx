@@ -11,6 +11,7 @@ import { trackAddToWishlist } from '@/lib/analytics';
 import { formatPrice } from '@/lib/format';
 import ProductImage from './ProductImage';
 import QuickOrder from './QuickOrder';
+import StockAlertForm from './StockAlertForm';
 
 interface Props {
   variants: string[];
@@ -102,6 +103,7 @@ export default function VariantSection({ variants, product }: Props) {
           </button>
         )}
         {inStock && <QuickOrder productId={String(product._id)} title={product.title} price={product.price} variant={selected} />}
+        {!inStock && <StockAlertForm productId={String(product._id)} />}
       </div>
 
       {/* Липка панель покупки (мобільний) */}

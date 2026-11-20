@@ -5,6 +5,7 @@ import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/l
 import { createOrderAccessToken } from '@/lib/orderAccess';
 import { notifyOrderCreated } from '@/lib/customerNotify';
 import { consumePromo } from '@/lib/promo';
+import CartDraft from '../models/CartDraft';
 import { rateLimited } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
@@ -30,6 +31,8 @@ export async function POST(req: NextRequest) {
     if (!existing) {
       const created = await Order.create({ ...order, history: [{ text: 'Замовлення створено' }] });
       if (order.promo) await consumePromo(order.promo.code).catch(() => {});
+      // Покупець оформив — нагадування про кошик більше не потрібне
+      await CartDraft.updateMany({ phone: order.phone, convertedAt: { $exists: false } }, { $set: { convertedAt: new Date() } }).catch(() => {});
       await notifyTelegram(order);
       // Підтвердження клієнту (email/SMS) — не блокує відповідь при збої
       const sent = await notifyOrderCreated(order).catch(() => []);

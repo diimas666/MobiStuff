@@ -16,6 +16,8 @@ type Settings = {
   cardPaymentDetails: string;
   announcement: { enabled: boolean; text: string; link: string };
   notifyCustomers: { email: boolean; sms: boolean };
+  reminderPromoPercent: number;
+  remindersEnabled: boolean;
 };
 type Channels = { sms: boolean; email: boolean; telegram: boolean };
 
@@ -165,6 +167,29 @@ export default function AdminSettingsPage() {
           <p className="mt-3 text-[13px] text-ink-3">
             Нові замовлення вам у Telegram: {channels?.telegram ? 'підключено' : 'не підключено (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)'}.
           </p>
+        </section>
+
+        <section className="panel space-y-3 p-5">
+          <h3 className="text-[17px] font-semibold">Нагадування</h3>
+          <p className="-mt-1 text-[13px] text-ink-3">
+            «Ваш кошик чекає» — тим, хто вказав телефон чи email, але не оформив замовлення (через 1 год). І «Товар знову в наявності» — підписникам. Автоматично щодня о 9:00.
+          </p>
+          <Switch label="Надсилати нагадування" checked={s.remindersEnabled} onChange={(v) => set('remindersEnabled', v)} />
+          <Field id="st-rem" label="Знижка в нагадуванні про кошик, %" hint="Персональний одноразовий промокод на 3 дні. 0 — без знижки">
+            <input id="st-rem" className="field" inputMode="numeric" value={s.reminderPromoPercent} onChange={(e) => set('reminderPromoPercent', Math.min(30, Number(e.target.value.replace(/\D/g, '')) || 0))} />
+          </Field>
+          <button
+            type="button"
+            className="btn-ghost"
+            onClick={async () => {
+              const r = await fetch('/api/cron/reminders');
+              const d = await r.json().catch(() => ({}));
+              if (!r.ok) return toast.error(d.error || 'Не вдалося');
+              toast.success(`Надіслано: кошиків ${d.carts ?? 0}, «в наявності» ${d.stock ?? 0}`);
+            }}
+          >
+            Надіслати зараз
+          </button>
         </section>
 
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line-soft bg-white/90 backdrop-blur-xl">

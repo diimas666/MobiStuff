@@ -22,6 +22,8 @@ const StoreSettingsSchema = new mongoose.Schema(
       email: Boolean,
       sms: Boolean,
     },
+    reminderPromoPercent: Number,
+    remindersEnabled: Boolean,
   },
   { timestamps: true }
 );
