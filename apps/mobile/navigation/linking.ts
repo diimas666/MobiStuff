@@ -30,6 +30,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
               Notifications: 'notifications',
               Settings: 'settings',
               Support: 'support',
+              Tracking: 'tracking/:ttn?',
             },
           },
         },

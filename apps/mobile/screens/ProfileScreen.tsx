@@ -11,6 +11,7 @@ import { useNotifications } from '../context/NotificationsContext';
 import { useOrders } from '../context/OrdersContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useStoreSettings } from '../hooks/useStoreSettings';
+import { useLoyalty } from '../hooks/useLoyalty';
 import { useMyPhone } from '../context/MyPhoneContext';
 import type { ProfileStackParamList, TabParamList } from '../navigation/types';
 import { loadCheckoutProfile } from '../services/checkoutProfileStorage';
@@ -40,6 +41,7 @@ export function ProfileScreen() {
   const { orders, refreshOrders } = useOrders();
   const { items: favorites } = useFavorites();
   const store = useStoreSettings();
+  const loyalty = useLoyalty();
   const { phone: myPhone, openPicker } = useMyPhone();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -49,6 +51,7 @@ export function ProfileScreen() {
       let alive = true;
       void refreshNotifications();
       void refreshOrders();
+      loyalty.reload();
       loadCheckoutProfile().then(profile => {
         if (!alive) return;
         setName(profile?.name?.trim() ?? '');
@@ -92,6 +95,22 @@ export function ProfileScreen() {
             onPress={() => navigation.navigate('Favorites', { returnTo: { tab: 'Profile', screen: 'ProfileMain' } })}
           />
           <ListRow icon="time" iconColor="#5856D6" label="Переглянуті товари" onPress={go('ViewedProducts')} />
+        </ListGroup>
+
+        <ListGroup
+          title="Кешбек"
+          footer={
+            loyalty.balance === null
+              ? 'Підтвердіть номер кодом з SMS у «Мої замовлення» — і бачитимете бали.'
+              : `1 бал = 1 ₴. Повертаємо ${loyalty.cashbackPercent}% з виконаних замовлень, оплатити можна до ${loyalty.maxPointsPercent}% суми.`
+          }>
+          <ListRow
+            icon="star"
+            iconColor="#FF9500"
+            label="Бали"
+            value={loyalty.balance === null ? 'Підтвердити номер' : String(loyalty.balance)}
+            onPress={go('ProfileOrders')}
+          />
         </ListGroup>
 
         <ListGroup title="Мій телефон" footer="Покажемо, які чохли й стекла підходять саме до вашої моделі.">

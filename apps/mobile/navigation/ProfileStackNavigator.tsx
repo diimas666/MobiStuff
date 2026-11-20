@@ -3,6 +3,7 @@ import { DeliveryAddressesScreen } from '../screens/DeliveryAddressesScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PaymentMethodsScreen } from '../screens/PaymentMethodsScreen';
 import { ProfileOrdersScreen } from '../screens/ProfileOrdersScreen';
+import { TrackingScreen } from '../screens/TrackingScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { SupportScreen } from '../screens/SupportScreen';
@@ -27,6 +28,7 @@ export function ProfileStackNavigator() {
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="Support" component={SupportScreen} />
+      <Stack.Screen name="Tracking" component={TrackingScreen} />
     </Stack.Navigator>
   );
 }

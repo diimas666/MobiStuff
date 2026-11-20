@@ -28,6 +28,7 @@ import { BackButton } from '../components/navigation/BackButton';
 import { Screen } from '../components/Screen';
 import { paymentCardNumber } from '../config/payment';
 import { useStoreSettings } from '../hooks/useStoreSettings';
+import { useLoyalty } from '../hooks/useLoyalty';
 import { askPushPermissionOnce, syncPushToken } from '../services/push';
 import { PromoCodeInput, type AppliedPromo } from '../components/checkout/PromoCodeInput';
 import { radius, spacing } from '../constants/theme';
@@ -205,7 +206,6 @@ export function CheckoutScreen({ navigation }: Props) {
   const cartTotals = useMemo(() => getCartTotals(items), [items]);
   const { total } = cartTotals;
   const [promo, setPromo] = useState<AppliedPromo | null>(null);
-  const payable = total - (promo?.discount ?? 0);
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [addressInitialized, setAddressInitialized] = useState(false);
@@ -242,6 +242,16 @@ export function CheckoutScreen({ navigation }: Props) {
     getFieldError,
     isProfileLoaded,
   } = useCheckoutForm();
+  // Бали кешбеку: списати можна, якщо номер підтверджено кодом з SMS
+  const loyalty = useLoyalty();
+  const [usePoints, setUsePoints] = useState(false);
+  const afterPromo = total - (promo?.discount ?? 0);
+  const pointsAvailable =
+    loyalty.balance && loyalty.token && normalizePhone(phone) === loyalty.phone
+      ? Math.min(loyalty.balance, Math.floor((afterPromo * loyalty.maxPointsPercent) / 100))
+      : 0;
+  const pointsUsed = usePoints ? pointsAvailable : 0;
+  const payable = afterPromo - pointsUsed;
 
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
   const [showWarehouseSuggestions, setShowWarehouseSuggestions] = useState(false);
@@ -378,7 +388,11 @@ export function CheckoutScreen({ navigation }: Props) {
     setIsSubmitting(true);
 
     // Замовлення вважаємо оформленим лише коли сервер його прийняв
-    const result = await submitCheckout({ ...order, promoCode: promo?.code });
+    const result = await submitCheckout({
+      ...order,
+      promoCode: promo?.code,
+      ...(pointsUsed > 0 ? { usePoints: pointsUsed, pointsToken: loyalty.token ?? undefined } : {}),
+    });
     if (!result.ok) {
       showToast(result.error, 'error');
       setIsSubmitting(false);
@@ -648,6 +662,20 @@ export function CheckoutScreen({ navigation }: Props) {
               <Text style={styles.totalValue}>{formatPrice(total)}</Text>
             </View>
             <PromoCodeInput total={total} value={promo} onChange={setPromo} />
+            {pointsAvailable > 0 ? (
+              <Pressable accessibilityRole="switch" accessibilityState={{ checked: usePoints }} onPress={() => setUsePoints(v => !v)} style={styles.totalRow}>
+                <Text style={[styles.totalLabel, { color: colors.text }]}>
+                  Списати бали (є {loyalty.balance})
+                </Text>
+                <Ionicons name={usePoints ? 'checkbox' : 'square-outline'} size={24} color={colors.primary} />
+              </Pressable>
+            ) : null}
+            {pointsUsed > 0 ? (
+              <View style={styles.totalRow}>
+                <Text style={[styles.totalLabel, { color: colors.primary }]}>Оплачено балами</Text>
+                <Text style={[styles.totalValue, { color: colors.primary }]}>−{formatPrice(pointsUsed)}</Text>
+              </View>
+            ) : null}
             {promo ? (
               <View style={styles.totalRow}>
                 <Text style={[styles.totalLabel, { color: colors.primary }]}>Промокод {promo.code}</Text>

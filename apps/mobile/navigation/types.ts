@@ -25,6 +25,7 @@ export type ProfileStackParamList = {
   Notifications: undefined;
   Settings: undefined;
   Support: undefined;
+  Tracking: { ttn?: string } | undefined;
 };
 
 export type RootStackParamList = {

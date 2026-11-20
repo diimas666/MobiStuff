@@ -1,4 +1,8 @@
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { ProfileStackParamList, RootStackParamList } from '../../navigation/types';
+import { useCart } from '../../context/CartContext';
 import type { ComponentProps } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ProductImage } from '../ProductImage';
@@ -110,6 +114,22 @@ export function ProfileOrderCard({ order }: Props) {
   divider: {
     height: 1,
     backgroundColor: c.fill,
+  },
+  repeat: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: c.accentSoft,
+  },
+  repeatText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: c.primary,
   },
   ttnRow: {
     flexDirection: 'row',
@@ -250,6 +270,18 @@ export function ProfileOrderCard({ order }: Props) {
   const itemsLabel =
     itemCount === 1 ? 'товар' : itemCount < 5 ? 'товари' : 'товарів';
 
+  const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList & RootStackParamList>>();
+  const { addToCart } = useCart();
+  // Повторити: кладемо ті самі товари в кошик і відкриваємо його
+  const repeatOrder = async () => {
+    for (const item of order.items ?? []) {
+      for (let n = 0; n < (item.quantity || 1); n++) {
+        await addToCart({ productId: item.productId, handle: item.handle, title: item.title, price: item.price, image: item.image, variant: item.variant }).catch(() => {});
+      }
+    }
+    (navigation as unknown as { navigate: (name: string) => void }).navigate('Cart');
+  };
+
   return (
     <View style={styles.card}>
       <View style={styles.topSection}>
@@ -322,7 +354,7 @@ export function ProfileOrderCard({ order }: Props) {
         <Pressable
           accessibilityRole="link"
           accessibilityLabel={`Відстежити посилку ${order.ttn}`}
-          onPress={() => void Linking.openURL(`https://novaposhta.ua/tracking/?cargo_number=${encodeURIComponent(order.ttn ?? '')}`)}
+          onPress={() => navigation.navigate('Tracking', { ttn: order.ttn })}
           style={({ pressed }) => [styles.ttnRow, pressed && { opacity: 0.7 }]}>
           <Ionicons name="cube-outline" size={20} color={colors.primary} />
           <View style={{ flex: 1 }}>
@@ -358,6 +390,13 @@ export function ProfileOrderCard({ order }: Props) {
           />
         ) : null}
       </View>
+
+      {order.items?.length ? (
+        <Pressable accessibilityRole="button" onPress={repeatOrder} style={({ pressed }) => [styles.repeat, pressed && { opacity: 0.7 }]}>
+          <Ionicons name="refresh" size={18} color={colors.primary} />
+          <Text style={styles.repeatText}>Повторити замовлення</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

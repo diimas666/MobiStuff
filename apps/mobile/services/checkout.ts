@@ -23,7 +23,7 @@ export type CheckoutResult =
 
 /** Надсилає замовлення на сервер. Успіх — лише якщо сервер його прийняв. */
 export async function submitCheckout(
-  order: CheckoutOrder & { id?: string; promoCode?: string },
+  order: CheckoutOrder & { id?: string; promoCode?: string; usePoints?: number; pointsToken?: string },
 ): Promise<CheckoutResult> {
   try {
     const response = await api.checkout({
