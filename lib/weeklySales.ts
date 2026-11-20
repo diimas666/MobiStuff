@@ -8,7 +8,7 @@ async function load(): Promise<Record<string, number>> {
   await dbConnect();
   const since = new Date(Date.now() - 7 * 864e5).toISOString();
   const rows: { _id: string; n: number }[] = await Order.aggregate([
-    { $match: { createdAt: { $gte: since }, status: { $ne: 'cancelled' } } },
+    { $match: { createdAt: { $gte: since }, status: { $nin: ['cancelled', 'returned'] } } },
     { $unwind: '$items' },
     { $group: { _id: '$items.handle', n: { $sum: '$items.quantity' } } },
   ]);

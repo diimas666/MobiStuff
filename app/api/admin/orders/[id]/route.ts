@@ -71,6 +71,7 @@ export async function PATCH(req: Request, { params }: Ctx) {
       shipped: order.ttn ? `Посилку відправлено. ТТН ${order.ttn}` : 'Посилку відправлено Новою Поштою',
       completed: 'Замовлення виконано. Дякуємо за покупку!',
       cancelled: 'Замовлення скасовано. Якщо це помилка — напишіть нам',
+      returned: 'Повернення оформлено. Кошти повернемо протягом кількох днів',
     };
     const text = texts[String($set.status)];
     if (text) {
@@ -84,7 +85,7 @@ export async function PATCH(req: Request, { params }: Ctx) {
     const pts = await awardCashback(String(order.orderId)).catch(() => 0);
     if (pts) history.push(`Кешбек: +${pts} балів`);
   }
-  if ($set.status === 'cancelled') {
+  if ($set.status === 'cancelled' || $set.status === 'returned') {
     const back = await refundPoints(String(order.orderId)).catch(() => 0);
     if (back) history.push(`Повернуто ${back} балів`);
   }

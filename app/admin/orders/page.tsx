@@ -313,7 +313,7 @@ export default function OrdersPage() {
   };
 
   const exportHref = `/api/admin/orders/export${statusFilter !== 'all' ? `?status=${statusFilter}` : ''}`;
-  const revenue = visible.filter((o) => normalizeOrderStatus(o.status) !== 'cancelled').reduce((n, o) => n + (o.total || 0), 0);
+  const revenue = visible.filter((o) => !['cancelled', 'returned'].includes(normalizeOrderStatus(o.status))).reduce((n, o) => n + (o.total || 0), 0);
 
   return (
     <AdminWrapper>

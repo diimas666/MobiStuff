@@ -28,6 +28,8 @@ const ProductSchema = new mongoose.Schema(
     mmaSlug: { type: String, select: false },
     mmaSourcePrice: { type: Number, select: false },
     mmaSourceCurrency: { type: String, select: false }, // UAH | USD
+    // Рекомендована роздрібна ціна постачальника (орієнтир ринку)
+    mmaRrp: { type: Number, select: false },
     priceManuallyEdited: { type: Boolean, default: false, select: false },
     lastSyncedAt: { type: Date, select: false },
     // Поля, змінені вручну в адмінці — синхронізація з MMA їх не перезаписує

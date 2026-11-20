@@ -6,6 +6,7 @@ export type OrderStatus =
   | 'shipped'
   | 'completed'
   | 'cancelled'
+  | 'returned'
   | 'confirmed';
 
 export const ORDER_STATUS_LABELS: Record<
@@ -17,6 +18,7 @@ export const ORDER_STATUS_LABELS: Record<
   shipped: 'Відправлено',
   completed: 'Виконано',
   cancelled: 'Скасовано',
+  returned: 'Повернення',
 };
 
 export type StoredOrder = {
@@ -47,7 +49,8 @@ export function normalizeOrderStatus(
     status === 'in_progress' ||
     status === 'shipped' ||
     status === 'completed' ||
-    status === 'cancelled'
+    status === 'cancelled' ||
+    status === 'returned'
   ) {
     return status;
   }
@@ -84,6 +87,12 @@ export function getOrderStatusStyle(status: OrderStatus | string): {
         textColor: '#86EFAC',
         icon: 'checkmark-circle',
       };
+    case 'returned':
+      return {
+        badgeBg: 'rgba(113, 113, 122, 0.16)',
+        textColor: '#52525B',
+        icon: 'return-down-back-outline',
+      };
     case 'cancelled':
       return {
         badgeBg: 'rgba(239, 68, 68, 0.16)',
@@ -117,6 +126,8 @@ export function getOrderStatusLightBadge(status: OrderStatus | string): {
       return { bg: '#DCFCE7', text: '#15803D', icon: base.icon };
     case 'cancelled':
       return { bg: '#FEE2E2', text: '#B91C1C', icon: base.icon };
+    case 'returned':
+      return { bg: '#F4F4F5', text: '#52525B', icon: base.icon };
     case 'processing':
     default:
       return { bg: '#FEF3C7', text: '#B45309', icon: base.icon };

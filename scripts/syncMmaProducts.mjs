@@ -35,6 +35,7 @@ const ProductSchema = new mongoose.Schema(
     mmaKey: { type: String, unique: true, sparse: true },
     mmaSlug: String,
     mmaSourcePrice: Number,
+    mmaRrp: Number,
     mmaSourceCurrency: String,
     priceManuallyEdited: { type: Boolean, default: false },
     lastSyncedAt: Date,
@@ -115,6 +116,7 @@ function buildProductDoc(listing, details, client) {
     images,
     mmaSourcePrice: sourcePrice > 0 ? sourcePrice : undefined,
     mmaSourceCurrency: sourcePrice > 0 ? sourceCurrency() : undefined,
+    mmaRrp: rrp > 0 ? Math.ceil(rrp) : undefined,
     price: retailPrice,
     oldPrice: retailOldPrice,
     inStock: mapAvailability(availability),
@@ -157,6 +159,7 @@ async function upsertProduct(doc) {
     mmaSlug: doc.mmaSlug,
     mmaSourcePrice: doc.mmaSourcePrice,
     mmaSourceCurrency: doc.mmaSourceCurrency,
+    mmaRrp: doc.mmaRrp,
     isNew: doc.isNew,
     tags: doc.tags,
     lastSyncedAt: doc.lastSyncedAt,
@@ -199,7 +202,7 @@ async function main() {
   const isFullSync = !categoryFilter && productLimit === 0;
 
   console.log('🔄 Синхронизация ассортимента MMA → MobiStuff');
-  console.log(`   Наценка: +40% | кабелі/скло +80% | мишки +50%`);
+  console.log(`   Наценка: ступінчаста від опту (×2.6 до 30 грн … ×1.3 від 1000 грн), не дорожче 95% РРЦ`);
   const { rate, source } = await loadUsdRate();
   console.log(`   Курс $: ${rate} ₴ (джерело: ${source})`);
   console.log(`   Оптові ціни MMA у: ${sourceCurrency()}`);
