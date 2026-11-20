@@ -1,6 +1,6 @@
 import type { CartItem } from '../types/cart';
 import { api } from '../config/api';
-import { saveOrderAccessToken } from './orderAccessStorage';
+import { saveOrderToken } from './orderAccessStorage';
 
 export type CheckoutOrder = {
   name: string;
@@ -31,7 +31,7 @@ export async function submitCheckout(
       orderId: order.id,
     });
     const data = (await response.json().catch(() => ({}))) as {
-      ordersToken?: unknown;
+      orderToken?: unknown;
       message?: string;
       total?: number;
       paymentMethod?: string;
@@ -48,9 +48,9 @@ export async function submitCheckout(
       };
     }
 
-    // Сервер видає ключ для перегляду історії замовлень цього номера
-    if (typeof data.ordersToken === 'string') {
-      await saveOrderAccessToken(order.phone, data.ordersToken).catch(() => {});
+    // Ключ до цього замовлення — для push-сповіщень про його статус
+    if (typeof data.orderToken === 'string' && data.orderId) {
+      await saveOrderToken({ orderId: data.orderId, phone: order.phone, token: data.orderToken }).catch(() => {});
     }
     return { ok: true, total: data.total, paymentMethod: data.paymentMethod, orderId: data.orderId };
   } catch {

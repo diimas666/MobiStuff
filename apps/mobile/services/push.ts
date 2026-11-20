@@ -1,6 +1,6 @@
 import { Linking, Platform, Settings } from 'react-native';
 import { api } from '../config/api';
-import { getAllOrderAccessTokens } from './orderAccessStorage';
+import { getAllOrderAccessTokens, getAllOrderTokens } from './orderAccessStorage';
 import { getStorageItem, setStorageItem } from './safeStorage';
 
 /**
@@ -30,6 +30,8 @@ export async function syncPushToken() {
     return; // нативний модуль недоступний (тести) — просто пропускаємо
   }
   if (typeof token !== 'string' || !token) return;
+  // Номери — лише підтверджені кодом з SMS; замовлення — оформлені з цього телефону
   const phones = (await getAllOrderAccessTokens()).map(p => ({ phone: p.phone, token: p.token }));
-  await api.registerPush({ token, phones }).catch(() => {});
+  const orders = await getAllOrderTokens();
+  await api.registerPush({ token, phones, orders }).catch(() => {});
 }

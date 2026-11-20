@@ -84,3 +84,11 @@ export async function pushToPhone(phone: string, msg: PushMessage) {
   const devices = await PushDevice.find({ phones: phone }).select('token').lean<{ token: string }[]>();
   return sendPush(devices.map((d) => d.token), msg);
 }
+
+/** Push власнику конкретного замовлення: пристрої, що оформили його, або з підтвердженим номером */
+export async function pushForOrder(orderId: string, phone: string, msg: PushMessage) {
+  if (!apnsConfigured()) return 0;
+  await dbConnect();
+  const devices = await PushDevice.find({ $or: [{ orderIds: orderId }, { phones: phone }] }).select('token').lean<{ token: string }[]>();
+  return sendPush(devices.map((d) => d.token), msg);
+}

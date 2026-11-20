@@ -46,3 +46,22 @@ export function otpMatches(normalizedPhone: string, code: string, hash: string):
   const b = Buffer.from(hash);
   return a.length === b.length && timingSafeEqual(a, b);
 }
+
+/**
+ * Ключ до ОДНОГО замовлення (видається тому, хто його оформив).
+ * Не відкриває історію номера — для цього потрібен код з SMS.
+ */
+export function createOrderToken(orderId: string, normalizedPhone: string): string | null {
+  const key = secret();
+  if (!key || !orderId) return null;
+  return `o1.${createHmac('sha256', key).update(`order:${orderId}:${normalizedPhone}`).digest('base64url')}`;
+}
+
+export function verifyOrderToken(orderId: string, normalizedPhone: string, token: unknown): boolean {
+  if (typeof token !== 'string' || token.length > 200) return false;
+  const expected = createOrderToken(orderId, normalizedPhone);
+  if (!expected) return false;
+  const a = Buffer.from(token);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}

@@ -3,7 +3,8 @@ import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, Te
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { api } from '../../config/api';
 import { loadCheckoutProfile } from '../../services/checkoutProfileStorage';
-import { saveOrderAccessToken } from '../../services/orderAccessStorage';
+import { saveOrderToken } from '../../services/orderAccessStorage';
+import { askPushPermissionOnce, syncPushToken } from '../../services/push';
 import { formatPrice } from '../../types/catalog';
 import { normalizePhone } from '../../utils/checkoutValidation';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -50,7 +51,8 @@ export function QuickOrderSheet({ productId, title, price, variant }: Props) {
       const res = await api.quickOrder({ productId, phone: normalized, variant });
       const d = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(d.message || 'Не вдалося надіслати');
-      if (typeof d.ordersToken === 'string') await saveOrderAccessToken(normalized, d.ordersToken).catch(() => {});
+      if (typeof d.orderToken === 'string' && d.orderId) await saveOrderToken({ orderId: d.orderId, phone: normalized, token: d.orderToken }).catch(() => {});
+      void askPushPermissionOnce().then(() => syncPushToken());
       setState('done');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Немає звʼязку з сервером');

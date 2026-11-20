@@ -5,7 +5,7 @@ import Order from '@/app/api/models/Order';
 import { checkAdminAuth, unauthorizedResponse } from '@/lib/adminAuth';
 import { isOrderStatus, ORDER_STATUS_LABELS } from '@/lib/orderStatus';
 import { notifyOrderShipped } from '@/lib/customerNotify';
-import { pushToPhone } from '@/lib/apns';
+import { pushForOrder } from '@/lib/apns';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -73,7 +73,7 @@ export async function PATCH(req: Request, { params }: Ctx) {
     };
     const text = texts[String($set.status)];
     if (text) {
-      const sent = await pushToPhone(String(order.phone), { title: `Замовлення ${order.orderId}`, body: text, url: 'mobistuff://orders' }).catch(() => 0);
+      const sent = await pushForOrder(String(order.orderId), String(order.phone), { title: `Замовлення ${order.orderId}`, body: text, url: 'mobistuff://orders' }).catch(() => 0);
       if (sent) history.push(`Push у застосунок: ${text}`);
     }
   }

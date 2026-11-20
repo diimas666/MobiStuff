@@ -138,6 +138,10 @@ if (!SKIP_ORDER) {
       total: 1,
     });
     check(r.status === 200 && r.body?.total === p.price, 'Підміна ціни в замовленні не працює (ціна з бази)', `total=${r.body?.total}, справжня ${p.price}`);
+    // Фальшиве замовлення на чужий номер не дає доступу до історії цього номера
+    check(!('ordersToken' in (r.body || {})), 'Замовлення не видає ключ до історії номера');
+    const steal = await post('/api/orders/list', { phone: '0990000000', token: r.body?.orderToken });
+    check(steal.status === 401, 'Ключ замовлення не відкриває історію номера', `отримано ${steal.status}`);
   }
 }
 

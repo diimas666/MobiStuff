@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Order from '../models/Order';
 import { buildOrderFromPayload, notifyTelegram, OrderValidationError } from '@/lib/orders';
-import { createOrderAccessToken } from '@/lib/orderAccess';
+import { createOrderToken } from '@/lib/orderAccess';
 import { notifyOrderCreated } from '@/lib/customerNotify';
 import { consumePromo } from '@/lib/promo';
 import CartDraft from '../models/CartDraft';
@@ -48,7 +48,8 @@ export async function POST(req: NextRequest) {
       paymentMethod: order.paymentMethod,
       promo: order.promo,
       // Ключ для перегляду історії замовлень цього номера (мобільний застосунок)
-      ordersToken: createOrderAccessToken(order.phone),
+      // Ключ лише до цього замовлення (історія номера — тільки після коду з SMS)
+      orderToken: createOrderToken(order.orderId, order.phone),
     });
   } catch (error) {
     if (error instanceof OrderValidationError) {

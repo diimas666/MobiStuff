@@ -5,7 +5,7 @@ import Order from '@/app/api/models/Order';
 import Product from '@/app/api/models/Product';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
 import { generateOrderId } from '@/lib/orderStatus';
-import { createOrderAccessToken } from '@/lib/orderAccess';
+import { createOrderToken } from '@/lib/orderAccess';
 import { rateLimited } from '@/lib/rateLimit';
 
 const str = (v: unknown, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -71,5 +71,5 @@ export async function POST(req: Request) {
     }).catch(() => {});
   }
 
-  return NextResponse.json({ success: true, orderId: order.orderId, total: order.total, ordersToken: createOrderAccessToken(phone) });
+  return NextResponse.json({ success: true, orderId: order.orderId, total: order.total, orderToken: createOrderToken(order.orderId, phone) });
 }

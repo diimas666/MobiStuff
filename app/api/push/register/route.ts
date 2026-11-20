@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import PushDevice from '@/app/api/models/PushDevice';
 import { normalizeUkrainianPhone } from '@/lib/phoneUtils';
-import { verifyOrderAccessToken } from '@/lib/orderAccess';
+import { verifyOrderAccessToken, verifyOrderToken } from '@/lib/orderAccess';
 import { rateLimited } from '@/lib/rateLimit';
 
 /**
@@ -21,11 +21,21 @@ export async function POST(req: Request) {
     if (phone && verifyOrderAccessToken(phone, item?.token)) phones.push(phone);
   }
 
+  const orderIds: string[] = [];
+  for (const item of Array.isArray(b?.orders) ? b.orders.slice(0, 50) : []) {
+    const orderId = typeof item?.orderId === 'string' ? item.orderId.slice(0, 40) : '';
+    const phone = normalizeUkrainianPhone(typeof item?.phone === 'string' ? item.phone : '');
+    if (orderId && phone && verifyOrderToken(orderId, phone, item?.token)) orderIds.push(orderId);
+  }
+
+  const add: Record<string, unknown> = {};
+  if (phones.length) add.phones = { $each: phones };
+  if (orderIds.length) add.orderIds = { $each: orderIds };
   await dbConnect();
   await PushDevice.updateOne(
     { token },
-    { $set: { lastSeen: new Date(), platform: 'ios' }, ...(phones.length ? { $addToSet: { phones: { $each: phones } } } : {}) },
+    { $set: { lastSeen: new Date(), platform: 'ios' }, ...(Object.keys(add).length ? { $addToSet: add } : {}) },
     { upsert: true }
   );
-  return NextResponse.json({ ok: true, linked: phones.length });
+  return NextResponse.json({ ok: true, linked: phones.length, orders: orderIds.length });
 }
