@@ -27,10 +27,12 @@ export function ProductPriceBlock({
     marginBottom: 20,
   },
   discountBadge: {
+    alignSelf: 'flex-start',
     backgroundColor: c.sale,
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
+    marginBottom: 8,
   },
   discountBadgeText: {
     fontSize: 13,

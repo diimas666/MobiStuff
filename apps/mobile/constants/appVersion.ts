@@ -1,5 +1,5 @@
 /** Версія застосунку (синхронно з MARKETING_VERSION у Xcode) */
-export const APP_VERSION = '1.1';
+export const APP_VERSION = '1.2';
 export const APP_STORE_URL = 'https://apps.apple.com/app/id6785212528';
 
 /** -1 / 0 / 1 */
