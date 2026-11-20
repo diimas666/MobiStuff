@@ -3,13 +3,16 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, BellRing, ExternalLink, Loader2, Lock, LogOut, Megaphone, Package, PlusCircle, RefreshCw, Settings, ShoppingCart, Smartphone, Tag, Ticket, Upload } from 'lucide-react';
+import { BarChart3, BellRing, ExternalLink, Loader2, Lock, LogOut, Megaphone, Package, PhoneCall, PlusCircle, RefreshCw, Settings, ShoppingCart, Smartphone, Star, Tag, Ticket, Upload, Users } from 'lucide-react';
 
 const NAV = [
   { href: '/admin/products', label: 'Товари', icon: Package },
   { href: '/admin/promotions', label: 'Акції', icon: Tag },
   { href: '/admin/promo', label: 'Промокоди', icon: Ticket },
   { href: '/admin/orders', label: 'Замовлення', icon: ShoppingCart },
+  { href: '/admin/customers', label: 'Покупці', icon: Users },
+  { href: '/admin/leads', label: 'Нагадування', icon: PhoneCall },
+  { href: '/admin/reviews', label: 'Відгуки', icon: Star },
   { href: '/admin/marketing', label: 'Реклама', icon: Megaphone },
   { href: '/admin/push', label: 'Push', icon: BellRing },
   { href: '/admin/app', label: 'Застосунок', icon: Smartphone },

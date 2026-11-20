@@ -1,3 +1,4 @@
+import { notifyTelegram as sendTelegram, orderButtons } from '@/lib/telegram';
 import mongoose from 'mongoose';
 import Product from '@/app/api/models/Product';
 import { DEFAULT_ORDER_STATUS, generateOrderId } from '@/lib/orderStatus';
@@ -157,14 +158,6 @@ export async function notifyTelegram(order: BuiltOrder) {
     .filter((l) => l !== '')
     .join('\n');
 
-  try {
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text }),
-      signal: AbortSignal.timeout(5000),
-    });
-  } catch (e) {
-    console.error('Telegram notify failed', e);
-  }
+  // Кнопки статусу — можна прийняти/відправити замовлення прямо з Telegram
+  await sendTelegram(text, orderButtons(order.orderId)).catch((e) => console.error('Telegram notify failed', e));
 }

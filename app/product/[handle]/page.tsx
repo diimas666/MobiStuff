@@ -12,6 +12,8 @@ import ProductDescription from '@/components/ProductDescription';
 import { stripHtml } from '@/lib/htmlUtils';
 import { getRelatedProducts } from '@/lib/getRelatedProducts';
 import { getCrossSell } from '@/lib/crossSell';
+import { getReviews } from '@/lib/reviews';
+import ProductReviews from '@/components/ProductReviews';
 import { getWeeklySales } from '@/lib/weeklySales';
 import SaleCountdown from '@/components/SaleCountdown';
 import { safe } from '@/lib/safeData';
@@ -85,6 +87,7 @@ export default async function ProductPage({ params }: Params) {
     safe(getCrossSell(product, 8), [], 'cross-sell'),
   ]);
 
+  const reviews = await safe(getReviews(product.handle), { count: 0, average: 0, reviews: [] }, 'reviews');
   const hasDiscount = product.oldPrice && product.oldPrice > product.price;
   const soldThisWeek = (await safe(getWeeklySales(), {} as Record<string, number>, 'weekly-sales'))[product.handle] ?? 0;
   const inStock = product.inStock !== false;
@@ -120,6 +123,18 @@ export default async function ProductPage({ params }: Params) {
     sku: product._id,
     url: absoluteUrl(`/product/${product.handle}`),
     ...(category ? { category: category.title } : {}),
+    ...(reviews.count
+      ? {
+          aggregateRating: { '@type': 'AggregateRating', ratingValue: reviews.average, reviewCount: reviews.count, bestRating: 5, worstRating: 1 },
+          review: reviews.reviews.slice(0, 5).map((r) => ({
+            '@type': 'Review',
+            author: { '@type': 'Person', name: r.name },
+            datePublished: r.createdAt.slice(0, 10),
+            reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+            ...(r.text ? { reviewBody: r.text } : {}),
+          })),
+        }
+      : {}),
     offers: {
       '@type': 'Offer',
       url: absoluteUrl(`/product/${product.handle}`),
@@ -184,6 +199,11 @@ export default async function ProductPage({ params }: Params) {
             <h1 className="text-[28px] leading-[1.12] font-semibold tracking-[-0.025em] sm:text-[40px]">
               {product.title}
             </h1>
+            {reviews.count ? (
+              <a href="#reviews" className="mt-2 inline-flex items-center gap-1.5 text-[14px] text-ink-2 hover:text-ink">
+                <span className="text-amber-500">★</span> {reviews.average.toFixed(1)} · {reviews.count} відг.
+              </a>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="text-[28px] font-semibold tracking-tight sm:text-[32px]">{formatPrice(product.price)}</span>
@@ -239,6 +259,8 @@ export default async function ProductPage({ params }: Params) {
           )}
         </div>
       </article>
+
+      <ProductReviews handle={product.handle} summary={reviews} />
 
       {crossSell.length > 0 && (
         <div className="mt-20 sm:mt-28">

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import AdminWrapper from '@/components/AdminWrapper';
 import { formatPrice } from '@/lib/format';
+import AppControls from './AppControls';
 
 type Data = { totals: Record<string, { count: number; value: number }>; errors: { message: string; screen?: string; count: number; lastAt: string; fatal?: boolean; appVersion?: string }[] };
 
@@ -54,6 +55,8 @@ export default function AdminAppPage() {
           })}
           <p className="pt-2 text-[14px] text-ink-2">Виручка із застосунку: <b>{formatPrice(d?.totals.purchase?.value ?? 0)}</b></p>
         </section>
+
+        <AppControls />
 
         <section>
           <h3 className="mb-3 text-[17px] font-semibold">Помилки</h3>
