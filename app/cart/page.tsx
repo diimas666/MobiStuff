@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import ProductImage from '@/components/ProductImage';
 import PaymentRulesNote from '@/components/PaymentRulesNote';
+import CartUpsell from '@/components/CartUpsell';
 import { ChevronRight, Minus, Plus, ShoppingBag, Truck } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useStoreSettings } from '@/context/StoreSettingsContext';
@@ -171,6 +172,8 @@ export default function CartPage() {
           </div>
         </aside>
       </div>
+
+      <CartUpsell />
 
       {/* Липка кнопка (мобільний) */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line-soft bg-white/85 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">

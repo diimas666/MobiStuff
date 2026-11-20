@@ -11,6 +11,8 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import ProductDescription from '@/components/ProductDescription';
 import { stripHtml } from '@/lib/htmlUtils';
 import { getRelatedProducts } from '@/lib/getRelatedProducts';
+import { getCrossSell } from '@/lib/crossSell';
+import { safe } from '@/lib/safeData';
 import { getStoreSettings } from '@/lib/storeSettings';
 import { CreditCard, PackageCheck, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import EcommerceTracker from '@/components/EcommerceTracker';
@@ -76,9 +78,10 @@ export default async function ProductPage({ params }: Params) {
     (sub) => sub.slug === product.subcategorySlug
   );
 
-  const relatedProducts = product.categorySlug
-    ? await getRelatedProducts(product.categorySlug, product.handle, 20)
-    : [];
+  const [relatedProducts, crossSell] = await Promise.all([
+    product.categorySlug ? safe(getRelatedProducts(product.categorySlug, product.handle, 20), [], 'related') : Promise.resolve([]),
+    safe(getCrossSell(product, 8), [], 'cross-sell'),
+  ]);
 
   const hasDiscount = product.oldPrice && product.oldPrice > product.price;
   const inStock = product.inStock !== false;
@@ -230,8 +233,14 @@ export default async function ProductPage({ params }: Params) {
         </div>
       </article>
 
-      {relatedProducts.length > 0 && category && (
+      {crossSell.length > 0 && (
         <div className="mt-20 sm:mt-28">
+          <OffersSection title="Часто купують разом" subtitle="Те, що знадобиться з цим товаром." products={crossSell} />
+        </div>
+      )}
+
+      {relatedProducts.length > 0 && category && (
+        <div className="mt-16 sm:mt-24">
           <OffersSection
             title="Схожі товари"
             subtitle={`Ще з категорії «${category.title}».`}
