@@ -30,7 +30,7 @@ export type StoreSettingsData = {
 
 export const DEFAULT_SETTINGS: StoreSettingsData = {
   phone: '',
-  email: 'mobistuffinfo@gmail.com',
+  email: 'mobistuffinfo4@gmail.com',
   instagram: '',
   telegram: '',
   viber: '',

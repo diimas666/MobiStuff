@@ -210,7 +210,7 @@ export default function CheckoutPage() {
       } else {
         fail(
           (res.status === 400 && data.message) ||
-            'Не вдалося оформити замовлення. Спробуйте ще раз або напишіть нам на mobistuffinfo@gmail.com.'
+            'Не вдалося оформити замовлення. Спробуйте ще раз або напишіть нам на mobistuffinfo4@gmail.com.'
         );
       }
     } catch {

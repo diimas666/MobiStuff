@@ -8,7 +8,7 @@ import { useThemedStyles } from '../hooks/useThemedStyles';
 
 const privacyPolicyMeta = {
   lastUpdated: '17 червня 2026 року',
-  email: 'mobistuffinfo@gmail.com',
+  email: 'mobistuffinfo4@gmail.com',
 };
 
 type PrivacySection = {

@@ -2,7 +2,7 @@ export const privacyPolicyMeta = {
   title: 'Політика конфіденційності',
   lastUpdated: '17 червня 2026 року',
   companyName: 'MobiStuff',
-  email: 'mobistuffinfo@gmail.com',
+  email: 'mobistuffinfo4@gmail.com',
 };
 
 export type PrivacySection = {

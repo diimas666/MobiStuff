@@ -69,8 +69,8 @@ export default function ReturnsPage() {
         <div className="space-y-6">
           <InfoStep number={1} title="Напишіть нам">
             Email:{' '}
-            <a href="mailto:mobistuffinfo@gmail.com" className="text-accent font-medium hover:underline">
-              mobistuffinfo@gmail.com
+            <a href="mailto:mobistuffinfo4@gmail.com" className="text-accent font-medium hover:underline">
+              mobistuffinfo4@gmail.com
             </a>
             . Вкажіть номер замовлення та причину.
           </InfoStep>

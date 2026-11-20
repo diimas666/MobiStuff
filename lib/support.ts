@@ -1,4 +1,4 @@
-export const SUPPORT_STORE_EMAIL = 'mobistuffinfo@gmail.com';
+export const SUPPORT_STORE_EMAIL = 'mobistuffinfo4@gmail.com';
 
 export const SUPPORT_TOPIC_LABELS = {
   product: 'Питання про товар',

@@ -62,7 +62,7 @@ const organizationJsonLd = {
       name: SITE_NAME,
       url: SITE_URL,
       logo: `${SITE_URL}/logo-m-1024.jpg`,
-      email: 'mobistuffinfo@gmail.com',
+      email: 'mobistuffinfo4@gmail.com',
       areaServed: 'UA',
       currenciesAccepted: 'UAH',
     },
