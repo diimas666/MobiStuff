@@ -30,6 +30,8 @@ import { paymentCardNumber } from '../config/payment';
 import { useStoreSettings } from '../hooks/useStoreSettings';
 import { useLoyalty } from '../hooks/useLoyalty';
 import { askPushPermissionOnce, syncPushToken } from '../services/push';
+import { maybeAskForReview } from '../services/review';
+import { track } from '../services/telemetry';
 import { PromoCodeInput, type AppliedPromo } from '../components/checkout/PromoCodeInput';
 import { radius, spacing } from '../constants/theme';
 import { useCart } from '../context/CartContext';
@@ -195,6 +197,9 @@ export function CheckoutScreen({ navigation }: Props) {
 }));
 
   const insets = useSafeAreaInsets();
+  useEffect(() => {
+    track('begin_checkout');
+  }, []);
   const store = useStoreSettings();
   const { items, totalQuantity, clearCart } = useCart();
   const { total: cartTotal } = useMemo(() => getCartTotals(items), [items]);
@@ -409,6 +414,8 @@ export function CheckoutScreen({ navigation }: Props) {
     await persistProfile().catch(() => {});
     // Сповіщення про статус: питаємо дозвіл після першого замовлення
     void askPushPermissionOnce().then(() => syncPushToken());
+    void maybeAskForReview();
+    track('purchase', saved.total);
 
     setIsOrderComplete(true);
     setShowSuccessModal(true);

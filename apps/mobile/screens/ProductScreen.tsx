@@ -17,6 +17,7 @@ import { QuickOrderSheet } from '../components/product/QuickOrderSheet';
 import { PhoneCompatBadge } from '../components/phone/PhoneCompatBadge';
 import { CrossSellSection } from '../components/product/CrossSellSection';
 import { StockAlertCard } from '../components/product/StockAlertCard';
+import { track } from '../services/telemetry';
 import { baseUrl } from '../config/api';
 import { AddToCartButton } from '../components/product/AddToCartButton';
 import { ProductCategoryLabel } from '../components/product/ProductCategoryLabel';
@@ -105,6 +106,10 @@ export function ProductScreen({ route, navigation }: Props) {
   const { totalQuantity, addToCart, removeFromCart, isInCart, items } =
     useCart();
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+
+  useEffect(() => {
+    track('view_product');
+  }, [preview.handle]);
 
   useEffect(() => {
     if (!preview.title) return;

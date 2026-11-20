@@ -76,6 +76,8 @@ export const api = {
     }),
   promotions: () => request('/api/promotions'),
   settings: () => request('/api/settings'),
+  appEvents: (body: unknown) => request('/api/app/events', { method: 'POST', body: JSON.stringify(body) }),
+  appError: (body: unknown) => request('/api/app/errors', { method: 'POST', body: JSON.stringify(body) }),
   points: (body: unknown) => request('/api/account/points', { method: 'POST', body: JSON.stringify(body) }),
   phoneModels: () => request('/api/phone-models'),
   crossSell: (handle: string, exclude = '') =>

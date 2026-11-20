@@ -1,3 +1,4 @@
+import { track } from '../services/telemetry';
 import {
   createContext,
   useCallback,
@@ -70,6 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addToCart = useCallback(async (item: CartItemInput) => {
+      track('add_to_cart');
     if (!item.productId || !item.handle) {
       throw new Error('invalid_product');
     }

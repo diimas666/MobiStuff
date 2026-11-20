@@ -4,6 +4,10 @@ import type { RootStackParamList } from './navigation/types';
 import { useEffect } from 'react';
 import { StatusBar } from 'react-native';
 import { syncPushToken } from './services/push';
+import { installErrorHandler, setCurrentScreen, track } from './services/telemetry';
+import { AppErrorBoundary } from './components/AppErrorBoundary';
+
+installErrorHandler();
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { FavoriteDiscountWatcher } from './components/notification/FavoriteDiscountWatcher';
@@ -33,13 +37,17 @@ function AppShell() {
   // Оновлюємо push-токен на сервері при кожному запуску
   useEffect(() => {
     void syncPushToken();
+    track('app_open');
   }, []);
 
   return (
     <>
       <StatusBar barStyle={resolvedTheme === 'dark' ? 'light-content' : 'dark-content'} />
       <OfflineBanner />
-      <NavigationContainer ref={navigationRef} linking={linking}>
+      <NavigationContainer
+        ref={navigationRef}
+        linking={linking}
+        onStateChange={() => setCurrentScreen(navigationRef.getCurrentRoute()?.name ?? '')}>
         {__DEV__ ? <DevNavBridge navRef={navigationRef} /> : null}
         <RootNavigator />
       </NavigationContainer>
@@ -49,6 +57,7 @@ function AppShell() {
 
 function App() {
   return (
+    <AppErrorBoundary>
     <SafeAreaProvider>
       <SettingsProvider>
         <ToastProvider>
@@ -76,6 +85,7 @@ function App() {
         </ToastProvider>
       </SettingsProvider>
     </SafeAreaProvider>
+    </AppErrorBoundary>
   );
 }
 

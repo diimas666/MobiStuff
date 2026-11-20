@@ -1,5 +1,6 @@
 import UIKit
 import UserNotifications
+import StoreKit
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
@@ -49,6 +50,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     options: [UIApplication.OpenURLOptionsKey: Any] = [:]
   ) -> Bool {
     // Службове посилання: запит дозволу на сповіщення (викликається з JS)
+    // Службове посилання: системний запит оцінки App Store (Apple сам вирішує, чи показати)
+    if url.scheme == "mobistuff" && url.host == "request-review" {
+      if let scene = app.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+        SKStoreReviewController.requestReview(in: scene)
+      }
+      return true
+    }
     if url.scheme == "mobistuff" && url.host == "push-enable" {
       UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
         UserDefaults.standard.set(granted ? "granted" : "denied", forKey: "pushPermission")
