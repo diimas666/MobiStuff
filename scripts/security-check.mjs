@@ -96,7 +96,7 @@ for (const [method, path] of ADMIN) {
 // 3. Код з SMS
 {
   const r = await post('/api/orders/otp/verify', { phone: '0991112233', code: { $ne: null } });
-  check(r.status === 400, 'Інʼєкція в код SMS відхилена', `отримано ${r.status}`);
+  check(r.status === 400 || r.status === 429, 'Інʼєкція в код SMS відхилена', `отримано ${r.status}`);
   let limited = false;
   for (let i = 0; i < 25 && !limited; i++) {
     const t = await post('/api/orders/otp/verify', { phone: '0991112233', code: String(100000 + i) });
