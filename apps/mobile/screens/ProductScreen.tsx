@@ -198,7 +198,12 @@ export function ProductScreen({ route, navigation }: Props) {
       ) : showBlockingLoader ? (
         <LoadingState />
       ) : error && !product ? (
-        <ErrorState message={error ?? 'Товар не знайдено'} onRetry={retry} />
+        <ErrorState
+          message={error ?? 'Товар не знайдено'}
+          onRetry={retry}
+          secondaryLabel="До каталогу"
+          onSecondary={() => navigation.navigate('MainTabs', { screen: 'Categories' })}
+        />
       ) : (
         <View style={styles.layout} testID="screen-product">
           <ScrollView

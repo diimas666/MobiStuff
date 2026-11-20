@@ -1,72 +1,35 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { OfflineState } from './OfflineState';
+import { StateView } from './StateView';
 import { useNetwork } from '../context/NetworkContext';
-import { useThemedStyles } from '../hooks/useThemedStyles';
-import { radius } from '../constants/theme';
 
 type Props = {
   message?: string;
   onRetry?: () => void;
+  /** Додаткова дія, напр. «До каталогу» для товару, якого вже немає */
+  secondaryLabel?: string;
+  onSecondary?: () => void;
 };
 
+/** Помилка завантаження або «не знайдено» (аналог 404 на сайті) */
 export function ErrorState({
-  message = 'Не вдалося завантажити дані. Перевірте інтернет і спробуйте ще раз.',
+  message = 'Не вдалося завантажити дані. Спробуйте ще раз за мить.',
   onRetry,
+  secondaryLabel,
+  onSecondary,
 }: Props) {
   const { isOffline } = useNetwork();
-  const { styles, colors } = useThemedStyles(c => ({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 24,
-      gap: 16,
-    },
-    title: {
-      fontSize: 18,
-      fontWeight: '700',
-      color: c.textOnDark,
-    },
-    message: {
-      fontSize: 14,
-      color: c.textOnDarkMuted,
-      textAlign: 'center',
-      lineHeight: 20,
-    },
-    retryButton: {
-      minHeight: 48,
-      paddingHorizontal: 24,
-      borderRadius: radius.pill,
-      backgroundColor: c.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    retryText: {
-      fontSize: 15,
-      fontWeight: '700',
-      color: c.textOnDark,
-    },
-    pressed: {
-      opacity: 0.86,
-    },
-  }));
+  if (isOffline) return <OfflineState onRetry={onRetry} />;
 
-  if (isOffline) {
-    return <OfflineState onRetry={onRetry} />;
-  }
-
+  const notFound = /не знайдено|not found/i.test(message);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Помилка</Text>
-      <Text style={styles.message}>{message}</Text>
-      {onRetry ? (
-        <Pressable
-          accessibilityRole="button"
-          onPress={onRetry}
-          style={({ pressed }) => [styles.retryButton, pressed && styles.pressed]}>
-          <Text style={styles.retryText}>Спробувати знову</Text>
-        </Pressable>
-      ) : null}
-    </View>
+    <StateView
+      icon={notFound ? 'search-outline' : 'alert-circle-outline'}
+      title={notFound ? 'Нічого не знайдено' : 'Щось пішло не так'}
+      message={notFound ? 'Можливо, товар закінчився або посилання застаріло. Подивіться інші товари в каталозі.' : message}
+      actionLabel={notFound ? undefined : 'Спробувати ще раз'}
+      onAction={notFound ? undefined : onRetry}
+      secondaryLabel={secondaryLabel}
+      onSecondary={onSecondary}
+    />
   );
 }

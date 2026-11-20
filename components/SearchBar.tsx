@@ -124,8 +124,14 @@ export default function SearchBar({ setIsSearchOpen }: SearchBarProps) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              const pick = results[active] ?? results[0];
+              // Обраний стрілками товар — відкриваємо його, інакше — усі результати
+              const pick = active >= 0 ? results[active] : undefined;
               if (pick) go(pick.handle);
+              else if (query.trim().length >= 2) {
+                trackSearch(query);
+                close();
+                router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+              }
             }}
             className="flex items-center gap-3 border-b border-line pb-3"
           >

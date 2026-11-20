@@ -13,14 +13,14 @@ export function OfflineBanner() {
       gap: 8,
       paddingHorizontal: 16,
       paddingVertical: 10,
-      backgroundColor: c.homeSurface,
+      backgroundColor: c.text,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: c.lineSoft,
     },
     text: {
       fontSize: 13,
       fontWeight: '600',
-      color: c.textOnDark,
+      color: c.screen,
     },
   }));
 
@@ -30,7 +30,7 @@ export function OfflineBanner() {
 
   return (
     <View style={styles.banner}>
-      <Ionicons name="cloud-offline-outline" size={16} color={colors.priceLight} />
+      <Ionicons name="cloud-offline-outline" size={16} color={colors.screen} />
       <Text style={styles.text}>Немає інтернету</Text>
     </View>
   );

@@ -18,6 +18,7 @@ import { jsonLd } from '@/lib/jsonLd';
 import { getStoreSettings, publicSettings } from '@/lib/storeSettings';
 import { StoreSettingsProvider } from '@/context/StoreSettingsContext';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import ServiceWorker from '@/components/ServiceWorker';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
@@ -116,6 +117,7 @@ export default async function RootLayout({
         </FavoritesProvider>
         </StoreSettingsProvider>
         <ToastProvider />
+        <ServiceWorker />
       </body>
     </html>
   );

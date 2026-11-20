@@ -54,6 +54,11 @@ const ADMIN = [
   ['GET', '/api/admin/promotions'],
   ['POST', '/api/admin/promotions'],
   ['POST', '/api/admin/promotions/upload'],
+  ['GET', '/api/admin/promo'],
+  ['POST', '/api/admin/promo'],
+  ['DELETE', '/api/admin/promo/000000000000000000000000'],
+  ['GET', '/api/admin/push'],
+  ['POST', '/api/admin/push'],
 ];
 for (const [method, path] of ADMIN) {
   const r = await req(path, { method, body: method === 'GET' ? undefined : '{}' });
@@ -174,6 +179,16 @@ if (!SKIP_ORDER) {
     if (r.status === 429) limited = true;
   }
   check(limited, 'Спам у підтримку обмежено (429)');
+}
+
+// 9. Перебір промокодів обмежено
+{
+  let limited = false;
+  for (let i = 0; i < 25 && !limited; i++) {
+    const r = await post('/api/promo/validate', { code: `GUESS${i}`, total: 1000 });
+    if (r.status === 429) limited = true;
+  }
+  check(limited, 'Перебір промокодів обмежено (429)');
 }
 
 // Підсумок

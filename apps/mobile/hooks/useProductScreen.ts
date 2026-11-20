@@ -78,7 +78,12 @@ export function useProductScreen(handle: string): ProductScreenData {
         }
       } catch (loadError) {
         if (!cancelled && !hadProduct) {
-          setError(reportLoadError(loadError, errorMessages.loadProduct));
+          // 404 — товару вже немає: показуємо «не знайдено», а не загальну помилку
+          setError(
+            loadError instanceof Error && loadError.message === 'API 404'
+              ? 'Товар не знайдено'
+              : reportLoadError(loadError, errorMessages.loadProduct),
+          );
           setIsLoading(false);
         }
       }

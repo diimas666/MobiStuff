@@ -23,7 +23,12 @@ export async function askPushPermissionOnce() {
 /** Зареєструвати токен на сервері (при запуску й після замовлення) */
 export async function syncPushToken() {
   if (Platform.OS !== 'ios') return;
-  const token = Settings.get('pushToken');
+  let token: unknown;
+  try {
+    token = Settings.get('pushToken');
+  } catch {
+    return; // нативний модуль недоступний (тести) — просто пропускаємо
+  }
   if (typeof token !== 'string' || !token) return;
   const phones = (await getAllOrderAccessTokens()).map(p => ({ phone: p.phone, token: p.token }));
   await api.registerPush({ token, phones }).catch(() => {});
