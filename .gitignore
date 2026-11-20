@@ -51,3 +51,9 @@ apps/mobile/android/build/
 apps/mobile/android/.cxx/
 apps/mobile/.env
 .playwright-mcp/
+
+# Особисті файли
+ChatGPT Image*
+txt
+apps/mobile/txt
+apps/mobile/app-store-screenshots/

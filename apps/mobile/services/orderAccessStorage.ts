@@ -1,4 +1,4 @@
-import { getStorageItem, setStorageItem } from './safeStorage';
+import { getSecureItem as getStorageItem, setSecureItem as setStorageItem } from './secureStorage';
 
 /**
  * Ключі доступу до історії замовлень: сервер видає їх після оформлення

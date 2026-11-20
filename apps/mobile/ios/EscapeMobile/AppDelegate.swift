@@ -49,7 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     open url: URL,
     options: [UIApplication.OpenURLOptionsKey: Any] = [:]
   ) -> Bool {
-    // Службове посилання: запит дозволу на сповіщення (викликається з JS)
     // Службове посилання: системний запит оцінки App Store (Apple сам вирішує, чи показати)
     if url.scheme == "mobistuff" && url.host == "request-review" {
       if let scene = app.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
@@ -67,6 +66,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
       return true
     }
     return RCTLinkingManager.application(app, open: url, options: options)
+  }
+
+  // Universal Links: https://mobistuff.shop/product/… відкривається в застосунку
+  func application(
+    _ application: UIApplication,
+    continue userActivity: NSUserActivity,
+    restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
+  ) -> Bool {
+    return RCTLinkingManager.application(application, continue: userActivity, restorationHandler: restorationHandler)
   }
 
   // Токен APNs → UserDefaults; JS читає його через Settings.get('pushToken') і реєструє на сервері

@@ -191,13 +191,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EscapeMobile/Pods-EscapeMobile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EscapeMobile/Pods-EscapeMobile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -234,13 +230,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EscapeMobile/Pods-EscapeMobile-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EscapeMobile/Pods-EscapeMobile-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -267,8 +259,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				CODE_SIGN_ENTITLEMENTS = EscapeMobile/EscapeMobile.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 8467HTC6V4;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = EscapeMobile/Info.plist;
@@ -283,7 +276,6 @@
 					"-ObjC",
 					"-lc++",
 				);
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_BUNDLE_IDENTIFIER = shop.mobistuff.app;
 				PRODUCT_NAME = EscapeMobile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -300,8 +292,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				CODE_SIGN_ENTITLEMENTS = EscapeMobile/EscapeMobile.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 8467HTC6V4;
 				INFOPLIST_FILE = EscapeMobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -315,7 +308,6 @@
 					"-ObjC",
 					"-lc++",
 				);
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_BUNDLE_IDENTIFIER = shop.mobistuff.app;
 				PRODUCT_NAME = EscapeMobile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

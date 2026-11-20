@@ -6,7 +6,8 @@ import type { RootStackParamList } from './types';
  *   mobistuff://product/<handle>, mobistuff://cart, mobistuff://orders, mobistuff://catalog …
  */
 export const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: ['mobistuff://'],
+  // + Universal Links з сайту (файл /.well-known/apple-app-site-association)
+  prefixes: ['mobistuff://', 'https://mobistuff.shop', 'https://www.mobistuff.shop'],
   // mobistuff://push-enable обробляє нативна частина (запит дозволу), не навігація
   filter: url => !url.includes('push-enable') && !url.includes('request-review'),
   config: {
@@ -23,7 +24,8 @@ export const linking: LinkingOptions<RootStackParamList> = {
           Profile: {
             screens: {
               ProfileMain: 'profile',
-              ProfileOrders: 'orders',
+              // /account на сайті — кабінет; у застосунку це «Мої замовлення»
+              ProfileOrders: { path: 'orders', alias: ['account'] },
               ViewedProducts: 'viewed',
               DeliveryAddresses: 'addresses',
               PaymentMethods: 'payments',
