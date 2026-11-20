@@ -22,6 +22,7 @@ const columns = [
       { href: '/returns', label: 'Повернення' },
       { href: '/warranty', label: 'Гарантія' },
       { href: '/tracking', label: 'Відстежити посилку' },
+      { href: '/blog', label: 'Поради з вибору' },
       { href: '/favorites', label: 'Обране' },
       { href: '/cart', label: 'Кошик' },
     ],

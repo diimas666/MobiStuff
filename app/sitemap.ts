@@ -1,3 +1,4 @@
+import { blogPosts } from '@/data/blog';
 import type { MetadataRoute } from 'next';
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/app/api/models/Product';
@@ -9,7 +10,7 @@ export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const staticPages = ['/', '/catalog', '/sale', '/delivery', '/returns', '/warranty', '/tracking', '/about', '/contacts', '/privacy'].map(
+  const staticPages = ['/', '/catalog', '/sale', '/delivery', '/returns', '/warranty', '/tracking', '/blog', '/about', '/contacts', '/privacy'].map(
     (path) => ({
       url: absoluteUrl(path),
       lastModified: now,
@@ -49,5 +50,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('sitemap: products unavailable', e);
   }
 
-  return [...staticPages, ...categories, ...brandPages, ...products];
+  const articles = blogPosts.map((p) => ({ url: absoluteUrl(`/blog/${p.slug}`), lastModified: new Date(p.date), changeFrequency: 'monthly' as const, priority: 0.6 }));
+  return [...staticPages, ...articles, ...categories, ...brandPages, ...products];
 }
