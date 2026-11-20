@@ -282,26 +282,28 @@ export async function fetchTrendingProducts(limit = 6): Promise<ApiProduct[]> {
 
 export async function searchProductsByQuery(
   query: string,
-  limit = 5,
+  limit = 8,
 ): Promise<SearchProduct[]> {
-  const normalized = query.trim().toLowerCase();
-  if (!normalized) {
+  const normalized = query.trim();
+  if (normalized.length < 2) {
     return [];
   }
 
-  const products = await fetchProducts(PRODUCTS_LIST_LIMIT);
-
-  return products
-    .filter(product => product.title.toLowerCase().includes(normalized))
-    .slice(0, limit)
-    .map(product => ({
-      id: product._id,
-      handle: product.handle,
-      title: product.title,
-      price: product.price,
-      image: product.image || product.images?.[0],
-      description: product.description ? stripHtml(product.description) : '',
-    }));
+  // Пошук по всьому каталогу на сервері (раніше шукали лише серед 40 завантажених товарів)
+  const response = await api.search(normalized);
+  const items = await parseJson<
+    { id: string; handle: string; title: string; price: number; oldPrice?: number; image?: string; brand?: string }[]
+  >(response);
+  return items.slice(0, limit).map(item => ({
+    id: item.id,
+    handle: item.handle,
+    title: item.title,
+    price: item.price,
+    oldPrice: item.oldPrice,
+    brand: item.brand,
+    image: item.image?.startsWith('/') ? `${baseUrl}${item.image}` : item.image,
+    description: item.brand ?? '',
+  }));
 }
 
 export async function fetchApiProductsByBrand(brand: string): Promise<ApiProduct[]> {

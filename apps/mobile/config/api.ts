@@ -76,6 +76,7 @@ export const api = {
     }),
   promotions: () => request('/api/promotions'),
   settings: () => request('/api/settings'),
+  search: (q: string) => request(`/api/search?q=${encodeURIComponent(q)}`),
   registerPush: (body: unknown) =>
     request('/api/push/register', { method: 'POST', body: JSON.stringify(body) }),
   quickOrder: (body: unknown) =>

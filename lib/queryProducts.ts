@@ -12,6 +12,7 @@ export interface ProductQuery {
   subcategory?: string | null;
   brand?: string | null;
   phone?: string | null;
+  featured?: string | null;
   minPrice?: string | null;
   maxPrice?: string | null;
   isTrending?: string | null;
@@ -43,6 +44,7 @@ export async function queryProducts(q: ProductQuery, fields?: string) {
   if (Number.isFinite(max) && q.maxPrice) filter.price = { ...(filter.price as object), $lte: max };
 
   if (q.isTrending === 'true') filter.isTrending = true;
+  if (q.featured === 'true') filter.isFeatured = true;
   if (q.onSale === 'true') {
     filter.$or = [
       { discountPercent: { $gt: 0 } },
